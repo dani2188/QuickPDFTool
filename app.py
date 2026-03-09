@@ -9,14 +9,14 @@ from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 
-# Limit upload size (20MB)
-app.config['MAX_CONTENT_LENGTH'] = 20 * 1024 * 1024
+# limit upload size (6MB recommended for Render free tier)
+app.config['MAX_CONTENT_LENGTH'] = 6 * 1024 * 1024
 
 UPLOAD_FOLDER = "uploads"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 
-def delete_file_later(file_path, delay=60):
+def delete_file_later(file_path, delay=300):
     """Delete file after delay (seconds)"""
     def delete():
         time.sleep(delay)
@@ -26,10 +26,38 @@ def delete_file_later(file_path, delay=60):
     threading.Thread(target=delete, daemon=True).start()
 
 
-@app.route("/download/<filename>")
-def download(filename):
-    path = os.path.join(UPLOAD_FOLDER, filename)
-    return send_file(path, as_attachment=True)
+def compress_pdf(input_path, output_path):
+
+    print("Compression thread started")
+
+    try:
+
+        if platform.system() == "Windows":
+            gs_command = "gswin64c"
+        else:
+            gs_command = "gs"
+
+        command = [
+            gs_command,
+            "-sDEVICE=pdfwrite",
+            "-dCompatibilityLevel=1.4",
+            "-dPDFSETTINGS=/screen",
+            "-dNOPAUSE",
+            "-dQUIET",
+            "-dBATCH",
+            f"-sOutputFile={output_path}",
+            input_path
+        ]
+
+        print("Running:", command)
+
+        subprocess.run(command, check=True)
+
+        print("Compression finished:", output_path)
+
+    except Exception as e:
+        print("Compression ERROR:", e)
+
 
 
 @app.route("/", methods=["GET", "POST"])
@@ -43,22 +71,10 @@ def index():
         file = request.files["pdf"]
 
         if file.filename == "":
-            return "No selected file", 400
+            return "No file selected", 400
 
-        # Compression level
-        compression_level = request.form.get("compression")
-
-        if compression_level == "high":
-            dpi = "72"
-        elif compression_level == "medium":
-            dpi = "150"
-        else:
-            dpi = "300"
-
-        # Secure filename
         filename = secure_filename(file.filename)
 
-        # Unique file name to prevent collisions
         unique_id = str(uuid.uuid4())
 
         input_filename = f"{unique_id}_{filename}"
@@ -69,59 +85,43 @@ def index():
 
         file.save(input_path)
 
-        # Ghostscript command depending on OS
-        if platform.system() == "Windows":
-            gs_command = "gswin64c"
-        else:
-            gs_command = "gs"
-
-        command = [
-            gs_command,
-            "-sDEVICE=pdfwrite",
-            "-dCompatibilityLevel=1.4",
-            "-dNOPAUSE",
-            "-dQUIET",
-            "-dBATCH",
-            "-dDownsampleColorImages=true",
-            f"-dColorImageResolution={dpi}",
-            "-dDownsampleGrayImages=true",
-            f"-dGrayImageResolution={dpi}",
-            "-dDownsampleMonoImages=true",
-            f"-dMonoImageResolution={dpi}",
-            f"-sOutputFile={output_path}",
-            input_path
-        ]
-
-        # Run Ghostscript
-        subprocess.run(command, check=True)
-
-        # File sizes
+        # get original file size
         original_size = os.path.getsize(input_path)
-        compressed_size = os.path.getsize(output_path)
-
         original_mb = round(original_size / (1024 * 1024), 2)
-        compressed_mb = round(compressed_size / (1024 * 1024), 2)
 
-        reduction = round((1 - compressed_size / original_size) * 100, 1)
-
-        # Delete files later
-        delete_file_later(input_path)
-        delete_file_later(output_path)
+        # start compression in background
+        threading.Thread(
+            target=compress_pdf,
+            args=(input_path, output_path),
+            daemon=True
+        ).start()
 
         return render_template(
-            "result.html",
+            "processing.html",
             file_name=output_filename,
-            original_size=original_mb,
-            compressed_size=compressed_mb,
-            reduction=reduction
+            original_size=original_mb
         )
 
     return render_template("index.html")
 
 
+@app.route("/download/<filename>")
+def download(filename):
+
+    path = os.path.join(UPLOAD_FOLDER, filename)
+
+    if not os.path.exists(path):
+        return render_template("processing.html", file_name=filename)
+
+    compressed_size = os.path.getsize(path)
+    compressed_mb = round(compressed_size / (1024 * 1024), 2)
+
+    return send_file(path, as_attachment=True)
+
+
 @app.errorhandler(413)
 def too_large(e):
-    return "File too large. Maximum size is 20MB.", 413
+    return "File too large. Maximum allowed size is 6MB.", 413
 
 
 if __name__ == "__main__":
