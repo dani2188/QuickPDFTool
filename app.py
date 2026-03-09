@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, send_file
+from flask import Flask, request, render_template, send_file, jsonify
 import subprocess
 import os
 import threading
@@ -9,15 +9,18 @@ from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 
-# limit upload size (6MB recommended for Render free tier)
+# limit upload size
 app.config['MAX_CONTENT_LENGTH'] = 6 * 1024 * 1024
 
 UPLOAD_FOLDER = "uploads"
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+
+# create uploads folder safely
+if not os.path.exists(UPLOAD_FOLDER):
+    os.makedirs(UPLOAD_FOLDER)
 
 
 def delete_file_later(file_path, delay=300):
-    """Delete file after delay (seconds)"""
     def delete():
         time.sleep(delay)
         if os.path.exists(file_path):
@@ -27,8 +30,6 @@ def delete_file_later(file_path, delay=300):
 
 
 def compress_pdf(input_path, output_path):
-
-    print("Compression thread started")
 
     try:
 
@@ -49,15 +50,10 @@ def compress_pdf(input_path, output_path):
             input_path
         ]
 
-        print("Running:", command)
-
         subprocess.run(command, check=True)
-
-        print("Compression finished:", output_path)
 
     except Exception as e:
         print("Compression ERROR:", e)
-
 
 
 @app.route("/", methods=["GET", "POST"])
@@ -85,10 +81,6 @@ def index():
 
         file.save(input_path)
 
-        # get original file size
-        original_size = os.path.getsize(input_path)
-        original_mb = round(original_size / (1024 * 1024), 2)
-
         # start compression in background
         threading.Thread(
             target=compress_pdf,
@@ -98,8 +90,7 @@ def index():
 
         return render_template(
             "processing.html",
-            file_name=output_filename,
-            original_size=original_mb
+            file_name=output_filename
         )
 
     return render_template("index.html")
@@ -108,29 +99,27 @@ def index():
 @app.route("/download/<filename>")
 def download(filename):
 
-    path = os.path.join("uploads", filename)
+    path = os.path.join(UPLOAD_FOLDER, filename)
 
     if not os.path.exists(path):
         return "File not ready", 404
 
+    delete_file_later(path)
+
     return send_file(path, as_attachment=True, mimetype="application/pdf")
-
-
-@app.errorhandler(413)
-def too_large(e):
-    return "File too large. Maximum allowed size is 6MB.", 413
 
 
 @app.route("/status/<filename>")
 def status(filename):
 
-    path = os.path.join("uploads", filename)
+    path = os.path.join(UPLOAD_FOLDER, filename)
 
     if os.path.exists(path):
-        return {"ready": True}
+        return jsonify({"ready": True})
 
-    return {"ready": False}
+    return jsonify({"ready": False})
 
 
-if __name__ == "__main__":
-    app.run(debug=True)
+@app.errorhandler(413)
+def too_large(e):
+    return "File too large. Maximum allowed size is 6MB.", 413
