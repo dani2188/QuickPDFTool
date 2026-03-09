@@ -1,9 +1,31 @@
 <!DOCTYPE html>
 <html>
-<head>
-<title>Processing</title>
 
-<meta http-equiv="refresh" content="3">
+<head>
+
+<title>Compressing PDF</title>
+
+<script>
+
+function checkFile() {
+
+fetch("/download/{{ file_name }}")
+
+.then(response => {
+
+if (response.status === 200) {
+
+window.location.href = "/download/{{ file_name }}";
+
+}
+
+});
+
+}
+
+setInterval(checkFile, 2000);
+
+</script>
 
 </head>
 
@@ -11,11 +33,8 @@
 
 <h2>Compressing your PDF...</h2>
 
-<p>Please wait...</p>
-
-<a href="/download/{{ file_name }}">
-Check if file is ready
-</a>
+<p>Please wait a few seconds.</p>
 
 </body>
+
 </html>
