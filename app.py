@@ -38,6 +38,8 @@ def compress_pdf(input_path, output_path):
         else:
             gs_command = "gs"
 
+        temp_output = output_path + ".tmp"
+
         command = [
             gs_command,
             "-sDEVICE=pdfwrite",
@@ -46,11 +48,14 @@ def compress_pdf(input_path, output_path):
             "-dNOPAUSE",
             "-dQUIET",
             "-dBATCH",
-            f"-sOutputFile={output_path}",
+            f"-sOutputFile={temp_output}",
             input_path
         ]
 
         subprocess.run(command, check=True)
+
+        # rename only when finished
+        os.rename(temp_output, output_path)
 
     except Exception as e:
         print("Compression ERROR:", e)
@@ -115,9 +120,9 @@ def status(filename):
     path = os.path.join(UPLOAD_FOLDER, filename)
 
     if os.path.exists(path):
-        return jsonify({"ready": True})
+        return {"ready": True}
 
-    return jsonify({"ready": False})
+    return {"ready": False}
 
 
 @app.errorhandler(413)
