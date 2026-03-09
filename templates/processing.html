@@ -7,19 +7,24 @@
 
 <script>
 
+let downloaded = false;
+
 function checkFile() {
 
-fetch("/download/{{ file_name }}")
+    if (downloaded) return;
 
-.then(response => {
+    fetch("/download/{{ file_name }}", { method: "HEAD" })
+    .then(response => {
 
-if (response.status === 200) {
+        if (response.status === 200) {
 
-window.location.href = "/download/{{ file_name }}";
+            downloaded = true;
 
-}
+            window.location.href = "/download/{{ file_name }}";
 
-});
+        }
+
+    });
 
 }
 

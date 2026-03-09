@@ -108,13 +108,10 @@ def index():
 @app.route("/download/<filename>")
 def download(filename):
 
-    path = os.path.join(UPLOAD_FOLDER, filename)
+    path = os.path.join("uploads", filename)
 
     if not os.path.exists(path):
-        return render_template("processing.html", file_name=filename)
-
-    compressed_size = os.path.getsize(path)
-    compressed_mb = round(compressed_size / (1024 * 1024), 2)
+        return "File not ready", 404
 
     return send_file(path, as_attachment=True)
 
