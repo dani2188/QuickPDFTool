@@ -3,6 +3,7 @@ import subprocess
 import os
 import threading
 import time
+import platform
 
 app = Flask(__name__)
 
@@ -32,9 +33,15 @@ def index():
         output_path = os.path.join(UPLOAD_FOLDER, "compressed_" + file.filename)
 
         file.save(input_path)
+        import platform
+
+        if platform.system() == "Windows":
+            gs_command = "gswin64c"
+        else:
+            gs_command = "gs"
 
         command = [
-            "gs",
+            gs_command,
             "-sDEVICE=pdfwrite",
             "-dCompatibilityLevel=1.4",
             "-dPDFSETTINGS=/screen",
@@ -44,6 +51,8 @@ def index():
             f"-sOutputFile={output_path}",
             input_path
         ]
+
+        
 
         subprocess.run(command)
 
