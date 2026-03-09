@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Compression Result</title>
+<link rel="stylesheet" href="/static/style.css">
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Compression Complete</h1>
+
+<p><strong>Original size:</strong> {{ original_size }} MB</p>
+
+<p><strong>Compressed size:</strong> {{ compressed_size }} MB</p>
+
+<p><strong>Reduction:</strong> {{ reduction }} %</p>
+
+<br>
+
+<a href="/download/{{ file_name }}">
+<button class="compress-btn">Download File</button>
+</a>
+
+</div>
+
+</body>
+
+</html>

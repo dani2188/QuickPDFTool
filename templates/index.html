@@ -1,43 +1,23 @@
-<!DOCTYPE html>
-<html>
-<head>
-
-<meta charset="UTF-8">
-<title>Compress PDF Online</title>
-
-<link rel="stylesheet" href="/static/style.css">
-
-</head>
-
-<body>
-
-<header>
-<div class="logo">PDF Compressor</div>
-</header>
-
-<div class="container">
-
-<h1>Compress PDF</h1>
-
-<p>Reduce PDF file size while keeping quality.</p>
-
 <form method="POST" enctype="multipart/form-data">
-
-<div class="upload-box">
 
 <input type="file" name="pdf" required>
 
-<p>Drag & drop your PDF here</p>
+<br><br>
 
-</div>
+<label for="compression">Compression level:</label>
+
+<select name="compression">
+
+<option value="low">High quality</option>
+<option value="medium" selected>Balanced (recommended)</option>
+<option value="high">Strong compression</option>
+
+</select>
+
+<br><br>
 
 <button type="submit" class="compress-btn">
 Compress PDF
 </button>
 
 </form>
-
-</div>
-
-</body>
-</html>
