@@ -7,24 +7,19 @@
 
 <script>
 
-let downloaded = false;
-
 function checkFile() {
 
-    if (downloaded) return;
+fetch("/status/{{ file_name }}")
+.then(response => response.json())
+.then(data => {
 
-    fetch("/download/{{ file_name }}", { method: "HEAD" })
-    .then(response => {
+if (data.ready) {
 
-        if (response.status === 200) {
+window.location.href = "/download/{{ file_name }}";
 
-            downloaded = true;
+}
 
-            window.location.href = "/download/{{ file_name }}";
-
-        }
-
-    });
+});
 
 }
 
@@ -34,11 +29,13 @@ setInterval(checkFile, 2000);
 
 </head>
 
-<body>
+<body style="font-family: Arial; text-align:center; margin-top:100px">
 
 <h2>Compressing your PDF...</h2>
 
-<p>Please wait a few seconds.</p>
+<p>Estimated time: <strong>10–20 seconds</strong></p>
+
+<p>Please keep this page open while we process your file.</p>
 
 </body>
 

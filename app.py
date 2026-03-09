@@ -41,16 +41,23 @@ def compress_pdf(input_path, output_path):
         temp_output = output_path + ".tmp"
 
         command = [
-            gs_command,
-            "-sDEVICE=pdfwrite",
-            "-dCompatibilityLevel=1.4",
-            "-dPDFSETTINGS=/screen",
-            "-dNOPAUSE",
-            "-dQUIET",
-            "-dBATCH",
-            f"-sOutputFile={temp_output}",
-            input_path
-        ]
+        gs_command,
+        "-sDEVICE=pdfwrite",
+        "-dCompatibilityLevel=1.4",
+
+        "-dPDFSETTINGS=/screen",
+
+        "-dDetectDuplicateImages=true",
+        "-dCompressFonts=true",
+        "-dSubsetFonts=true",
+
+        "-dNOPAUSE",
+        "-dQUIET",
+        "-dBATCH",
+
+        f"-sOutputFile={temp_output}",
+        input_path
+    ]
 
         subprocess.run(command, check=True)
 
@@ -102,14 +109,44 @@ def index():
 
 
 @app.route("/download/<filename>")
+@app.route("/download/<filename>")
 def download(filename):
 
-    path = os.path.join(UPLOAD_FOLDER, filename)
+    compressed_path = os.path.join(UPLOAD_FOLDER, filename)
 
-    if not os.path.exists(path):
+    if not os.path.exists(compressed_path):
         return "File not ready", 404
 
-    delete_file_later(path)
+    original_name = filename.replace("_compressed_", "_")
+    original_path = os.path.join(UPLOAD_FOLDER, original_name)
+
+    if os.path.exists(original_path):
+
+        original_size = os.path.getsize(original_path)
+        compressed_size = os.path.getsize(compressed_path)
+
+        original_mb = round(original_size / (1024 * 1024), 2)
+        compressed_mb = round(compressed_size / (1024 * 1024), 2)
+
+        reduction = round((1 - compressed_size / original_size) * 100, 1)
+
+    else:
+        original_mb = "-"
+        compressed_mb = "-"
+        reduction = "-"
+
+    return render_template(
+        "result.html",
+        file_name=filename,
+        original_size=original_mb,
+        compressed_size=compressed_mb,
+        reduction=reduction
+    )
+
+@app.route("/download-file/<filename>")
+def download_file(filename):
+
+    path = os.path.join(UPLOAD_FOLDER, filename)
 
     return send_file(path, as_attachment=True, mimetype="application/pdf")
 
