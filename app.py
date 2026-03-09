@@ -113,12 +113,23 @@ def download(filename):
     if not os.path.exists(path):
         return "File not ready", 404
 
-    return send_file(path, as_attachment=True)
+    return send_file(path, as_attachment=True, mimetype="application/pdf")
 
 
 @app.errorhandler(413)
 def too_large(e):
     return "File too large. Maximum allowed size is 6MB.", 413
+
+
+@app.route("/status/<filename>")
+def status(filename):
+
+    path = os.path.join("uploads", filename)
+
+    if os.path.exists(path):
+        return {"ready": True}
+
+    return {"ready": False}
 
 
 if __name__ == "__main__":
