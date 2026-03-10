@@ -7,6 +7,7 @@ import platform
 import uuid
 from werkzeug.utils import secure_filename
 from PyPDF2 import PdfMerger
+from PyPDF2 import PdfReader, PdfWriter
 
 app = Flask(__name__)
 
@@ -196,6 +197,44 @@ def merge_pdf():
 @app.errorhandler(413)
 def too_large(e):
     return "File too large. Maximum allowed size is 6MB.", 413
+
+
+@app.route("/split-pdf", methods=["GET", "POST"])
+def split_pdf():
+
+    if request.method == "POST":
+
+        file = request.files["pdf"]
+
+        if file.filename == "":
+            return "No file selected"
+
+        filename = secure_filename(file.filename)
+        input_path = os.path.join(UPLOAD_FOLDER, filename)
+
+        file.save(input_path)
+
+        reader = PdfReader(input_path)
+
+        output_files = []
+
+        for i, page in enumerate(reader.pages):
+
+            writer = PdfWriter()
+            writer.add_page(page)
+
+            output_filename = f"page_{i+1}.pdf"
+            output_path = os.path.join(UPLOAD_FOLDER, output_filename)
+
+            with open(output_path, "wb") as output_file:
+                writer.write(output_file)
+
+            output_files.append(output_filename)
+
+        return render_template("split_result.html", files=output_files)
+
+    return render_template("split.html")
+
 
 if __name__ == "__main__":
     app.run(debug=True)
