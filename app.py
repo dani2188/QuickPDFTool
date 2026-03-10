@@ -197,3 +197,5 @@ def merge_pdf():
 def too_large(e):
     return "File too large. Maximum allowed size is 6MB.", 413
 
+if __name__ == "__main__":
+    app.run(debug=True)
