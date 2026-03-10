@@ -6,6 +6,7 @@ import time
 import platform
 import uuid
 from werkzeug.utils import secure_filename
+from PyPDF2 import PdfMerger
 
 app = Flask(__name__)
 
@@ -162,6 +163,37 @@ def status(filename):
     return {"ready": False}
 
 
+@app.route("/merge-pdf", methods=["GET", "POST"])
+def merge_pdf():
+
+    if request.method == "POST":
+
+        files = request.files.getlist("pdfs")
+
+        merger = PdfMerger()
+
+        unique_id = str(uuid.uuid4())
+        output_filename = f"{unique_id}_merged.pdf"
+        output_path = os.path.join(UPLOAD_FOLDER, output_filename)
+
+        for file in files:
+
+            if file.filename != "":
+                filename = secure_filename(file.filename)
+                path = os.path.join(UPLOAD_FOLDER, filename)
+                file.save(path)
+
+                merger.append(path)
+
+        merger.write(output_path)
+        merger.close()
+
+        return send_file(output_path, as_attachment=True)
+
+    return render_template("merge.html")
+
+
 @app.errorhandler(413)
 def too_large(e):
     return "File too large. Maximum allowed size is 6MB.", 413
+
