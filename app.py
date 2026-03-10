@@ -8,6 +8,7 @@ import uuid
 from werkzeug.utils import secure_filename
 from PyPDF2 import PdfMerger
 from PyPDF2 import PdfReader, PdfWriter
+from PIL import Image
 
 app = Flask(__name__)
 
@@ -234,6 +235,44 @@ def split_pdf():
         return render_template("split_result.html", files=output_files)
 
     return render_template("split.html")
+
+
+@app.route("/jpg-to-pdf", methods=["GET", "POST"])
+def jpg_to_pdf():
+
+    if request.method == "POST":
+
+        files = request.files.getlist("images")
+
+        images = []
+
+        for file in files:
+
+            if file.filename != "":
+
+                filename = secure_filename(file.filename)
+                path = os.path.join(UPLOAD_FOLDER, filename)
+
+                file.save(path)
+
+                image = Image.open(path).convert("RGB")
+                images.append(image)
+
+        unique_id = str(uuid.uuid4())
+        output_filename = f"{unique_id}_images.pdf"
+        output_path = os.path.join(UPLOAD_FOLDER, output_filename)
+
+        if images:
+
+            images[0].save(
+                output_path,
+                save_all=True,
+                append_images=images[1:]
+            )
+
+        return send_file(output_path, as_attachment=True)
+
+    return render_template("jpg_to_pdf.html")
 
 
 if __name__ == "__main__":
