@@ -12,7 +12,7 @@ from PyPDF2 import PdfReader, PdfWriter
 app = Flask(__name__)
 
 # limit upload size
-app.config['MAX_CONTENT_LENGTH'] = 6 * 1024 * 1024
+app.config['MAX_CONTENT_LENGTH'] = 10 * 1024 * 1024
 
 UPLOAD_FOLDER = "uploads"
 
@@ -196,7 +196,7 @@ def merge_pdf():
 
 @app.errorhandler(413)
 def too_large(e):
-    return "File too large. Maximum allowed size is 6MB.", 413
+    return "File too large. Maximum allowed size is 10MB.", 413
 
 
 @app.route("/split-pdf", methods=["GET", "POST"])
