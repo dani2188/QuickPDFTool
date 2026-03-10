@@ -293,11 +293,16 @@ def pdf_to_jpg():
 
         if platform.system() == "Windows":
             images = convert_from_path(
-                input_path,
-                poppler_path=r"C:\Program Files\Release-25.12.0-0\poppler-25.12.0\Library\bin"
+            input_path,dpi=150,
+            thread_count=4,
+            fmt="jpeg",
+            poppler_path=r"C:\Program Files\Release-25.12.0-0\poppler-25.12.0\Library\bin"
             )
         else:
-            images = convert_from_path(input_path)
+            images = convert_from_path(input_path, 
+            dpi=150,
+            thread_count=4,
+            fmt="jpeg")
 
         output_files = []
 
