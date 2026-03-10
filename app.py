@@ -9,6 +9,8 @@ from werkzeug.utils import secure_filename
 from PyPDF2 import PdfMerger
 from PyPDF2 import PdfReader, PdfWriter
 from PIL import Image
+from pdf2image import convert_from_path
+import platform
 
 app = Flask(__name__)
 
@@ -273,6 +275,44 @@ def jpg_to_pdf():
         return send_file(output_path, as_attachment=True)
 
     return render_template("jpg_to_pdf.html")
+
+@app.route("/pdf-to-jpg", methods=["GET", "POST"])
+def pdf_to_jpg():
+
+    if request.method == "POST":
+
+        file = request.files["pdf"]
+
+        if file.filename == "":
+            return "No file selected"
+
+        filename = secure_filename(file.filename)
+        input_path = os.path.join(UPLOAD_FOLDER, filename)
+
+        file.save(input_path)
+
+        if platform.system() == "Windows":
+            images = convert_from_path(
+                input_path,
+                poppler_path=r"C:\Program Files\Release-25.12.0-0\poppler-25.12.0\Library\bin"
+            )
+        else:
+            images = convert_from_path(input_path)
+
+        output_files = []
+
+        for i, image in enumerate(images):
+
+            output_filename = f"page_{i+1}.jpg"
+            output_path = os.path.join(UPLOAD_FOLDER, output_filename)
+
+            image.save(output_path, "JPEG")
+
+            output_files.append(output_filename)
+
+        return render_template("pdf_to_jpg_result.html", files=output_files)
+
+    return render_template("pdf_to_jpg.html")
 
 
 if __name__ == "__main__":

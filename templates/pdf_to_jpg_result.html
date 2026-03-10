@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<title>PDF to JPG Result</title>
+</head>
+
+<body style="font-family:Arial; text-align:center; margin-top:100px">
+
+<h2>Your PDF has been converted</h2>
+
+<p>Download your images:</p>
+
+<ul>
+
+{% for file in files %}
+
+<li>
+<a href="/download-file/{{ file }}">{{ file }}</a>
+</li>
+
+{% endfor %}
+
+</ul>
+
+</body>
+
+</html>
