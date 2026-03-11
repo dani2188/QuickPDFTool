@@ -81,6 +81,49 @@ def compress_pdf(input_path, output_path):
         print("Compression ERROR:", e)
 
 
+@app.route("/compress-pdf", methods=["GET", "POST"])
+def compress_pdf_route():
+
+    if request.method == "POST":
+
+        if "pdf" not in request.files:
+            return "No file uploaded", 400
+
+        file = request.files["pdf"]
+
+        if file.filename == "":
+            return "No file selected", 400
+
+        filename = secure_filename(file.filename)
+
+        unique_id = str(uuid.uuid4())
+
+        input_filename = f"{unique_id}_{filename}"
+        output_filename = f"{unique_id}_compressed_{filename}"
+
+        input_path = os.path.join(UPLOAD_FOLDER, input_filename)
+        output_path = os.path.join(UPLOAD_FOLDER, output_filename)
+
+        file.save(input_path)
+
+        threading.Thread(
+            target=compress_pdf,
+            args=(input_path, output_path),
+            daemon=True
+        ).start()
+
+        return render_template(
+            "processing.html",
+            file_name=output_filename
+        )
+
+    return render_template("compress_pdf.html")
+
+@app.route("/")
+def index():
+    return render_template("index.html")
+
+
 @app.route("/", methods=["GET", "POST"])
 def index():
 
@@ -121,7 +164,6 @@ def index():
     return render_template("index.html")
 
 
-@app.route("/download/<filename>")
 @app.route("/download/<filename>")
 def download(filename):
 
