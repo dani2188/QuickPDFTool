@@ -116,3 +116,11 @@ transform:translateY(-3px);
 box-shadow:0 4px 12px rgba(0,0,0,0.15);
 color:#e5322d;
 }
+
+.seo-content{
+max-width:800px;
+margin:60px auto;
+text-align:left;
+line-height:1.6;
+color:#444;
+}
