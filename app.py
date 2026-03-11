@@ -13,6 +13,10 @@ from pdf2image import convert_from_path
 import platform
 from pdf2docx import Converter
 import subprocess
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import letter
+from PyPDF2 import PdfReader, PdfWriter
+import io
 
 
 
@@ -524,6 +528,53 @@ def unlock_pdf():
         return send_file(output_path, as_attachment=True)
 
     return render_template("unlock_pdf.html")
+
+@app.route("/add-page-numbers", methods=["GET", "POST"])
+def add_page_numbers():
+
+    if request.method == "POST":
+
+        file = request.files["pdf"]
+
+        if file.filename == "":
+            return "No file selected"
+
+        filename = secure_filename(file.filename)
+        input_path = os.path.join(UPLOAD_FOLDER, filename)
+
+        file.save(input_path)
+
+        reader = PdfReader(input_path)
+        writer = PdfWriter()
+
+        for i, page in enumerate(reader.pages):
+
+            packet = io.BytesIO()
+
+            c = canvas.Canvas(packet, pagesize=letter)
+
+            page_number = f"{i+1}"
+
+            c.drawString(500, 20, page_number)
+
+            c.save()
+
+            packet.seek(0)
+
+            overlay = PdfReader(packet)
+            page.merge_page(overlay.pages[0])
+
+            writer.add_page(page)
+
+        output_filename = f"numbered_{filename}"
+        output_path = os.path.join(UPLOAD_FOLDER, output_filename)
+
+        with open(output_path, "wb") as f:
+            writer.write(f)
+
+        return send_file(output_path, as_attachment=True)
+
+    return render_template("add_page_numbers.html")
 
 
 if __name__ == "__main__":
