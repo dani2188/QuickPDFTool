@@ -455,6 +455,76 @@ def word_to_pdf():
 
     return render_template("word_to_pdf.html")
 
+@app.route("/protect-pdf", methods=["GET", "POST"])
+def protect_pdf():
+
+    if request.method == "POST":
+
+        file = request.files["pdf"]
+        password = request.form.get("password")
+
+        if file.filename == "":
+            return "No file selected"
+
+        filename = secure_filename(file.filename)
+        input_path = os.path.join(UPLOAD_FOLDER, filename)
+
+        file.save(input_path)
+
+        reader = PdfReader(input_path)
+        writer = PdfWriter()
+
+        for page in reader.pages:
+            writer.add_page(page)
+
+        writer.encrypt(password)
+
+        output_filename = f"protected_{filename}"
+        output_path = os.path.join(UPLOAD_FOLDER, output_filename)
+
+        with open(output_path, "wb") as f:
+            writer.write(f)
+
+        return send_file(output_path, as_attachment=True)
+
+    return render_template("protect_pdf.html")
+
+@app.route("/unlock-pdf", methods=["GET", "POST"])
+def unlock_pdf():
+
+    if request.method == "POST":
+
+        file = request.files["pdf"]
+        password = request.form.get("password")
+
+        if file.filename == "":
+            return "No file selected"
+
+        filename = secure_filename(file.filename)
+        input_path = os.path.join(UPLOAD_FOLDER, filename)
+
+        file.save(input_path)
+
+        reader = PdfReader(input_path)
+
+        if reader.is_encrypted:
+            reader.decrypt(password)
+
+        writer = PdfWriter()
+
+        for page in reader.pages:
+            writer.add_page(page)
+
+        output_filename = f"unlocked_{filename}"
+        output_path = os.path.join(UPLOAD_FOLDER, output_filename)
+
+        with open(output_path, "wb") as f:
+            writer.write(f)
+
+        return send_file(output_path, as_attachment=True)
+
+    return render_template("unlock_pdf.html")
+
 
 if __name__ == "__main__":
     app.run(debug=True)
