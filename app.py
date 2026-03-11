@@ -12,6 +12,9 @@ from PIL import Image
 from pdf2image import convert_from_path
 import platform
 from pdf2docx import Converter
+import subprocess
+
+
 
 app = Flask(__name__)
 
@@ -418,6 +421,39 @@ def pdf_to_word():
         return send_file(output_path, as_attachment=True)
 
     return render_template("pdf_to_word.html")
+
+
+@app.route("/word-to-pdf", methods=["GET", "POST"])
+def word_to_pdf():
+
+    if request.method == "POST":
+
+        file = request.files["docx"]
+
+        if file.filename == "":
+            return "No file selected"
+
+        filename = secure_filename(file.filename)
+
+        input_path = os.path.join(UPLOAD_FOLDER, filename)
+        file.save(input_path)
+
+        output_filename = filename.replace(".docx", ".pdf")
+        output_path = os.path.join(UPLOAD_FOLDER, output_filename)
+
+        subprocess.run([
+            "libreoffice",
+            "--headless",
+            "--convert-to",
+            "pdf",
+            input_path,
+            "--outdir",
+            UPLOAD_FOLDER
+        ])
+
+        return send_file(output_path, as_attachment=True)
+
+    return render_template("word_to_pdf.html")
 
 
 if __name__ == "__main__":
