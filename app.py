@@ -5,19 +5,15 @@ import threading
 import time
 import platform
 import uuid
-from werkzeug.utils import secure_filename
-from PyPDF2 import PdfMerger
-from PyPDF2 import PdfReader, PdfWriter
-from PIL import Image
-from pdf2image import convert_from_path
-import platform
-from pdf2docx import Converter
-import subprocess
-from reportlab.pdfgen import canvas
-from reportlab.lib.pagesizes import letter
-from PyPDF2 import PdfReader, PdfWriter
 import io
 
+from werkzeug.utils import secure_filename
+from PyPDF2 import PdfMerger, PdfReader, PdfWriter
+from PIL import Image
+from pdf2image import convert_from_path
+from pdf2docx import Converter
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import letter
 
 
 app = Flask(__name__)
@@ -27,8 +23,6 @@ app.config['MAX_CONTENT_LENGTH'] = 10 * 1024 * 1024
 
 UPLOAD_FOLDER = "uploads"
 
-
-# create uploads folder safely
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
 
@@ -42,6 +36,10 @@ def delete_file_later(file_path, delay=300):
     threading.Thread(target=delete, daemon=True).start()
 
 
+# -----------------------------
+# PDF COMPRESSION ENGINE
+# -----------------------------
+
 def compress_pdf(input_path, output_path):
 
     try:
@@ -54,32 +52,40 @@ def compress_pdf(input_path, output_path):
         temp_output = output_path + ".tmp"
 
         command = [
-        gs_command,
-        "-sDEVICE=pdfwrite",
-        "-dCompatibilityLevel=1.4",
-
-        "-dPDFSETTINGS=/screen",
-
-        "-dDetectDuplicateImages=true",
-        "-dCompressFonts=true",
-        "-dSubsetFonts=true",
-
-        "-dNOPAUSE",
-        "-dQUIET",
-        "-dBATCH",
-
-        f"-sOutputFile={temp_output}",
-        input_path
-    ]
+            gs_command,
+            "-sDEVICE=pdfwrite",
+            "-dCompatibilityLevel=1.4",
+            "-dPDFSETTINGS=/screen",
+            "-dDetectDuplicateImages=true",
+            "-dCompressFonts=true",
+            "-dSubsetFonts=true",
+            "-dNOPAUSE",
+            "-dQUIET",
+            "-dBATCH",
+            f"-sOutputFile={temp_output}",
+            input_path
+        ]
 
         subprocess.run(command, check=True)
 
-        # rename only when finished
         os.rename(temp_output, output_path)
 
     except Exception as e:
         print("Compression ERROR:", e)
 
+
+# -----------------------------
+# HOMEPAGE
+# -----------------------------
+
+@app.route("/")
+def index():
+    return render_template("index.html")
+
+
+# -----------------------------
+# COMPRESS PDF PAGE
+# -----------------------------
 
 @app.route("/compress-pdf", methods=["GET", "POST"])
 def compress_pdf_page():
@@ -120,88 +126,9 @@ def compress_pdf_page():
     return render_template("compress_pdf.html")
 
 
-@app.route("/compress-pdf", methods=["GET", "POST"])
-def compress_pdf_route():
-
-    if request.method == "POST":
-
-        if "pdf" not in request.files:
-            return "No file uploaded", 400
-
-        file = request.files["pdf"]
-
-        if file.filename == "":
-            return "No file selected", 400
-
-        filename = secure_filename(file.filename)
-
-        unique_id = str(uuid.uuid4())
-
-        input_filename = f"{unique_id}_{filename}"
-        output_filename = f"{unique_id}_compressed_{filename}"
-
-        input_path = os.path.join(UPLOAD_FOLDER, input_filename)
-        output_path = os.path.join(UPLOAD_FOLDER, output_filename)
-
-        file.save(input_path)
-
-        threading.Thread(
-            target=compress_pdf,
-            args=(input_path, output_path),
-            daemon=True
-        ).start()
-
-        return render_template(
-            "processing.html",
-            file_name=output_filename
-        )
-
-    return render_template("compress_pdf.html")
-
-@app.route("/")
-def index():
-    return render_template("index.html")
-
-
-@app.route("/", methods=["GET", "POST"])
-def index():
-
-    if request.method == "POST":
-
-        if "pdf" not in request.files:
-            return "No file uploaded", 400
-
-        file = request.files["pdf"]
-
-        if file.filename == "":
-            return "No file selected", 400
-
-        filename = secure_filename(file.filename)
-
-        unique_id = str(uuid.uuid4())
-
-        input_filename = f"{unique_id}_{filename}"
-        output_filename = f"{unique_id}_compressed_{filename}"
-
-        input_path = os.path.join(UPLOAD_FOLDER, input_filename)
-        output_path = os.path.join(UPLOAD_FOLDER, output_filename)
-
-        file.save(input_path)
-
-        # start compression in background
-        threading.Thread(
-            target=compress_pdf,
-            args=(input_path, output_path),
-            daemon=True
-        ).start()
-
-        return render_template(
-            "processing.html",
-            file_name=output_filename
-        )
-
-    return render_template("index.html")
-
+# -----------------------------
+# DOWNLOAD RESULT PAGE
+# -----------------------------
 
 @app.route("/download/<filename>")
 def download(filename):
@@ -236,6 +163,7 @@ def download(filename):
         compressed_size=compressed_mb,
         reduction=reduction
     )
+
 
 @app.route("/download-file/<filename>")
 def download_file(filename):
