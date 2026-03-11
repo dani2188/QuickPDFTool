@@ -150,3 +150,30 @@ font-weight:bold;
 .tools-list a:hover{
 text-decoration:underline;
 }
+
+.steps{
+list-style:none;
+padding:0;
+margin-top:15px;
+}
+
+.steps li{
+margin:10px 0;
+font-size:16px;
+}
+
+/* Remove default bullet points from lists */
+
+ul{
+list-style:none;
+padding-left:0;
+}
+
+ol{
+list-style:none;
+padding-left:0;
+}
+
+li{
+margin:8px 0;
+}
