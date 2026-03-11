@@ -3,3 +3,4 @@ gunicorn
 PyPDF2
 Pillow
 pdf2image
+pdf2docx
