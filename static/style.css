@@ -91,3 +91,28 @@ font-weight:bold;
 .menu a:hover{
 color:#e5322d;
 }
+
+.tools-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+gap:20px;
+margin-top:40px;
+}
+
+.tool-card{
+background:white;
+padding:25px;
+border-radius:10px;
+text-align:center;
+font-weight:bold;
+text-decoration:none;
+color:#333;
+box-shadow:0 2px 8px rgba(0,0,0,0.1);
+transition:0.2s;
+}
+
+.tool-card:hover{
+transform:translateY(-3px);
+box-shadow:0 4px 12px rgba(0,0,0,0.15);
+color:#e5322d;
+}
