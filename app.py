@@ -11,6 +11,7 @@ from PyPDF2 import PdfReader, PdfWriter
 from PIL import Image
 from pdf2image import convert_from_path
 import platform
+from pdf2docx import Converter
 
 app = Flask(__name__)
 
@@ -318,6 +319,105 @@ def pdf_to_jpg():
         return render_template("pdf_to_jpg_result.html", files=output_files)
 
     return render_template("pdf_to_jpg.html")
+
+    from PyPDF2 import PdfReader, PdfWriter
+
+
+@app.route("/rotate-pdf", methods=["GET", "POST"])
+def rotate_pdf():
+
+    if request.method == "POST":
+
+        file = request.files["pdf"]
+        rotation = int(request.form.get("rotation"))
+
+        if file.filename == "":
+            return "No file selected"
+
+        filename = secure_filename(file.filename)
+        input_path = os.path.join(UPLOAD_FOLDER, filename)
+
+        file.save(input_path)
+
+        reader = PdfReader(input_path)
+        writer = PdfWriter()
+
+        for page in reader.pages:
+            page.rotate(rotation)
+            writer.add_page(page)
+
+        output_filename = f"rotated_{filename}"
+        output_path = os.path.join(UPLOAD_FOLDER, output_filename)
+
+        with open(output_path, "wb") as output_file:
+            writer.write(output_file)
+
+        return send_file(output_path, as_attachment=True)
+
+    return render_template("rotate_pdf.html")
+
+@app.route("/delete-pdf-pages", methods=["GET", "POST"])
+def delete_pdf_pages():
+
+    if request.method == "POST":
+
+        file = request.files["pdf"]
+        pages_to_delete = request.form.get("pages")
+
+        if file.filename == "":
+            return "No file selected"
+
+        filename = secure_filename(file.filename)
+        input_path = os.path.join(UPLOAD_FOLDER, filename)
+
+        file.save(input_path)
+
+        reader = PdfReader(input_path)
+        writer = PdfWriter()
+
+        delete_pages = [int(p.strip()) - 1 for p in pages_to_delete.split(",")]
+
+        for i, page in enumerate(reader.pages):
+
+            if i not in delete_pages:
+                writer.add_page(page)
+
+        output_filename = f"edited_{filename}"
+        output_path = os.path.join(UPLOAD_FOLDER, output_filename)
+
+        with open(output_path, "wb") as output_file:
+            writer.write(output_file)
+
+        return send_file(output_path, as_attachment=True)
+
+    return render_template("delete_pages.html")
+
+@app.route("/pdf-to-word", methods=["GET", "POST"])
+def pdf_to_word():
+
+    if request.method == "POST":
+
+        file = request.files["pdf"]
+
+        if file.filename == "":
+            return "No file selected"
+
+        filename = secure_filename(file.filename)
+
+        input_path = os.path.join(UPLOAD_FOLDER, filename)
+
+        file.save(input_path)
+
+        output_filename = filename.replace(".pdf", ".docx")
+        output_path = os.path.join(UPLOAD_FOLDER, output_filename)
+
+        cv = Converter(input_path)
+        cv.convert(output_path, start=0, end=None)
+        cv.close()
+
+        return send_file(output_path, as_attachment=True)
+
+    return render_template("pdf_to_word.html")
 
 
 if __name__ == "__main__":
