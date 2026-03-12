@@ -585,6 +585,10 @@ def add_page_numbers():
 
     return render_template("add_page_numbers.html")
 
+@app.route("/pdf-tools")
+def pdf_tools():
+    return render_template("pdf_tools.html")
+
 
 if __name__ == "__main__":
     app.run(debug=True)
