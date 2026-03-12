@@ -1,17 +1,14 @@
-<!DOCTYPE html>
-<html>
+{% extends "base.html" %}
 
-<head>
-<title>Delete PDF Pages Online – Remove Pages from PDF</title>
+{% block title %}Delete PDF Pages{% endblock %}
 
-<meta name="description" content="Remove unwanted pages from a PDF document quickly and easily with this free online tool.">
-</head>
+{% block content %}
 
-<body style="font-family:Arial; text-align:center; margin-top:100px">
+<h1>Delete PDF Pages</h1>
 
-<h2>Delete PDF Pages</h2>
-
-<p>Upload a PDF and remove selected pages.</p>
+<p class="subtitle">
+Remove unwanted pages from your PDF.
+</p>
 
 <form method="POST" enctype="multipart/form-data">
 
@@ -19,57 +16,12 @@
 
 <br><br>
 
-<label>Pages to delete (example: 2,5,7)</label>
+<input type="text" name="pages" placeholder="Example: 2,5,7">
 
 <br><br>
 
-<input type="text" name="pages" placeholder="2,5,7" required>
-
-<br><br>
-
-<button type="submit">Remove Pages</button>
+<button class="main-btn">Delete Pages</button>
 
 </form>
-<div class="seo-content">
 
-<h2>Rotate PDF Pages Online</h2>
-
-<p>
-Rotate PDF pages easily if your document appears upside down or sideways.
-This tool lets you rotate pages by 90, 180 or 270 degrees.
-</p>
-
-<h3>How to rotate a PDF</h3>
-
-<ul>
-<li>Upload your PDF file</li>
-<li>Select the rotation angle</li>
-<li>Download the corrected document</li>
-</ul>
-
-</div>
-<div class="tools-links">
-
-<h3>More PDF Tools</h3>
-
-<div class="tools-mini-grid">
-
-<a href="/compress-pdf">Compress PDF</a>
-<a href="/merge-pdf">Merge PDF</a>
-<a href="/split-pdf">Split PDF</a>
-<a href="/jpg-to-pdf">JPG to PDF</a>
-<a href="/pdf-to-jpg">PDF to JPG</a>
-<a href="/rotate-pdf">Rotate PDF</a>
-<a href="/delete-pdf-pages">Delete Pages</a>
-<a href="/pdf-to-word">PDF to Word</a>
-<a href="/word-to-pdf">Word to PDF</a>
-<a href="/protect-pdf">Protect PDF</a>
-<a href="/unlock-pdf">Unlock PDF</a>
-<a href="/add-page-numbers">Add Page Numbers</a>
-
-</div>
-
-</div>
-</body>
-
-</html>
+{% endblock %}

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<meta charset="UTF-8">
+
+<title>{% block title %}QuickPDFTool{% endblock %}</title>
+
+<meta name="description" content="{% block description %}Free online PDF tools to compress, convert and edit PDF files{% endblock %}">
+
+<link rel="stylesheet" href="/static/style.css">
+
+</head>
+
+<body>
+
+<header class="topbar">
+
+<h1 class="logo">
+<a href="/">QuickPDFTool</a>
+</h1>
+
+</header>
+
+
+<div class="main-container">
+
+{% block content %}
+{% endblock %}
+
+</div>
+
+
+<footer class="footer">
+
+<p>© 2026 QuickPDFTool</p>
+
+<p>
+Free online tools to compress, convert and edit PDF files.
+</p>
+
+</footer>
+
+</body>
+
+</html>

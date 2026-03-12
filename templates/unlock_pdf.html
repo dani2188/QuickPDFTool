@@ -1,17 +1,14 @@
-<!DOCTYPE html>
-<html>
+{% extends "base.html" %}
 
-<head>
-<title>Unlock PDF Online – Remove PDF Password</title>
+{% block title %}Unlock PDF{% endblock %}
 
-<meta name="description" content="Remove password protection from a PDF file quickly and securely online.">
-</head>
+{% block content %}
 
-<body style="font-family:Arial; text-align:center; margin-top:100px">
+<h1>Unlock PDF</h1>
 
-<h2>Unlock PDF</h2>
-
-<p>Remove password protection from your PDF.</p>
+<p class="subtitle">
+Remove password protection from a PDF.
+</p>
 
 <form method="POST" enctype="multipart/form-data">
 
@@ -19,35 +16,12 @@
 
 <br><br>
 
-<input type="password" name="password" placeholder="Enter PDF password" required>
+<input type="password" name="password" placeholder="Enter password">
 
 <br><br>
 
-<button type="submit">Unlock PDF</button>
+<button class="main-btn">Unlock PDF</button>
 
 </form>
-<div class="tools-links">
 
-<h3>More PDF Tools</h3>
-
-<div class="tools-mini-grid">
-
-<a href="/compress-pdf">Compress PDF</a>
-<a href="/merge-pdf">Merge PDF</a>
-<a href="/split-pdf">Split PDF</a>
-<a href="/jpg-to-pdf">JPG to PDF</a>
-<a href="/pdf-to-jpg">PDF to JPG</a>
-<a href="/rotate-pdf">Rotate PDF</a>
-<a href="/delete-pdf-pages">Delete Pages</a>
-<a href="/pdf-to-word">PDF to Word</a>
-<a href="/word-to-pdf">Word to PDF</a>
-<a href="/protect-pdf">Protect PDF</a>
-<a href="/unlock-pdf">Unlock PDF</a>
-<a href="/add-page-numbers">Add Page Numbers</a>
-
-</div>
-
-</div>
-</body>
-
-</html>
+{% endblock %}

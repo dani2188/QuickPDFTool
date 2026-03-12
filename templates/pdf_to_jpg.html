@@ -1,17 +1,14 @@
-<!DOCTYPE html>
-<html>
+{% extends "base.html" %}
 
-<head>
-<title>PDF to JPG Online – Convert PDF Pages to Images</title>
+{% block title %}PDF to JPG Converter{% endblock %}
 
-<meta name="description" content="Convert PDF pages into JPG images quickly and easily using this free online tool.">
-</head>
+{% block content %}
 
-<body style="font-family: Arial; text-align:center; margin-top:100px">
+<h1>PDF to JPG</h1>
 
-<h2>PDF to JPG</h2>
-
-<p>Convert each page of a PDF into JPG images.</p>
+<p class="subtitle">
+Convert PDF pages into JPG images.
+</p>
 
 <form method="POST" enctype="multipart/form-data">
 
@@ -19,49 +16,8 @@
 
 <br><br>
 
-<button type="submit">Convert to JPG</button>
+<button class="main-btn">Convert to JPG</button>
 
 </form>
-<div class="seo-content">
 
-<h2>Convert PDF Pages to JPG Images</h2>
-
-<p>
-This tool converts each page of a PDF file into high-quality JPG images.
-It is useful for extracting images or sharing individual pages.
-</p>
-
-<h3>How to convert PDF to JPG</h3>
-
-<ul>
-<li>Upload your PDF file</li>
-<li>The tool will convert each page to an image</li>
-<li>Download the JPG images</li>
-</ul>
-
-</div>
-<div class="tools-links">
-
-<h3>More PDF Tools</h3>
-
-<div class="tools-mini-grid">
-
-<a href="/compress-pdf">Compress PDF</a>
-<a href="/merge-pdf">Merge PDF</a>
-<a href="/split-pdf">Split PDF</a>
-<a href="/jpg-to-pdf">JPG to PDF</a>
-<a href="/pdf-to-jpg">PDF to JPG</a>
-<a href="/rotate-pdf">Rotate PDF</a>
-<a href="/delete-pdf-pages">Delete Pages</a>
-<a href="/pdf-to-word">PDF to Word</a>
-<a href="/word-to-pdf">Word to PDF</a>
-<a href="/protect-pdf">Protect PDF</a>
-<a href="/unlock-pdf">Unlock PDF</a>
-<a href="/add-page-numbers">Add Page Numbers</a>
-
-</div>
-
-</div>
-</body>
-
-</html>
+{% endblock %}

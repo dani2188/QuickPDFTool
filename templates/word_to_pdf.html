@@ -1,47 +1,63 @@
-<!DOCTYPE html>
-<html>
+{% extends "base.html" %}
 
-<head>
-<title>Word to PDF Online</title>
-</head>
+{% block title %}Word to PDF Converter{% endblock %}
 
-<body style="font-family:Arial; text-align:center; margin-top:100px">
+{% block description %}
+Convert Word documents (DOCX) to PDF online for free.
+{% endblock %}
 
-<h2>Word to PDF</h2>
+{% block content %}
 
-<p>Convert Word documents to PDF.</p>
+<h1>Word to PDF</h1>
+
+<p class="subtitle">
+Convert Word documents into high-quality PDF files.
+</p>
 
 <form method="POST" enctype="multipart/form-data">
 
-<input type="file" name="docx" required>
+<input type="file" name="docx" accept=".docx" required>
 
 <br><br>
 
-<button type="submit">Convert to PDF</button>
+<button class="main-btn">
+Convert to PDF
+</button>
 
 </form>
-<div class="tools-links">
 
-<h3>More PDF Tools</h3>
 
-<div class="tools-mini-grid">
+<div class="seo-content">
 
-<a href="/compress-pdf">Compress PDF</a>
-<a href="/merge-pdf">Merge PDF</a>
-<a href="/split-pdf">Split PDF</a>
-<a href="/jpg-to-pdf">JPG to PDF</a>
-<a href="/pdf-to-jpg">PDF to JPG</a>
-<a href="/rotate-pdf">Rotate PDF</a>
-<a href="/delete-pdf-pages">Delete Pages</a>
-<a href="/pdf-to-word">PDF to Word</a>
-<a href="/word-to-pdf">Word to PDF</a>
-<a href="/protect-pdf">Protect PDF</a>
-<a href="/unlock-pdf">Unlock PDF</a>
-<a href="/add-page-numbers">Add Page Numbers</a>
+<h2>Convert Word to PDF Online</h2>
+
+<p>
+Use this free Word to PDF converter to transform DOCX documents into
+professional PDF files. PDF format ensures compatibility across devices
+and preserves formatting.
+</p>
+
+<h2>How to convert Word to PDF</h2>
+
+<ul class="steps">
+
+<li>
+<span class="step-number">1</span>
+Upload your Word document
+</li>
+
+<li>
+<span class="step-number">2</span>
+Click Convert
+</li>
+
+<li>
+<span class="step-number">3</span>
+Download the PDF file
+</li>
+
+</ul>
 
 </div>
 
-</div>
-</body>
-
-</html>
+{% endblock %}

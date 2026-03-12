@@ -1,17 +1,14 @@
-<!DOCTYPE html>
-<html>
+{% extends "base.html" %}
 
-<head>
-<title>Merge PDF Online – Combine PDF Files Free</title>
+{% block title %}Merge PDF Files Online{% endblock %}
 
-<meta name="description" content="Merge multiple PDF files into one document quickly and easily. Free online PDF merger.">
-</head>
+{% block content %}
 
-<body style="font-family: Arial; text-align:center; margin-top:100px">
+<h1>Merge PDF Files</h1>
 
-<h2>Merge PDF Files</h2>
-
-<p>Upload multiple PDFs and combine them into one.</p>
+<p class="subtitle">
+Upload multiple PDFs and combine them into one document.
+</p>
 
 <form method="POST" enctype="multipart/form-data">
 
@@ -19,59 +16,28 @@
 
 <br><br>
 
-<button type="submit">Merge PDFs</button>
+<button class="main-btn">Merge PDFs</button>
 
 </form>
+
 
 <div class="seo-content">
 
 <h2>Merge PDF Files Online</h2>
 
 <p>
-This free online PDF merger allows you to combine multiple PDF files into one document.
-Merging PDFs is useful when you want to organize reports, combine scanned documents or group related files.
+Combine several PDF documents into a single file quickly and easily.
 </p>
 
-<h3>How to merge PDF files</h3>
+<h2>How to merge PDF files</h2>
 
-<ul>
-<li>Select multiple PDF files</li>
-<li>Upload them to the tool</li>
-<li>Click Merge</li>
-<li>Download your combined document</li>
-</ul>
-
-<h3>Other useful tools</h3>
-
-<ul>
-<li><a href="/compress-pdf">Compress PDF</a></li>
-<li><a href="/split-pdf">Split PDF</a></li>
-<li><a href="/rotate-pdf">Rotate PDF</a></li>
+<ul class="steps">
+<li><span class="step-number">1</span> Select multiple PDF files</li>
+<li><span class="step-number">2</span> Upload them</li>
+<li><span class="step-number">3</span> Click Merge</li>
+<li><span class="step-number">4</span> Download the merged file</li>
 </ul>
 
 </div>
-<div class="tools-links">
 
-<h3>More PDF Tools</h3>
-
-<div class="tools-mini-grid">
-
-<a href="/compress-pdf">Compress PDF</a>
-<a href="/merge-pdf">Merge PDF</a>
-<a href="/split-pdf">Split PDF</a>
-<a href="/jpg-to-pdf">JPG to PDF</a>
-<a href="/pdf-to-jpg">PDF to JPG</a>
-<a href="/rotate-pdf">Rotate PDF</a>
-<a href="/delete-pdf-pages">Delete Pages</a>
-<a href="/pdf-to-word">PDF to Word</a>
-<a href="/word-to-pdf">Word to PDF</a>
-<a href="/protect-pdf">Protect PDF</a>
-<a href="/unlock-pdf">Unlock PDF</a>
-<a href="/add-page-numbers">Add Page Numbers</a>
-
-</div>
-
-</div>
-
-</body>
-</html>
+{% endblock %}

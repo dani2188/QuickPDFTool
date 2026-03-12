@@ -1,17 +1,14 @@
-<!DOCTYPE html>
-<html>
+{% extends "base.html" %}
 
-<head>
-<title>Rotate PDF Online – Rotate Pages in a PDF</title>
+{% block title %}Rotate PDF Pages{% endblock %}
 
-<meta name="description" content="Rotate pages in a PDF document online. Fix upside-down or sideways pages instantly.">
-</head>
+{% block content %}
 
-<body style="font-family:Arial; text-align:center; margin-top:100px">
+<h1>Rotate PDF</h1>
 
-<h2>Rotate PDF</h2>
-
-<p>Upload a PDF and rotate its pages.</p>
+<p class="subtitle">
+Rotate pages in your PDF document.
+</p>
 
 <form method="POST" enctype="multipart/form-data">
 
@@ -19,61 +16,16 @@
 
 <br><br>
 
-<label>Rotation angle</label>
-
 <select name="rotation">
-
-<option value="90">90°</option>
-<option value="180">180°</option>
-<option value="270">270°</option>
-
+<option value="90">Rotate 90°</option>
+<option value="180">Rotate 180°</option>
+<option value="270">Rotate 270°</option>
 </select>
 
 <br><br>
 
-<button type="submit">Rotate PDF</button>
+<button class="main-btn">Rotate PDF</button>
 
 </form>
-<div class="seo-content">
 
-<h2>Rotate PDF Pages Online</h2>
-
-<p>
-Rotate PDF pages easily if your document appears upside down or sideways.
-This tool lets you rotate pages by 90, 180 or 270 degrees.
-</p>
-
-<h3>How to rotate a PDF</h3>
-
-<ul>
-<li>Upload your PDF file</li>
-<li>Select the rotation angle</li>
-<li>Download the corrected document</li>
-</ul>
-
-</div>
-<div class="tools-links">
-
-<h3>More PDF Tools</h3>
-
-<div class="tools-mini-grid">
-
-<a href="/compress-pdf">Compress PDF</a>
-<a href="/merge-pdf">Merge PDF</a>
-<a href="/split-pdf">Split PDF</a>
-<a href="/jpg-to-pdf">JPG to PDF</a>
-<a href="/pdf-to-jpg">PDF to JPG</a>
-<a href="/rotate-pdf">Rotate PDF</a>
-<a href="/delete-pdf-pages">Delete Pages</a>
-<a href="/pdf-to-word">PDF to Word</a>
-<a href="/word-to-pdf">Word to PDF</a>
-<a href="/protect-pdf">Protect PDF</a>
-<a href="/unlock-pdf">Unlock PDF</a>
-<a href="/add-page-numbers">Add Page Numbers</a>
-
-</div>
-
-</div>
-</body>
-
-</html>
+{% endblock %}

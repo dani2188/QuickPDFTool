@@ -1,47 +1,63 @@
-<!DOCTYPE html>
-<html>
+{% extends "base.html" %}
 
-<head>
-<title>PDF to Word Online</title>
-</head>
+{% block title %}PDF to Word Converter{% endblock %}
 
-<body style="font-family:Arial; text-align:center; margin-top:100px">
+{% block description %}
+Convert PDF to Word (DOCX) online quickly and easily.
+{% endblock %}
 
-<h2>PDF to Word</h2>
+{% block content %}
 
-<p>Convert your PDF file into an editable Word document.</p>
+<h1>PDF to Word</h1>
+
+<p class="subtitle">
+Convert your PDF document into an editable Word file.
+</p>
 
 <form method="POST" enctype="multipart/form-data">
 
-<input type="file" name="pdf" required>
+<input type="file" name="pdf" accept=".pdf" required>
 
 <br><br>
 
-<button type="submit">Convert to Word</button>
+<button class="main-btn">
+Convert to Word
+</button>
 
 </form>
-<div class="tools-links">
 
-<h3>More PDF Tools</h3>
 
-<div class="tools-mini-grid">
+<div class="seo-content">
 
-<a href="/compress-pdf">Compress PDF</a>
-<a href="/merge-pdf">Merge PDF</a>
-<a href="/split-pdf">Split PDF</a>
-<a href="/jpg-to-pdf">JPG to PDF</a>
-<a href="/pdf-to-jpg">PDF to JPG</a>
-<a href="/rotate-pdf">Rotate PDF</a>
-<a href="/delete-pdf-pages">Delete Pages</a>
-<a href="/pdf-to-word">PDF to Word</a>
-<a href="/word-to-pdf">Word to PDF</a>
-<a href="/protect-pdf">Protect PDF</a>
-<a href="/unlock-pdf">Unlock PDF</a>
-<a href="/add-page-numbers">Add Page Numbers</a>
+<h2>Convert PDF to Word Online</h2>
+
+<p>
+This free online PDF to Word converter allows you to transform PDF documents
+into editable Word files. It is useful when you need to edit text,
+modify content or reuse information from a PDF.
+</p>
+
+<h2>How to convert PDF to Word</h2>
+
+<ul class="steps">
+
+<li>
+<span class="step-number">1</span>
+Upload your PDF file
+</li>
+
+<li>
+<span class="step-number">2</span>
+Click Convert
+</li>
+
+<li>
+<span class="step-number">3</span>
+Download the Word document
+</li>
+
+</ul>
 
 </div>
 
-</div>
-</body>
-
-</html>
+{% endblock %}

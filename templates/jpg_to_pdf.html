@@ -1,17 +1,14 @@
-<!DOCTYPE html>
-<html>
+{% extends "base.html" %}
 
-<head>
-<title>JPG to PDF Online – Convert Images to PDF</title>
+{% block title %}JPG to PDF Converter{% endblock %}
 
-<meta name="description" content="Convert JPG images to PDF quickly and easily. Combine multiple images into a single PDF file.">
-</head>
+{% block content %}
 
-<body style="font-family: Arial; text-align:center; margin-top:100px">
+<h1>JPG to PDF</h1>
 
-<h2>JPG to PDF</h2>
-
-<p>Convert multiple JPG images into a single PDF.</p>
+<p class="subtitle">
+Convert JPG images into a PDF document.
+</p>
 
 <form method="POST" enctype="multipart/form-data">
 
@@ -19,57 +16,8 @@
 
 <br><br>
 
-<button type="submit">Convert to PDF</button>
+<button class="main-btn">Convert to PDF</button>
 
 </form>
-<div class="seo-content">
 
-<h2>Convert JPG Images to PDF</h2>
-
-<p>
-Convert one or multiple JPG images into a PDF document.
-This tool allows you to combine images into a single PDF file for easier sharing and printing.
-</p>
-
-<h3>Steps to convert JPG to PDF</h3>
-
-<ul>
-<li>Upload your JPG images</li>
-<li>Click convert</li>
-<li>Download the generated PDF file</li>
-</ul>
-
-<h3>Related tools</h3>
-
-<ul>
-<li><a href="/pdf-to-jpg">PDF to JPG</a></li>
-<li><a href="/compress-pdf">Compress PDF</a></li>
-<li><a href="/merge-pdf">Merge PDF</a></li>
-</ul>
-
-</div>
-<div class="tools-links">
-
-<h3>More PDF Tools</h3>
-
-<div class="tools-mini-grid">
-
-<a href="/compress-pdf">Compress PDF</a>
-<a href="/merge-pdf">Merge PDF</a>
-<a href="/split-pdf">Split PDF</a>
-<a href="/jpg-to-pdf">JPG to PDF</a>
-<a href="/pdf-to-jpg">PDF to JPG</a>
-<a href="/rotate-pdf">Rotate PDF</a>
-<a href="/delete-pdf-pages">Delete Pages</a>
-<a href="/pdf-to-word">PDF to Word</a>
-<a href="/word-to-pdf">Word to PDF</a>
-<a href="/protect-pdf">Protect PDF</a>
-<a href="/unlock-pdf">Unlock PDF</a>
-<a href="/add-page-numbers">Add Page Numbers</a>
-
-</div>
-
-</div>
-</body>
-
-</html>
+{% endblock %}

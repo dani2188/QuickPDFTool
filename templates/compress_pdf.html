@@ -1,19 +1,20 @@
-<!DOCTYPE html>
-<html>
+{% extends "base.html" %}
 
-<head>
+{% block title %}
+Compress PDF Online – Reduce PDF File Size
+{% endblock %}
 
-<title>Compress PDF Online – Reduce PDF File Size Free</title>
+{% block description %}
+Compress PDF files online to reduce file size while maintaining quality.
+{% endblock %}
 
-<meta name="description" content="Compress PDF files online to reduce file size while keeping quality. Free and fast PDF compressor.">
-
-</head>
-
-<body style="font-family:Arial;text-align:center;margin-top:100px">
+{% block content %}
 
 <h1>Compress PDF</h1>
 
-<p>Reduce PDF file size quickly and easily.</p>
+<p class="subtitle">
+Reduce PDF file size quickly and easily.
+</p>
 
 <form method="POST" enctype="multipart/form-data">
 
@@ -21,7 +22,7 @@
 
 <br><br>
 
-<button type="submit">Compress PDF</button>
+<button class="main-btn">Compress PDF</button>
 
 </form>
 
@@ -33,53 +34,21 @@
 <p>
 This free online PDF compressor allows you to reduce the size of PDF documents quickly and securely.
 Large PDF files are difficult to send by email or upload to websites.
-This tool helps you compress them while maintaining good quality.
 </p>
+
 
 <h2>How to compress a PDF</h2>
 
 <ul class="steps">
 
-<li>
-<span class="step-number">1</span>
-Upload your PDF file
-</li>
+<li><span class="step-number">1</span> Upload your PDF file</li>
 
-<li>
-<span class="step-number">2</span>
-Click Compress
-</li>
+<li><span class="step-number">2</span> Click Compress</li>
 
-<li>
-<span class="step-number">3</span>
-Download the compressed file
-</li>
+<li><span class="step-number">3</span> Download the compressed file</li>
 
 </ul>
 
 </div>
-<div class="tools-links">
 
-<h3>More PDF Tools</h3>
-
-<div class="tools-mini-grid">
-
-<a href="/compress-pdf">Compress PDF</a>
-<a href="/merge-pdf">Merge PDF</a>
-<a href="/split-pdf">Split PDF</a>
-<a href="/jpg-to-pdf">JPG to PDF</a>
-<a href="/pdf-to-jpg">PDF to JPG</a>
-<a href="/rotate-pdf">Rotate PDF</a>
-<a href="/delete-pdf-pages">Delete Pages</a>
-<a href="/pdf-to-word">PDF to Word</a>
-<a href="/word-to-pdf">Word to PDF</a>
-<a href="/protect-pdf">Protect PDF</a>
-<a href="/unlock-pdf">Unlock PDF</a>
-<a href="/add-page-numbers">Add Page Numbers</a>
-
-</div>
-
-</div>
-</body>
-
-</html>
+{% endblock %}

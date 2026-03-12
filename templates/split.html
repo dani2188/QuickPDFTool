@@ -1,17 +1,14 @@
-<!DOCTYPE html>
-<html>
+{% extends "base.html" %}
 
-<head>
-<title>Split PDF Online – Extract Pages from PDF</title>
+{% block title %}Split PDF Online{% endblock %}
 
-<meta name="description" content="Split PDF files into separate pages or extract selected pages from your document online.">
-</head>
+{% block content %}
 
-<body style="font-family:Arial; text-align:center; margin-top:100px">
+<h1>Split PDF</h1>
 
-<h2>Split PDF</h2>
-
-<p>Upload a PDF and extract each page.</p>
+<p class="subtitle">
+Extract pages from a PDF document.
+</p>
 
 <form method="POST" enctype="multipart/form-data">
 
@@ -19,57 +16,27 @@
 
 <br><br>
 
-<button type="submit">Split PDF</button>
+<button class="main-btn">Split PDF</button>
 
 </form>
+
+
 <div class="seo-content">
 
 <h2>Split PDF Online</h2>
 
 <p>
-Split PDF documents into individual pages or extract specific pages from your file.
-This tool is useful when you need to share only part of a document or reorganize pages.
+Split PDF documents into individual pages or extract selected pages.
 </p>
 
-<h3>How to split a PDF</h3>
+<h2>How to split a PDF</h2>
 
-<ul>
-<li>Upload your PDF document</li>
-<li>The tool will extract each page</li>
-<li>Download the pages you need</li>
-</ul>
-
-<h3>Related tools</h3>
-
-<ul>
-<li><a href="/merge-pdf">Merge PDF</a></li>
-<li><a href="/delete-pdf-pages">Delete Pages</a></li>
-<li><a href="/compress-pdf">Compress PDF</a></li>
+<ul class="steps">
+<li><span class="step-number">1</span> Upload your PDF</li>
+<li><span class="step-number">2</span> Extract pages</li>
+<li><span class="step-number">3</span> Download the results</li>
 </ul>
 
 </div>
-<div class="tools-links">
 
-<h3>More PDF Tools</h3>
-
-<div class="tools-mini-grid">
-
-<a href="/compress-pdf">Compress PDF</a>
-<a href="/merge-pdf">Merge PDF</a>
-<a href="/split-pdf">Split PDF</a>
-<a href="/jpg-to-pdf">JPG to PDF</a>
-<a href="/pdf-to-jpg">PDF to JPG</a>
-<a href="/rotate-pdf">Rotate PDF</a>
-<a href="/delete-pdf-pages">Delete Pages</a>
-<a href="/pdf-to-word">PDF to Word</a>
-<a href="/word-to-pdf">Word to PDF</a>
-<a href="/protect-pdf">Protect PDF</a>
-<a href="/unlock-pdf">Unlock PDF</a>
-<a href="/add-page-numbers">Add Page Numbers</a>
-
-</div>
-
-</div>
-</body>
-
-</html>
+{% endblock %}
