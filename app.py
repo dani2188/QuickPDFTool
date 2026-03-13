@@ -602,6 +602,10 @@ def robots():
 def convert_pdf():
     return render_template("convert_pdf.html")
 
+@app.route("/edit-pdf")
+def edit_pdf():
+    return render_template("edit_pdf.html")
+
 
 if __name__ == "__main__":
     app.run(debug=True)
