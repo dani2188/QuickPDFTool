@@ -615,5 +615,20 @@ def blog():
     return render_template("blog.html")
 
 
+@app.route("/how-to-compress-pdf")
+def compress_pdf_guide():
+    return render_template("compress_pdf_guide.html")
+
+
+@app.route("/how-to-merge-pdf")
+def merge_pdf_guide():
+    return render_template("merge_pdf_guide.html")
+
+
+@app.route("/how-to-split-pdf")
+def split_pdf_guide():
+    return render_template("split_pdf_guide.html")
+
+
 if __name__ == "__main__":
     app.run(debug=True)
