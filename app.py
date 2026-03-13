@@ -610,6 +610,10 @@ def edit_pdf():
 def organize_pdf():
     return render_template("organize_pdf.html")
 
+@app.route("/blog")
+def blog():
+    return render_template("blog.html")
+
 
 if __name__ == "__main__":
     app.run(debug=True)
