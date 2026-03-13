@@ -606,6 +606,10 @@ def convert_pdf():
 def edit_pdf():
     return render_template("edit_pdf.html")
 
+@app.route("/organize-pdf")
+def organize_pdf():
+    return render_template("organize_pdf.html")
+
 
 if __name__ == "__main__":
     app.run(debug=True)
