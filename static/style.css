@@ -324,3 +324,13 @@ transition:0.2s;
 .drop-area:hover{
 border-color:#e5322d;
 }
+
+#fileInput{
+display:none;
+}
+
+.file-hint{
+font-size:13px;
+color:#888;
+margin-top:5px;
+}

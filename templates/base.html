@@ -85,6 +85,29 @@ fileInput.click();
 
 </script>
 
+<script>
+
+const fileInput = document.getElementById("fileInput");
+const fileName = document.getElementById("fileName");
+
+if(fileInput){
+
+fileInput.addEventListener("change", function(){
+
+if(fileInput.files.length === 1){
+fileName.textContent = fileInput.files[0].name;
+}
+
+else if(fileInput.files.length > 1){
+fileName.textContent = fileInput.files.length + " files selected";
+}
+
+});
+
+}
+
+</script>
+
 </body>
 
 </html>
