@@ -1,13 +1,17 @@
 {% extends "base.html" %}
 
-{% block title %}Delete PDF Pages{% endblock %}
+{% block title %}Protect PDF Online – Add Password to PDF{% endblock %}
+
+{% block description %}
+Protect PDF files online by adding a password. Secure your documents quickly and for free.
+{% endblock %}
 
 {% block content %}
 
-<h1>Delete PDF Pages</h1>
+<h1>Protect PDF</h1>
 
 <p class="subtitle">
-Remove unwanted pages from your PDF.
+Add a password to secure your PDF document.
 </p>
 
 <form method="POST" enctype="multipart/form-data">
@@ -16,35 +20,54 @@ Remove unwanted pages from your PDF.
 
 <br><br>
 
-<input type="text" name="pages" placeholder="Example: 2,5,7">
+<input 
+type="password" 
+name="password" 
+placeholder="Enter password" 
+required>
 
 <br><br>
 
-<button class="main-btn">Delete Pages</button>
+<button class="main-btn" type="submit">
+Protect PDF
+</button>
 
 </form>
+
+
 <div class="seo-content">
 
-<h2>Delete Pages from a PDF</h2>
+<h2>Protect PDF Files Online</h2>
 
 <p>
-Remove unwanted pages from your PDF file quickly and easily.
-This tool helps you clean documents by deleting blank pages or unnecessary content.
+Use this free tool to add a password to your PDF documents.
+Password protection helps keep sensitive files secure and prevents unauthorized access.
 </p>
 
-<h2>How to delete pages from a PDF</h2>
+<h3>How to protect a PDF</h3>
 
 <ul class="steps">
 
-<li><span class="step-number">1</span> Upload your PDF</li>
+<li>
+<span class="step-number">1</span>
+Upload your PDF file
+</li>
 
-<li><span class="step-number">2</span> Enter the page numbers to remove</li>
+<li>
+<span class="step-number">2</span>
+Enter a password
+</li>
 
-<li><span class="step-number">3</span> Download the updated PDF</li>
+<li>
+<span class="step-number">3</span>
+Download the protected PDF
+</li>
 
 </ul>
 
 </div>
+
+
 <div class="more-tools">
 
 <h3>More PDF Tools</h3>
@@ -52,14 +75,11 @@ This tool helps you clean documents by deleting blank pages or unnecessary conte
 <div class="tools-mini-grid">
 
 <a href="/compress-pdf">Compress PDF</a>
-
 <a href="/merge-pdf">Merge PDF</a>
-
 <a href="/split-pdf">Split PDF</a>
+<a href="/unlock-pdf">Unlock PDF</a>
 
-<a href="/pdf-to-jpg">PDF to JPG</a>
-
-<a href="/rotate-pdf">Rotate PDF</a>
+</div>
 
 </div>
 
@@ -67,6 +87,5 @@ This tool helps you clean documents by deleting blank pages or unnecessary conte
 <div class="browse-tools">
 <a href="/pdf-tools" class="main-btn">View All Tools</a>
 </div>
-
 
 {% endblock %}
