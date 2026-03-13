@@ -1,0 +1,51 @@
+<div class="upload-box">
+
+<label for="fileInput" class="upload-area">
+
+<input
+type="file"
+id="fileInput"
+name="{{ input_name }}"
+accept="{{ accept_types }}"
+{% if multiple %}multiple{% endif %}
+required
+>
+
+<div class="upload-content">
+
+<p class="upload-text">
+Drag & drop your file here or <span>click to upload</span>
+</p>
+
+<p id="fileName">No file selected</p>
+
+</div>
+
+</label>
+
+</div>
+
+<script>
+
+const input = document.getElementById("fileInput")
+const fileName = document.getElementById("fileName")
+
+if(input){
+
+input.addEventListener("change", function(){
+
+if(this.files.length === 1){
+
+fileName.innerText = this.files[0].name
+
+}else if(this.files.length > 1){
+
+fileName.innerText = this.files.length + " files selected"
+
+}
+
+})
+
+}
+
+</script>

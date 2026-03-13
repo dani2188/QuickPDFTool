@@ -334,3 +334,45 @@ font-size:13px;
 color:#888;
 margin-top:5px;
 }
+
+
+.upload-box{
+margin:30px auto;
+max-width:420px;
+}
+
+.upload-area{
+display:block;
+border:2px dashed #ccc;
+border-radius:10px;
+padding:40px;
+cursor:pointer;
+background:#fafafa;
+transition:0.2s;
+}
+
+.upload-area:hover{
+border-color:#e5322d;
+background:#fff;
+}
+
+.upload-area input{
+display:none;
+}
+
+.upload-text{
+font-size:16px;
+color:#555;
+}
+
+.upload-text span{
+color:#e5322d;
+font-weight:bold;
+}
+
+#fileName{
+margin-top:10px;
+font-size:14px;
+color:#777;
+}
+
