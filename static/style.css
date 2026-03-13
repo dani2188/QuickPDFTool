@@ -309,3 +309,18 @@ margin:0 auto;
 padding:60px 20px;
 text-align:center;
 }
+
+.drop-area{
+border:2px dashed #ccc;
+padding:40px;
+border-radius:10px;
+margin:20px auto;
+max-width:420px;
+background:white;
+cursor:pointer;
+transition:0.2s;
+}
+
+.drop-area:hover{
+border-color:#e5322d;
+}
