@@ -16,9 +16,12 @@ Extract pages from a PDF document.
 
 <form method="POST" enctype="multipart/form-data">
 
-<input type="file" id="fileInput" name="pdf" accept=".pdf">
+{% set button_text="Select PDF File" %}
+{% set input_name="pdf" %}
+{% set accept_types=".pdf" %}
+{% set multiple=false %}
 
-<br><br>
+{% include "components/upload.html" %}
 
 <button class="main-btn">Split PDF</button>
 

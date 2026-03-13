@@ -12,9 +12,12 @@ Upload multiple PDFs and combine them into one document.
 
 <form method="POST" enctype="multipart/form-data">
 
-<input type="file" id="fileInput" name="pdfs" accept=".pdf" multiple>
+{% set button_text="Select PDF Files" %}
+{% set input_name="pdfs" %}
+{% set accept_types=".pdf" %}
+{% set multiple=true %}
 
-<br><br>
+{% include "components/upload.html" %}
 
 <button class="main-btn">Merge PDFs</button>
 

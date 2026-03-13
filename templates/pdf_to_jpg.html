@@ -15,10 +15,13 @@ Convert PDF pages into JPG images.
 </div>
 
 <form method="POST" enctype="multipart/form-data">
+    
+{% set button_text="Select PDF File" %}
+{% set input_name="pdf" %}
+{% set accept_types=".pdf" %}
+{% set multiple=false %}
 
-<input type="file" id="fileInput" name="pdf" accept=".pdf">
-
-<br><br>
+{% include "components/upload.html" %}
 
 <button class="main-btn">Convert to JPG</button>
 

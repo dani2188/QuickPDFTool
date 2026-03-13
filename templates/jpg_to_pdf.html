@@ -12,9 +12,12 @@ Convert JPG images into a PDF document.
 
 <form method="POST" enctype="multipart/form-data">
 
-<input type="file" id="fileInput" name="images" accept=".jpg,.jpeg,.png" multiple>
+{% set button_text="Select Images" %}
+{% set input_name="images" %}
+{% set accept_types=".jpg,.jpeg,.png" %}
+{% set multiple=true %}
 
-<br><br>
+{% include "components/upload.html" %}
 
 <button class="main-btn">Convert to PDF</button>
 

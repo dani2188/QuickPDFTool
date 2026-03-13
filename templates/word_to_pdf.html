@@ -16,29 +16,12 @@ Convert Word documents into high-quality PDF files.
 
 <form method="POST" enctype="multipart/form-data">
 
-<p class="file-hint">
-Supported formats: DOC, DOCX
-</p>
+{% set button_text="Select Word Document" %}
+{% set input_name="docx" %}
+{% set accept_types=".doc,.docx" %}
+{% set multiple=false %}
 
-<div class="upload-box">
-
-<label for="fileInput" class="upload-btn">
-Select Word Document
-</label>
-
-<input 
-type="file"
-id="fileInput"
-name="docx"
-accept=".doc,.docx"
-required
->
-
-<p id="fileName">No file selected</p>
-
-</div>
-
-<br><br>
+{% include "components/upload.html" %}
 
 <button class="main-btn">
 Convert to PDF
