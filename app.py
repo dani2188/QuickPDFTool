@@ -598,5 +598,10 @@ def robots():
     return send_file("robots.txt")
 
 
+@app.route("/convert-pdf")
+def convert_pdf():
+    return render_template("convert_pdf.html")
+
+
 if __name__ == "__main__":
     app.run(debug=True)
