@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block title %}
+Compress PDF to 1MB Online – Reduce PDF File Size
+{% endblock %}
+
+{% block description %}
+Compress PDF files to 1MB online for free. Reduce PDF file size quickly and easily using our PDF compressor.
+{% endblock %}
+
+{% block content %}
+
+<h1>Compress PDF to 1MB</h1>
+
+<p class="subtitle">
+Reduce your PDF file size to under 1MB quickly and securely.
+</p>
+
+
+<div class="upload-box">
+
+<form action="/compress-pdf" method="POST" enctype="multipart/form-data">
+
+<label class="upload-area">
+
+<input type="file" name="pdf" required>
+
+<div class="upload-text">
+Drag & drop PDF here or <span>select a file</span>
+</div>
+
+</label>
+
+<button class="main-btn">Compress PDF</button>
+
+</form>
+
+</div>
+
+
+<div class="seo-content">
+
+<h2>Reduce PDF File Size to 1MB</h2>
+
+<p>
+Large PDF files can be difficult to upload or send by email.
+Using a PDF compressor allows you to reduce the file size while keeping the document readable.
+</p>
+
+<p>
+Our <a href="/compress-pdf">PDF compressor</a> automatically optimizes images and removes unnecessary data to make the file smaller.
+</p>
+
+
+<h2>How to compress a PDF to 1MB</h2>
+
+<ul class="steps">
+
+<li><span class="step-number">1</span> Upload your PDF file</li>
+
+<li><span class="step-number">2</span> Click Compress</li>
+
+<li><span class="step-number">3</span> Download the smaller file</li>
+
+</ul>
+
+</div>
+
+
+<div class="more-tools">
+
+<h3>Related PDF Tools</h3>
+
+<div class="tools-mini-grid">
+
+<a href="/merge-pdf">Merge PDF</a>
+
+<a href="/split-pdf">Split PDF</a>
+
+<a href="/pdf-to-word">PDF to Word</a>
+
+<a href="/jpg-to-pdf">JPG to PDF</a>
+
+</div>
+
+</div>
+
+{% endblock %}

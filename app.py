@@ -671,6 +671,10 @@ def word_to_pdf_guide():
 def pdf_to_word_guide():
     return render_template("pdf_to_word_guide.html")
 
+@app.route("/compress-pdf-to-1mb")
+def compress_pdf_1mb():
+    return render_template("compress_pdf_to_1mb.html")
+
 
 if __name__ == "__main__":
     app.run(debug=True)
