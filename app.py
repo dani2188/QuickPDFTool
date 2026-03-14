@@ -824,6 +824,57 @@ def add_watermark_guide():
 def remove_watermark_guide():
     return render_template("remove_watermark_guide.html")
 
+@app.route("/extract-images", methods=["GET", "POST"])
+def extract_images():
+
+    if request.method == "POST":
+
+        file = request.files["pdf"]
+
+        if file.filename == "":
+            return "No file selected"
+
+        filename = secure_filename(file.filename)
+
+        input_path = os.path.join(UPLOAD_FOLDER, filename)
+
+        file.save(input_path)
+
+        reader = PdfReader(input_path)
+
+        images = []
+
+        for page_number, page in enumerate(reader.pages):
+
+            if "/XObject" in page["/Resources"]:
+
+                xObject = page["/Resources"]["/XObject"].get_object()
+
+                for obj in xObject:
+
+                    if xObject[obj]["/Subtype"] == "/Image":
+
+                        size = (xObject[obj]["/Width"], xObject[obj]["/Height"])
+
+                        data = xObject[obj]._data
+
+                        image_filename = f"image_{page_number+1}_{obj[1:]}.jpg"
+
+                        image_path = os.path.join(UPLOAD_FOLDER, image_filename)
+
+                        with open(image_path, "wb") as img_file:
+                            img_file.write(data)
+
+                        images.append(image_filename)
+
+        return render_template("extract_images_result.html", images=images)
+
+    return render_template("extract_images.html")
+
+@app.route("/how-to-extract-images-from-pdf")
+def extract_images_guide():
+    return render_template("extract_images_guide.html")
+
 
 if __name__ == "__main__":
     app.run(debug=True)

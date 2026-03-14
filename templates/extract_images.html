@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}Extract Images from PDF{% endblock %}
+
+{% block description %}
+Extract images from a PDF file online. Download all images contained in a PDF document.
+{% endblock %}
+
+{% block content %}
+
+<h1>Extract Images from PDF</h1>
+
+<p class="subtitle">
+Upload a PDF to extract all embedded images.
+</p>
+
+<form method="POST" enctype="multipart/form-data">
+
+<div class="upload-box">
+
+<label class="upload-area">
+
+<input type="file" name="pdf" accept=".pdf" required>
+
+<div class="upload-text">
+Upload PDF file
+</div>
+
+</label>
+
+</div>
+
+<button class="main-btn">Extract Images</button>
+
+</form>
+
+<p>
+Need help? Read our
+<a href="/how-to-extract-images-from-pdf">guide on how to extract images from PDF</a>.
+</p>
+
+{% endblock %}
