@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}PDF to PNG Converter{% endblock %}
+
+{% block description %}
+Convert PDF pages to PNG images online.
+{% endblock %}
+
+{% block content %}
+
+<h1>PDF to PNG</h1>
+
+<p class="subtitle">
+Convert each page of your PDF into PNG images.
+</p>
+
+<form method="POST" enctype="multipart/form-data">
+
+<div class="upload-box">
+
+<label class="upload-area">
+
+<input type="file" name="pdf" accept=".pdf" required>
+
+<div class="upload-text">
+Upload PDF file
+</div>
+
+</label>
+
+</div>
+
+<button class="main-btn">Convert to PNG</button>
+
+</form>
+
+<p>
+Need help? Read our
+<a href="/how-to-pdf-to-png">guide on how to convert PDF to PNG</a>.
+</p>
+
+{% endblock %}

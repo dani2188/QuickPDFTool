@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}Images Extracted{% endblock %}
+
+{% block content %}
+
+<h1>Extracted Images</h1>
+
+<p>Download the images extracted from your PDF.</p>
+
+<div class="tools-mini-grid">
+
+{% for img in images %}
+
+<a href="/download-file/{{ img }}">{{ img }}</a>
+
+{% endfor %}
+
+</div>
+
+{% endblock %}

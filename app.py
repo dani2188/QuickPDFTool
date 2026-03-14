@@ -875,6 +875,89 @@ def extract_images():
 def extract_images_guide():
     return render_template("extract_images_guide.html")
 
+@app.route("/pdf-to-png", methods=["GET", "POST"])
+def pdf_to_png():
+
+    if request.method == "POST":
+
+        file = request.files["pdf"]
+
+        if file.filename == "":
+            return "No file selected"
+
+        filename = secure_filename(file.filename)
+        input_path = os.path.join(UPLOAD_FOLDER, filename)
+
+        file.save(input_path)
+
+        if platform.system() == "Windows":
+            images = convert_from_path(
+                input_path,
+                dpi=200,
+                poppler_path=r"C:\Program Files\Release-25.12.0-0\poppler-25.12.0\Library\bin"
+            )
+        else:
+            images = convert_from_path(input_path, dpi=200)
+
+        output_files = []
+
+        for i, image in enumerate(images):
+
+            output_filename = f"page_{i+1}.png"
+            output_path = os.path.join(UPLOAD_FOLDER, output_filename)
+
+            image.save(output_path, "PNG")
+
+            output_files.append(output_filename)
+
+        return render_template("pdf_to_png_result.html", files=output_files)
+
+    return render_template("pdf_to_png.html")
+
+@app.route("/png-to-pdf", methods=["GET", "POST"])
+def png_to_pdf():
+
+    if request.method == "POST":
+
+        files = request.files.getlist("images")
+
+        images = []
+
+        for file in files:
+
+            if file.filename != "":
+
+                filename = secure_filename(file.filename)
+                path = os.path.join(UPLOAD_FOLDER, filename)
+
+                file.save(path)
+
+                image = Image.open(path).convert("RGB")
+                images.append(image)
+
+        output_filename = "converted_images.pdf"
+        output_path = os.path.join(UPLOAD_FOLDER, output_filename)
+
+        if images:
+
+            images[0].save(
+                output_path,
+                save_all=True,
+                append_images=images[1:]
+            )
+
+        return send_file(output_path, as_attachment=True)
+
+    return render_template("png_to_pdf.html")
+
+@app.route("/how-to-pdf-to-png")
+def pdf_to_png_guide():
+    return render_template("pdf_to_png_guide.html")
+
+@app.route("/how-to-png-to-pdf")
+def png_to_pdf_guide():
+    return render_template("png_to_pdf_guide.html")
+
 
 if __name__ == "__main__":
     app.run(debug=True)

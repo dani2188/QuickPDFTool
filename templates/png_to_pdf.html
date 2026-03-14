@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}PNG to PDF Converter{% endblock %}
+
+{% block description %}
+Convert PNG images into a PDF document online.
+{% endblock %}
+
+{% block content %}
+
+<h1>PNG to PDF</h1>
+
+<p class="subtitle">
+Combine PNG images into a single PDF file.
+</p>
+
+<form method="POST" enctype="multipart/form-data">
+
+<div class="upload-box">
+
+<label class="upload-area">
+
+<input type="file" name="images" accept=".png" multiple required>
+
+<div class="upload-text">
+Upload PNG images
+</div>
+
+</label>
+
+</div>
+
+<button class="main-btn">Convert to PDF</button>
+
+</form>
+
+<p>
+Need help? Read our
+<a href="/how-to-png-to-pdf">guide on how to convert PNG to PDF</a>.
+</p>
+
+{% endblock %}
