@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Add Watermark to PDF{% endblock %}
+
+{% block description %}
+Add a text watermark to your PDF document online.
+{% endblock %}
+
+{% block content %}
+
+<h1>Add Watermark</h1>
+
+<p class="subtitle">
+Add a watermark text to every page of your PDF.
+</p>
+
+<form method="POST" enctype="multipart/form-data">
+
+<div class="upload-box">
+
+<label class="upload-area">
+
+<input type="file" name="pdf" accept=".pdf" required>
+
+<div class="upload-text">
+Upload PDF file
+</div>
+
+</label>
+
+</div>
+
+<input type="text" name="text" placeholder="Enter watermark text" required>
+
+<br><br>
+
+<button class="main-btn">Add Watermark</button>
+
+</form>
+
+<p>
+Need help? Read our
+<a href="/how-to-add-watermark-pdf">guide on how to add a watermark to PDF</a>.
+</p>
+
+
+{% endblock %}

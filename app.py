@@ -731,6 +731,99 @@ def sign_pdf():
     return render_template("sign_pdf.html")
 
 
+@app.route("/add-watermark", methods=["GET", "POST"])
+def add_watermark():
+
+    if request.method == "POST":
+
+        file = request.files["pdf"]
+        watermark_text = request.form.get("text")
+
+        if file.filename == "":
+            return "No file selected"
+
+        filename = secure_filename(file.filename)
+        input_path = os.path.join(UPLOAD_FOLDER, filename)
+
+        file.save(input_path)
+
+        reader = PdfReader(input_path)
+        writer = PdfWriter()
+
+        for page in reader.pages:
+
+            packet = io.BytesIO()
+
+            c = canvas.Canvas(packet, pagesize=letter)
+
+            c.setFont("Helvetica", 40)
+            c.setFillGray(0.5, 0.3)
+
+            c.drawString(150, 400, watermark_text)
+
+            c.save()
+
+            packet.seek(0)
+
+            overlay = PdfReader(packet)
+
+            page.merge_page(overlay.pages[0])
+
+            writer.add_page(page)
+
+        output_filename = f"watermarked_{filename}"
+        output_path = os.path.join(UPLOAD_FOLDER, output_filename)
+
+        with open(output_path, "wb") as f:
+            writer.write(f)
+
+        return send_file(output_path, as_attachment=True)
+
+    return render_template("add_watermark.html")
+
+@app.route("/remove-watermark", methods=["GET", "POST"])
+def remove_watermark():
+
+    if request.method == "POST":
+
+        file = request.files["pdf"]
+
+        if file.filename == "":
+            return "No file selected"
+
+        filename = secure_filename(file.filename)
+        input_path = os.path.join(UPLOAD_FOLDER, filename)
+
+        file.save(input_path)
+
+        reader = PdfReader(input_path)
+        writer = PdfWriter()
+
+        for page in reader.pages:
+
+            page.clear()
+
+            writer.add_page(page)
+
+        output_filename = f"cleaned_{filename}"
+        output_path = os.path.join(UPLOAD_FOLDER, output_filename)
+
+        with open(output_path, "wb") as f:
+            writer.write(f)
+
+        return send_file(output_path, as_attachment=True)
+
+    return render_template("remove_watermark.html")
+
+@app.route("/how-to-add-watermark-pdf")
+def add_watermark_guide():
+    return render_template("add_watermark_guide.html")
+
+
+@app.route("/how-to-remove-watermark-pdf")
+def remove_watermark_guide():
+    return render_template("remove_watermark_guide.html")
+
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}Remove Watermark from PDF{% endblock %}
+
+{% block description %}
+Remove watermark from a PDF document online.
+{% endblock %}
+
+{% block content %}
+
+<h1>Remove Watermark</h1>
+
+<p class="subtitle">
+Upload a PDF to remove watermark overlays.
+</p>
+
+<form method="POST" enctype="multipart/form-data">
+
+<div class="upload-box">
+
+<label class="upload-area">
+
+<input type="file" name="pdf" accept=".pdf" required>
+
+<div class="upload-text">
+Upload PDF file
+</div>
+
+</label>
+
+</div>
+
+<button class="main-btn">Remove Watermark</button>
+
+</form>
+
+<p>
+Need help? Read our
+<a href="/how-to-remove-watermark-pdf">guide on how to remove watermark from PDF</a>.
+</p>
+
+
+{% endblock %}
