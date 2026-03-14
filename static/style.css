@@ -96,22 +96,30 @@ border-radius:8px;
 
 .tools-grid{
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-gap:20px;
-max-width:900px;
-margin:40px auto;
+grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+gap:24px;
+max-width:1000px;
+margin:50px auto;
 }
 
 .tool-card{
 background:white;
-padding:25px;
-border-radius:10px;
+padding:26px 22px;
+border-radius:12px;
 text-align:center;
-font-weight:bold;
+font-weight:600;
 text-decoration:none;
 color:#333;
-box-shadow:0 2px 8px rgba(0,0,0,0.1);
-transition:0.2s;
+box-shadow:0 4px 12px rgba(0,0,0,0.06);
+transition:all 0.25s ease;
+border:1px solid #f0f0f0;
+}
+
+.tool-card:hover{
+transform:translateY(-6px);
+box-shadow:0 8px 22px rgba(0,0,0,0.12);
+color:#e5322d;
+border-color:#e5322d;
 }
 
 .tool-card:hover{
