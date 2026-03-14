@@ -8,7 +8,6 @@
 window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
 gtag('js', new Date());
-
 gtag('config', 'G-XL3SFKPQS3');
 </script>
 
@@ -16,15 +15,16 @@ gtag('config', 'G-XL3SFKPQS3');
 <title>Free PDF Tools Online – Compress, Merge, Split and Convert PDFs</title>
 <meta name="description" content="Free online PDF tools to compress, merge, split, convert and edit PDF files quickly and securely. No installation required.">
 
-<link rel="stylesheet" href="/static/style.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 
 </head>
 
 <body>
 
 <header class="topbar">
+</header>
 
-<div class="main">
+<div class="main-container">
 
 <h1>PDF Tools</h1>
 
@@ -33,38 +33,19 @@ Free online tools to compress, convert and edit PDF files
 </p>
 
 <div class="features">
-
 <div class="feature">⚡ Fast processing</div>
 <div class="feature">🔒 Secure files</div>
 <div class="feature">💻 No installation</div>
-
 </div>
 
 <div class="tools-grid">
 
-    <a href="/compress-pdf" class="tool-card">
-📦 Compress PDF
-</a>
-
-<a href="/merge-pdf" class="tool-card">
-📑 Merge PDF
-</a>
-
-<a href="/split-pdf" class="tool-card">
-✂️ Split PDF
-</a>
-
-<a href="/jpg-to-pdf" class="tool-card">
-🖼 JPG to PDF
-</a>
-
-<a href="/pdf-to-jpg" class="tool-card">
-🖼 PDF to JPG
-</a>
-
-<a href="/rotate-pdf" class="tool-card">
-🔄 Rotate PDF
-</a>
+<a href="/compress-pdf" class="tool-card">📦 Compress PDF</a>
+<a href="/merge-pdf" class="tool-card">📑 Merge PDF</a>
+<a href="/split-pdf" class="tool-card">✂️ Split PDF</a>
+<a href="/jpg-to-pdf" class="tool-card">🖼 JPG to PDF</a>
+<a href="/pdf-to-jpg" class="tool-card">🖼 PDF to JPG</a>
+<a href="/rotate-pdf" class="tool-card">🔄 Rotate PDF</a>
 
 <a href="/convert-pdf" class="tool-card">🔄 Convert PDF</a>
 <a href="/edit-pdf" class="tool-card">✏️ Edit PDF</a>
@@ -94,8 +75,6 @@ Simply upload your file, process it securely, and download the result instantly.
 </div>
 
 </div>
-</div>
-
 
 </body>
 </html>

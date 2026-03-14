@@ -6,6 +6,8 @@
 <title>Compress PDF Online – Reduce PDF File Size Free</title>
 <meta name="description" content="Compress PDF files online to reduce file size while maintaining quality. Free and fast PDF compressor.">
 
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
 <script>
 
 function checkFile() {
@@ -15,28 +17,34 @@ fetch("/status/{{ file_name }}")
 .then(data => {
 
 if (data.ready) {
-
 window.location.href = "/download/{{ file_name }}";
+}
+
+})
+.catch(error => console.log("Status check failed"));
 
 }
 
-});
-
-}
-
+document.addEventListener("DOMContentLoaded", function(){
 setInterval(checkFile, 2000);
+});
 
 </script>
 
 </head>
 
-<body style="font-family: Arial; text-align:center; margin-top:100px">
+<body>
+
+<div class="main-container">
 
 <h2>Compressing your PDF...</h2>
+
+<div class="spinner"></div>
 
 <p>Estimated time: <strong>20–40 seconds</strong></p>
 
 <p>Please keep this page open while we process your file.</p>
+
 <div class="tools-links">
 
 <h3>More PDF Tools</h3>
@@ -59,6 +67,9 @@ setInterval(checkFile, 2000);
 </div>
 
 </div>
+
+</div>
+
 </body>
 
 </html>
