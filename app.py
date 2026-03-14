@@ -629,6 +629,48 @@ def merge_pdf_guide():
 def split_pdf_guide():
     return render_template("split_pdf_guide.html")
 
+@app.route("/how-to-jpg-to-pdf")
+def jpg_to_pdf_guide():
+    return render_template("jpg_to_pdf_guide.html")
+
+
+@app.route("/how-to-pdf-to-jpg")
+def pdf_to_jpg_guide():
+    return render_template("pdf_to_jpg_guide.html")
+
+
+@app.route("/how-to-rotate-pdf")
+def rotate_pdf_guide():
+    return render_template("rotate_pdf_guide.html")
+
+
+@app.route("/how-to-delete-pdf-pages")
+def delete_pages_guide():
+    return render_template("delete_pages_guide.html")
+
+
+@app.route("/how-to-protect-pdf")
+def protect_pdf_guide():
+    return render_template("protect_pdf_guide.html")
+
+
+@app.route("/how-to-unlock-pdf")
+def unlock_pdf_guide():
+    return render_template("unlock_pdf_guide.html")
+
+
+@app.route("/how-to-add-page-numbers")
+def add_page_numbers_guide():
+    return render_template("add_page_numbers_guide.html")
+
+@app.route("/how-to-word-to-pdf")
+def word_to_pdf_guide():
+    return render_template("word_to_pdf_guide.html")
+
+@app.route("/how-to-pdf-to-word")
+def pdf_to_word_guide():
+    return render_template("pdf_to_word_guide.html")
+
 
 if __name__ == "__main__":
     app.run(debug=True)
