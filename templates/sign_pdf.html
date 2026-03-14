@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}Sign PDF Online{% endblock %}
+
+{% block description %}
+Add your signature to a PDF document online for free.
+{% endblock %}
+
+{% block content %}
+
+<h1>Sign PDF</h1>
+
+<p class="subtitle">
+Add your signature to a PDF document quickly.
+</p>
+
+<form method="POST" enctype="multipart/form-data">
+
+<div class="upload-box">
+
+<label class="upload-area">
+
+<input type="file" name="pdf" accept=".pdf" required>
+
+<div class="upload-text">
+Upload PDF file
+</div>
+
+</label>
+
+</div>
+
+<div class="upload-box">
+
+<label class="upload-area">
+
+<input type="file" name="signature" accept=".png,.jpg,.jpeg" required>
+
+<div class="upload-text">
+Upload signature image
+</div>
+
+</label>
+
+</div>
+
+<button class="main-btn">Sign PDF</button>
+
+</form>
+
+{% endblock %}

@@ -676,5 +676,61 @@ def compress_pdf_1mb():
     return render_template("compress_pdf_to_1mb.html")
 
 
+@app.route("/sign-pdf", methods=["GET", "POST"])
+def sign_pdf():
+
+    if request.method == "POST":
+
+        pdf_file = request.files["pdf"]
+        signature = request.files["signature"]
+
+        if pdf_file.filename == "" or signature.filename == "":
+            return "Missing file"
+
+        pdf_name = secure_filename(pdf_file.filename)
+        sig_name = secure_filename(signature.filename)
+
+        pdf_path = os.path.join(UPLOAD_FOLDER, pdf_name)
+        sig_path = os.path.join(UPLOAD_FOLDER, sig_name)
+
+        pdf_file.save(pdf_path)
+        signature.save(sig_path)
+
+        reader = PdfReader(pdf_path)
+        writer = PdfWriter()
+
+        sig_img = Image.open(sig_path)
+
+        for i, page in enumerate(reader.pages):
+
+            packet = io.BytesIO()
+
+            c = canvas.Canvas(packet, pagesize=letter)
+
+            if i == 0:
+                c.drawImage(sig_path, 400, 50, width=150, height=50)
+
+            c.save()
+
+            packet.seek(0)
+
+            overlay = PdfReader(packet)
+
+            page.merge_page(overlay.pages[0])
+
+            writer.add_page(page)
+
+        output_name = f"signed_{pdf_name}"
+        output_path = os.path.join(UPLOAD_FOLDER, output_name)
+
+        with open(output_path, "wb") as f:
+            writer.write(f)
+
+        return send_file(output_path, as_attachment=True)
+
+    return render_template("sign_pdf.html")
+
+
+
 if __name__ == "__main__":
     app.run(debug=True)
