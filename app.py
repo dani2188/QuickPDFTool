@@ -11,34 +11,7 @@ from werkzeug.utils import secure_filename
 from PyPDF2 import PdfMerger, PdfReader, PdfWriter
 
 
-
-
 app = Flask(__name__)
-
-@app.route("/pdf-to-jpg", methods=["GET","POST"])
-def pdf_to_jpg():
-
-    from pdf2image import convert_from_path
-
-@app.route("/pdf-to-word", methods=["GET", "POST"])
-def pdf_to_word():
-
-    from pdf2docx import Converter
-
-@app.route("/add-page-numbers", methods=["GET", "POST"])
-def add_page_numbers():
-
-    from reportlab.pdfgen import canvas
-    from reportlab.lib.pagesizes import letter
-
-
-@app.route("/jpg-to-pdf", methods=["GET", "POST"])
-def jpg_to_pdf():
-
-    from PIL import Image
-
-
-
 
 # limit upload size
 app.config['MAX_CONTENT_LENGTH'] = 10 * 1024 * 1024
@@ -280,6 +253,7 @@ def split_pdf():
 
 @app.route("/jpg-to-pdf", methods=["GET", "POST"])
 def jpg_to_pdf():
+    from PIL import Image
 
     if request.method == "POST":
 
@@ -317,6 +291,8 @@ def jpg_to_pdf():
 
 @app.route("/pdf-to-jpg", methods=["GET", "POST"])
 def pdf_to_jpg():
+
+    from pdf2image import convert_from_path
 
     if request.method == "POST":
 
@@ -432,6 +408,7 @@ def delete_pdf_pages():
 
 @app.route("/pdf-to-word", methods=["GET", "POST"])
 def pdf_to_word():
+    from pdf2docx import Converter
 
     if request.method == "POST":
 
@@ -562,6 +539,8 @@ def unlock_pdf():
 
 @app.route("/add-page-numbers", methods=["GET", "POST"])
 def add_page_numbers():
+    from reportlab.pdfgen import canvas
+    from reportlab.lib.pagesizes import letter
 
     if request.method == "POST":
 
