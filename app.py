@@ -9,14 +9,34 @@ import io
 
 from werkzeug.utils import secure_filename
 from PyPDF2 import PdfMerger, PdfReader, PdfWriter
-from PIL import Image
-from pdf2image import convert_from_path
-from pdf2docx import Converter
-from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
 
 
+
 app = Flask(__name__)
+
+@app.route("/pdf-to-jpg", methods=["GET","POST"])
+def pdf_to_jpg():
+
+    from pdf2image import convert_from_path
+
+@app.route("/pdf-to-word", methods=["GET", "POST"])
+def pdf_to_word():
+
+    from pdf2docx import Converter
+
+@app.route("/add-page-numbers", methods=["GET", "POST"])
+def add_page_numbers():
+
+    from reportlab.pdfgen import canvas
+
+@app.route("/jpg-to-pdf", methods=["GET", "POST"])
+def jpg_to_pdf():
+
+    from PIL import Image
+
+
+
 
 # limit upload size
 app.config['MAX_CONTENT_LENGTH'] = 10 * 1024 * 1024
