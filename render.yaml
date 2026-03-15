@@ -3,8 +3,8 @@ services:
     name: pdf-compressor
     runtime: python
     buildCommand: |
-      pip install -r requirements.txt
       apt-get update
-      apt-get install -y ghostscript
-      apt-get install -y libreoffice
+      apt-get install -y ghostscript libreoffice
+      pip install -r requirements.txt
+
     startCommand: gunicorn app:app --bind 0.0.0.0:$PORT --timeout 180
