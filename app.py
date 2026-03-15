@@ -958,6 +958,11 @@ def pdf_to_png_guide():
 def png_to_pdf_guide():
     return render_template("png_to_pdf_guide.html")
 
+@app.route("/compress-pdf-for-email")
+def compress_pdf_for_email():
+    return render_template("compress_pdf_for_email.html")
+
+
 
 if __name__ == "__main__":
     app.run(debug=True)
