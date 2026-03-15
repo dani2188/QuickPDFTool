@@ -9,7 +9,7 @@ import io
 
 from werkzeug.utils import secure_filename
 from PyPDF2 import PdfMerger, PdfReader, PdfWriter
-from reportlab.lib.pagesizes import letter
+
 
 
 
@@ -29,6 +29,8 @@ def pdf_to_word():
 def add_page_numbers():
 
     from reportlab.pdfgen import canvas
+    from reportlab.lib.pagesizes import letter
+
 
 @app.route("/jpg-to-pdf", methods=["GET", "POST"])
 def jpg_to_pdf():
