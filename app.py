@@ -591,7 +591,8 @@ def pdf_tools():
 
 @app.route("/sitemap.xml")
 def sitemap():
-    return send_file("sitemap.xml")
+    return send_file("sitemap.xml", mimetype="application/xml")
+
 
 @app.route("/robots.txt")
 def robots():
