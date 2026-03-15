@@ -962,6 +962,21 @@ def png_to_pdf_guide():
 def compress_pdf_for_email():
     return render_template("compress_pdf_for_email.html")
 
+@app.route("/privacy-policy")
+def privacy_policy():
+    return render_template("privacy_policy.html")
+
+
+@app.route("/terms")
+def terms():
+    return render_template("terms.html")
+
+
+@app.route("/contact")
+def contact():
+    return render_template("contact.html")
+
+
 
 
 if __name__ == "__main__":

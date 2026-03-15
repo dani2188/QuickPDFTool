@@ -352,3 +352,26 @@ font-size:22px;
 font-weight:700;
 text-align:center;
 }
+
+.ad-container{
+margin:40px auto;
+max-width:900px;
+text-align:center;
+}
+
+.footer-links{
+margin-top:10px;
+}
+
+.footer-links a{
+margin:0 10px;
+color:#666;
+text-decoration:none;
+font-size:14px;
+}
+
+.footer-links a:hover{
+color:#e5322d;
+}
+
+
