@@ -374,4 +374,15 @@ font-size:14px;
 color:#e5322d;
 }
 
+.logo a{
+text-decoration:none;
+color:#e5322d;
+font-weight:700;
+font-size:22px;
+}
+
+.logo a:visited{
+color:#e5322d;
+}
+
 

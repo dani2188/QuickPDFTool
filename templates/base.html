@@ -13,8 +13,7 @@
 
 <!-- Google AdSense -->
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1115814677653739"
-     crossorigin="anonymous"></script>
-
+crossorigin="anonymous"></script>
 
 </head>
 
@@ -55,12 +54,20 @@
 Free online tools to compress, merge, convert and edit PDF files.
 </p>
 
+<div class="footer-links">
+<a href="/privacy-policy">Privacy Policy</a>
+<a href="/terms">Terms</a>
+<a href="/contact">Contact</a>
+</div>
+
 </footer>
+
 
 <script>
 
 const dropArea = document.getElementById("dropArea");
 const fileInput = document.getElementById("fileInput");
+const fileName = document.getElementById("fileName");
 
 if(dropArea){
 
@@ -75,10 +82,8 @@ dropArea.style.background="white";
 
 dropArea.addEventListener("drop", function(e){
 e.preventDefault();
-
 const files = e.dataTransfer.files;
 fileInput.files = files;
-
 dropArea.style.background="white";
 });
 
@@ -87,13 +92,6 @@ fileInput.click();
 });
 
 }
-
-</script>
-
-<script>
-
-const fileInput = document.getElementById("fileInput");
-const fileName = document.getElementById("fileName");
 
 if(fileInput){
 
@@ -114,22 +112,4 @@ fileName.textContent = fileInput.files.length + " files selected";
 </script>
 
 </body>
-
-<footer class="footer">
-
-<p>© 2026 QuickPDFTool</p>
-
-<div class="footer-links">
-
-<a href="/privacy-policy">Privacy Policy</a>
-
-<a href="/terms">Terms</a>
-
-<a href="/contact">Contact</a>
-
-</div>
-
-</footer>
-
-
 </html>
