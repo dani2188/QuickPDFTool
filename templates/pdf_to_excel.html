@@ -1,49 +1,27 @@
-@app.route("/excel-to-pdf", methods=["GET","POST"])
-def excel_to_pdf():
+{% extends "base.html" %}
 
-    import pandas as pd
-    from reportlab.lib.pagesizes import letter
-    from reportlab.pdfgen import canvas
+{% block title %}PDF to Excel Converter{% endblock %}
 
-    if request.method == "POST":
+{% block content %}
 
-        file = request.files["excel"]
+<h1>PDF to Excel</h1>
 
-        if file.filename == "":
-            return "No file selected"
+<p class="subtitle">Convert tables from PDF into editable Excel files.</p>
 
-        filename = secure_filename(file.filename)
+<form method="POST" enctype="multipart/form-data">
 
-        input_path = os.path.join(UPLOAD_FOLDER, filename)
+<label class="upload-area" id="dropArea">
 
-        file.save(input_path)
-        delete_file_later(input_path)
+📄 Drop PDF here or click to upload
 
-        df = pd.read_excel(input_path)
+<input type="file" name="pdf" id="fileInput" accept="application/pdf">
 
-        output_filename = filename.replace(".xlsx",".pdf")
-        output_path = os.path.join(UPLOAD_FOLDER, output_filename)
+</label>
 
-        c = canvas.Canvas(output_path, pagesize=letter)
+<br>
 
-        y = 750
+<button class="main-btn">Convert to Excel</button>
 
-        for index, row in df.iterrows():
+</form>
 
-            row_text = " | ".join(str(x) for x in row)
-
-            c.drawString(40, y, row_text)
-
-            y -= 20
-
-            if y < 40:
-                c.showPage()
-                y = 750
-
-        c.save()
-
-        delete_file_later(output_path)
-
-        return send_file(output_path, as_attachment=True)
-
-    return render_template("excel_to_pdf.html")
+{% endblock %}
