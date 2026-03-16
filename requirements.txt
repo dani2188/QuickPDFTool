@@ -9,4 +9,3 @@ reportlab
 pdfplumber
 pandas
 openpyxl
-pdfplumber

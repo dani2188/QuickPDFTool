@@ -987,21 +987,19 @@ def png_to_pdf():
 
             if file.filename != "":
 
-                filename = secure_filename(file.filename)
+                filename = f"{uuid.uuid4()}_{secure_filename(file.filename)}"
                 path = os.path.join(UPLOAD_FOLDER, filename)
 
                 file.save(path)
                 delete_file_later(path)
 
-
                 image = Image.open(path).convert("RGB")
                 images.append(image)
 
-                output_filename = f"{uuid.uuid4()}_page_{i+1}.jpg"
-                output_path = os.path.join(UPLOAD_FOLDER, output_filename)
-
-
         if images:
+
+            output_filename = f"{uuid.uuid4()}_converted.pdf"
+            output_path = os.path.join(UPLOAD_FOLDER, output_filename)
 
             images[0].save(
                 output_path,
@@ -1009,9 +1007,12 @@ def png_to_pdf():
                 append_images=images[1:]
             )
 
-        return send_file(output_path, as_attachment=True)
+            delete_file_later(output_path)
+
+            return send_file(output_path, as_attachment=True)
 
     return render_template("png_to_pdf.html")
+
 
 @app.route("/how-to-pdf-to-png")
 def pdf_to_png_guide():
@@ -1144,7 +1145,7 @@ def excel_to_pdf_guide():
 
 @app.route("/pdf-to-text", methods=["GET", "POST"])
 def pdf_to_text():
-
+    
     import pdfplumber
 
     if request.method == "POST":
@@ -1184,6 +1185,53 @@ def pdf_to_text():
 @app.route("/how-to-extract-text-from-pdf")
 def pdf_to_text_guide():
     return render_template("pdf_to_text_guide.html")
+
+@app.route("/pdf-to-webp", methods=["GET", "POST"])
+def pdf_to_webp():
+
+    from pdf2image import convert_from_path
+    from PIL import Image
+
+    if request.method == "POST":
+
+        file = request.files["pdf"]
+
+        if file.filename == "":
+            return "No file selected"
+
+        filename = secure_filename(file.filename)
+
+        input_path = os.path.join(UPLOAD_FOLDER, filename)
+
+        file.save(input_path)
+        delete_file_later(input_path)
+
+        if platform.system() == "Windows":
+            images = convert_from_path(
+                input_path,
+                dpi=200,
+                poppler_path=r"C:\Program Files\Release-25.12.0-0\poppler-25.12.0\Library\bin"
+            )
+        else:
+            images = convert_from_path(input_path, dpi=200)
+
+        output_files = []
+
+        for i, image in enumerate(images):
+
+            output_filename = f"page_{i+1}.webp"
+
+            output_path = os.path.join(UPLOAD_FOLDER, output_filename)
+
+            image.save(output_path, "WEBP")
+
+            delete_file_later(output_path)
+
+            output_files.append(output_filename)
+
+        return render_template("pdf_to_webp_result.html", files=output_files)
+
+    return render_template("pdf_to_webp.html")
 
 
 
