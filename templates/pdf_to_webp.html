@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}PDF to WebP Converter{% endblock %}
+
+{% block description %}
+Convert PDF pages to WebP images online. Extract PDF pages as optimized WebP images for web use.
+{% endblock %}
+
+{% block content %}
+
+<h1>PDF to WebP</h1>
+
+<p class="subtitle">
+Convert PDF pages into lightweight WebP images.
+</p>
+
+<form method="POST" enctype="multipart/form-data">
+
+<label class="upload-area" id="dropArea">
+
+📄 Drop your PDF here or click to upload
+
+<input type="file" name="pdf" id="fileInput" accept="application/pdf">
+
+</label>
+
+<div id="fileName"></div>
+
+<br>
+
+<button class="main-btn">Convert to WebP</button>
+
+</form>
+
+
+<div class="seo-content">
+
+<h2>Convert PDF Pages to WebP Images</h2>
+
+<p>
+WebP is a modern image format developed by Google that provides better compression than JPG or PNG. Converting PDF pages to WebP images helps reduce file sizes while maintaining high quality.
+</p>
+
+<p>
+This is especially useful for websites, blogs, and online content where fast loading images are important.
+</p>
+
+<h2>Why Convert PDF to WebP?</h2>
+
+<ul>
+
+<li>Smaller image file sizes</li>
+<li>Better website performance</li>
+<li>Optimized images for web use</li>
+<li>Modern image format supported by browsers</li>
+
+</ul>
+
+</div>
+
+{% endblock %}

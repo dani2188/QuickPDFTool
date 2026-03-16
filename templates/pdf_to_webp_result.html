@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}Download WebP Images{% endblock %}
+
+{% block content %}
+
+<h1>Your WebP Images</h1>
+
+<p class="subtitle">
+Download the converted WebP images below.
+</p>
+
+<div class="tools-mini-grid">
+
+{% for file in files %}
+
+<a href="/download-file/{{ file }}">{{ file }}</a>
+
+{% endfor %}
+
+</div>
+
+{% endblock %}

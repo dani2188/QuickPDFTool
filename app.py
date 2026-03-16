@@ -1145,7 +1145,7 @@ def excel_to_pdf_guide():
 
 @app.route("/pdf-to-text", methods=["GET", "POST"])
 def pdf_to_text():
-    
+
     import pdfplumber
 
     if request.method == "POST":
@@ -1233,6 +1233,9 @@ def pdf_to_webp():
 
     return render_template("pdf_to_webp.html")
 
+@app.route("/how-to-pdf-to-webp")
+def pdf_to_webp_guide():
+    return render_template("pdf_to_webp_guide.html")
 
 
 if __name__ == "__main__":
