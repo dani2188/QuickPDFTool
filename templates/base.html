@@ -4,12 +4,13 @@
 <head>
 
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>{% block title %}QuickPDFTool{% endblock %}</title>
 
 <meta name="description" content="{% block description %}Free online PDF tools to compress, convert and edit PDF files{% endblock %}">
 
-<link rel="stylesheet" href="/static/style.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 
 <!-- Google AdSense -->
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1115814677653739"
@@ -37,14 +38,12 @@ crossorigin="anonymous"></script>
 
 </header>
 
-
 <div class="main-container">
 
 {% block content %}
 {% endblock %}
 
 </div>
-
 
 <footer class="footer">
 
@@ -62,14 +61,13 @@ Free online tools to compress, merge, convert and edit PDF files.
 
 </footer>
 
-
 <script>
 
 const dropArea = document.getElementById("dropArea");
 const fileInput = document.getElementById("fileInput");
 const fileName = document.getElementById("fileName");
 
-if(dropArea){
+if(dropArea && fileInput){
 
 dropArea.addEventListener("dragover", function(e){
 e.preventDefault();
@@ -93,7 +91,7 @@ fileInput.click();
 
 }
 
-if(fileInput){
+if(fileInput && fileName){
 
 fileInput.addEventListener("change", function(){
 
