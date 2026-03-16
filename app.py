@@ -1252,34 +1252,29 @@ def crop_pdf():
         if file.filename == "":
             return "No file selected"
 
-        filename = secure_filename(file.filename)
+        filename = f"{uuid.uuid4()}_{secure_filename(file.filename)}"
         input_path = os.path.join(UPLOAD_FOLDER, filename)
 
         file.save(input_path)
         delete_file_later(input_path)
 
-        # Crop values (pixels)
-        left = float(request.form.get("left", 0))
-        right = float(request.form.get("right", 0))
-        top = float(request.form.get("top", 0))
-        bottom = float(request.form.get("bottom", 0))
+        left = max(0, float(request.form.get("left", 0)))
+        right = max(0, float(request.form.get("right", 0)))
+        top = max(0, float(request.form.get("top", 0)))
+        bottom = max(0, float(request.form.get("bottom", 0)))
 
         reader = PdfReader(input_path)
         writer = PdfWriter()
 
         for page in reader.pages:
 
-            media_box = page.mediabox
+            x0 = page.mediabox.left + left
+            y0 = page.mediabox.bottom + bottom
+            x1 = page.mediabox.right - right
+            y1 = page.mediabox.top - top
 
-            page.cropbox.lower_left = (
-                media_box.left + left,
-                media_box.bottom + bottom
-            )
-
-            page.cropbox.upper_right = (
-                media_box.right - right,
-                media_box.top - top
-            )
+            page.mediabox.lower_left = (x0, y0)
+            page.mediabox.upper_right = (x1, y1)
 
             writer.add_page(page)
 
@@ -1294,6 +1289,7 @@ def crop_pdf():
         return send_file(output_path, as_attachment=True)
 
     return render_template("crop_pdf.html")
+
 
 @app.route("/how-to-crop-pdf")
 def crop_pdf_guide():
