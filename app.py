@@ -1039,6 +1039,108 @@ def terms():
 def contact():
     return render_template("contact.html")
 
+@app.route("/pdf-to-excel", methods=["GET","POST"])
+def pdf_to_excel():
+
+    import pdfplumber
+    import pandas as pd
+
+    if request.method == "POST":
+
+        file = request.files["pdf"]
+
+        if file.filename == "":
+            return "No file selected"
+
+        filename = secure_filename(file.filename)
+
+        input_path = os.path.join(UPLOAD_FOLDER, filename)
+
+        file.save(input_path)
+        delete_file_later(input_path)
+
+        output_filename = filename.replace(".pdf",".xlsx")
+        output_path = os.path.join(UPLOAD_FOLDER, output_filename)
+
+        tables = []
+
+        with pdfplumber.open(input_path) as pdf:
+            for page in pdf.pages:
+                table = page.extract_table()
+                if table:
+                    df = pd.DataFrame(table[1:], columns=table[0])
+                    tables.append(df)
+
+        if tables:
+            final_df = pd.concat(tables)
+            final_df.to_excel(output_path, index=False)
+        else:
+            return "No table found in PDF"
+
+        delete_file_later(output_path)
+
+        return send_file(output_path, as_attachment=True)
+
+    return render_template("pdf_to_excel.html")
+
+@app.route("/excel-to-pdf", methods=["GET","POST"])
+def excel_to_pdf():
+
+    import pandas as pd
+    from reportlab.lib.pagesizes import letter
+    from reportlab.pdfgen import canvas
+
+    if request.method == "POST":
+
+        file = request.files["excel"]
+
+        if file.filename == "":
+            return "No file selected"
+
+        filename = secure_filename(file.filename)
+
+        input_path = os.path.join(UPLOAD_FOLDER, filename)
+
+        file.save(input_path)
+        delete_file_later(input_path)
+
+        df = pd.read_excel(input_path)
+
+        output_filename = filename.replace(".xlsx",".pdf")
+        output_path = os.path.join(UPLOAD_FOLDER, output_filename)
+
+        c = canvas.Canvas(output_path, pagesize=letter)
+
+        y = 750
+
+        for index, row in df.iterrows():
+
+            row_text = " | ".join(str(x) for x in row)
+
+            c.drawString(40, y, row_text)
+
+            y -= 20
+
+            if y < 40:
+                c.showPage()
+                y = 750
+
+        c.save()
+
+        delete_file_later(output_path)
+
+        return send_file(output_path, as_attachment=True)
+
+    return render_template("excel_to_pdf.html")
+
+@app.route("/how-to-pdf-to-excel")
+def pdf_to_excel_guide():
+    return render_template("pdf_to_excel_guide.html")
+
+
+@app.route("/how-to-excel-to-pdf")
+def excel_to_pdf_guide():
+    return render_template("excel_to_pdf_guide.html")
 
 
 

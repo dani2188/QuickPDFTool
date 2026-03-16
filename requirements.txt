@@ -6,3 +6,6 @@ pdf2image
 pdf2docx
 python-docx
 reportlab
+pdfplumber
+pandas
+openpyxl

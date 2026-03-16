@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Excel to PDF Converter{% endblock %}
+
+{% block content %}
+
+<h1>Excel to PDF</h1>
+
+<p class="subtitle">Convert Excel spreadsheets to PDF documents.</p>
+
+<form method="POST" enctype="multipart/form-data">
+
+<label class="upload-area" id="dropArea">
+
+📊 Drop Excel file here or click to upload
+
+<input type="file" name="excel" id="fileInput" accept=".xlsx,.xls">
+
+</label>
+
+<br>
+
+<button class="main-btn">Convert to PDF</button>
+
+</form>
+
+{% endblock %}
