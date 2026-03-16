@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}Crop PDF Online{% endblock %}
+
+{% block description %}
+Crop margins from PDF pages online. Remove white borders and adjust PDF page layout easily.
+{% endblock %}
+
+{% block content %}
+
+<h1>Crop PDF</h1>
+
+<p class="subtitle">
+Remove margins or unwanted borders from your PDF pages.
+</p>
+
+<form method="POST" enctype="multipart/form-data">
+
+<label class="upload-area" id="dropArea">
+
+📄 Drop your PDF here or click to upload
+
+<input type="file" name="pdf" id="fileInput" accept="application/pdf">
+
+</label>
+
+<div id="fileName"></div>
+
+<br>
+
+<div style="max-width:400px;margin:auto">
+
+<p>Crop margins (pixels)</p>
+
+<input type="number" name="top" placeholder="Top" style="width:80px">
+
+<input type="number" name="bottom" placeholder="Bottom" style="width:80px">
+
+<input type="number" name="left" placeholder="Left" style="width:80px">
+
+<input type="number" name="right" placeholder="Right" style="width:80px">
+
+</div>
+
+<br>
+
+<button class="main-btn">Crop PDF</button>
+
+</form>
+
+<div class="seo-content">
+
+<h2>Crop PDF Pages</h2>
+
+<p>
+Cropping a PDF allows you to remove unwanted margins, white borders, or blank spaces around your document pages. This can improve the appearance of your PDF and make it easier to read or print.
+</p>
+
+<p>
+Our online crop PDF tool lets you adjust the page margins quickly without installing any software.
+</p>
+
+</div>
+
+{% endblock %}
