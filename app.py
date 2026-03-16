@@ -325,7 +325,6 @@ def pdf_to_jpg():
         file.save(input_path)
 
         delete_file_later(input_path)
-        delete_file_later(output_path)
 
 
         if platform.system() == "Windows":
@@ -350,6 +349,7 @@ def pdf_to_jpg():
 
 
             image.save(output_path, "JPEG")
+            delete_file_later(output_path)
 
             output_files.append(output_filename)
 
@@ -376,8 +376,7 @@ def rotate_pdf():
 
         file.save(input_path)
         delete_file_later(input_path)
-        delete_file_later(output_path)
-
+    
 
         reader = PdfReader(input_path)
         writer = PdfWriter()
@@ -388,6 +387,7 @@ def rotate_pdf():
 
         output_filename = f"rotated_{filename}"
         output_path = os.path.join(UPLOAD_FOLDER, output_filename)
+        delete_file_later(output_path)
 
         with open(output_path, "wb") as output_file:
             writer.write(output_file)
@@ -412,8 +412,6 @@ def delete_pdf_pages():
 
         file.save(input_path)
         delete_file_later(input_path)
-        delete_file_later(output_path)
-
 
         reader = PdfReader(input_path)
         writer = PdfWriter()
@@ -427,6 +425,7 @@ def delete_pdf_pages():
 
         output_filename = f"edited_{filename}"
         output_path = os.path.join(UPLOAD_FOLDER, output_filename)
+        delete_file_later(output_path)
 
         with open(output_path, "wb") as output_file:
             writer.write(output_file)
@@ -452,11 +451,11 @@ def pdf_to_word():
 
         file.save(input_path)
         delete_file_later(input_path)
-        delete_file_later(output_path)
-
+        
 
         output_filename = filename.replace(".pdf", ".docx")
         output_path = os.path.join(UPLOAD_FOLDER, output_filename)
+        delete_file_later(output_path)
 
         cv = Converter(input_path)
         cv.convert(output_path, start=0, end=None)
@@ -482,11 +481,11 @@ def word_to_pdf():
         input_path = os.path.join(UPLOAD_FOLDER, filename)
         file.save(input_path)
         delete_file_later(input_path)
-        delete_file_later(output_path)
-
+        
 
         output_filename = filename.replace(".docx", ".pdf")
         output_path = os.path.join(UPLOAD_FOLDER, output_filename)
+        delete_file_later(output_path)
 
         subprocess.run([
             "libreoffice",
@@ -518,9 +517,7 @@ def protect_pdf():
 
         file.save(input_path)
         delete_file_later(input_path)
-        delete_file_later(output_path)
-
-
+        
         reader = PdfReader(input_path)
         writer = PdfWriter()
 
@@ -531,6 +528,7 @@ def protect_pdf():
 
         output_filename = f"protected_{filename}"
         output_path = os.path.join(UPLOAD_FOLDER, output_filename)
+        delete_file_later(output_path)
 
         with open(output_path, "wb") as f:
             writer.write(f)
@@ -555,8 +553,6 @@ def unlock_pdf():
 
         file.save(input_path)
         delete_file_later(input_path)
-        delete_file_later(output_path)
-
 
         reader = PdfReader(input_path)
 
@@ -570,6 +566,7 @@ def unlock_pdf():
 
         output_filename = f"unlocked_{filename}"
         output_path = os.path.join(UPLOAD_FOLDER, output_filename)
+        delete_file_later(output_path)
 
         with open(output_path, "wb") as f:
             writer.write(f)
@@ -595,9 +592,7 @@ def add_page_numbers():
 
         file.save(input_path)
         delete_file_later(input_path)
-        delete_file_later(output_path)
-
-
+        
         reader = PdfReader(input_path)
         writer = PdfWriter()
 
@@ -622,6 +617,7 @@ def add_page_numbers():
 
         output_filename = f"numbered_{filename}"
         output_path = os.path.join(UPLOAD_FOLDER, output_filename)
+        delete_file_later(output_path)
 
         with open(output_path, "wb") as f:
             writer.write(f)
@@ -795,7 +791,7 @@ def add_watermark():
 
         file.save(input_path)
         delete_file_later(input_path)
-        delete_file_later(output_path)
+        
 
 
         reader = PdfReader(input_path)
@@ -824,6 +820,7 @@ def add_watermark():
 
         output_filename = f"watermarked_{filename}"
         output_path = os.path.join(UPLOAD_FOLDER, output_filename)
+        delete_file_later(output_path)
 
         with open(output_path, "wb") as f:
             writer.write(f)
@@ -847,8 +844,7 @@ def remove_watermark():
 
         file.save(input_path)
         delete_file_later(input_path)
-        delete_file_later(output_path)
-
+        
 
         reader = PdfReader(input_path)
         writer = PdfWriter()
@@ -861,6 +857,7 @@ def remove_watermark():
 
         output_filename = f"cleaned_{filename}"
         output_path = os.path.join(UPLOAD_FOLDER, output_filename)
+        delete_file_later(output_path)
 
         with open(output_path, "wb") as f:
             writer.write(f)
@@ -894,9 +891,7 @@ def extract_images():
 
         file.save(input_path)
         delete_file_later(input_path)
-        delete_file_later(output_path)
-
-
+        
         reader = PdfReader(input_path)
 
         images = []
@@ -915,12 +910,16 @@ def extract_images():
 
                         data = xObject[obj]._data
 
-                        image_filename = f"image_{page_number+1}_{obj[1:]}.jpg"
+                        unique_id = uuid.uuid4()
+                        image_filename = f"{unique_id}_image_{page_number+1}_{obj[1:]}.jpg"
+
 
                         image_path = os.path.join(UPLOAD_FOLDER, image_filename)
 
                         with open(image_path, "wb") as img_file:
                             img_file.write(data)
+                        
+                        delete_file_later(image_path)
 
                         images.append(image_filename)
 
