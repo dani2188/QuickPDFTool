@@ -1142,6 +1142,49 @@ def pdf_to_excel_guide():
 def excel_to_pdf_guide():
     return render_template("excel_to_pdf_guide.html")
 
+@app.route("/pdf-to-text", methods=["GET", "POST"])
+def pdf_to_text():
+
+    import pdfplumber
+
+    if request.method == "POST":
+
+        file = request.files["pdf"]
+
+        if file.filename == "":
+            return "No file selected"
+
+        filename = secure_filename(file.filename)
+
+        input_path = os.path.join(UPLOAD_FOLDER, filename)
+
+        file.save(input_path)
+        delete_file_later(input_path)
+
+        output_filename = filename.replace(".pdf", ".txt")
+        output_path = os.path.join(UPLOAD_FOLDER, output_filename)
+
+        text_content = ""
+
+        with pdfplumber.open(input_path) as pdf:
+            for page in pdf.pages:
+                text = page.extract_text()
+                if text:
+                    text_content += text + "\n\n"
+
+        with open(output_path, "w", encoding="utf-8") as f:
+            f.write(text_content)
+
+        delete_file_later(output_path)
+
+        return send_file(output_path, as_attachment=True)
+
+    return render_template("pdf_to_text.html")
+
+@app.route("/how-to-extract-text-from-pdf")
+def pdf_to_text_guide():
+    return render_template("pdf_to_text_guide.html")
+
 
 
 if __name__ == "__main__":

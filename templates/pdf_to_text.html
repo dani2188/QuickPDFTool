@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}PDF to Text Converter{% endblock %}
+
+{% block description %}
+Convert PDF to TXT online for free. Extract text from PDF files quickly and easily.
+{% endblock %}
+
+{% block content %}
+
+<h1>PDF to Text</h1>
+
+<p class="subtitle">
+Extract plain text from PDF documents instantly.
+</p>
+
+<form method="POST" enctype="multipart/form-data">
+
+<label class="upload-area" id="dropArea">
+
+📄 Drop your PDF here or click to upload
+
+<input type="file" name="pdf" id="fileInput" accept="application/pdf">
+
+</label>
+
+<div id="fileName"></div>
+
+<br>
+
+<button class="main-btn">Convert to Text</button>
+
+</form>
+
+
+<div class="seo-content">
+
+<h2>Extract Text from PDF Files</h2>
+
+<p>
+PDF files often contain valuable text content that you may want to edit or reuse.
+Our free PDF to text converter extracts the text from your PDF document and converts it into a simple TXT file.
+</p>
+
+<p>
+You can then edit, copy, or analyze the text easily using any text editor.
+</p>
+
+<h2>Why Convert PDF to TXT?</h2>
+
+<ul>
+
+<li>Extract text from reports or books</li>
+<li>Copy content from PDFs</li>
+<li>Prepare text for analysis</li>
+<li>Convert documents for editing</li>
+
+</ul>
+
+</div>
+
+{% endblock %}
