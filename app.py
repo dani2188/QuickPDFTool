@@ -114,6 +114,9 @@ def compress_pdf_page():
         output_path = os.path.join(UPLOAD_FOLDER, output_filename)
 
         file.save(input_path)
+        delete_file_later(input_path)
+        delete_file_later(output_path)
+
 
         threading.Thread(
             target=compress_pdf,
@@ -206,6 +209,8 @@ def merge_pdf():
                 filename = secure_filename(file.filename)
                 path = os.path.join(UPLOAD_FOLDER, filename)
                 file.save(path)
+                delete_file_later(path)
+
 
                 merger.append(path)
 
@@ -236,6 +241,10 @@ def split_pdf():
         input_path = os.path.join(UPLOAD_FOLDER, filename)
 
         file.save(input_path)
+        delete_file_later(input_path)
+        delete_file_later(output_path)
+
+
 
         reader = PdfReader(input_path)
 
@@ -246,8 +255,9 @@ def split_pdf():
             writer = PdfWriter()
             writer.add_page(page)
 
-            output_filename = f"page_{i+1}.pdf"
+            output_filename = f"{uuid.uuid4()}_page_{i+1}.jpg"
             output_path = os.path.join(UPLOAD_FOLDER, output_filename)
+
 
             with open(output_path, "wb") as output_file:
                 writer.write(output_file)
@@ -277,6 +287,8 @@ def jpg_to_pdf():
                 path = os.path.join(UPLOAD_FOLDER, filename)
 
                 file.save(path)
+                delete_file_later(path)
+
 
                 image = Image.open(path).convert("RGB")
                 images.append(image)
@@ -300,8 +312,6 @@ def jpg_to_pdf():
 @app.route("/pdf-to-jpg", methods=["GET", "POST"])
 def pdf_to_jpg():
 
-    from pdf2image import convert_from_path
-
     if request.method == "POST":
 
         file = request.files["pdf"]
@@ -313,6 +323,10 @@ def pdf_to_jpg():
         input_path = os.path.join(UPLOAD_FOLDER, filename)
 
         file.save(input_path)
+
+        delete_file_later(input_path)
+        delete_file_later(output_path)
+
 
         if platform.system() == "Windows":
             images = convert_from_path(
@@ -331,8 +345,9 @@ def pdf_to_jpg():
 
         for i, image in enumerate(images):
 
-            output_filename = f"page_{i+1}.jpg"
+            output_filename = f"{uuid.uuid4()}_page_{i+1}.jpg"
             output_path = os.path.join(UPLOAD_FOLDER, output_filename)
+
 
             image.save(output_path, "JPEG")
 
@@ -360,6 +375,9 @@ def rotate_pdf():
         input_path = os.path.join(UPLOAD_FOLDER, filename)
 
         file.save(input_path)
+        delete_file_later(input_path)
+        delete_file_later(output_path)
+
 
         reader = PdfReader(input_path)
         writer = PdfWriter()
@@ -393,6 +411,9 @@ def delete_pdf_pages():
         input_path = os.path.join(UPLOAD_FOLDER, filename)
 
         file.save(input_path)
+        delete_file_later(input_path)
+        delete_file_later(output_path)
+
 
         reader = PdfReader(input_path)
         writer = PdfWriter()
@@ -430,6 +451,9 @@ def pdf_to_word():
         input_path = os.path.join(UPLOAD_FOLDER, filename)
 
         file.save(input_path)
+        delete_file_later(input_path)
+        delete_file_later(output_path)
+
 
         output_filename = filename.replace(".pdf", ".docx")
         output_path = os.path.join(UPLOAD_FOLDER, output_filename)
@@ -457,6 +481,9 @@ def word_to_pdf():
 
         input_path = os.path.join(UPLOAD_FOLDER, filename)
         file.save(input_path)
+        delete_file_later(input_path)
+        delete_file_later(output_path)
+
 
         output_filename = filename.replace(".docx", ".pdf")
         output_path = os.path.join(UPLOAD_FOLDER, output_filename)
@@ -490,6 +517,9 @@ def protect_pdf():
         input_path = os.path.join(UPLOAD_FOLDER, filename)
 
         file.save(input_path)
+        delete_file_later(input_path)
+        delete_file_later(output_path)
+
 
         reader = PdfReader(input_path)
         writer = PdfWriter()
@@ -524,6 +554,9 @@ def unlock_pdf():
         input_path = os.path.join(UPLOAD_FOLDER, filename)
 
         file.save(input_path)
+        delete_file_later(input_path)
+        delete_file_later(output_path)
+
 
         reader = PdfReader(input_path)
 
@@ -561,6 +594,9 @@ def add_page_numbers():
         input_path = os.path.join(UPLOAD_FOLDER, filename)
 
         file.save(input_path)
+        delete_file_later(input_path)
+        delete_file_later(output_path)
+
 
         reader = PdfReader(input_path)
         writer = PdfWriter()
@@ -704,6 +740,8 @@ def sign_pdf():
         sig_path = os.path.join(UPLOAD_FOLDER, sig_name)
 
         pdf_file.save(pdf_path)
+        delete_file_later(pdf_path)
+
         signature.save(sig_path)
 
         reader = PdfReader(pdf_path)
@@ -756,6 +794,9 @@ def add_watermark():
         input_path = os.path.join(UPLOAD_FOLDER, filename)
 
         file.save(input_path)
+        delete_file_later(input_path)
+        delete_file_later(output_path)
+
 
         reader = PdfReader(input_path)
         writer = PdfWriter()
@@ -805,6 +846,9 @@ def remove_watermark():
         input_path = os.path.join(UPLOAD_FOLDER, filename)
 
         file.save(input_path)
+        delete_file_later(input_path)
+        delete_file_later(output_path)
+
 
         reader = PdfReader(input_path)
         writer = PdfWriter()
@@ -849,6 +893,9 @@ def extract_images():
         input_path = os.path.join(UPLOAD_FOLDER, filename)
 
         file.save(input_path)
+        delete_file_later(input_path)
+        delete_file_later(output_path)
+
 
         reader = PdfReader(input_path)
 
@@ -899,6 +946,9 @@ def pdf_to_png():
         input_path = os.path.join(UPLOAD_FOLDER, filename)
 
         file.save(input_path)
+        delete_file_later(input_path)
+        delete_file_later(output_path)
+
 
         if platform.system() == "Windows":
             images = convert_from_path(
@@ -913,8 +963,9 @@ def pdf_to_png():
 
         for i, image in enumerate(images):
 
-            output_filename = f"page_{i+1}.png"
+            output_filename = f"{uuid.uuid4()}_page_{i+1}.jpg"
             output_path = os.path.join(UPLOAD_FOLDER, output_filename)
+
 
             image.save(output_path, "PNG")
 
@@ -941,12 +992,15 @@ def png_to_pdf():
                 path = os.path.join(UPLOAD_FOLDER, filename)
 
                 file.save(path)
+                delete_file_later(path)
+
 
                 image = Image.open(path).convert("RGB")
                 images.append(image)
 
-        output_filename = "converted_images.pdf"
-        output_path = os.path.join(UPLOAD_FOLDER, output_filename)
+                output_filename = f"{uuid.uuid4()}_page_{i+1}.jpg"
+                output_path = os.path.join(UPLOAD_FOLDER, output_filename)
+
 
         if images:
 
