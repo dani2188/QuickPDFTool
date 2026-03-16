@@ -5,6 +5,7 @@ services:
     buildCommand: |
       apt-get update
       apt-get install -y ghostscript libreoffice
+      apt-get install -y poppler-utils
       pip install -r requirements.txt
 
     startCommand: gunicorn app:app --bind 0.0.0.0:$PORT --timeout 180

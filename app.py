@@ -10,27 +10,12 @@ import io
 from werkzeug.utils import secure_filename
 from PyPDF2 import PdfMerger, PdfReader, PdfWriter
 
-# Optional imports
-try:
-    from PIL import Image
-except:
-    pass
+from PIL import Image
+from pdf2image import convert_from_path
+from pdf2docx import Converter
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import letter
 
-try:
-    from pdf2image import convert_from_path
-except:
-    pass
-
-try:
-    from pdf2docx import Converter
-except:
-    pass
-
-try:
-    from reportlab.pdfgen import canvas
-    from reportlab.lib.pagesizes import letter
-except:
-    pass
 
 
 
