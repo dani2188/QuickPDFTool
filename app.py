@@ -1237,6 +1237,10 @@ def pdf_to_webp():
 def pdf_to_webp_guide():
     return render_template("pdf_to_webp_guide.html")
 
+@app.route("/ads.txt")
+def ads():
+    return send_file("ads.txt")
+
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
