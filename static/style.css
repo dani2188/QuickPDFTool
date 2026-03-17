@@ -385,4 +385,19 @@ font-size:22px;
 color:#e5322d;
 }
 
+.crop-inputs {
+display: grid;
+grid-template-columns: repeat(2, 1fr);
+gap: 10px;
+max-width: 400px;
+margin: 20px auto;
+}
+
+.crop-inputs input {
+padding: 10px;
+border-radius: 6px;
+border: 1px solid #ddd;
+}
+
+
 
