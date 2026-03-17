@@ -1,42 +1,54 @@
 {% extends "base.html" %}
 
-{% block title %}Extract Images from PDF{% endblock %}
-
-{% block description %}
-Extract images from a PDF file online. Download all images contained in a PDF document.
-{% endblock %}
-
 {% block content %}
 
 <h1>Extract Images from PDF</h1>
+<p class="subtitle">Extract all embedded images from your PDF.</p>
 
-<p class="subtitle">
-Upload a PDF to extract all embedded images.
-</p>
-
-<form method="POST" enctype="multipart/form-data">
-
-<div class="upload-box">
-
-<label class="upload-area">
-
-<input type="file" name="pdf" accept=".pdf" required>
-
-<div class="upload-text">
-Upload PDF file
-</div>
-
-</label>
-
+<div id="dropArea" class="upload-box">
+    <p>Upload PDF file</p>
+    <input type="file" name="pdf" id="fileInput" hidden>
+    <p id="fileName">No file selected</p>
 </div>
 
 <button class="main-btn">Extract Images</button>
 
-</form>
+<p>
+Need help? <a href="/how-to-extract-images-from-pdf">Read our guide</a>
+</p>
+
+<div class="seo-content">
+
+<h2>Extract Images from PDF Online</h2>
 
 <p>
-Need help? Read our
-<a href="/how-to-extract-images-from-pdf">guide on how to extract images from PDF</a>.
+This tool allows you to extract all images contained in a PDF document.
+Perfect for reusing graphics, photos, or illustrations.
 </p>
+
+<h3>Steps</h3>
+
+<ol>
+<li>Upload your PDF</li>
+<li>Click extract images</li>
+<li>Download images</li>
+</ol>
+
+<h3>Benefits</h3>
+
+<ul>
+<li>Save time extracting manually</li>
+<li>Keep original image quality</li>
+<li>Fast processing</li>
+</ul>
+
+<h3>More PDF Tools</h3>
+
+<div class="tools-mini-grid">
+<a href="/pdf-to-jpg">PDF to JPG</a>
+<a href="/pdf-to-png">PDF to PNG</a>
+</div>
+
+</div>
 
 {% endblock %}

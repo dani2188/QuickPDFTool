@@ -1,42 +1,56 @@
 {% extends "base.html" %}
 
-{% block title %}PNG to PDF Converter{% endblock %}
-
-{% block description %}
-Convert PNG images into a PDF document online.
-{% endblock %}
-
 {% block content %}
 
-<h1>PNG to PDF</h1>
+<h1>Convert PNG to PDF</h1>
+<p class="subtitle">Convert PNG images into a single PDF document.</p>
 
-<p class="subtitle">
-Combine PNG images into a single PDF file.
-</p>
-
-<form method="POST" enctype="multipart/form-data">
-
-<div class="upload-box">
-
-<label class="upload-area">
-
-<input type="file" name="images" accept=".png" multiple required>
-
-<div class="upload-text">
-Upload PNG images
-</div>
-
-</label>
-
+<div id="dropArea" class="upload-box">
+    <p>Upload PNG images</p>
+    <input type="file" name="images" id="fileInput" multiple hidden>
+    <p id="fileName">No files selected</p>
 </div>
 
 <button class="main-btn">Convert to PDF</button>
 
-</form>
+<p>
+Need help? <a href="/how-to-png-to-pdf">Read our guide on converting PNG to PDF</a>
+</p>
+
+<div class="seo-content">
+
+<h2>PNG to PDF Converter Online</h2>
 
 <p>
-Need help? Read our
-<a href="/how-to-png-to-pdf">guide on how to convert PNG to PDF</a>.
+Convert multiple PNG images into a single PDF file quickly and easily.
+Perfect for combining screenshots, scanned files, or images into one document.
 </p>
+
+<h3>How to convert PNG to PDF</h3>
+
+<ol>
+<li>Upload your PNG images</li>
+<li>Click "Convert"</li>
+<li>Download your PDF file</li>
+</ol>
+
+<h3>Why use this tool?</h3>
+
+<ul>
+<li>Combine multiple images</li>
+<li>Create printable documents</li>
+<li>Fast and secure processing</li>
+</ul>
+
+<h3>More PDF Tools</h3>
+
+<div class="tools-mini-grid">
+<a href="/compress-pdf">Compress PDF</a>
+<a href="/merge-pdf">Merge PDF</a>
+<a href="/split-pdf">Split PDF</a>
+<a href="/pdf-to-jpg">PDF to JPG</a>
+</div>
+
+</div>
 
 {% endblock %}

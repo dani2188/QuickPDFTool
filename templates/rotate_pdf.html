@@ -1,83 +1,45 @@
 {% extends "base.html" %}
 
-{% block title %}Rotate PDF Pages{% endblock %}
-
 {% block content %}
 
-<h1>Rotate PDF</h1>
+<h1>Rotate PDF Pages</h1>
+<p class="subtitle">Rotate PDF pages easily.</p>
 
-<p class="subtitle">
-Rotate pages in your PDF document.
-</p>
-
-
-<form method="POST" enctype="multipart/form-data">
-
-{% set button_text="Select PDF File" %}
-{% set input_name="pdf" %}
-{% set accept_types=".pdf" %}
-{% set multiple=false %}
-
-{% include "components/upload.html" %}
+<div id="dropArea" class="upload-box">
+    <p>Upload PDF file</p>
+    <input type="file" name="pdf" id="fileInput" hidden>
+    <p id="fileName">No file selected</p>
+</div>
 
 <select name="rotation">
-<option value="90">Rotate 90°</option>
-<option value="180">Rotate 180°</option>
-<option value="270">Rotate 270°</option>
+<option value="90">90°</option>
+<option value="180">180°</option>
+<option value="270">270°</option>
 </select>
-
-<br><br>
 
 <button class="main-btn">Rotate PDF</button>
 
-</form>
-
 <p>
-Need help? Read our
-<a href="/how-to-rotate-pdf">guide on how to rotate PDF pages</a>.
+Need help? <a href="/how-to-rotate-pdf">Read our guide</a>
 </p>
 
 <div class="seo-content">
 
-<h2>Rotate PDF Pages Online</h2>
+<h2>Rotate PDF Online</h2>
 
 <p>
-This tool allows you to rotate pages in a PDF document.
-It is useful for fixing pages that were scanned or saved with the wrong orientation.
+Fix incorrectly oriented pages in your PDF files quickly.
 </p>
 
-<h2>How to rotate a PDF</h2>
+<h3>Steps</h3>
 
-<ul class="steps">
+<ol>
+<li>Upload PDF</li>
+<li>Select rotation</li>
+<li>Click rotate</li>
+<li>Download file</li>
+</ol>
 
-<li><span class="step-number">1</span> Upload your PDF document</li>
-
-<li><span class="step-number">2</span> Select the rotation angle</li>
-
-<li><span class="step-number">3</span> Download the rotated PDF</li>
-
-</ul>
-
-</div>
-<div class="more-tools">
-
-<h3>More PDF Tools</h3>
-
-<div class="tools-mini-grid">
-
-<a href="/compress-pdf">Compress PDF</a>
-
-<a href="/merge-pdf">Merge PDF</a>
-
-<a href="/split-pdf">Split PDF</a>
-
-<a href="/pdf-to-jpg">PDF to JPG</a>
-
-</div>
-
-</div>
-<div class="browse-tools">
-<a href="/pdf-tools" class="main-btn">View All Tools</a>
 </div>
 
 {% endblock %}

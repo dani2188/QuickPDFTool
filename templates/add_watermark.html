@@ -1,47 +1,58 @@
 {% extends "base.html" %}
 
-{% block title %}Add Watermark to PDF{% endblock %}
-
-{% block description %}
-Add a text watermark to your PDF document online.
-{% endblock %}
-
 {% block content %}
 
-<h1>Add Watermark</h1>
+<h1>Add Watermark to PDF</h1>
+<p class="subtitle">Add text watermark to your PDF files.</p>
 
-<p class="subtitle">
-Add a watermark text to every page of your PDF.
-</p>
-
-<form method="POST" enctype="multipart/form-data">
-
-<div class="upload-box">
-
-<label class="upload-area">
-
-<input type="file" name="pdf" accept=".pdf" required>
-
-<div class="upload-text">
-Upload PDF file
+<div id="dropArea" class="upload-box">
+    <p>Upload PDF file</p>
+    <input type="file" name="pdf" id="fileInput" hidden>
+    <p id="fileName">No file selected</p>
 </div>
 
-</label>
-
-</div>
-
-<input type="text" name="text" placeholder="Enter watermark text" required>
-
-<br><br>
+<input type="text" name="text" placeholder="Enter watermark text">
 
 <button class="main-btn">Add Watermark</button>
 
-</form>
-
 <p>
-Need help? Read our
-<a href="/how-to-add-watermark-pdf">guide on how to add a watermark to PDF</a>.
+Need help? <a href="/how-to-add-watermark-pdf">Read our guide</a>
 </p>
 
+<div class="seo-content">
+
+<h2>Add Watermark to PDF Online</h2>
+
+<p>
+Watermarks help protect your documents by adding visible text such as
+"Confidential" or your brand name.
+</p>
+
+<h3>How it works</h3>
+
+<ol>
+<li>Upload your PDF</li>
+<li>Enter watermark text</li>
+<li>Click add watermark</li>
+<li>Download your file</li>
+</ol>
+
+<h3>Use cases</h3>
+
+<ul>
+<li>Protect documents</li>
+<li>Add branding</li>
+<li>Mark drafts</li>
+</ul>
+
+<h3>More PDF Tools</h3>
+
+<div class="tools-mini-grid">
+<a href="/protect-pdf">Protect PDF</a>
+<a href="/unlock-pdf">Unlock PDF</a>
+<a href="/edit-pdf">Edit PDF</a>
+</div>
+
+</div>
 
 {% endblock %}

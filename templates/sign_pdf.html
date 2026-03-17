@@ -1,51 +1,49 @@
 {% extends "base.html" %}
 
-{% block title %}Sign PDF Online{% endblock %}
-
-{% block description %}
-Add your signature to a PDF document online for free.
-{% endblock %}
-
 {% block content %}
 
 <h1>Sign PDF</h1>
+<p class="subtitle">Add your signature to PDF documents.</p>
 
-<p class="subtitle">
-Add your signature to a PDF document quickly.
-</p>
-
-<form method="POST" enctype="multipart/form-data">
-
-<div class="upload-box">
-
-<label class="upload-area">
-
-<input type="file" name="pdf" accept=".pdf" required>
-
-<div class="upload-text">
-Upload PDF file
+<div id="dropArea" class="upload-box">
+    <p>Upload PDF file</p>
+    <input type="file" name="pdf" id="fileInput" hidden>
+    <p id="fileName">No file selected</p>
 </div>
 
-</label>
-
-</div>
-
-<div class="upload-box">
-
-<label class="upload-area">
-
-<input type="file" name="signature" accept=".png,.jpg,.jpeg" required>
-
-<div class="upload-text">
-Upload signature image
-</div>
-
-</label>
-
-</div>
+<input type="file" name="signature">
 
 <button class="main-btn">Sign PDF</button>
 
-</form>
+<p>
+Need help? <a href="#">Read our guide</a>
+</p>
+
+<div class="seo-content">
+
+<h2>Sign PDF Online</h2>
+
+<p>
+Easily sign PDF documents without printing. Upload your file and add your signature instantly.
+</p>
+
+<h3>Steps</h3>
+
+<ol>
+<li>Upload PDF</li>
+<li>Upload signature</li>
+<li>Click sign</li>
+<li>Download file</li>
+</ol>
+
+<h3>Benefits</h3>
+
+<ul>
+<li>No printing required</li>
+<li>Fast digital signing</li>
+<li>Secure processing</li>
+</ul>
+
+</div>
 
 {% endblock %}

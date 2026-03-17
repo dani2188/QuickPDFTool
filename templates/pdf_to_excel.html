@@ -1,27 +1,33 @@
 {% extends "base.html" %}
 
-{% block title %}PDF to Excel Converter{% endblock %}
-
 {% block content %}
 
-<h1>PDF to Excel</h1>
+<h1>Convert PDF to Excel</h1>
+<p class="subtitle">Extract tables from PDF into Excel.</p>
 
-<p class="subtitle">Convert tables from PDF into editable Excel files.</p>
-
-<form method="POST" enctype="multipart/form-data">
-
-<label class="upload-area" id="dropArea">
-
-📄 Drop PDF here or click to upload
-
-<input type="file" name="pdf" id="fileInput" accept="application/pdf">
-
-</label>
-
-<br>
+<div id="dropArea" class="upload-box">
+    <p>Upload PDF file</p>
+    <input type="file" name="pdf" id="fileInput" hidden>
+</div>
 
 <button class="main-btn">Convert to Excel</button>
 
-</form>
+<div class="seo-content">
+
+<h2>PDF to Excel Converter</h2>
+
+<p>
+Convert PDF tables into editable Excel spreadsheets.
+</p>
+
+<h3>Steps</h3>
+
+<ol>
+<li>Upload PDF</li>
+<li>Click convert</li>
+<li>Download Excel file</li>
+</ol>
+
+</div>
 
 {% endblock %}

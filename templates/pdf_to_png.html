@@ -1,42 +1,57 @@
 {% extends "base.html" %}
 
-{% block title %}PDF to PNG Converter{% endblock %}
-
-{% block description %}
-Convert PDF pages to PNG images online.
-{% endblock %}
-
 {% block content %}
 
-<h1>PDF to PNG</h1>
+<h1>Convert PDF to PNG</h1>
+<p class="subtitle">Convert PDF pages into high-quality PNG images.</p>
 
-<p class="subtitle">
-Convert each page of your PDF into PNG images.
-</p>
-
-<form method="POST" enctype="multipart/form-data">
-
-<div class="upload-box">
-
-<label class="upload-area">
-
-<input type="file" name="pdf" accept=".pdf" required>
-
-<div class="upload-text">
-Upload PDF file
-</div>
-
-</label>
-
+<div id="dropArea" class="upload-box">
+    <p>Upload PDF file</p>
+    <input type="file" name="pdf" id="fileInput" hidden>
+    <p id="fileName">No file selected</p>
 </div>
 
 <button class="main-btn">Convert to PNG</button>
 
-</form>
+<p>
+Need help? <a href="/how-to-pdf-to-png">Read our guide on converting PDF to PNG</a>
+</p>
+
+<div class="seo-content">
+
+<h2>Convert PDF to PNG Online</h2>
 
 <p>
-Need help? Read our
-<a href="/how-to-pdf-to-png">guide on how to convert PDF to PNG</a>.
+This tool allows you to convert PDF files into high-quality PNG images.
+Each page of your PDF will be converted into a separate image file.
 </p>
+
+<h3>Why convert PDF to PNG?</h3>
+
+<ul>
+<li>Extract images from documents</li>
+<li>Use pages in presentations</li>
+<li>Share content easily</li>
+<li>Improve compatibility</li>
+</ul>
+
+<h3>How to convert PDF to PNG</h3>
+
+<ol>
+<li>Upload your PDF file</li>
+<li>Click "Convert"</li>
+<li>Download your PNG images</li>
+</ol>
+
+<h3>More PDF Tools</h3>
+
+<div class="tools-mini-grid">
+<a href="/compress-pdf">Compress PDF</a>
+<a href="/merge-pdf">Merge PDF</a>
+<a href="/split-pdf">Split PDF</a>
+<a href="/pdf-to-jpg">PDF to JPG</a>
+</div>
+
+</div>
 
 {% endblock %}
