@@ -218,10 +218,11 @@ font-size:16px;
 
 /* STEPS */
 
-.steps{
-max-width:600px;
-margin:25px auto;
-text-align:left;
+.steps {
+max-width: 600px;
+margin: 30px auto;
+text-align: left;
+line-height: 1.8;
 }
 
 .steps li{
@@ -323,4 +324,16 @@ display: flex;
 justify-content: center;
 margin-top: 50px;   /* increase this */
 margin-bottom: 30px; /* add space below */
+}
+
+.benefits {
+max-width: 400px;
+margin: 20px auto;
+text-align: left;
+color: #444;
+line-height: 1.6;
+}
+
+.benefits li {
+margin: 8px 0;
 }
