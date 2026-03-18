@@ -154,7 +154,8 @@ padding:14px 30px;
 font-size:16px;
 border-radius:8px;
 cursor:pointer;
-}
+margin-top: 10px;
+margin-bottom: 10px;}
 
 .main-btn:hover{
 background:#c62823;
@@ -315,4 +316,11 @@ margin:30px auto;
 @keyframes spin{
 0%{transform:rotate(0deg);}
 100%{transform:rotate(360deg);}
+}
+
+.browse-tools {
+display: flex;
+justify-content: center;
+margin-top: 50px;   /* increase this */
+margin-bottom: 30px; /* add space below */
 }
