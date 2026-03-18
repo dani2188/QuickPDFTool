@@ -1,54 +1,55 @@
-{% extends "base.html" %}
-
-{% block content %}
+{% extends "base.html" %} {% block content %}
 
 <h1>Extract Images from PDF</h1>
 <p class="subtitle">Extract all embedded images from your PDF.</p>
 
 <div id="dropArea" class="upload-box">
-    <p>Upload PDF file</p>
-    <input type="file" name="pdf" id="fileInput" hidden>
-    <p id="fileName">No file selected</p>
+  <p>
+    Drag & drop your file here or
+    <span class="upload-link">click to upload</span>
+  </p>
+
+  <input type="file" name="pdf" id="fileInput" hidden />
+
+  <p id="fileName">No file selected</p>
 </div>
+
+<p class="file-info">Max file size: 10MB • Files are automatically deleted</p>
 
 <button class="main-btn">Extract Images</button>
 
-<p>
-Need help? <a href="/how-to-extract-images-from-pdf">Read our guide</a>
-</p>
+<p>Need help? <a href="/how-to-extract-images-from-pdf">Read our guide</a></p>
 
 <div class="seo-content">
+  <h2>Extract Images from PDF Online</h2>
 
-<h2>Extract Images from PDF Online</h2>
+  <p>
+    This tool allows you to extract all images contained in a PDF document.
+    Perfect for reusing graphics, photos, or illustrations.
+  </p>
 
-<p>
-This tool allows you to extract all images contained in a PDF document.
-Perfect for reusing graphics, photos, or illustrations.
-</p>
+  <h3>Steps</h3>
 
-<h3>Steps</h3>
+  <ol>
+    <li>Upload your PDF</li>
+    <li>Click extract images</li>
+    <li>Download images</li>
+  </ol>
 
-<ol>
-<li>Upload your PDF</li>
-<li>Click extract images</li>
-<li>Download images</li>
-</ol>
+  <h3>Benefits</h3>
 
-<h3>Benefits</h3>
+  <ul>
+    <li>Save time extracting manually</li>
+    <li>Keep original image quality</li>
+    <li>Fast processing</li>
+  </ul>
 
-<ul>
-<li>Save time extracting manually</li>
-<li>Keep original image quality</li>
-<li>Fast processing</li>
-</ul>
+  <h3>More PDF Tools</h3>
 
-<h3>More PDF Tools</h3>
-
-<div class="tools-mini-grid">
-<a href="/pdf-to-jpg">PDF to JPG</a>
-<a href="/pdf-to-png">PDF to PNG</a>
-</div>
-
+  <div class="tools-mini-grid">
+    <a href="/pdf-to-jpg">PDF to JPG</a>
+    <a href="/pdf-to-png">PDF to PNG</a>
+  </div>
 </div>
 
 {% endblock %}

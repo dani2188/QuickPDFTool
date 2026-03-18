@@ -1,113 +1,109 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<head>
+    <title>{% block title %}QuickPDFTool{% endblock %}</title>
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta
+      name="description"
+      content="{% block description %}Free online PDF tools to compress, convert and edit PDF files{% endblock %}"
+    />
 
-<title>{% block title %}QuickPDFTool{% endblock %}</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
 
-<meta name="description" content="{% block description %}Free online PDF tools to compress, convert and edit PDF files{% endblock %}">
+    <!-- Google AdSense -->
+    <script
+      async
+      src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1115814677653739"
+      crossorigin="anonymous"
+    ></script>
+  </head>
 
-<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <body>
+    <header class="topbar">
+      <div class="header-wrapper">
+        <div class="logo">
+          <a href="/">QuickPDFTool</a>
+        </div>
 
-<!-- Google AdSense -->
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1115814677653739"
-crossorigin="anonymous"></script>
+        <nav class="menu">
+          <a href="/">Home</a>
+          <a href="/pdf-tools">All Tools</a>
+          <a href="/blog">Guides</a>
+        </nav>
+      </div>
+    </header>
 
-</head>
+    <div class="main-container">{% block content %} {% endblock %}</div>
 
-<body>
+    <footer class="footer">
+      <p>© 2026 QuickPDFTool</p>
 
-<header class="topbar">
+      <p>Free online tools to compress, merge, convert and edit PDF files.</p>
 
-<div class="header-wrapper">
+      <div class="footer-links">
+        <a href="/privacy-policy">Privacy Policy</a>
+        <a href="/terms">Terms</a>
+        <a href="/contact">Contact</a>
+      </div>
+    </footer>
 
-<div class="logo">
-<a href="/">QuickPDFTool</a>
-</div>
+    <script>
+      function handleFileInput(inputId, nameId) {
+        const input = document.getElementById(inputId);
+        const name = document.getElementById(nameId);
 
-<nav class="menu">
-<a href="/">Home</a>
-<a href="/pdf-tools">All Tools</a>
-<a href="/blog">Guides</a>
-</nav>
+        if (input && name) {
+          input.addEventListener("change", function () {
+            if (input.files.length === 1) {
+              name.textContent = input.files[0].name;
+            } else if (input.files.length > 1) {
+              name.textContent = input.files.length + " files selected";
+            }
+          });
+        }
+      }
 
-</div>
+      /* MAIN PDF upload */
+      const dropArea = document.getElementById("dropArea");
+      const fileInput = document.getElementById("fileInput");
 
-</header>
+      if (dropArea && fileInput) {
+        dropArea.addEventListener("click", () => fileInput.click());
 
-<div class="main-container">
+        dropArea.addEventListener("dragover", (e) => {
+          e.preventDefault();
+          dropArea.style.background = "#f4f5f7";
+        });
 
-{% block content %}
-{% endblock %}
+        dropArea.addEventListener("dragleave", () => {
+          dropArea.style.background = "#fafafa";
+        });
 
-</div>
+        dropArea.addEventListener("drop", (e) => {
+          e.preventDefault();
+          fileInput.files = e.dataTransfer.files;
+          dropArea.style.background = "#fafafa";
 
-<footer class="footer">
+          const fileName = document.getElementById("fileName");
+          if (fileName) {
+            if (fileInput.files.length === 1) {
+              fileName.textContent = fileInput.files[0].name;
+            } else {
+              fileName.textContent = fileInput.files.length + " files selected";
+            }
+          }
+        });
+      }
 
-<p>© 2026 QuickPDFTool</p>
-
-<p>
-Free online tools to compress, merge, convert and edit PDF files.
-</p>
-
-<div class="footer-links">
-<a href="/privacy-policy">Privacy Policy</a>
-<a href="/terms">Terms</a>
-<a href="/contact">Contact</a>
-</div>
-
-</footer>
-
-<script>
-
-const dropArea = document.getElementById("dropArea");
-const fileInput = document.getElementById("fileInput");
-const fileName = document.getElementById("fileName");
-
-if(dropArea && fileInput){
-
-dropArea.addEventListener("dragover", function(e){
-e.preventDefault();
-dropArea.style.background="#f4f5f7";
-});
-
-dropArea.addEventListener("dragleave", function(){
-dropArea.style.background="white";
-});
-
-dropArea.addEventListener("drop", function(e){
-e.preventDefault();
-const files = e.dataTransfer.files;
-fileInput.files = files;
-dropArea.style.background="white";
-});
-
-dropArea.addEventListener("click", function(){
-fileInput.click();
-});
-
-}
-
-if(fileInput && fileName){
-
-fileInput.addEventListener("change", function(){
-
-if(fileInput.files.length === 1){
-fileName.textContent = fileInput.files[0].name;
-}
-
-else if(fileInput.files.length > 1){
-fileName.textContent = fileInput.files.length + " files selected";
-}
-
-});
-
-}
-
-</script>
-
-</body>
+      /* APPLY TO INPUTS */
+      handleFileInput("fileInput", "fileName");
+      handleFileInput("signatureInput", "signatureName");
+    </script>
+  </body>
 </html>

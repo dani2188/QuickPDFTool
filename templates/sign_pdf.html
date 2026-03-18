@@ -1,49 +1,68 @@
-{% extends "base.html" %}
-
-{% block content %}
+{% extends "base.html" %} {% block content %}
 
 <h1>Sign PDF</h1>
 <p class="subtitle">Add your signature to PDF documents.</p>
 
-<div id="dropArea" class="upload-box">
-    <p>Upload PDF file</p>
-    <input type="file" name="pdf" id="fileInput" hidden>
+<form method="POST" enctype="multipart/form-data">
+  <!-- PDF Upload -->
+  <div id="dropArea" class="upload-box">
+    <p>
+      Drag & drop your PDF here or
+      <span class="upload-link">click to upload</span>
+    </p>
+
+    <input type="file" name="pdf" id="fileInput" hidden />
+
     <p id="fileName">No file selected</p>
-</div>
+  </div>
 
-<input type="file" name="signature">
+  <p class="file-info">Max file size: 10MB • Files are automatically deleted</p>
 
-<button class="main-btn">Sign PDF</button>
+  <!-- Signature Upload -->
+  <div
+    class="upload-box"
+    onclick="document.getElementById('signatureInput').click()"
+  >
+    <p>Upload your signature (PNG/JPG)</p>
 
-<p>
-Need help? <a href="#">Read our guide</a>
-</p>
+    <input type="file" name="signature" id="signatureInput" hidden />
+
+    <p id="signatureName">No file selected</p>
+  </div>
+
+  <p class="file-info">Max file size: 10MB • Files are automatically deleted</p>
+
+  <p class="file-info">Recommended: transparent PNG for best results</p>
+
+  <button class="main-btn">Sign PDF</button>
+</form>
+
+<p>Need help? <a href="#">Read our guide</a></p>
 
 <div class="seo-content">
+  <h2>Sign PDF Online</h2>
 
-<h2>Sign PDF Online</h2>
+  <p>
+    Easily sign PDF documents without printing. Upload your file and add your
+    signature instantly.
+  </p>
 
-<p>
-Easily sign PDF documents without printing. Upload your file and add your signature instantly.
-</p>
+  <h3>Steps</h3>
 
-<h3>Steps</h3>
+  <ol>
+    <li>Upload PDF</li>
+    <li>Upload signature</li>
+    <li>Click sign</li>
+    <li>Download file</li>
+  </ol>
 
-<ol>
-<li>Upload PDF</li>
-<li>Upload signature</li>
-<li>Click sign</li>
-<li>Download file</li>
-</ol>
+  <h3>Benefits</h3>
 
-<h3>Benefits</h3>
-
-<ul>
-<li>No printing required</li>
-<li>Fast digital signing</li>
-<li>Secure processing</li>
-</ul>
-
+  <ul>
+    <li>No printing required</li>
+    <li>Fast digital signing</li>
+    <li>Secure processing</li>
+  </ul>
 </div>
 
 {% endblock %}

@@ -1,64 +1,66 @@
-{% extends "base.html" %}
-
-{% block content %}
+{% extends "base.html" %} {% block content %}
 
 <h1>Convert PDF to Excel</h1>
 <p class="subtitle">Extract tables from PDF into editable Excel files.</p>
 
 <form method="POST" enctype="multipart/form-data">
+  <div id="dropArea" class="upload-box">
+    <p>
+      Drag & drop your file here or
+      <span class="upload-link">click to upload</span>
+    </p>
 
-<div id="dropArea" class="upload-box">
-    <p>Upload PDF file</p>
-    <input type="file" name="pdf" id="fileInput" hidden>
+    <input type="file" name="pdf" id="fileInput" hidden />
+
     <p id="fileName">No file selected</p>
-</div>
+  </div>
 
-<button class="main-btn">Convert to Excel</button>
+  <p class="file-info">Max file size: 10MB • Files are automatically deleted</p>
 
+  <button class="main-btn">Convert to Excel</button>
 </form>
 
 <p>
-Need help? <a href="/how-to-pdf-to-excel">Read our guide on converting PDF to Excel</a>
+  Need help?
+  <a href="/how-to-pdf-to-excel">Read our guide on converting PDF to Excel</a>
 </p>
 
 <div class="seo-content">
+  <h2>Convert PDF to Excel Online</h2>
 
-<h2>Convert PDF to Excel Online</h2>
+  <p>
+    This tool converts PDF tables into editable Excel spreadsheets. Ideal for
+    financial data, reports, and structured documents.
+  </p>
 
-<p>
-This tool converts PDF tables into editable Excel spreadsheets.
-Ideal for financial data, reports, and structured documents.
-</p>
+  <h3>How to convert PDF to Excel</h3>
 
-<h3>How to convert PDF to Excel</h3>
+  <ol>
+    <li>Upload your PDF file</li>
+    <li>Click "Convert"</li>
+    <li>Download the Excel file</li>
+  </ol>
 
-<ol>
-<li>Upload your PDF file</li>
-<li>Click "Convert"</li>
-<li>Download the Excel file</li>
-</ol>
+  <h3>Benefits</h3>
 
-<h3>Benefits</h3>
+  <ul>
+    <li>Extract tables accurately</li>
+    <li>Edit data easily</li>
+    <li>No manual copy-paste</li>
+  </ul>
 
-<ul>
-<li>Extract tables accurately</li>
-<li>Edit data easily</li>
-<li>No manual copy-paste</li>
-</ul>
+  <h3>More PDF Tools</h3>
 
-<h3>More PDF Tools</h3>
+  <div class="tools-mini-grid">
+    <a href="/excel-to-pdf">Excel to PDF</a>
+    <a href="/pdf-to-word">PDF to Word</a>
+    <a href="/pdf-to-jpg">PDF to JPG</a>
+    <a href="/pdf-to-png">PDF to PNG</a>
+  </div>
 
-<div class="tools-mini-grid">
-<a href="/excel-to-pdf">Excel to PDF</a>
-<a href="/pdf-to-word">PDF to Word</a>
-<a href="/pdf-to-jpg">PDF to JPG</a>
-<a href="/pdf-to-png">PDF to PNG</a>
-</div>
-
-<div class="browse-tools">
-<a href="/pdf-tools" class="main-btn">View All Tools</a>
-</div>
-
+  <div class="browse-tools">
+    <a href="/pdf-tools" class="main-btn">View All Tools</a>
+  </div>
 </div>
 
 {% endblock %}

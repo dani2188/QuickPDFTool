@@ -163,9 +163,32 @@ margin-top:30px;
 
 /* UPLOAD AREA */
 
-.upload-box{
-margin:30px auto;
-max-width:420px;
+.upload-box {
+border: 2px dashed #d6d6d6;
+border-radius: 12px;
+padding: 40px;
+text-align: center;
+background: #fafafa;
+cursor: pointer;
+transition: 0.3s;
+max-width: 500px;
+margin: 20px auto;
+}
+
+.upload-box:hover {
+background: #f4f5f7;
+border-color: #ff4d4f;
+}
+
+.upload-link {
+color: #ff4d4f;
+font-weight: 600;
+}
+
+#fileName {
+margin-top: 10px;
+color: #666;
+font-size: 14px;
 }
 
 .upload-area{
@@ -398,6 +421,10 @@ padding: 10px;
 border-radius: 6px;
 border: 1px solid #ddd;
 }
+
+<p class="file-info">
+Max file size: 10MB • Files are automatically deleted
+</p>
 
 
 

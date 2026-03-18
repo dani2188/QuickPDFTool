@@ -1,64 +1,68 @@
-{% extends "base.html" %}
-
-{% block content %}
+{% extends "base.html" %} {% block content %}
 
 <h1>Remove Watermark from PDF</h1>
 <p class="subtitle">Remove watermark text or overlays from your PDF files.</p>
 
 <form method="POST" enctype="multipart/form-data">
+  <div id="dropArea" class="upload-box">
+    <p>
+      Drag & drop your file here or
+      <span class="upload-link">click to upload</span>
+    </p>
 
-<div id="dropArea" class="upload-box">
-    <p>Upload PDF file</p>
-    <input type="file" name="pdf" id="fileInput" hidden>
+    <input type="file" name="pdf" id="fileInput" hidden />
+
     <p id="fileName">No file selected</p>
-</div>
+  </div>
 
-<button class="main-btn">Remove Watermark</button>
+  <p class="file-info">Max file size: 10MB • Files are automatically deleted</p>
 
+  <button class="main-btn">Remove Watermark</button>
 </form>
 
 <p>
-Need help? <a href="/how-to-remove-watermark-pdf">Read our guide on removing watermarks</a>
+  Need help?
+  <a href="/how-to-remove-watermark-pdf"
+    >Read our guide on removing watermarks</a
+  >
 </p>
 
 <div class="seo-content">
+  <h2>Remove Watermark from PDF Online</h2>
 
-<h2>Remove Watermark from PDF Online</h2>
+  <p>
+    This tool allows you to remove watermark overlays from PDF files. It helps
+    clean up documents for reuse, sharing, or editing.
+  </p>
 
-<p>
-This tool allows you to remove watermark overlays from PDF files.
-It helps clean up documents for reuse, sharing, or editing.
-</p>
+  <h3>How to remove watermark</h3>
 
-<h3>How to remove watermark</h3>
+  <ol>
+    <li>Upload your PDF file</li>
+    <li>Click "Remove Watermark"</li>
+    <li>Download the cleaned PDF</li>
+  </ol>
 
-<ol>
-<li>Upload your PDF file</li>
-<li>Click "Remove Watermark"</li>
-<li>Download the cleaned PDF</li>
-</ol>
+  <h3>Why use this tool?</h3>
 
-<h3>Why use this tool?</h3>
+  <ul>
+    <li>Remove unwanted text overlays</li>
+    <li>Clean documents quickly</li>
+    <li>Fast and secure processing</li>
+  </ul>
 
-<ul>
-<li>Remove unwanted text overlays</li>
-<li>Clean documents quickly</li>
-<li>Fast and secure processing</li>
-</ul>
+  <h3>More PDF Tools</h3>
 
-<h3>More PDF Tools</h3>
+  <div class="tools-mini-grid">
+    <a href="/add-watermark">Add Watermark</a>
+    <a href="/edit-pdf">Edit PDF</a>
+    <a href="/protect-pdf">Protect PDF</a>
+    <a href="/unlock-pdf">Unlock PDF</a>
+  </div>
 
-<div class="tools-mini-grid">
-<a href="/add-watermark">Add Watermark</a>
-<a href="/edit-pdf">Edit PDF</a>
-<a href="/protect-pdf">Protect PDF</a>
-<a href="/unlock-pdf">Unlock PDF</a>
-</div>
-
-<div class="browse-tools">
-<a href="/pdf-tools" class="main-btn">View All Tools</a>
-</div>
-
+  <div class="browse-tools">
+    <a href="/pdf-tools" class="main-btn">View All Tools</a>
+  </div>
 </div>
 
 {% endblock %}

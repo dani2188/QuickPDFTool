@@ -1,89 +1,95 @@
-{% extends "base.html" %}
-
-{% block content %}
+{% extends "base.html" %} {% block content %}
 
 <h1>Crop PDF Pages</h1>
 <p class="subtitle">
-Crop margins from your PDF pages easily and improve document layout.
+  Crop margins from your PDF pages easily and improve document layout.
 </p>
 
 <form method="POST" enctype="multipart/form-data">
+  <div id="dropArea" class="upload-box">
+    <p>
+      Drag & drop your file here or
+      <span class="upload-link">click to upload</span>
+    </p>
 
-<div id="dropArea" class="upload-box">
-    <p>Drag & drop your PDF here or <span style="color:red;">click to upload</span></p>
-    <input type="file" name="pdf" id="fileInput" hidden>
+    <input type="file" name="pdf" id="fileInput" hidden />
+
     <p id="fileName">No file selected</p>
-</div>
+  </div>
 
-<div class="crop-inputs">
+  <p class="file-info">Max file size: 10MB • Files are automatically deleted</p>
 
-<input type="number" name="top" placeholder="Top margin (px)" min="0">
-<input type="number" name="bottom" placeholder="Bottom margin (px)" min="0">
-<input type="number" name="left" placeholder="Left margin (px)" min="0">
-<input type="number" name="right" placeholder="Right margin (px)" min="0">
+  <div class="crop-inputs">
+    <input type="number" name="top" placeholder="Top margin (px)" min="0" />
+    <input
+      type="number"
+      name="bottom"
+      placeholder="Bottom margin (px)"
+      min="0"
+    />
+    <input type="number" name="left" placeholder="Left margin (px)" min="0" />
+    <input type="number" name="right" placeholder="Right margin (px)" min="0" />
+  </div>
 
-</div>
-
-<button class="main-btn">Crop PDF</button>
-
+  <button class="main-btn">Crop PDF</button>
 </form>
 
 <p>
-Need help? <a href="/how-to-crop-pdf">Read our guide on cropping PDF pages</a>
+  Need help? <a href="/how-to-crop-pdf">Read our guide on cropping PDF pages</a>
 </p>
 
 ---
 
 <div class="seo-content">
+  <h2>Crop PDF Online</h2>
 
-<h2>Crop PDF Online</h2>
+  <p>
+    This tool allows you to crop PDF pages by removing unwanted margins. It is
+    perfect for improving readability, adjusting layouts, or preparing documents
+    for printing.
+  </p>
 
-<p>
-This tool allows you to crop PDF pages by removing unwanted margins.
-It is perfect for improving readability, adjusting layouts, or preparing documents for printing.
-</p>
+  <h3>Why crop PDF pages?</h3>
 
-<h3>Why crop PDF pages?</h3>
+  <ul>
+    <li>Remove white margins</li>
+    <li>Focus on important content</li>
+    <li>Improve document appearance</li>
+    <li>Optimize for printing</li>
+  </ul>
 
-<ul>
-<li>Remove white margins</li>
-<li>Focus on important content</li>
-<li>Improve document appearance</li>
-<li>Optimize for printing</li>
-</ul>
+  <h3>How to crop a PDF</h3>
 
-<h3>How to crop a PDF</h3>
+  <ol>
+    <li>Upload your PDF file</li>
+    <li>Enter crop values (top, bottom, left, right)</li>
+    <li>Click "Crop PDF"</li>
+    <li>Download your cropped file</li>
+  </ol>
 
-<ol>
-<li>Upload your PDF file</li>
-<li>Enter crop values (top, bottom, left, right)</li>
-<li>Click "Crop PDF"</li>
-<li>Download your cropped file</li>
-</ol>
+  <h3>Tips for best results</h3>
 
-<h3>Tips for best results</h3>
+  <p>
+    Start with small values and adjust gradually. Avoid cropping too much to
+    prevent losing important content.
+  </p>
 
-<p>
-Start with small values and adjust gradually. Avoid cropping too much to prevent losing important content.
-</p>
+  ---
 
----
+  <h3>More PDF Tools</h3>
 
-<h3>More PDF Tools</h3>
+  <div class="tools-mini-grid">
+    <a href="/compress-pdf">Compress PDF</a>
+    <a href="/merge-pdf">Merge PDF</a>
+    <a href="/split-pdf">Split PDF</a>
+    <a href="/rotate-pdf">Rotate PDF</a>
+    <a href="/delete-pdf-pages">Delete Pages</a>
+    <a href="/add-watermark">Add Watermark</a>
+  </div>
 
-<div class="tools-mini-grid">
-<a href="/compress-pdf">Compress PDF</a>
-<a href="/merge-pdf">Merge PDF</a>
-<a href="/split-pdf">Split PDF</a>
-<a href="/rotate-pdf">Rotate PDF</a>
-<a href="/delete-pdf-pages">Delete Pages</a>
-<a href="/add-watermark">Add Watermark</a>
-</div>
-
-<div class="browse-tools">
-<a href="/pdf-tools" class="main-btn">View All Tools</a>
-</div>
-
+  <div class="browse-tools">
+    <a href="/pdf-tools" class="main-btn">View All Tools</a>
+  </div>
 </div>
 
 {% endblock %}
