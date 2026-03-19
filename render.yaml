@@ -8,4 +8,4 @@ services:
       apt-get install -y poppler-utils
       pip install -r requirements.txt
 
-    startCommand: gunicorn app:app --bind 0.0.0.0:$PORT --timeout 180
+    startCommand: gunicorn app:app --bind 0.0.0.0:$PORT --timeout 180 --workers 1
