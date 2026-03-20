@@ -1,71 +1,53 @@
-{% extends "base.html" %}
-
-{% block title %}Split PDF Online{% endblock %}
-
-{% block content %}
+{% extends "base.html" %} {% block title %}Split PDF Online{% endblock %} {%
+block content %}
 
 <h1>Split PDF</h1>
 
-<p class="subtitle">
-Extract pages from a PDF document.
-</p>
-
+<p class="subtitle">Extract pages from a PDF document.</p>
 
 <form method="POST" enctype="multipart/form-data">
+  {% set button_text="Select PDF File" %} {% set input_name="pdf" %} {% set
+  accept_types=".pdf" %} {% set multiple=false %} {% include
+  "components/upload.html" %}
 
-{% set button_text="Select PDF File" %}
-{% set input_name="pdf" %}
-{% set accept_types=".pdf" %}
-{% set multiple=false %}
+  <button class="main-btn">Split PDF</button>
 
-{% include "components/upload.html" %}
-
-<button class="main-btn">Split PDF</button>
-
+  <p class="file-info">Max file size: 5MB • Files are automatically deleted</p>
 </form>
 
 <p>
-Need help? Read our 
-<a href="/how-to-split-pdf">guide on how to split PDF files</a>.
+  Need help? Read our
+  <a href="/how-to-split-pdf">guide on how to split PDF files</a>.
 </p>
-
 
 <div class="seo-content">
+  <h2>Split PDF Online</h2>
 
-<h2>Split PDF Online</h2>
+  <p>Split PDF documents into individual pages or extract selected pages.</p>
 
-<p>
-Split PDF documents into individual pages or extract selected pages.
-</p>
+  <h2>How to split a PDF</h2>
 
-<h2>How to split a PDF</h2>
-
-<ul class="steps">
-<li><span class="step-number">1</span> Upload your PDF</li>
-<li><span class="step-number">2</span> Extract pages</li>
-<li><span class="step-number">3</span> Download the results</li>
-</ul>
-
+  <ul class="steps">
+    <li><span class="step-number">1</span> Upload your PDF</li>
+    <li><span class="step-number">2</span> Extract pages</li>
+    <li><span class="step-number">3</span> Download the results</li>
+  </ul>
 </div>
 <div class="more-tools">
+  <h3>More PDF Tools</h3>
 
-<h3>More PDF Tools</h3>
+  <div class="tools-mini-grid">
+    <a href="/compress-pdf">Compress PDF</a>
 
-<div class="tools-mini-grid">
+    <a href="/merge-pdf">Merge PDF</a>
 
-<a href="/compress-pdf">Compress PDF</a>
+    <a href="/pdf-to-jpg">PDF to JPG</a>
 
-<a href="/merge-pdf">Merge PDF</a>
-
-<a href="/pdf-to-jpg">PDF to JPG</a>
-
-<a href="/rotate-pdf">Rotate PDF</a>
-
-</div>
-
+    <a href="/rotate-pdf">Rotate PDF</a>
+  </div>
 </div>
 <div class="browse-tools">
-<a href="/pdf-tools" class="main-btn">View All Tools</a>
+  <a href="/pdf-tools" class="main-btn">View All Tools</a>
 </div>
 
 {% endblock %}

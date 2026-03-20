@@ -1,77 +1,60 @@
-{% extends "base.html" %}
-
-{% block title %}PDF to JPG Converter{% endblock %}
-
-{% block content %}
+{% extends "base.html" %} {% block title %}PDF to JPG Converter{% endblock %} {%
+block content %}
 
 <h1>PDF to JPG</h1>
 
-<p class="subtitle">
-Convert PDF pages into JPG images.
-</p>
-
+<p class="subtitle">Convert PDF pages into JPG images.</p>
 
 <form method="POST" enctype="multipart/form-data">
-    
-{% set button_text="Select PDF File" %}
-{% set input_name="pdf" %}
-{% set accept_types=".pdf" %}
-{% set multiple=false %}
+  {% set button_text="Select PDF File" %} {% set input_name="pdf" %} {% set
+  accept_types=".pdf" %} {% set multiple=false %} {% include
+  "components/upload.html" %}
 
-{% include "components/upload.html" %}
+  <button class="main-btn">Convert to JPG</button>
 
-<button class="main-btn">Convert to JPG</button>
-
+  <p class="file-info">Max file size: 5MB • Files are automatically deleted</p>
 </form>
 
 <p>
-Need help? Read our
-<a href="/how-to-pdf-to-jpg">guide on How to Convert PDF to JPG</a>.
+  Need help? Read our
+  <a href="/how-to-pdf-to-jpg">guide on How to Convert PDF to JPG</a>.
 </p>
 
 <div class="seo-content">
+  <h2>Convert PDF to JPG Online</h2>
 
-<h2>Convert PDF to JPG Online</h2>
+  <p>
+    Use this free tool to convert PDF pages into high-quality JPG images. It is
+    useful when you want to extract images or share PDF pages as pictures.
+  </p>
 
-<p>
-Use this free tool to convert PDF pages into high-quality JPG images.
-It is useful when you want to extract images or share PDF pages as pictures.
-</p>
+  <h2>How to convert PDF to JPG</h2>
 
-<h2>How to convert PDF to JPG</h2>
+  <ul class="steps">
+    <li><span class="step-number">1</span> Upload your PDF file</li>
 
-<ul class="steps">
+    <li><span class="step-number">2</span> Click Convert</li>
 
-<li><span class="step-number">1</span> Upload your PDF file</li>
-
-<li><span class="step-number">2</span> Click Convert</li>
-
-<li><span class="step-number">3</span> Download the JPG images</li>
-
-</ul>
-
+    <li><span class="step-number">3</span> Download the JPG images</li>
+  </ul>
 </div>
 <div class="more-tools">
+  <h3>More PDF Tools</h3>
 
-<h3>More PDF Tools</h3>
+  <div class="tools-mini-grid">
+    <a href="/compress-pdf">Compress PDF</a>
 
-<div class="tools-mini-grid">
+    <a href="/merge-pdf">Merge PDF</a>
 
-<a href="/compress-pdf">Compress PDF</a>
+    <a href="/split-pdf">Split PDF</a>
 
-<a href="/merge-pdf">Merge PDF</a>
+    <a href="/pdf-to-jpg">JPG to PDF</a>
 
-<a href="/split-pdf">Split PDF</a>
-
-<a href="/pdf-to-jpg">JPG to PDF</a>
-
-<a href="/rotate-pdf">Rotate PDF</a>
-
-</div>
-
+    <a href="/rotate-pdf">Rotate PDF</a>
+  </div>
 </div>
 <div class="browse-tools">
-<a href="/pdf-tools" class="main-btn">View All Tools</a>
+  <a href="/pdf-tools" class="main-btn">View All Tools</a>
 </div>
 
 {% endblock %}
