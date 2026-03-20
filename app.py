@@ -22,7 +22,7 @@ from reportlab.lib.pagesizes import letter
 app = Flask(__name__)
 
 # limit upload size
-app.config['MAX_CONTENT_LENGTH'] = 10 * 1024 * 1024
+app.config['MAX_CONTENT_LENGTH'] = 5 * 1024 * 1024
 
 UPLOAD_FOLDER = "uploads"
 
