@@ -1302,6 +1302,8 @@ def add_text_to_pdf():
     from reportlab.lib.pagesizes import letter
     from pdf2image import convert_from_path
 
+    preview_filename = None
+
     print("FORM:", request.form)
     print("FILES:", request.files)
 
@@ -1322,7 +1324,7 @@ def add_text_to_pdf():
             file.save(input_path)
 
             try:
-               # images = convert_from_path(input_path, dpi=100)
+                images = convert_from_path(input_path, dpi=100)
 
                 preview_filename = f"{uuid.uuid4()}.jpg"
                 preview_path = os.path.join("static", preview_filename)
