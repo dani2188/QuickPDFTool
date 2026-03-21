@@ -113,5 +113,24 @@
       handleFileInput("fileInput", "fileName");
       handleFileInput("signatureInput", "signatureName");
     </script>
+
+    <script>
+      const preview = document.getElementById("pdfPreview");
+
+      if (preview) {
+        preview.addEventListener("click", function (e) {
+          const rect = preview.getBoundingClientRect();
+
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+
+          document.getElementById("x").value = x;
+          document.getElementById("y").value = y;
+
+          document.getElementById("coords").innerText =
+            "Position selected: X=" + Math.round(x) + " Y=" + Math.round(y);
+        });
+      }
+    </script>
   </body>
 </html>
