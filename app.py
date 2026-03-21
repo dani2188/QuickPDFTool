@@ -1302,9 +1302,14 @@ def add_text_to_pdf():
     from reportlab.lib.pagesizes import letter
     from pdf2image import convert_from_path
 
+    print("FORM:", request.form)
+    print("FILES:", request.files)
+
     if request.method == "POST":
 
         file = request.files.get("pdf")
+        if not file:
+            return "No file uploaded"
         text = request.form.get("text")
         x = request.form.get("x")
         y = request.form.get("y")
@@ -1316,11 +1321,17 @@ def add_text_to_pdf():
             input_path = os.path.join(UPLOAD_FOLDER, filename)
             file.save(input_path)
 
-            images = convert_from_path(input_path, dpi=100)
+            try:
+               # images = convert_from_path(input_path, dpi=100)
 
-            preview_filename = f"{uuid.uuid4()}.jpg"
-            preview_path = os.path.join("static", preview_filename)
-            images[0].save(preview_path, "JPEG")
+                preview_filename = f"{uuid.uuid4()}.jpg"
+                preview_path = os.path.join("static", preview_filename)
+
+                images[0].save(preview_path, "JPEG")
+
+            except Exception as e:
+                print("Preview error:", e)
+                preview_filename = None
 
             return render_template(
                 "add_text_to_pdf.html",
