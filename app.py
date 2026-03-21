@@ -1364,7 +1364,11 @@ def add_text_to_pdf():
 
             return send_file(output_path, as_attachment=True)
 
-    return render_template("add_text_to_pdf.html")
+    return render_template(
+    "add_text_to_pdf.html",
+    preview=preview_filename,
+    filename=filename
+)
 
 @app.route("/how-to-add-text-to-pdf")
 def add_text_guide():
