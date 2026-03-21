@@ -1,0 +1,53 @@
+{% extends "base.html" %} {% block content %}
+
+<h1>Add Text to PDF</h1>
+<p class="subtitle">Insert custom text into your PDF file</p>
+
+<form method="POST" enctype="multipart/form-data">
+  <div id="dropArea" class="upload-box">
+    <p>
+      Drag & drop your PDF here or
+      <span class="upload-link">click to upload</span>
+    </p>
+
+    <input type="file" name="pdf" id="fileInput" hidden />
+    <p id="fileName">No file selected</p>
+  </div>
+
+  <p class="file-info">Max file size: 10MB • Files are automatically deleted</p>
+
+  <input
+    type="text"
+    name="text"
+    placeholder="Enter text to add"
+    required
+    style="padding: 10px; width: 250px; margin-top: 10px"
+  />
+
+  <br /><br />
+
+  <button class="main-btn">Add Text</button>
+</form>
+
+<p style="margin-top: 15px">
+  Need help? <a href="/how-to-add-text-to-pdf">Read our guide</a>
+</p>
+
+<div class="seo-content">
+  <h2>Add Text to PDF Online</h2>
+  <p>
+    Easily add custom text to your PDF documents. Insert notes, labels, or
+    annotations directly into your file.
+  </p>
+
+  <h3>How to add text to a PDF</h3>
+
+  <ul class="steps">
+    <li><span class="step-number">1</span> Upload your PDF</li>
+    <li><span class="step-number">2</span> Enter your text</li>
+    <li><span class="step-number">3</span> Click Add Text</li>
+    <li><span class="step-number">4</span> Download your file</li>
+  </ul>
+</div>
+
+{% endblock %}

@@ -1295,6 +1295,58 @@ def crop_pdf():
 def crop_pdf_guide():
     return render_template("crop_pdf_guide.html")
 
+@app.route("/add-text-to-pdf", methods=["GET", "POST"])
+def add_text_to_pdf():
+
+    from reportlab.pdfgen import canvas
+    from reportlab.lib.pagesizes import letter
+
+    if request.method == "POST":
+
+        file = request.files["pdf"]
+        text = request.form.get("text")
+
+        if file.filename == "":
+            return "No file selected"
+
+        filename = secure_filename(file.filename)
+        input_path = os.path.join(UPLOAD_FOLDER, filename)
+        file.save(input_path)
+
+        reader = PdfReader(input_path)
+        writer = PdfWriter()
+
+        for i, page in enumerate(reader.pages):
+
+            packet = io.BytesIO()
+            c = canvas.Canvas(packet, pagesize=letter)
+
+            # 🔥 POSITION (you can customize later)
+            c.setFont("Helvetica", 14)
+            c.drawString(100, 500, text)
+
+            c.save()
+            packet.seek(0)
+
+            overlay = PdfReader(packet)
+            page.merge_page(overlay.pages[0])
+
+            writer.add_page(page)
+
+        output_filename = f"text_{filename}"
+        output_path = os.path.join(UPLOAD_FOLDER, output_filename)
+
+        with open(output_path, "wb") as f:
+            writer.write(f)
+
+        return send_file(output_path, as_attachment=True)
+
+    return render_template("add_text_to_pdf.html")
+
+@app.route("/how-to-add-text-to-pdf")
+def add_text_guide():
+    return render_template("add_text_to_pdf_guide.html")
+
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
