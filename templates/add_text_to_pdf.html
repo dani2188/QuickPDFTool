@@ -11,6 +11,8 @@
   </div>
 
   {% if preview %}
+
+  <!-- ONLY AFTER UPLOAD -->
   <p class="file-info">Click on the PDF to place your text</p>
 
   <img
@@ -24,9 +26,7 @@
     "
   />
 
-  <!-- IMPORTANT -->
   <input type="hidden" name="existing_file" value="{{ filename }}" />
-  {% endif %}
 
   <!-- POSITION -->
   <input type="hidden" name="x" id="x" />
@@ -39,25 +39,6 @@
   <br /><br />
 
   <button class="main-btn">Add Text</button>
+
+  {% endif %}
 </form>
-
-<!-- CLICK SCRIPT -->
-<script>
-  const preview = document.getElementById("pdfPreview");
-
-  if (preview) {
-    preview.addEventListener("click", function (e) {
-      const rect = preview.getBoundingClientRect();
-
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-
-      document.getElementById("x").value = x;
-      document.getElementById("y").value = y;
-
-      alert("Position selected!");
-    });
-  }
-</script>
-
-{% endblock %}

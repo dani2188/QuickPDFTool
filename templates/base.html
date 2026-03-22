@@ -131,5 +131,17 @@
         });
       }
     </script>
+
+    <script>
+      const fileInput = document.getElementById("fileInput");
+
+      if (fileInput) {
+        fileInput.addEventListener("change", function () {
+          if (fileInput.files.length > 0) {
+            fileInput.closest("form").submit(); // 🔥 AUTO SUBMIT
+          }
+        });
+      }
+    </script>
   </body>
 </html>
