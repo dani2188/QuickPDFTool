@@ -1363,53 +1363,59 @@ def add_text_to_pdf():
         text = request.form.get("text")
         x = request.form.get("x")
         y = request.form.get("y")
+        existing_file = request.form.get("existing_file")
 
-        filename = secure_filename(file.filename)
-        input_path = os.path.join(UPLOAD_FOLDER, filename)
-        file.save(input_path)
+        # ✅ STEP 1: FIRST UPLOAD → SHOW PREVIEW
+        if file and file.filename != "" and not x:
 
-        # ✅ GENERATE PREVIEW
-        doc = fitz.open(input_path)
-        page = doc[0]
-        pix = page.get_pixmap()
-        preview_filename = f"{uuid.uuid4()}_preview.png"
-        preview_path = os.path.join("static", preview_filename)
-        pix.save(preview_path)
+            filename = secure_filename(file.filename)
+            input_path = os.path.join(UPLOAD_FOLDER, filename)
+            file.save(input_path)
 
-        # 👉 If no position yet → show preview
-        if not x or not y:
+            doc = fitz.open(input_path)
+            page = doc[0]
+            pix = page.get_pixmap()
+
+            preview_filename = f"{uuid.uuid4()}_preview.png"
+            preview_path = os.path.join("static", preview_filename)
+            pix.save(preview_path)
+
             return render_template(
                 "add_text_to_pdf.html",
                 preview=preview_filename,
                 filename=filename
             )
 
-        # ✅ ADD TEXT
-        reader = PdfReader(input_path)
-        writer = PdfWriter()
+        # ✅ STEP 2: ADD TEXT AFTER CLICK
+        if existing_file:
 
-        for page in reader.pages:
+            input_path = os.path.join(UPLOAD_FOLDER, existing_file)
 
-            packet = io.BytesIO()
-            c = canvas.Canvas(packet, pagesize=letter)
+            reader = PdfReader(input_path)
+            writer = PdfWriter()
 
-            pdf_y = 800 - float(y)
+            for page in reader.pages:
 
-            c.drawString(float(x), pdf_y, text)
-            c.save()
+                packet = io.BytesIO()
+                c = canvas.Canvas(packet, pagesize=letter)
 
-            packet.seek(0)
-            overlay = PdfReader(packet)
+                pdf_y = 800 - float(y)
 
-            page.merge_page(overlay.pages[0])
-            writer.add_page(page)
+                c.drawString(float(x), pdf_y, text)
+                c.save()
 
-        output_path = os.path.join(UPLOAD_FOLDER, f"text_{filename}")
+                packet.seek(0)
+                overlay = PdfReader(packet)
 
-        with open(output_path, "wb") as f:
-            writer.write(f)
+                page.merge_page(overlay.pages[0])
+                writer.add_page(page)
 
-        return send_file(output_path, as_attachment=True)
+            output_path = os.path.join(UPLOAD_FOLDER, f"text_{existing_file}")
+
+            with open(output_path, "wb") as f:
+                writer.write(f)
+
+            return send_file(output_path, as_attachment=True)
 
     return render_template("add_text_to_pdf.html")
 

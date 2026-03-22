@@ -3,7 +3,7 @@
 <h1>Add Text to PDF</h1>
 
 <form method="POST" enctype="multipart/form-data">
-  <!-- Upload -->
+  <!-- UPLOAD -->
   <div id="dropArea" class="upload-box">
     <p>Drag & drop your PDF or click</p>
     <input type="file" name="pdf" id="fileInput" hidden />
@@ -11,19 +11,24 @@
   </div>
 
   {% if preview %}
-  <p class="file-info">Click on the PDF preview to choose text position</p>
+  <p class="file-info">Click on the PDF to place your text</p>
 
   <img
     src="{{ url_for('static', filename=preview) }}"
     id="pdfPreview"
-    style="max-width: 500px; cursor: crosshair; margin-top: 20px"
+    style="
+      max-width: 500px;
+      cursor: crosshair;
+      margin-top: 20px;
+      border: 1px solid #ddd;
+    "
   />
 
-  <!-- keep filename -->
-  <input type="hidden" name="pdf" value="{{ filename }}" />
+  <!-- IMPORTANT -->
+  <input type="hidden" name="existing_file" value="{{ filename }}" />
   {% endif %}
 
-  <!-- hidden coords -->
+  <!-- POSITION -->
   <input type="hidden" name="x" id="x" />
   <input type="hidden" name="y" id="y" />
 
