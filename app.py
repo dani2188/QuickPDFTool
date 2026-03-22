@@ -6,6 +6,7 @@ import time
 import platform
 import uuid
 import io
+import zipfile
 
 from werkzeug.utils import secure_filename
 from PyPDF2 import PdfMerger, PdfReader, PdfWriter
@@ -174,7 +175,7 @@ def download_file(filename):
 
     path = os.path.join(UPLOAD_FOLDER, filename)
 
-    return send_file(path, as_attachment=True, mimetype="application/pdf")
+    return send_file(path, as_attachment=True)
 
 
 @app.route("/status/<filename>")
@@ -310,13 +311,14 @@ def jpg_to_pdf():
 @app.route("/pdf-to-png", methods=["GET", "POST"])
 def pdf_to_png():
 
-    import fitz
+    import fitz  # PyMuPDF
+    from PIL import Image
 
     if request.method == "POST":
 
-        file = request.files["pdf"]
+        file = request.files.get("pdf")
 
-        if file.filename == "":
+        if not file or file.filename == "":
             return "No file selected"
 
         filename = secure_filename(file.filename)
@@ -325,20 +327,49 @@ def pdf_to_png():
 
         doc = fitz.open(input_path)
 
-        output_files = []
+        image_files = []
+        MAX_PAGES = 20
 
-        for i, page in enumerate(doc):
+        for page_index in range(len(doc)):
 
-            pix = page.get_pixmap()
-            output_filename = f"{uuid.uuid4()}_page_{i+1}.png"
+            if page_index >= MAX_PAGES:
+                break
+
+            page = doc[page_index]
+
+            pix = page.get_pixmap(matrix=fitz.Matrix(2, 2))
+
+            img = Image.frombytes("RGB", [pix.width, pix.height], pix.samples)
+
+            output_filename = f"{uuid.uuid4()}_page_{page_index+1}.png"
             output_path = os.path.join(UPLOAD_FOLDER, output_filename)
 
-            pix.save(output_path)
+            img.save(output_path, "PNG")
 
-            output_files.append(output_filename)
+            image_files.append(output_filename)
 
-        return render_template("pdf_to_png_result.html", files=output_files)
+            delete_file_later(output_path)
 
+        delete_file_later(input_path)
+        
+        # CREATE ZIP
+        zip_filename = f"{uuid.uuid4()}_png_images.zip"
+        zip_path = os.path.join(UPLOAD_FOLDER, zip_filename)
+
+        with zipfile.ZipFile(zip_path, 'w') as zipf:
+            for image in image_files:
+                image_path = os.path.join(UPLOAD_FOLDER, image)
+                zipf.write(image_path, arcname=image)
+
+        delete_file_later(zip_path)
+
+        return render_template(
+            "pdf_to_png_result.html",
+            images=image_files,
+            zip_file=zip_filename,
+            total=len(image_files)
+        )
+    
     return render_template("pdf_to_png.html")
 
 
@@ -926,12 +957,13 @@ def extract_images_guide():
 def pdf_to_jpg():
 
     import fitz  # PyMuPDF
+    from PIL import Image
 
     if request.method == "POST":
 
-        file = request.files["pdf"]
+        file = request.files.get("pdf")
 
-        if file.filename == "":
+        if not file or file.filename == "":
             return "No file selected"
 
         filename = secure_filename(file.filename)
@@ -940,19 +972,48 @@ def pdf_to_jpg():
 
         doc = fitz.open(input_path)
 
-        output_files = []
+        image_files = []
+        MAX_PAGES = 20
 
-        for i, page in enumerate(doc):
+        for page_index in range(len(doc)):
 
-            pix = page.get_pixmap()
-            output_filename = f"{uuid.uuid4()}_page_{i+1}.jpg"
+            if page_index >= MAX_PAGES:
+                break
+
+            page = doc[page_index]
+
+            pix = page.get_pixmap(matrix=fitz.Matrix(2, 2))
+
+            img = Image.frombytes("RGB", [pix.width, pix.height], pix.samples)
+
+            output_filename = f"{uuid.uuid4()}_page_{page_index+1}.jpg"
             output_path = os.path.join(UPLOAD_FOLDER, output_filename)
 
-            pix.save(output_path)
+            img.save(output_path, "JPEG", quality=90)
 
-            output_files.append(output_filename)
+            image_files.append(output_filename)
 
-        return render_template("pdf_to_jpg_result.html", files=output_files)
+            delete_file_later(output_path)
+
+        delete_file_later(input_path)
+
+        # CREATE ZIP
+        zip_filename = f"{uuid.uuid4()}_jpg_images.zip"
+        zip_path = os.path.join(UPLOAD_FOLDER, zip_filename)
+
+        with zipfile.ZipFile(zip_path, 'w') as zipf:
+            for image in image_files:
+                image_path = os.path.join(UPLOAD_FOLDER, image)
+                zipf.write(image_path, arcname=image)
+
+        delete_file_later(zip_path)
+
+        return render_template(
+            "pdf_to_jpg_result.html",
+            images=image_files,
+            zip_file=zip_filename,
+            total=len(image_files)
+        )
 
     return render_template("pdf_to_jpg.html")
 
@@ -1172,46 +1233,57 @@ def pdf_to_text_guide():
 @app.route("/pdf-to-webp", methods=["GET", "POST"])
 def pdf_to_webp():
 
+    import fitz  # PyMuPDF
     from PIL import Image
 
     if request.method == "POST":
 
-        file = request.files["pdf"]
+        file = request.files.get("pdf")
 
-        if file.filename == "":
+        if not file or file.filename == "":
             return "No file selected"
 
         filename = secure_filename(file.filename)
-
         input_path = os.path.join(UPLOAD_FOLDER, filename)
-
         file.save(input_path)
-        delete_file_later(input_path)
 
-        if platform.system() == "Windows":
-            images = convert_from_path(
-                input_path,
-                dpi=200,
-                poppler_path=r"C:\Program Files\Release-25.12.0-0\poppler-25.12.0\Library\bin"
-            )
-        else:
-            images = convert_from_path(input_path, dpi=200)
+        doc = fitz.open(input_path)
 
-        output_files = []
+        image_files = []
+        MAX_PAGES = 20  # safety limit
 
-        for i, image in enumerate(images):
+        for page_index in range(len(doc)):
 
-            output_filename = f"page_{i+1}.webp"
+            if page_index >= MAX_PAGES:
+                break
 
+            page = doc[page_index]
+
+            # render page (better quality)
+            pix = page.get_pixmap(matrix=fitz.Matrix(2, 2))
+
+            # convert to PIL image
+            img = Image.frombytes("RGB", [pix.width, pix.height], pix.samples)
+
+            output_filename = f"{uuid.uuid4()}_page_{page_index+1}.webp"
             output_path = os.path.join(UPLOAD_FOLDER, output_filename)
 
-            image.save(output_path, "WEBP")
+            # save as WEBP (with compression)
+            img.save(output_path, "WEBP", quality=80)
 
+            image_files.append(output_filename)
+
+            # optional cleanup
             delete_file_later(output_path)
 
-            output_files.append(output_filename)
+        # optional cleanup input
+        delete_file_later(input_path)
 
-        return render_template("pdf_to_webp_result.html", files=output_files)
+        return render_template(
+            "pdf_to_webp_result.html",
+            images=image_files,
+            total=len(image_files)
+        )
 
     return render_template("pdf_to_webp.html")
 
@@ -1280,10 +1352,10 @@ def crop_pdf_guide():
 @app.route("/add-text-to-pdf", methods=["GET", "POST"])
 def add_text_to_pdf():
 
-    import fitz  # PyMuPDF
+    import fitz
     from reportlab.pdfgen import canvas
-
-    preview_filename = None
+    from reportlab.lib.pagesizes import letter
+    import io
 
     if request.method == "POST":
 
@@ -1292,69 +1364,52 @@ def add_text_to_pdf():
         x = request.form.get("x")
         y = request.form.get("y")
 
-        # =========================
-        # STEP 1 → Upload + preview
-        # =========================
-        if file and (not text or text.strip() == ""):
+        filename = secure_filename(file.filename)
+        input_path = os.path.join(UPLOAD_FOLDER, filename)
+        file.save(input_path)
 
-            filename = f"{uuid.uuid4()}_{secure_filename(file.filename)}"
-            input_path = os.path.join(UPLOAD_FOLDER, filename)
-            file.save(input_path)
+        # ✅ GENERATE PREVIEW
+        doc = fitz.open(input_path)
+        page = doc[0]
+        pix = page.get_pixmap()
+        preview_filename = f"{uuid.uuid4()}_preview.png"
+        preview_path = os.path.join("static", preview_filename)
+        pix.save(preview_path)
 
-            # 🔥 PREVIEW WITH PyMuPDF
-            doc = fitz.open(input_path)
-            page = doc[0]
-
-            pix = page.get_pixmap()
-            preview_filename = f"{uuid.uuid4()}.png"
-            preview_path = os.path.join("static", preview_filename)
-
-            pix.save(preview_path)
-
+        # 👉 If no position yet → show preview
+        if not x or not y:
             return render_template(
                 "add_text_to_pdf.html",
                 preview=preview_filename,
                 filename=filename
             )
 
-        # =========================
-        # STEP 2 → Add text
-        # =========================
-        elif text and x and y:
+        # ✅ ADD TEXT
+        reader = PdfReader(input_path)
+        writer = PdfWriter()
 
-            filename = request.form.get("filename")
-            input_path = os.path.join(UPLOAD_FOLDER, filename)
+        for page in reader.pages:
 
-            reader = PdfReader(input_path)
-            writer = PdfWriter()
+            packet = io.BytesIO()
+            c = canvas.Canvas(packet, pagesize=letter)
 
-            x = float(x)
-            y = float(y)
+            pdf_y = 800 - float(y)
 
-            for page in reader.pages:
+            c.drawString(float(x), pdf_y, text)
+            c.save()
 
-                packet = io.BytesIO()
-                c = canvas.Canvas(packet)
+            packet.seek(0)
+            overlay = PdfReader(packet)
 
-                # 🔥 SIMPLE Y FIX (approx)
-                pdf_y = 800 - y
+            page.merge_page(overlay.pages[0])
+            writer.add_page(page)
 
-                c.drawString(x, pdf_y, text)
+        output_path = os.path.join(UPLOAD_FOLDER, f"text_{filename}")
 
-                c.save()
-                packet.seek(0)
+        with open(output_path, "wb") as f:
+            writer.write(f)
 
-                overlay = PdfReader(packet)
-                page.merge_page(overlay.pages[0])
-
-                writer.add_page(page)
-
-            output_path = os.path.join(UPLOAD_FOLDER, f"text_{filename}")
-
-            with open(output_path, "wb") as f:
-                writer.write(f)
-
-            return send_file(output_path, as_attachment=True)
+        return send_file(output_path, as_attachment=True)
 
     return render_template("add_text_to_pdf.html")
 

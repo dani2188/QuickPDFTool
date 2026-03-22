@@ -1,64 +1,39 @@
-<!DOCTYPE html>
-<html>
+{% extends "base.html" %} {% block content %}
 
-<head>
-<title>PDF to JPG Result</title>
-</head>
+<h1>PDF to JPG Result</h1>
 
-<body style="font-family:Arial; text-align:center; margin-top:100px">
+<p class="subtitle">Your PDF has been successfully converted to JPG images.</p>
 
-<h2>Your PDF has been converted</h2>
+<!-- ZIP DOWNLOAD -->
+{% if zip_file %}
+<div style="margin: 25px">
+  <a href="/download-file/{{ zip_file }}" class="main-btn">
+    ⬇️ Download All Images (ZIP)
+  </a>
+</div>
+{% endif %}
 
-<p>Download your images:</p>
+<!-- TOTAL -->
+<p class="file-info">{{ total }} page(s) converted</p>
 
-<ul>
-
-{% for file in files %}
-
-<li>
-<a href="/download-file/{{ file }}">{{ file }}</a>
-</li>
-
-{% endfor %}
-
-</ul>
-<div class="tools-links">
-
-<h3>More PDF Tools</h3>
-
+<!-- IMAGE LIST -->
 <div class="tools-mini-grid">
-
-<a href="/compress-pdf">Compress PDF</a>
-<a href="/merge-pdf">Merge PDF</a>
-<a href="/split-pdf">Split PDF</a>
-<a href="/jpg-to-pdf">JPG to PDF</a>
-<a href="/pdf-to-jpg">PDF to JPG</a>
-<a href="/rotate-pdf">Rotate PDF</a>
-<a href="/delete-pdf-pages">Delete Pages</a>
-<a href="/pdf-to-word">PDF to Word</a>
-<a href="/word-to-pdf">Word to PDF</a>
-<a href="/protect-pdf">Protect PDF</a>
-<a href="/unlock-pdf">Unlock PDF</a>
-<a href="/add-page-numbers">Add Page Numbers</a>
-
+  {% for image in images %}
+  <a href="/download-file/{{ image }}"> Download {{ loop.index }} </a>
+  {% endfor %}
 </div>
 
-</div>
-</body>
+<!-- MORE TOOLS -->
+<div class="more-tools">
+  <h3>More PDF Tools</h3>
 
-<div class="ad-container">
-
-<ins class="adsbygoogle"
-style="display:block"
-data-ad-client="ca-pub-1115814677653739"
-data-ad-slot="1234567890"
-data-ad-format="auto"
-data-full-width-responsive="true"></ins>
-
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
+  <div class="tools-mini-grid">
+    <a href="/compress-pdf">Compress PDF</a>
+    <a href="/merge-pdf">Merge PDF</a>
+    <a href="/split-pdf">Split PDF</a>
+    <a href="/pdf-to-png">PDF to PNG</a>
+    <a href="/pdf-to-webp">PDF to WEBP</a>
+  </div>
 </div>
 
-</html>
+{% endblock %}

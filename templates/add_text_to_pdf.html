@@ -10,36 +10,49 @@
     <p id="fileName">No file selected</p>
   </div>
 
+  {% if preview %}
   <p class="file-info">Click on the PDF preview to choose text position</p>
 
-  <!-- ✅ KEEP FILENAME -->
+  <img
+    src="{{ url_for('static', filename=preview) }}"
+    id="pdfPreview"
+    style="max-width: 500px; cursor: crosshair; margin-top: 20px"
+  />
 
-  {% if filename %}
-  <input type="hidden" name="filename" value="{{ filename }}" />
+  <!-- keep filename -->
+  <input type="hidden" name="pdf" value="{{ filename }}" />
   {% endif %}
 
-  <!-- PREVIEW -->
-
-  {% if preview %}
-  <div class="pdf-preview-container">
-    <img src="/static/{{ preview }}" id="pdfPreview" />
-  </div>
-  {% endif %}
-
-  <p id="coords" style="color: #666"></p>
-
-  <!-- HIDDEN INPUTS -->
+  <!-- hidden coords -->
   <input type="hidden" name="x" id="x" />
   <input type="hidden" name="y" id="y" />
 
-  <br />
+  <br /><br />
 
-  <!-- TEXT INPUT -->
-  <input type="text" name="text" placeholder="Enter text" />
+  <input type="text" name="text" placeholder="Enter text" required />
 
   <br /><br />
 
   <button class="main-btn">Add Text</button>
 </form>
+
+<!-- CLICK SCRIPT -->
+<script>
+  const preview = document.getElementById("pdfPreview");
+
+  if (preview) {
+    preview.addEventListener("click", function (e) {
+      const rect = preview.getBoundingClientRect();
+
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      document.getElementById("x").value = x;
+      document.getElementById("y").value = y;
+
+      alert("Position selected!");
+    });
+  }
+</script>
 
 {% endblock %}

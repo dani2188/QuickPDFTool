@@ -1,57 +1,39 @@
-{% extends "base.html" %}
+{% extends "base.html" %} {% block content %}
 
-{% block title %}PDF to PNG Converter{% endblock %}
+<h1>PDF to PNG Result</h1>
 
-{% block description %}
-Convert PDF pages to PNG images online.
-{% endblock %}
+<p class="subtitle">Your PDF has been successfully converted to PNG images.</p>
 
-{% block content %}
+<!-- ZIP DOWNLOAD -->
+{% if zip_file %}
+<div style="margin: 25px">
+  <a href="/download-file/{{ zip_file }}" class="main-btn">
+    ⬇️ Download All Images (ZIP)
+  </a>
+</div>
+{% endif %}
 
-<h1>PDF to PNG</h1>
+<!-- TOTAL -->
+<p class="file-info">{{ total }} page(s) converted</p>
 
-<p class="subtitle">
-Convert each page of your PDF into PNG images.
-</p>
-
-<form method="POST" enctype="multipart/form-data">
-
-<div class="upload-box">
-
-<label class="upload-area">
-
-<input type="file" name="pdf" accept=".pdf" required>
-
-<div class="upload-text">
-Upload PDF file
+<!-- IMAGE LIST -->
+<div class="tools-mini-grid">
+  {% for image in images %}
+  <a href="/download-file/{{ image }}"> Download {{ loop.index }} </a>
+  {% endfor %}
 </div>
 
-</label>
+<!-- MORE TOOLS -->
+<div class="more-tools">
+  <h3>More PDF Tools</h3>
 
-</div>
-
-<button class="main-btn">Convert to PNG</button>
-
-</form>
-
-<p>
-Need help? Read our
-<a href="/how-to-pdf-to-png">guide on how to convert PDF to PNG</a>.
-</p>
-
-<div class="ad-container">
-
-<ins class="adsbygoogle"
-style="display:block"
-data-ad-client="ca-pub-1115814677653739"
-data-ad-slot="1234567890"
-data-ad-format="auto"
-data-full-width-responsive="true"></ins>
-
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
+  <div class="tools-mini-grid">
+    <a href="/compress-pdf">Compress PDF</a>
+    <a href="/merge-pdf">Merge PDF</a>
+    <a href="/split-pdf">Split PDF</a>
+    <a href="/pdf-to-jpg">PDF to JPG</a>
+    <a href="/pdf-to-webp">PDF to WEBP</a>
+  </div>
 </div>
 
 {% endblock %}
