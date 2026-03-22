@@ -957,50 +957,6 @@ def pdf_to_jpg():
     return render_template("pdf_to_jpg.html")
 
 
-
-@app.route("/pdf-to-png", methods=["GET", "POST"])
-def pdf_to_png():
-
-    if request.method == "POST":
-
-        file = request.files["pdf"]
-
-        if file.filename == "":
-            return "No file selected"
-
-        filename = secure_filename(file.filename)
-        input_path = os.path.join(UPLOAD_FOLDER, filename)
-
-        file.save(input_path)
-        delete_file_later(input_path)
-        delete_file_later(output_path)
-
-
-        if platform.system() == "Windows":
-            images = convert_from_path(
-                input_path,
-                dpi=200,
-                poppler_path=r"C:\Program Files\Release-25.12.0-0\poppler-25.12.0\Library\bin"
-            )
-        else:
-            images = convert_from_path(input_path, dpi=200)
-
-        output_files = []
-
-        for i, image in enumerate(images):
-
-            output_filename = f"{uuid.uuid4()}_page_{i+1}.jpg"
-            output_path = os.path.join(UPLOAD_FOLDER, output_filename)
-
-
-            image.save(output_path, "PNG")
-
-            output_files.append(output_filename)
-
-        return render_template("pdf_to_png_result.html", files=output_files)
-
-    return render_template("pdf_to_png.html")
-
 @app.route("/png-to-pdf", methods=["GET", "POST"])
 def png_to_pdf():
 
