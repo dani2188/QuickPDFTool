@@ -13,11 +13,13 @@
   <p class="file-info">Click on the PDF preview to choose text position</p>
 
   <!-- ✅ KEEP FILENAME -->
+
   {% if filename %}
   <input type="hidden" name="filename" value="{{ filename }}" />
   {% endif %}
 
   <!-- PREVIEW -->
+
   {% if preview %}
   <div class="pdf-preview-container">
     <img src="/static/{{ preview }}" id="pdfPreview" />

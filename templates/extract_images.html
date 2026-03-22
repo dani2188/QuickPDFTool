@@ -1,4 +1,8 @@
-{% extends "base.html" %} {% block content %}
+{% extends "base.html" %} {% block content %} {% if limit %}
+<p class="warning">
+  ⚠️ Only first 50 images extracted to keep processing fast.
+</p>
+{% endif %}
 
 <h1>Extract Images from PDF</h1>
 <p class="subtitle">Extract all embedded images from your PDF.</p>

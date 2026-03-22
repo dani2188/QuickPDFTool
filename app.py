@@ -9,9 +9,7 @@ import io
 
 from werkzeug.utils import secure_filename
 from PyPDF2 import PdfMerger, PdfReader, PdfWriter
-
 from PIL import Image
-from pdf2image import convert_from_path
 from pdf2docx import Converter
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
@@ -309,8 +307,10 @@ def jpg_to_pdf():
 
     return render_template("jpg_to_pdf.html")
 
-@app.route("/pdf-to-jpg", methods=["GET", "POST"])
-def pdf_to_jpg():
+@app.route("/pdf-to-png", methods=["GET", "POST"])
+def pdf_to_png():
+
+    import fitz
 
     if request.method == "POST":
 
@@ -321,43 +321,26 @@ def pdf_to_jpg():
 
         filename = secure_filename(file.filename)
         input_path = os.path.join(UPLOAD_FOLDER, filename)
-
         file.save(input_path)
 
-        delete_file_later(input_path)
-
-
-        if platform.system() == "Windows":
-            images = convert_from_path(
-            input_path,dpi=150,
-            thread_count=4,
-            fmt="jpeg",
-            poppler_path=r"C:\Program Files\Release-25.12.0-0\poppler-25.12.0\Library\bin"
-            )
-        else:
-            images = convert_from_path(input_path, 
-            dpi=150,
-            thread_count=4,
-            fmt="jpeg")
+        doc = fitz.open(input_path)
 
         output_files = []
 
-        for i, image in enumerate(images):
+        for i, page in enumerate(doc):
 
-            output_filename = f"{uuid.uuid4()}_page_{i+1}.jpg"
+            pix = page.get_pixmap()
+            output_filename = f"{uuid.uuid4()}_page_{i+1}.png"
             output_path = os.path.join(UPLOAD_FOLDER, output_filename)
 
-
-            image.save(output_path, "JPEG")
-            delete_file_later(output_path)
+            pix.save(output_path)
 
             output_files.append(output_filename)
 
-        return render_template("pdf_to_jpg_result.html", files=output_files)
+        return render_template("pdf_to_png_result.html", files=output_files)
 
-    return render_template("pdf_to_jpg.html")
+    return render_template("pdf_to_png.html")
 
-    from PyPDF2 import PdfReader, PdfWriter
 
 
 @app.route("/rotate-pdf", methods=["GET", "POST"])
@@ -878,6 +861,8 @@ def remove_watermark_guide():
 @app.route("/extract-images", methods=["GET", "POST"])
 def extract_images():
 
+    import fitz  # PyMuPDF
+
     if request.method == "POST":
 
         file = request.files["pdf"]
@@ -886,50 +871,92 @@ def extract_images():
             return "No file selected"
 
         filename = secure_filename(file.filename)
-
         input_path = os.path.join(UPLOAD_FOLDER, filename)
-
         file.save(input_path)
-        delete_file_later(input_path)
-        
-        reader = PdfReader(input_path)
+
+        doc = fitz.open(input_path)
 
         images = []
+        MAX_IMAGES = 50
 
-        for page_number, page in enumerate(reader.pages):
+        for page_index in range(len(doc)):
 
-            if "/XObject" in page["/Resources"]:
+            page = doc[page_index]
+            image_list = page.get_images(full=True)
 
-                xObject = page["/Resources"]["/XObject"].get_object()
+            for img_index, img in enumerate(image_list):
 
-                for obj in xObject:
+                xref = img[0]
+                base_image = doc.extract_image(xref)
 
-                    if xObject[obj]["/Subtype"] == "/Image":
+                image_bytes = base_image["image"]
+                image_ext = base_image["ext"]
 
-                        size = (xObject[obj]["/Width"], xObject[obj]["/Height"])
+                image_filename = f"{uuid.uuid4()}_page{page_index+1}_{img_index}.{image_ext}"
+                image_path = os.path.join(UPLOAD_FOLDER, image_filename)
 
-                        data = xObject[obj]._data
+                with open(image_path, "wb") as img_file:
+                    img_file.write(image_bytes)
 
-                        unique_id = uuid.uuid4()
-                        image_filename = f"{unique_id}_image_{page_number+1}_{obj[1:]}.jpg"
+                images.append(image_filename)
 
+                # ✅ LIMIT
+                if len(images) >= MAX_IMAGES:
+                    break
 
-                        image_path = os.path.join(UPLOAD_FOLDER, image_filename)
+            if len(images) >= MAX_IMAGES:
+                break
 
-                        with open(image_path, "wb") as img_file:
-                            img_file.write(data)
-                        
-                        delete_file_later(image_path)
+        # ✅ SMART UX FLAG
+        limit_reached = len(images) >= MAX_IMAGES
 
-                        images.append(image_filename)
-
-        return render_template("extract_images_result.html", images=images)
+        return render_template(
+            "extract_images_result.html",
+            images=images,
+            limit=limit_reached
+        )
 
     return render_template("extract_images.html")
 
 @app.route("/how-to-extract-images-from-pdf")
 def extract_images_guide():
     return render_template("extract_images_guide.html")
+
+@app.route("/pdf-to-jpg", methods=["GET", "POST"])
+def pdf_to_jpg():
+
+    import fitz  # PyMuPDF
+
+    if request.method == "POST":
+
+        file = request.files["pdf"]
+
+        if file.filename == "":
+            return "No file selected"
+
+        filename = secure_filename(file.filename)
+        input_path = os.path.join(UPLOAD_FOLDER, filename)
+        file.save(input_path)
+
+        doc = fitz.open(input_path)
+
+        output_files = []
+
+        for i, page in enumerate(doc):
+
+            pix = page.get_pixmap()
+            output_filename = f"{uuid.uuid4()}_page_{i+1}.jpg"
+            output_path = os.path.join(UPLOAD_FOLDER, output_filename)
+
+            pix.save(output_path)
+
+            output_files.append(output_filename)
+
+        return render_template("pdf_to_jpg_result.html", files=output_files)
+
+    return render_template("pdf_to_jpg.html")
+
+
 
 @app.route("/pdf-to-png", methods=["GET", "POST"])
 def pdf_to_png():
@@ -1189,7 +1216,6 @@ def pdf_to_text_guide():
 @app.route("/pdf-to-webp", methods=["GET", "POST"])
 def pdf_to_webp():
 
-    from pdf2image import convert_from_path
     from PIL import Image
 
     if request.method == "POST":
@@ -1298,42 +1324,36 @@ def crop_pdf_guide():
 @app.route("/add-text-to-pdf", methods=["GET", "POST"])
 def add_text_to_pdf():
 
+    import fitz  # PyMuPDF
     from reportlab.pdfgen import canvas
-    from reportlab.lib.pagesizes import letter
-    from pdf2image import convert_from_path
 
     preview_filename = None
-
-    print("FORM:", request.form)
-    print("FILES:", request.files)
 
     if request.method == "POST":
 
         file = request.files.get("pdf")
-        if not file:
-            return "No file uploaded"
         text = request.form.get("text")
         x = request.form.get("x")
         y = request.form.get("y")
 
-        # STEP 1 → Upload only (no text yet)
-        if file and not text:
+        # =========================
+        # STEP 1 → Upload + preview
+        # =========================
+        if file and (not text or text.strip() == ""):
 
-            filename = secure_filename(file.filename)
+            filename = f"{uuid.uuid4()}_{secure_filename(file.filename)}"
             input_path = os.path.join(UPLOAD_FOLDER, filename)
             file.save(input_path)
 
-            try:
-                images = convert_from_path(input_path, dpi=100)
+            # 🔥 PREVIEW WITH PyMuPDF
+            doc = fitz.open(input_path)
+            page = doc[0]
 
-                preview_filename = f"{uuid.uuid4()}.jpg"
-                preview_path = os.path.join("static", preview_filename)
+            pix = page.get_pixmap()
+            preview_filename = f"{uuid.uuid4()}.png"
+            preview_path = os.path.join("static", preview_filename)
 
-                images[0].save(preview_path, "JPEG")
-
-            except Exception as e:
-                print("Preview error:", e)
-                preview_filename = None
+            pix.save(preview_path)
 
             return render_template(
                 "add_text_to_pdf.html",
@@ -1341,7 +1361,9 @@ def add_text_to_pdf():
                 filename=filename
             )
 
+        # =========================
         # STEP 2 → Add text
+        # =========================
         elif text and x and y:
 
             filename = request.form.get("filename")
@@ -1356,8 +1378,9 @@ def add_text_to_pdf():
             for page in reader.pages:
 
                 packet = io.BytesIO()
-                c = canvas.Canvas(packet, pagesize=letter)
+                c = canvas.Canvas(packet)
 
+                # 🔥 SIMPLE Y FIX (approx)
                 pdf_y = 800 - y
 
                 c.drawString(x, pdf_y, text)
@@ -1377,11 +1400,7 @@ def add_text_to_pdf():
 
             return send_file(output_path, as_attachment=True)
 
-    return render_template(
-    "add_text_to_pdf.html",
-    preview=preview_filename,
-    filename=filename
-)
+    return render_template("add_text_to_pdf.html")
 
 @app.route("/how-to-add-text-to-pdf")
 def add_text_guide():

@@ -2,10 +2,10 @@ flask
 gunicorn
 PyPDF2
 Pillow
-pdf2image
 pdf2docx
 python-docx
 reportlab
 pdfplumber
 pandas
 openpyxl
+PyMuPDF
