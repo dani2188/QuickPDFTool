@@ -1352,21 +1352,23 @@ def crop_pdf_guide():
 @app.route("/add-text-to-pdf", methods=["GET", "POST"])
 def add_text_to_pdf():
 
-    import fitz
+    import fitz  # PyMuPDF
+    from PIL import Image
+    from PyPDF2 import PdfReader, PdfWriter
     from reportlab.pdfgen import canvas
-    from reportlab.lib.pagesizes import letter
     import io
+    import uuid
+
+    preview_filename = None
+    filename = None
 
     if request.method == "POST":
 
         file = request.files.get("pdf")
-        text = request.form.get("text")
-        x = request.form.get("x")
-        y = request.form.get("y")
         existing_file = request.form.get("existing_file")
 
-        # ✅ STEP 1: FIRST UPLOAD → SHOW PREVIEW
-        if file and file.filename != "" and not x:
+        # ✅ STEP 1 — FIRST UPLOAD (generate preview)
+        if file and file.filename != "":
 
             filename = secure_filename(file.filename)
             input_path = os.path.join(UPLOAD_FOLDER, filename)
@@ -1374,11 +1376,14 @@ def add_text_to_pdf():
 
             doc = fitz.open(input_path)
             page = doc[0]
-            pix = page.get_pixmap()
 
-            preview_filename = f"{uuid.uuid4()}_preview.png"
+            pix = page.get_pixmap(matrix=fitz.Matrix(2, 2))
+            img = Image.frombytes("RGB", [pix.width, pix.height], pix.samples)
+
+            preview_filename = f"{uuid.uuid4()}.jpg"
             preview_path = os.path.join("static", preview_filename)
-            pix.save(preview_path)
+
+            img.save(preview_path, "JPEG")
 
             return render_template(
                 "add_text_to_pdf.html",
@@ -1386,10 +1391,14 @@ def add_text_to_pdf():
                 filename=filename
             )
 
-        # ✅ STEP 2: ADD TEXT AFTER CLICK
-        if existing_file:
+        # ✅ STEP 2 — ADD TEXT
+        elif existing_file:
 
             input_path = os.path.join(UPLOAD_FOLDER, existing_file)
+
+            text = request.form.get("text")
+            x = float(request.form.get("x", 100))
+            y = float(request.form.get("y", 500))
 
             reader = PdfReader(input_path)
             writer = PdfWriter()
@@ -1397,26 +1406,29 @@ def add_text_to_pdf():
             for page in reader.pages:
 
                 packet = io.BytesIO()
-                c = canvas.Canvas(packet, pagesize=letter)
+                c = canvas.Canvas(packet)
 
-                pdf_y = 800 - float(y)
+                # adjust Y (PDF origin bottom-left)
+                pdf_y = 800 - y
 
-                c.drawString(float(x), pdf_y, text)
+                c.drawString(x, pdf_y, text)
                 c.save()
-
                 packet.seek(0)
-                overlay = PdfReader(packet)
 
+                overlay = PdfReader(packet)
                 page.merge_page(overlay.pages[0])
+
                 writer.add_page(page)
 
-            output_path = os.path.join(UPLOAD_FOLDER, f"text_{existing_file}")
+            output_filename = f"text_{existing_file}"
+            output_path = os.path.join(UPLOAD_FOLDER, output_filename)
 
             with open(output_path, "wb") as f:
                 writer.write(f)
 
             return send_file(output_path, as_attachment=True)
 
+    # ✅ SAFE DEFAULT (NO ERROR)
     return render_template("add_text_to_pdf.html")
 
 @app.route("/how-to-add-text-to-pdf")
