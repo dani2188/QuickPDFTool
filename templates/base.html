@@ -35,7 +35,6 @@
           <a href="/">Home</a>
           <a href="/pdf-tools">All Tools</a>
           <a href="/blog">Guides</a>
-          <!-- link to quickimagetools -->
           <a href="https://quickimagetools.onrender.com/" target="_blank">
             Image Tools
           </a>
@@ -43,105 +42,80 @@
       </div>
     </header>
 
-    <div class="main-container">{% block content %} {% endblock %}</div>
+    <div class="main-container">{% block content %}{% endblock %}</div>
 
     <footer class="footer">
       <p>© 2026 QuickPDFTool</p>
-
       <p>Free online tools to compress, merge, convert and edit PDF files.</p>
 
       <div class="footer-links">
         <a href="/privacy-policy">Privacy Policy</a>
         <a href="/terms">Terms</a>
         <a href="/contact">Contact</a>
-        <!-- link to quickimagetools -->
         <a href="https://quickimagetools.onrender.com/" target="_blank">
           Image Tools
         </a>
       </div>
     </footer>
 
+    <!-- ✅ GLOBAL JS (UPLOAD + DRAG DROP + AUTO SUBMIT) -->
     <script>
-      function handleFileInput(inputId, nameId) {
-        const input = document.getElementById(inputId);
-        const name = document.getElementById(nameId);
+      document.addEventListener("DOMContentLoaded", function () {
+        const dropArea = document.getElementById("dropArea");
+        const fileInput = document.getElementById("fileInput");
+        const fileName = document.getElementById("fileName");
 
-        if (input && name) {
-          input.addEventListener("change", function () {
-            if (input.files.length === 1) {
-              name.textContent = input.files[0].name;
-            } else if (input.files.length > 1) {
-              name.textContent = input.files.length + " files selected";
+        if (dropArea && fileInput) {
+          // CLICK → open file picker
+          dropArea.addEventListener("click", () => {
+            fileInput.click();
+          });
+
+          // FILE SELECTED → show name + auto submit
+          fileInput.addEventListener("change", () => {
+            if (fileInput.files.length > 0) {
+              if (fileName) {
+                if (fileInput.files.length === 1) {
+                  fileName.textContent = fileInput.files[0].name;
+                } else {
+                  fileName.textContent =
+                    fileInput.files.length + " files selected";
+                }
+              }
+
+              // 🔥 AUTO SUBMIT (CRITICAL)
+              fileInput.closest("form").submit();
+            }
+          });
+
+          // DRAG OVER
+          dropArea.addEventListener("dragover", (e) => {
+            e.preventDefault();
+            dropArea.style.borderColor = "#e5322d";
+          });
+
+          // DRAG LEAVE
+          dropArea.addEventListener("dragleave", () => {
+            dropArea.style.borderColor = "#ccc";
+          });
+
+          // DROP FILE
+          dropArea.addEventListener("drop", (e) => {
+            e.preventDefault();
+
+            fileInput.files = e.dataTransfer.files;
+
+            if (fileInput.files.length > 0) {
+              if (fileName) {
+                fileName.textContent = fileInput.files[0].name;
+              }
+
+              // 🔥 AUTO SUBMIT
+              fileInput.closest("form").submit();
             }
           });
         }
-      }
-
-      /* MAIN PDF upload */
-      const dropArea = document.getElementById("dropArea");
-      const fileInput = document.getElementById("fileInput");
-
-      if (dropArea && fileInput) {
-        dropArea.addEventListener("click", () => fileInput.click());
-
-        dropArea.addEventListener("dragover", (e) => {
-          e.preventDefault();
-          dropArea.style.background = "#f4f5f7";
-        });
-
-        dropArea.addEventListener("dragleave", () => {
-          dropArea.style.background = "#fafafa";
-        });
-
-        dropArea.addEventListener("drop", (e) => {
-          e.preventDefault();
-          fileInput.files = e.dataTransfer.files;
-          dropArea.style.background = "#fafafa";
-
-          const fileName = document.getElementById("fileName");
-          if (fileName) {
-            if (fileInput.files.length === 1) {
-              fileName.textContent = fileInput.files[0].name;
-            } else {
-              fileName.textContent = fileInput.files.length + " files selected";
-            }
-          }
-        });
-      }
-
-      /* APPLY TO INPUTS */
-      handleFileInput("fileInput", "fileName");
-      handleFileInput("signatureInput", "signatureName");
-    </script>
-
-    <script>
-      const preview = document.getElementById("pdfPreview");
-
-      if (preview) {
-        preview.addEventListener("click", function (e) {
-          const rect = preview.getBoundingClientRect();
-
-          const x = e.clientX - rect.left;
-          const y = e.clientY - rect.top;
-
-          document.getElementById("x").value = x;
-          document.getElementById("y").value = y;
-
-          alert("Position selected!");
-        });
-      }
-    </script>
-
-    <script>
-      const fileInput = document.getElementById("fileInput");
-
-      if (fileInput) {
-        fileInput.addEventListener("change", function () {
-          if (fileInput.files.length > 0) {
-            fileInput.closest("form").submit(); // 🔥 AUTO SUBMIT
-          }
-        });
-      }
+      });
     </script>
   </body>
 </html>
