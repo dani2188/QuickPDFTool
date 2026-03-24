@@ -1372,6 +1372,7 @@ def add_text_to_pdf():
             filename = secure_filename(file.filename)
             input_path = os.path.join(UPLOAD_FOLDER, filename)
             file.save(input_path)
+            delete_file_later(input_path)
 
             doc = fitz.open(input_path)
             page = doc[0]
@@ -1391,31 +1392,52 @@ def add_text_to_pdf():
             )
 
         # ✅ STEP 2 — APPLY TEXT
+    
         elif existing_file:
 
             input_path = os.path.join(UPLOAD_FOLDER, existing_file)
 
             text = request.form.get("text")
+
             x = float(request.form.get("x", 50))
             y = float(request.form.get("y", 50))
+
+            img_width = float(request.form.get("img_width"))
+            img_height = float(request.form.get("img_height"))
+
             font_size = int(request.form.get("font_size", 12))
             color_hex = request.form.get("color", "#000000")
 
-            # convert hex → RGB
+            # 🎨 convert HEX → RGB (0–1 range)
             color = tuple(int(color_hex[i:i+2], 16)/255 for i in (1, 3, 5))
 
             doc = fitz.open(input_path)
             page = doc[0]
 
+            pdf_width = page.rect.width
+            pdf_height = page.rect.height
+
+            # ✅ SCALE coordinates (KEY FIX)
+            pdf_x = (x / img_width) * pdf_width
+            pdf_y = (y / img_height) * pdf_height
+
+            # ✅ FIX text alignment (VERY IMPORTANT)
+            pdf_x -= len(text) * font_size * 0.25
+            pdf_y += font_size
+
+            # ✅ INSERT TEXT
             page.insert_text(
-                (x, y),
+                (pdf_x, pdf_y),
                 text,
                 fontsize=font_size,
                 color=color
             )
 
-            output_path = os.path.join(UPLOAD_FOLDER, f"text_{existing_file}")
+            output_filename = f"text_{uuid.uuid4()}.pdf"
+            output_path = os.path.join(UPLOAD_FOLDER, output_filename)
+
             doc.save(output_path)
+            delete_file_later(output_path)
 
             return send_file(output_path, as_attachment=True)
 

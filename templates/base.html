@@ -61,17 +61,18 @@
     <!-- ✅ GLOBAL JS (UPLOAD + DRAG DROP + AUTO SUBMIT) -->
     <script>
       document.addEventListener("DOMContentLoaded", function () {
+        if (window.uploadInitialized) return;
+        window.uploadInitialized = true;
+
         const dropArea = document.getElementById("dropArea");
         const fileInput = document.getElementById("fileInput");
         const fileName = document.getElementById("fileName");
 
-        if (dropArea && fileInput) {
-          // CLICK → open file picker
+        if (dropArea && fileInput && fileInput.closest("form")) {
           dropArea.addEventListener("click", () => {
             fileInput.click();
           });
 
-          // FILE SELECTED → show name + auto submit
           fileInput.addEventListener("change", () => {
             if (fileInput.files.length > 0) {
               if (fileName) {
@@ -83,23 +84,22 @@
                 }
               }
 
-              // 🔥 AUTO SUBMIT (CRITICAL)
-              fileInput.closest("form").submit();
+              // ✅ CONDITIONAL AUTO SUBMIT
+              if (!fileInput.classList.contains("no-auto-submit")) {
+                fileInput.closest("form").submit();
+              }
             }
           });
 
-          // DRAG OVER
           dropArea.addEventListener("dragover", (e) => {
             e.preventDefault();
             dropArea.style.borderColor = "#e5322d";
           });
 
-          // DRAG LEAVE
           dropArea.addEventListener("dragleave", () => {
             dropArea.style.borderColor = "#ccc";
           });
 
-          // DROP FILE
           dropArea.addEventListener("drop", (e) => {
             e.preventDefault();
 
@@ -110,8 +110,10 @@
                 fileName.textContent = fileInput.files[0].name;
               }
 
-              // 🔥 AUTO SUBMIT
-              fileInput.closest("form").submit();
+              // ✅ CONDITIONAL AUTO SUBMIT
+              if (!fileInput.classList.contains("no-auto-submit")) {
+                fileInput.closest("form").submit();
+              }
             }
           });
         }

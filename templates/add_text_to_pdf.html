@@ -6,7 +6,13 @@
   <!-- UPLOAD -->
   <div id="dropArea" class="upload-box">
     <p>Drag & drop your PDF or click</p>
-    <input type="file" name="pdf" id="fileInput" hidden />
+    <input
+      type="file"
+      name="pdf"
+      id="fileInput"
+      class="no-auto-submit"
+      hidden
+    />
     <p id="fileName">No file selected</p>
   </div>
 
@@ -52,6 +58,8 @@
   <input type="hidden" name="y" id="y" />
   <input type="hidden" name="text" id="hiddenText" />
   <input type="hidden" name="existing_file" value="{{ filename }}" />
+  <input type="hidden" name="img_width" id="imgWidth" />
+  <input type="hidden" name="img_height" id="imgHeight" />
 
   <br /><br />
 
@@ -67,38 +75,79 @@
     const preview = document.getElementById("pdfPreview");
     const fontSizeInput = document.getElementById("fontSize");
     const colorPicker = document.getElementById("colorPicker");
+    const form = document.querySelector("form");
 
-    if (box && preview) {
-      let offsetX,
-        offsetY,
-        isDragging = false;
+    if (!box || !preview) return;
 
-      // DRAG START
-      box.addEventListener("mousedown", function (e) {
-        isDragging = true;
-        offsetX = e.offsetX;
-        offsetY = e.offsetY;
+    let offsetX = 0;
+    let offsetY = 0;
+    let isDragging = false;
+
+    // ✅ INIT TEXT VALUE (VERY IMPORTANT)
+    document.getElementById("hiddenText").value = box.innerText;
+
+    // -----------------------
+    // 🖱️ DRAG START
+    // -----------------------
+    box.addEventListener("mousedown", function (e) {
+      isDragging = true;
+      offsetX = e.offsetX;
+      offsetY = e.offsetY;
+    });
+
+    // -----------------------
+    // 🖱️ DRAG MOVE
+    // -----------------------
+    document.addEventListener("mousemove", function (e) {
+      if (!isDragging) return;
+
+      const rect = preview.getBoundingClientRect();
+
+      let x = e.clientX - rect.left - offsetX;
+      let y = e.clientY - rect.top - offsetY;
+
+      // ✅ KEEP INSIDE IMAGE (UX FIX)
+      x = Math.max(0, Math.min(x, rect.width - 50));
+      y = Math.max(0, Math.min(y, rect.height - 20));
+
+      box.style.left = x + "px";
+      box.style.top = y + "px";
+    });
+
+    // -----------------------
+    // 🖱️ DRAG END
+    // -----------------------
+    document.addEventListener("mouseup", function () {
+      isDragging = false;
+    });
+
+    // -----------------------
+    // 🎨 LIVE STYLE UPDATE
+    // -----------------------
+    if (fontSizeInput) {
+      fontSizeInput.addEventListener("input", function () {
+        box.style.fontSize = fontSizeInput.value + "px";
       });
+    }
 
-      // DRAG MOVE
-      document.addEventListener("mousemove", function (e) {
-        if (isDragging) {
-          const rect = preview.getBoundingClientRect();
-
-          let x = e.clientX - rect.left - offsetX;
-          let y = e.clientY - rect.top - offsetY;
-
-          box.style.left = x + "px";
-          box.style.top = y + "px";
-        }
+    if (colorPicker) {
+      colorPicker.addEventListener("input", function () {
+        box.style.color = colorPicker.value;
       });
+    }
 
-      document.addEventListener("mouseup", function () {
-        isDragging = false;
-      });
+    // -----------------------
+    // ✏️ TEXT SYNC
+    // -----------------------
+    box.addEventListener("input", function () {
+      document.getElementById("hiddenText").value = box.innerText;
+    });
 
-      // SAVE POSITION ON SUBMIT
-      document.querySelector("form").addEventListener("submit", function () {
+    // -----------------------
+    // 📤 FORM SUBMIT (SAVE POSITION)
+    // -----------------------
+    if (form) {
+      form.addEventListener("submit", function () {
         const rect = preview.getBoundingClientRect();
         const boxRect = box.getBoundingClientRect();
 
@@ -107,22 +156,12 @@
 
         document.getElementById("x").value = x;
         document.getElementById("y").value = y;
+
         document.getElementById("hiddenText").value = box.innerText;
-      });
-    }
 
-    // 🎯 LIVE STYLE UPDATE
-    if (box && fontSizeInput && colorPicker) {
-      fontSizeInput.addEventListener("input", function () {
-        box.style.fontSize = fontSizeInput.value + "px";
-      });
-
-      colorPicker.addEventListener("input", function () {
-        box.style.color = colorPicker.value;
-      });
-
-      box.addEventListener("input", function () {
-        document.getElementById("hiddenText").value = box.innerText;
+        // ✅ IMPORTANT FOR SCALING
+        document.getElementById("imgWidth").value = rect.width;
+        document.getElementById("imgHeight").value = rect.height;
       });
     }
   });
