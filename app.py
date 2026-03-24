@@ -1418,18 +1418,21 @@ def add_text_to_pdf():
 
             pdf_width = page.rect.width
             pdf_height = page.rect.height
-
+            # position
             pdf_x = (x / img_width) * pdf_width
             pdf_y = (y / img_height) * pdf_height
 
-            pdf_x = (x / img_width) * pdf_width
-            pdf_y = (y / img_height) * pdf_height
+            box_width = float(request.form.get("box_width"))
+            box_height = float(request.form.get("box_height"))
+
+            pdf_box_width = (box_width / img_width) * pdf_width
+            pdf_box_height = (box_height / img_height) * pdf_height
 
             rect = fitz.Rect(
                 pdf_x,
                 pdf_y,
-                pdf_x + 300,
-                pdf_y + 50
+                pdf_x + pdf_box_width,
+                pdf_y + pdf_box_height
             )
 
             page.insert_textbox(

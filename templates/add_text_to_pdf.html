@@ -54,6 +54,8 @@
   <input type="hidden" name="existing_file" value="{{ filename }}" />
   <input type="hidden" name="img_width" id="imgWidth" />
   <input type="hidden" name="img_height" id="imgHeight" />
+  <input type="hidden" name="box_width" id="boxWidth" />
+  <input type="hidden" name="box_height" id="boxHeight" />
 
   <br /><br />
 
@@ -148,6 +150,9 @@
         const x = boxRect.left - rect.left;
         const y = boxRect.top - rect.top;
 
+        const boxWidth = box.offsetWidth;
+        const boxHeight = box.offsetHeight;
+
         document.getElementById("x").value = x;
         document.getElementById("y").value = y;
 
@@ -156,6 +161,12 @@
         // ✅ IMPORTANT FOR SCALING
         document.getElementById("imgWidth").value = rect.width;
         document.getElementById("imgHeight").value = rect.height;
+
+        document.getElementById("boxWidth").value = boxWidth;
+        document.getElementById("boxHeight").value = boxHeight;
+
+        document.getElementById("boxWidth").value = box.offsetWidth;
+        document.getElementById("boxHeight").value = box.offsetHeight;
       });
     }
   });
