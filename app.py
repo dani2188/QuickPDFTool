@@ -1422,14 +1422,22 @@ def add_text_to_pdf():
             pdf_x = (x / img_width) * pdf_width
             pdf_y = (y / img_height) * pdf_height
 
-            pdf_x -= len(text) * font_size * 0.25
-            pdf_y += font_size
+            pdf_x = (x / img_width) * pdf_width
+            pdf_y = (y / img_height) * pdf_height
 
-            page.insert_text(
-                (pdf_x, pdf_y),
+            rect = fitz.Rect(
+                pdf_x,
+                pdf_y,
+                pdf_x + 300,
+                pdf_y + 50
+            )
+
+            page.insert_textbox(
+                rect,
                 text,
                 fontsize=font_size,
-                color=color
+                color=color,
+                align=0
             )
 
             output_filename = f"text_{uuid.uuid4()}.pdf"
