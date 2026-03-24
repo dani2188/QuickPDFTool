@@ -1392,41 +1392,35 @@ def add_text_to_pdf():
             )
 
         # ✅ STEP 2 — ADD TEXT
+
         elif existing_file:
 
             input_path = os.path.join(UPLOAD_FOLDER, existing_file)
 
             text = request.form.get("text")
-            x = float(request.form.get("x", 100))
-            y = float(request.form.get("y", 500))
+            x = float(request.form.get("x", 50))
+            y = float(request.form.get("y", 50))
+            font_size = int(request.form.get("font_size", 12))
+            color_hex = request.form.get("color", "#000000")
 
-            reader = PdfReader(input_path)
-            writer = PdfWriter()
+            # convert hex → RGB
+            color = tuple(int(color_hex[i:i+2], 16)/255 for i in (1, 3, 5))
 
-            for page in reader.pages:
+            doc = fitz.open(input_path)
 
-                packet = io.BytesIO()
-                c = canvas.Canvas(packet)
+            page = doc[0]  # 👉 later: multi-page support
 
-                # adjust Y (PDF origin bottom-left)
-                pdf_y = 800 - y
+            page.insert_text(
+            (x, y),
+            text,
+            fontsize=font_size,
+            color=color
+            )
 
-                c.drawString(x, pdf_y, text)
-                c.save()
-                packet.seek(0)
+            output_path = os.path.join(UPLOAD_FOLDER, f"text_{existing_file}")
+            doc.save(output_path)
 
-                overlay = PdfReader(packet)
-                page.merge_page(overlay.pages[0])
-
-                writer.add_page(page)
-
-            output_filename = f"text_{existing_file}"
-            output_path = os.path.join(UPLOAD_FOLDER, output_filename)
-
-            with open(output_path, "wb") as f:
-                writer.write(f)
-
-            return send_file(output_path, as_attachment=True)
+        return send_file(output_path, as_attachment=True)
 
     # ✅ SAFE DEFAULT (NO ERROR)
     return render_template("add_text_to_pdf.html")

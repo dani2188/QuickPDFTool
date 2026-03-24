@@ -12,35 +12,103 @@
 
   {% if preview %}
 
-  <!-- ONLY AFTER UPLOAD -->
-  <p class="file-info">Click on the PDF to place your text</p>
+  <div style="position: relative; display: inline-block; margin-top: 20px">
+    <!-- PDF PREVIEW -->
+    <img
+      src="{{ url_for('static', filename=preview) }}"
+      id="pdfPreview"
+      style="max-width: 500px"
+    />
 
-  <img
-    src="{{ url_for('static', filename=preview) }}"
-    id="pdfPreview"
-    style="
-      max-width: 500px;
-      cursor: crosshair;
-      margin-top: 20px;
-      border: 1px solid #ddd;
-    "
-  />
+    <!-- DRAGGABLE TEXT BOX -->
+    <div
+      id="textBox"
+      contenteditable="true"
+      style="
+        position: absolute;
+        top: 50px;
+        left: 50px;
+        background: rgba(255, 255, 255, 0.8);
+        border: 1px dashed #e5322d;
+        padding: 5px;
+        cursor: move;
+        min-width: 100px;
+      "
+    >
+      Your text
+    </div>
+  </div>
 
-  <input type="hidden" name="existing_file" value="{{ filename }}" />
+  <!-- OPTIONS -->
+  <div style="margin-top: 20px">
+    <label>Font size:</label>
+    <input type="number" name="font_size" value="12" />
 
-  <!-- POSITION -->
+    <label>Color:</label>
+    <input type="color" name="color" value="#000000" />
+  </div>
+
+  <!-- HIDDEN DATA -->
   <input type="hidden" name="x" id="x" />
   <input type="hidden" name="y" id="y" />
+  <input type="hidden" name="text" id="hiddenText" />
+  <input type="hidden" name="existing_file" value="{{ filename }}" />
 
   <br /><br />
 
-  <input type="text" name="text" placeholder="Enter text" required />
-
-  <br /><br />
-
-  <button class="main-btn">Add Text</button>
+  <button class="main-btn">Apply Text</button>
 
   {% endif %}
 </form>
+
+<!-- DRAG SCRIPT -->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const box = document.getElementById("textBox");
+    const preview = document.getElementById("pdfPreview");
+
+    if (box && preview) {
+      let offsetX,
+        offsetY,
+        isDragging = false;
+
+      box.addEventListener("mousedown", function (e) {
+        isDragging = true;
+        offsetX = e.offsetX;
+        offsetY = e.offsetY;
+      });
+
+      document.addEventListener("mousemove", function (e) {
+        if (isDragging) {
+          const rect = preview.getBoundingClientRect();
+
+          let x = e.clientX - rect.left - offsetX;
+          let y = e.clientY - rect.top - offsetY;
+
+          box.style.left = x + "px";
+          box.style.top = y + "px";
+        }
+      });
+
+      document.addEventListener("mouseup", function () {
+        isDragging = false;
+      });
+
+      // SAVE POSITION ON SUBMIT
+      document.querySelector("form").addEventListener("submit", function () {
+        const rect = preview.getBoundingClientRect();
+
+        const boxRect = box.getBoundingClientRect();
+
+        const x = boxRect.left - rect.left;
+        const y = boxRect.top - rect.top;
+
+        document.getElementById("x").value = x;
+        document.getElementById("y").value = y;
+        document.getElementById("hiddenText").value = box.innerText;
+      });
+    }
+  });
+</script>
 
 {% endblock %}
