@@ -1,3 +1,7 @@
+import fitz
+from PIL import Image
+from PyPDF2 import PdfMerger, PdfReader, PdfWriter
+
 from flask import Flask, request, render_template, send_file, jsonify
 import subprocess
 import os
@@ -9,8 +13,6 @@ import io
 import zipfile
 
 from werkzeug.utils import secure_filename
-from PyPDF2 import PdfMerger, PdfReader, PdfWriter
-from PIL import Image
 from pdf2docx import Converter
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
@@ -1354,9 +1356,6 @@ def add_text_to_pdf():
 
     import fitz  # PyMuPDF
     from PIL import Image
-    from PyPDF2 import PdfReader, PdfWriter
-    from reportlab.pdfgen import canvas
-    import io
     import uuid
 
     preview_filename = None
@@ -1367,7 +1366,7 @@ def add_text_to_pdf():
         file = request.files.get("pdf")
         existing_file = request.form.get("existing_file")
 
-        # ✅ STEP 1 — FIRST UPLOAD (generate preview)
+        # ✅ STEP 1 — GENERATE PREVIEW
         if file and file.filename != "":
 
             filename = secure_filename(file.filename)
@@ -1391,8 +1390,7 @@ def add_text_to_pdf():
                 filename=filename
             )
 
-        # ✅ STEP 2 — ADD TEXT
-
+        # ✅ STEP 2 — APPLY TEXT
         elif existing_file:
 
             input_path = os.path.join(UPLOAD_FOLDER, existing_file)
@@ -1407,22 +1405,21 @@ def add_text_to_pdf():
             color = tuple(int(color_hex[i:i+2], 16)/255 for i in (1, 3, 5))
 
             doc = fitz.open(input_path)
-
-            page = doc[0]  # 👉 later: multi-page support
+            page = doc[0]
 
             page.insert_text(
-            (x, y),
-            text,
-            fontsize=font_size,
-            color=color
+                (x, y),
+                text,
+                fontsize=font_size,
+                color=color
             )
 
             output_path = os.path.join(UPLOAD_FOLDER, f"text_{existing_file}")
             doc.save(output_path)
 
-        return send_file(output_path, as_attachment=True)
+            return send_file(output_path, as_attachment=True)
 
-    # ✅ SAFE DEFAULT (NO ERROR)
+    # ✅ SAFE FALLBACK
     return render_template("add_text_to_pdf.html")
 
 @app.route("/how-to-add-text-to-pdf")
