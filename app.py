@@ -1354,7 +1354,7 @@ def crop_pdf_guide():
 @app.route("/add-text-to-pdf", methods=["GET", "POST"])
 def add_text_to_pdf():
 
-    import fitz  # PyMuPDF
+    import fitz
     from PIL import Image
     import uuid
 
@@ -1372,7 +1372,6 @@ def add_text_to_pdf():
             filename = secure_filename(file.filename)
             input_path = os.path.join(UPLOAD_FOLDER, filename)
             file.save(input_path)
-            delete_file_later(input_path)
 
             doc = fitz.open(input_path)
             page = doc[0]
@@ -1385,6 +1384,9 @@ def add_text_to_pdf():
 
             img.save(preview_path, "JPEG")
 
+            # ✅ optional cleanup
+            delete_file_later(preview_path, delay=600)
+
             return render_template(
                 "add_text_to_pdf.html",
                 preview=preview_filename,
@@ -1392,12 +1394,13 @@ def add_text_to_pdf():
             )
 
         # ✅ STEP 2 — APPLY TEXT
-    
         elif existing_file:
 
             input_path = os.path.join(UPLOAD_FOLDER, existing_file)
 
             text = request.form.get("text")
+            if not text:
+                return "No text provided", 400
 
             x = float(request.form.get("x", 50))
             y = float(request.form.get("y", 50))
@@ -1408,7 +1411,6 @@ def add_text_to_pdf():
             font_size = int(request.form.get("font_size", 12))
             color_hex = request.form.get("color", "#000000")
 
-            # 🎨 convert HEX → RGB (0–1 range)
             color = tuple(int(color_hex[i:i+2], 16)/255 for i in (1, 3, 5))
 
             doc = fitz.open(input_path)
@@ -1417,15 +1419,12 @@ def add_text_to_pdf():
             pdf_width = page.rect.width
             pdf_height = page.rect.height
 
-            # ✅ SCALE coordinates (KEY FIX)
             pdf_x = (x / img_width) * pdf_width
             pdf_y = (y / img_height) * pdf_height
 
-            # ✅ FIX text alignment (VERY IMPORTANT)
             pdf_x -= len(text) * font_size * 0.25
             pdf_y += font_size
 
-            # ✅ INSERT TEXT
             page.insert_text(
                 (pdf_x, pdf_y),
                 text,
@@ -1437,11 +1436,13 @@ def add_text_to_pdf():
             output_path = os.path.join(UPLOAD_FOLDER, output_filename)
 
             doc.save(output_path)
+
+            # ✅ cleanup AFTER use
+            delete_file_later(input_path)
             delete_file_later(output_path)
 
             return send_file(output_path, as_attachment=True)
 
-    # ✅ SAFE FALLBACK
     return render_template("add_text_to_pdf.html")
 
 @app.route("/how-to-add-text-to-pdf")
