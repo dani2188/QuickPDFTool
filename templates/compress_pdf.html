@@ -11,6 +11,58 @@ reduce file size while maintaining quality. {% endblock %} {% block content %}
   accept_types=".pdf" %} {% set multiple=false %} {% include
   "components/upload.html" %}
 
+  <!-- 🔥 NEW: COMPRESSION OPTIONS -->
+
+  <div class="options-box">
+    ```
+    <h3>Compression Settings</h3>
+
+    <!-- LEVEL -->
+    <label><strong>Compression level:</strong></label
+    ><br />
+
+    <label>
+      <input type="radio" name="level" value="low" />
+      Low (fast, minimal compression) </label
+    ><br />
+
+    <label>
+      <input type="radio" name="level" value="medium" checked />
+      Medium (recommended) </label
+    ><br />
+
+    <label>
+      <input type="radio" name="level" value="high" />
+      Strong (maximum compression)
+    </label>
+
+    <br /><br />
+
+    <!-- TARGET SIZE -->
+    <label>
+      <input type="checkbox" id="useTarget" />
+      Target file size (MB) </label
+    ><br />
+
+    <input
+      type="number"
+      name="target_size"
+      id="targetSize"
+      placeholder="e.g. 1"
+      class="input-field"
+      disabled
+    />
+
+    <br /><br />
+
+    <!-- EMAIL MODE -->
+    <label>
+      <input type="checkbox" name="email_opt" value="1" />
+      Optimize for email (smaller size, lower quality)
+    </label>
+    ```
+  </div>
+
   <button class="main-btn">Compress PDF</button>
 
   <p class="file-info">Max file size: 10MB • Files are automatically deleted</p>
@@ -34,9 +86,7 @@ reduce file size while maintaining quality. {% endblock %} {% block content %}
 
   <ul class="steps">
     <li><span class="step-number">1</span> Upload your PDF file</li>
-
-    <li><span class="step-number">2</span> Click Compress</li>
-
+    <li><span class="step-number">2</span> Choose compression settings</li>
     <li><span class="step-number">3</span> Download the compressed file</li>
   </ul>
 </div>
@@ -46,20 +96,31 @@ reduce file size while maintaining quality. {% endblock %} {% block content %}
 
   <div class="tools-mini-grid">
     <a href="/merge-pdf">Merge PDF</a>
-
     <a href="/split-pdf">Split PDF</a>
-
     <a href="/rotate-pdf">Rotate PDF</a>
-
     <a href="/delete-pdf-pages">Delete Pages</a>
-
     <a href="/protect-pdf">Protect PDF</a>
-
     <a href="/unlock-pdf">Unlock PDF</a>
   </div>
 </div>
+
 <div class="browse-tools">
   <a href="/pdf-tools" class="main-btn">View All Tools</a>
 </div>
+
+<!-- ✅ SCRIPT -->
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const checkbox = document.getElementById("useTarget");
+    const input = document.getElementById("targetSize");
+
+    if (checkbox && input) {
+      checkbox.addEventListener("change", function () {
+        input.disabled = !checkbox.checked;
+      });
+    }
+  });
+</script>
 
 {% endblock %}

@@ -44,14 +44,23 @@ def delete_file_later(file_path, delay=300):
 # PDF COMPRESSION ENGINE
 # -----------------------------
 
-def compress_pdf(input_path, output_path):
+def compress_pdf(input_path, output_path, level="medium", target_size=None, email_opt=False):
 
     try:
-
         if platform.system() == "Windows":
             gs_command = "gswin64c"
         else:
             gs_command = "gs"
+
+        # 🎯 LEVEL MAPPING
+        if email_opt:
+            pdf_setting = "/screen"  # strongest
+        elif level == "low":
+            pdf_setting = "/prepress"
+        elif level == "medium":
+            pdf_setting = "/ebook"
+        else:
+            pdf_setting = "/screen"
 
         temp_output = output_path + ".tmp"
 
@@ -59,7 +68,7 @@ def compress_pdf(input_path, output_path):
             gs_command,
             "-sDEVICE=pdfwrite",
             "-dCompatibilityLevel=1.4",
-            "-dPDFSETTINGS=/screen",
+            f"-dPDFSETTINGS={pdf_setting}",
             "-dDetectDuplicateImages=true",
             "-dCompressFonts=true",
             "-dSubsetFonts=true",
@@ -104,6 +113,7 @@ def compress_pdf_page():
         if file.filename == "":
             return "No file selected", 400
 
+        # 🔐 SAFE NAME
         filename = secure_filename(file.filename)
 
         unique_id = str(uuid.uuid4())
@@ -115,16 +125,27 @@ def compress_pdf_page():
         output_path = os.path.join(UPLOAD_FOLDER, output_filename)
 
         file.save(input_path)
-        delete_file_later(input_path)
-        delete_file_later(output_path)
 
+        # ✅ GET OPTIONS FROM UI
+        level = request.form.get("level", "medium")
+        target_size = request.form.get("target_size")  # optional
+        email_opt = request.form.get("email_opt") == "1"
 
+        # 🧠 DEBUG (optional but useful)
+        print("Compression settings:", level, target_size, email_opt)
+
+        # 🚀 RUN IN BACKGROUND
         threading.Thread(
             target=compress_pdf,
-            args=(input_path, output_path),
+            args=(input_path, output_path, level, target_size, email_opt),
             daemon=True
         ).start()
 
+        # ⏱ CLEANUP (AFTER some time)
+        delete_file_later(input_path, delay=300)
+        delete_file_later(output_path, delay=600)
+
+        # 🔄 REDIRECT TO PROCESSING PAGE
         return render_template(
             "processing.html",
             file_name=output_filename
