@@ -138,9 +138,10 @@ h1 {
   width: 100%;
 }
 
-/* BUTTON */
+/* ✅ BUTTON (FIXED) */
 
 .main-btn {
+  display: inline-block;
   background: #e5322d;
   color: white;
   border: none;
@@ -150,13 +151,23 @@ h1 {
   cursor: pointer;
   margin-top: 10px;
   margin-bottom: 10px;
+  text-decoration: none; /* ✅ FIX underline */
+  font-weight: 600;
+  transition: 0.2s ease;
 }
 
 .main-btn:hover {
   background: #c62823;
 }
 
-/* UPLOAD AREA (ONLY ONE SYSTEM) */
+/* ✅ CTA CENTER */
+
+.upload-tool {
+  text-align: center;
+  margin: 30px 0 15px;
+}
+
+/* UPLOAD AREA */
 
 .upload-box {
   border: 2px dashed #d6d6d6;
@@ -194,7 +205,7 @@ h1 {
   font-size: 13px;
   color: #888;
   margin-top: 10px;
-  margin-bottom: 20px;
+  margin-bottom: 30px; /* ✅ improved spacing */
 }
 
 /* SEO */
@@ -303,19 +314,17 @@ h1 {
 }
 
 @keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
+
+/* EXTRA */
 
 .browse-tools {
   display: flex;
   justify-content: center;
-  margin-top: 50px; /* increase this */
-  margin-bottom: 30px; /* add space below */
+  margin-top: 50px;
+  margin-bottom: 30px;
 }
 
 .benefits {
@@ -347,13 +356,13 @@ h1 {
 }
 
 .warning {
-background: #fff3cd;
-color: #856404;
-padding: 12px;
-border-radius: 8px;
-margin: 20px auto;
-max-width: 600px;
-font-size: 14px;
+  background: #fff3cd;
+  color: #856404;
+  padding: 12px;
+  border-radius: 8px;
+  margin: 20px auto;
+  max-width: 600px;
+  font-size: 14px;
 }
 
 .options-box {
@@ -389,4 +398,14 @@ font-size: 14px;
   width: 0%;
   background: #e5322d;
   transition: width 0.4s ease;
+}
+
+/* ✅ GLOBAL LINK CLEANUP */
+
+a {
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
 }
