@@ -758,59 +758,103 @@ def compress_pdf_1mb():
 @app.route("/sign-pdf", methods=["GET", "POST"])
 def sign_pdf():
 
+    import fitz
+    from PIL import Image
+    import uuid
+
     if request.method == "POST":
 
-        pdf_file = request.files["pdf"]
-        signature = request.files["signature"]
+        pdf_file = request.files.get("pdf")
+        signature = request.files.get("signature")
+        existing_file = request.form.get("existing_file")
 
-        if pdf_file.filename == "" or signature.filename == "":
-            return "Missing file"
+        # ✅ STEP 1 — UPLOAD + PREVIEW
+        if pdf_file and signature and pdf_file.filename != "" and signature.filename != "":
 
-        pdf_name = secure_filename(pdf_file.filename)
-        sig_name = secure_filename(signature.filename)
+            pdf_name = f"{uuid.uuid4()}_{secure_filename(pdf_file.filename)}"
+            sig_name = f"{uuid.uuid4()}_{secure_filename(signature.filename)}"
 
-        pdf_path = os.path.join(UPLOAD_FOLDER, pdf_name)
-        sig_path = os.path.join(UPLOAD_FOLDER, sig_name)
+            pdf_path = os.path.join(UPLOAD_FOLDER, pdf_name)
+            sig_path = os.path.join(UPLOAD_FOLDER, sig_name)
 
-        pdf_file.save(pdf_path)
-        delete_file_later(pdf_path)
+            pdf_file.save(pdf_path)
+            signature.save(sig_path)
 
-        signature.save(sig_path)
+            # ✅ CLEANUP
+            delete_file_later(pdf_path)
+            delete_file_later(sig_path)
 
-        reader = PdfReader(pdf_path)
-        writer = PdfWriter()
+            # PREVIEW
+            doc = fitz.open(pdf_path)
+            page = doc[0]
 
-        sig_img = Image.open(sig_path)
+            pix = page.get_pixmap(matrix=fitz.Matrix(2, 2))
+            img = Image.frombytes("RGB", [pix.width, pix.height], pix.samples)
 
-        for i, page in enumerate(reader.pages):
+            preview_name = f"{uuid.uuid4()}.jpg"
+            preview_path = os.path.join("static", preview_name)
 
-            packet = io.BytesIO()
+            img.save(preview_path, "JPEG")
 
-            c = canvas.Canvas(packet, pagesize=letter)
+            # optional cleanup
+            delete_file_later(preview_path, delay=600)
 
-            if i == 0:
-                c.drawImage(sig_path, 400, 50, width=150, height=50)
+            return render_template(
+                "sign_pdf.html",
+                preview=preview_name,
+                filename=pdf_name,
+                signature=sig_name
+            )
 
-            c.save()
+        # ✅ STEP 2 — APPLY SIGNATURE
+        elif existing_file:
 
-            packet.seek(0)
+            pdf_path = os.path.join(UPLOAD_FOLDER, existing_file)
+            sig_filename = request.form.get("signature")
+            sig_path = os.path.join(UPLOAD_FOLDER, sig_filename)
 
-            overlay = PdfReader(packet)
+            # ✅ SECURITY CHECK
+            if not os.path.exists(pdf_path) or not os.path.exists(sig_path):
+                return "File missing", 400
 
-            page.merge_page(overlay.pages[0])
+            # SAFE parsing
+            x = float(request.form.get("x", 0))
+            y = float(request.form.get("y", 0))
+            img_width = float(request.form.get("img_width", 1))
+            img_height = float(request.form.get("img_height", 1))
 
-            writer.add_page(page)
+            box_width = float(request.form.get("box_width", 100))
+            box_height = float(request.form.get("box_height", 50))
 
-        output_name = f"signed_{pdf_name}"
-        output_path = os.path.join(UPLOAD_FOLDER, output_name)
+            doc = fitz.open(pdf_path)
+            page = doc[0]
 
-        with open(output_path, "wb") as f:
-            writer.write(f)
+            pdf_width = page.rect.width
+            pdf_height = page.rect.height
 
-        return send_file(output_path, as_attachment=True)
+            # ✅ SCALE
+            pdf_x = (x / img_width) * pdf_width
+            pdf_y = (y / img_height) * pdf_height
 
+            pdf_w = (box_width / img_width) * pdf_width
+            pdf_h = (box_height / img_height) * pdf_height
+
+            rect = fitz.Rect(pdf_x, pdf_y, pdf_x + pdf_w, pdf_y + pdf_h)
+
+            # ✅ INSERT SIGNATURE
+            page.insert_image(rect, filename=sig_path)
+
+            output_name = f"signed_{uuid.uuid4()}.pdf"
+            output_path = os.path.join(UPLOAD_FOLDER, output_name)
+
+            doc.save(output_path)
+
+            delete_file_later(output_path)
+
+            return send_file(output_path, as_attachment=True)
+
+    # ✅ ALWAYS RETURN (VERY IMPORTANT)
     return render_template("sign_pdf.html")
-
 
 @app.route("/add-watermark", methods=["GET", "POST"])
 def add_watermark():

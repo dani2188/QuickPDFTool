@@ -1,125 +1,149 @@
 {% extends "base.html" %} {% block content %}
 
 <h1>Sign PDF</h1>
-<p class="subtitle">Add your signature to PDF documents.</p>
 
-<!-- ✅ IMPORTANT: disable auto-submit -->
 <form method="POST" enctype="multipart/form-data" class="no-auto-submit">
   <!-- PDF Upload -->
   <div id="dropArea" class="upload-box">
-    <p>
-      Drag & drop your PDF here or
-      <span class="upload-link">click to upload</span>
-    </p>
-
+    <p>Upload PDF</p>
     <input type="file" name="pdf" id="fileInput" hidden />
-
     <p id="fileName">No file selected</p>
   </div>
 
-  <p class="file-info">Max file size: 10MB • Files are automatically deleted</p>
-
   <!-- Signature Upload -->
-  <div
-    class="upload-box"
-    onclick="document.getElementById('signatureInput').click()"
-  >
-    <p>Upload your signature (PNG/JPG)</p>
+  <div id="signatureWrapper"
+     style="
+       position:absolute;
+       top:50px;
+       left:50px;
+       width:120px;
+       cursor:move;
+     ">
 
-    <input type="file" name="signature" id="signatureInput" hidden />
+  <img src="{{ url_for('static', filename=signature) }}"
+       style="width:100%; display:block;">
 
-    <p id="signatureName">No file selected</p>
+  <!-- RESIZE HANDLE -->
+  <div id="resizeHandle"
+       style="
+         width:12px;
+         height:12px;
+         background:#e5322d;
+         position:absolute;
+         right:0;
+         bottom:0;
+         cursor:se-resize;
+       ">
   </div>
 
-  <p class="file-info">Max file size: 10MB • Files are automatically deleted</p>
-  <p class="file-info">Recommended: transparent PNG for best results</p>
+</div>
+    <!-- DRAGGABLE SIGNATURE -->
+    <img
+      src="{{ url_for('static', filename=signature) }}"
+      id="signatureBox"
+      style="
+        position: absolute;
+        top: 50px;
+        left: 50px;
+        width: 120px;
+        cursor: move;
+      "
+    />
+  </div>
 
-  <button class="main-btn">Sign PDF</button>
+  <!-- hidden fields -->
+  <input type="hidden" name="x" id="x" />
+  <input type="hidden" name="y" id="y" />
+  <input type="hidden" name="img_width" id="imgWidth" />
+  <input type="hidden" name="img_height" id="imgHeight" />
+  <input type="hidden" name="box_width" id="boxWidth" />
+  <input type="hidden" name="box_height" id="boxHeight" />
+
+  <input type="hidden" name="existing_file" value="{{ filename }}" />
+  <input type="hidden" name="signature" value="{{ signature }}" />
+
+  <br /><br />
+  <button class="main-btn">Apply Signature</button>
+
+  {% endif %}
 </form>
 
-<p>Need help? <a href="#">Read our guide</a></p>
-
-<div class="seo-content">
-  <h2>Sign PDF Online</h2>
-
-  <p>
-    Easily sign PDF documents without printing. Upload your file and add your
-    signature instantly.
-  </p>
-
-  <h3>Steps</h3>
-
-  <ul class="steps">
-    <li><span class="step-number">1</span> Upload PDF</li>
-    <li><span class="step-number">2</span> Upload signature</li>
-    <li><span class="step-number">3</span> Click sign</li>
-    <li><span class="step-number">4</span> Download file</li>
-  </ul>
-
-  <h3>Benefits</h3>
-
-  <ul class="benefits">
-    <li>No printing required</li>
-    <li>Fast digital signing</li>
-    <li>Secure processing</li>
-  </ul>
-</div>
-
-<!-- ✅ PAGE-SPECIFIC JS -->
+<!-- DRAG SCRIPT -->
 <script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const fileInput = document.getElementById("fileInput");
-    const fileName = document.getElementById("fileName");
+document.addEventListener("DOMContentLoaded", function(){
 
-    const signatureInput = document.getElementById("signatureInput");
-    const signatureName = document.getElementById("signatureName");
+  const wrapper = document.getElementById("signatureWrapper");
+  const preview = document.getElementById("pdfPreview");
+  const resizeHandle = document.getElementById("resizeHandle");
 
-    const dropArea = document.getElementById("dropArea");
+  if(wrapper && preview){
 
-    // 📄 PDF file name update
-    if (fileInput && fileName) {
-      fileInput.addEventListener("change", function () {
-        if (this.files.length > 0) {
-          fileName.textContent = this.files[0].name;
-        }
-      });
-    }
+    let isDragging = false;
+    let isResizing = false;
 
-    // ✍️ Signature file name update
-    if (signatureInput && signatureName) {
-      signatureInput.addEventListener("change", function () {
-        if (this.files.length > 0) {
-          signatureName.textContent = this.files[0].name;
-        }
-      });
-    }
+    let offsetX, offsetY;
 
-    // 🖱 Click upload
-    if (dropArea && fileInput) {
-      dropArea.addEventListener("click", () => fileInput.click());
+    // 🖱 DRAG
+    wrapper.addEventListener("mousedown", function(e){
+      if(e.target === resizeHandle) return; // avoid conflict
 
-      // Drag over
-      dropArea.addEventListener("dragover", (e) => {
-        e.preventDefault();
-        dropArea.style.borderColor = "#e5322d";
-      });
+      isDragging = true;
+      offsetX = e.offsetX;
+      offsetY = e.offsetY;
+    });
 
-      // Drag leave
-      dropArea.addEventListener("dragleave", () => {
-        dropArea.style.borderColor = "#ccc";
-      });
+    document.addEventListener("mousemove", function(e){
 
-      // Drop
-      dropArea.addEventListener("drop", (e) => {
-        e.preventDefault();
-        fileInput.files = e.dataTransfer.files;
+      const rect = preview.getBoundingClientRect();
 
-        if (fileInput.files.length > 0) {
-          fileName.textContent = fileInput.files[0].name;
-        }
-      });
-    }
-  });
+      // DRAG
+      if(isDragging){
+        let x = e.clientX - rect.left - offsetX;
+        let y = e.clientY - rect.top - offsetY;
+
+        wrapper.style.left = x + "px";
+        wrapper.style.top = y + "px";
+      }
+
+      // RESIZE
+      if(isResizing){
+        let newWidth = e.clientX - wrapper.getBoundingClientRect().left;
+        wrapper.style.width = newWidth + "px";
+      }
+
+    });
+
+    document.addEventListener("mouseup", function(){
+      isDragging = false;
+      isResizing = false;
+    });
+
+    // 🧩 RESIZE HANDLE
+    resizeHandle.addEventListener("mousedown", function(e){
+      e.stopPropagation();
+      isResizing = true;
+    });
+
+    // 📤 SAVE DATA
+    document.querySelector("form").addEventListener("submit", function(){
+
+      const rect = preview.getBoundingClientRect();
+      const boxRect = wrapper.getBoundingClientRect();
+
+      document.getElementById("x").value = boxRect.left - rect.left;
+      document.getElementById("y").value = boxRect.top - rect.top;
+
+      document.getElementById("imgWidth").value = rect.width;
+      document.getElementById("imgHeight").value = rect.height;
+
+      document.getElementById("boxWidth").value = boxRect.width;
+      document.getElementById("boxHeight").value = boxRect.height;
+
+    });
+
+  }
+
+});
 </script>
 
 {% endblock %}
