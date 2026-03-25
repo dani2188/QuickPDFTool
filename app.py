@@ -754,37 +754,40 @@ def pdf_to_word_guide():
 def compress_pdf_1mb():
     return render_template("compress_pdf_to_1mb.html")
 
-
 @app.route("/sign-pdf", methods=["GET", "POST"])
 def sign_pdf():
 
-    import fitz
+    import fitz  # PyMuPDF
     from PIL import Image
     import uuid
+    import os
 
     if request.method == "POST":
 
         pdf_file = request.files.get("pdf")
-        signature = request.files.get("signature")
+        signature_file = request.files.get("signature")
         existing_file = request.form.get("existing_file")
 
+        # =========================
         # ✅ STEP 1 — UPLOAD + PREVIEW
-        if pdf_file and signature and pdf_file.filename != "" and signature.filename != "":
+        # =========================
+        if (
+            pdf_file
+            and signature_file
+            and pdf_file.filename
+            and signature_file.filename
+        ):
 
             pdf_name = f"{uuid.uuid4()}_{secure_filename(pdf_file.filename)}"
-            sig_name = f"{uuid.uuid4()}_{secure_filename(signature.filename)}"
+            sig_name = f"{uuid.uuid4()}_{secure_filename(signature_file.filename)}"
 
             pdf_path = os.path.join(UPLOAD_FOLDER, pdf_name)
             sig_path = os.path.join(UPLOAD_FOLDER, sig_name)
 
             pdf_file.save(pdf_path)
-            signature.save(sig_path)
+            signature_file.save(sig_path)
 
-            # ✅ CLEANUP
-            delete_file_later(pdf_path)
-            delete_file_later(sig_path)
-
-            # PREVIEW
+            # 🔥 GENERATE PREVIEW IMAGE
             doc = fitz.open(pdf_path)
             page = doc[0]
 
@@ -796,7 +799,7 @@ def sign_pdf():
 
             img.save(preview_path, "JPEG")
 
-            # optional cleanup
+            # optional cleanup preview later
             delete_file_later(preview_path, delay=600)
 
             return render_template(
@@ -806,18 +809,21 @@ def sign_pdf():
                 signature=sig_name
             )
 
+        # =========================
         # ✅ STEP 2 — APPLY SIGNATURE
+        # =========================
         elif existing_file:
 
             pdf_path = os.path.join(UPLOAD_FOLDER, existing_file)
-            sig_filename = request.form.get("signature")
+
+            sig_filename = request.form.get("signature_file")
             sig_path = os.path.join(UPLOAD_FOLDER, sig_filename)
 
-            # ✅ SECURITY CHECK
+            # 🔒 SECURITY CHECK
             if not os.path.exists(pdf_path) or not os.path.exists(sig_path):
                 return "File missing", 400
 
-            # SAFE parsing
+            # 📍 POSITION FROM FRONTEND
             x = float(request.form.get("x", 0))
             y = float(request.form.get("y", 0))
             img_width = float(request.form.get("img_width", 1))
@@ -832,7 +838,7 @@ def sign_pdf():
             pdf_width = page.rect.width
             pdf_height = page.rect.height
 
-            # ✅ SCALE
+            # ✅ SCALE POSITION
             pdf_x = (x / img_width) * pdf_width
             pdf_y = (y / img_height) * pdf_height
 
@@ -841,7 +847,7 @@ def sign_pdf():
 
             rect = fitz.Rect(pdf_x, pdf_y, pdf_x + pdf_w, pdf_y + pdf_h)
 
-            # ✅ INSERT SIGNATURE
+            # 🖊 INSERT SIGNATURE
             page.insert_image(rect, filename=sig_path)
 
             output_name = f"signed_{uuid.uuid4()}.pdf"
@@ -849,11 +855,16 @@ def sign_pdf():
 
             doc.save(output_path)
 
+            # 🧹 CLEANUP
             delete_file_later(output_path)
+            delete_file_later(pdf_path, delay=60)
+            delete_file_later(sig_path, delay=60)
 
             return send_file(output_path, as_attachment=True)
 
-    # ✅ ALWAYS RETURN (VERY IMPORTANT)
+    # =========================
+    # ✅ DEFAULT PAGE
+    # =========================
     return render_template("sign_pdf.html")
 
 @app.route("/add-watermark", methods=["GET", "POST"])
