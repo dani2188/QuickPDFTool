@@ -3,44 +3,47 @@
 <h1>Sign PDF</h1>
 
 <form method="POST" enctype="multipart/form-data" class="no-auto-submit">
-  <!-- PDF Upload -->
+  <!-- ========================= -->
+  <!-- STEP 1 — UPLOAD -->
+  <!-- ========================= -->
+  {% if preview is not defined or not preview %}
+
   <div id="dropArea" class="upload-box">
     <p>Upload PDF</p>
     <input type="file" name="pdf" id="fileInput" hidden />
     <p id="fileName">No file selected</p>
   </div>
 
-  <!-- Signature Upload -->
-  <div id="signatureWrapper"
-     style="
-       position:absolute;
-       top:50px;
-       left:50px;
-       width:120px;
-       cursor:move;
-     ">
-
-  <img src="{{ url_for('static', filename=signature) }}"
-       style="width:100%; display:block;">
-
-  <!-- RESIZE HANDLE -->
-  <div id="resizeHandle"
-       style="
-         width:12px;
-         height:12px;
-         background:#e5322d;
-         position:absolute;
-         right:0;
-         bottom:0;
-         cursor:se-resize;
-       ">
+  <div
+    class="upload-box"
+    onclick="document.getElementById('signatureInput').click()"
+  >
+    <p>Upload Signature</p>
+    <input type="file" name="signature" id="signatureInput" hidden />
+    <p id="signatureName">No file selected</p>
   </div>
 
-</div>
-    <!-- DRAGGABLE SIGNATURE -->
+  <br />
+  <button class="main-btn">Upload & Continue</button>
+
+  {% endif %}
+
+  <!-- ========================= -->
+  <!-- STEP 2 — PREVIEW + EDIT -->
+  <!-- ========================= -->
+  {% if preview is defined and preview %}
+
+  <div style="position: relative; display: inline-block; margin-top: 20px">
+    <!-- PDF PREVIEW -->
     <img
-      src="{{ url_for('static', filename=signature) }}"
-      id="signatureBox"
+      src="{{ url_for('static', filename=preview) }}"
+      id="pdfPreview"
+      style="max-width: 500px"
+    />
+
+    <!-- SIGNATURE BOX -->
+    <div
+      id="signatureWrapper"
       style="
         position: absolute;
         top: 50px;
@@ -48,10 +51,29 @@
         width: 120px;
         cursor: move;
       "
-    />
+    >
+      <img
+        src="{{ url_for('static', filename=signature) }}"
+        style="width: 100%; display: block"
+      />
+
+      <!-- RESIZE HANDLE -->
+      <div
+        id="resizeHandle"
+        style="
+          width: 12px;
+          height: 12px;
+          background: #e5322d;
+          position: absolute;
+          right: 0;
+          bottom: 0;
+          cursor: se-resize;
+        "
+      ></div>
+    </div>
   </div>
 
-  <!-- hidden fields -->
+  <!-- HIDDEN DATA -->
   <input type="hidden" name="x" id="x" />
   <input type="hidden" name="y" id="y" />
   <input type="hidden" name="img_width" id="imgWidth" />
@@ -60,7 +82,7 @@
   <input type="hidden" name="box_height" id="boxHeight" />
 
   <input type="hidden" name="existing_file" value="{{ filename }}" />
-  <input type="hidden" name="signature" value="{{ signature }}" />
+  <input type="hidden" name="signature_file" value="{{ signature }}" />
 
   <br /><br />
   <button class="main-btn">Apply Signature</button>
@@ -68,82 +90,76 @@
   {% endif %}
 </form>
 
-<!-- DRAG SCRIPT -->
+<!-- ========================= -->
+<!-- DRAG + RESIZE SCRIPT -->
+<!-- ========================= -->
 <script>
-document.addEventListener("DOMContentLoaded", function(){
+  document.addEventListener("DOMContentLoaded", function () {
+    const wrapper = document.getElementById("signatureWrapper");
+    const preview = document.getElementById("pdfPreview");
+    const resizeHandle = document.getElementById("resizeHandle");
 
-  const wrapper = document.getElementById("signatureWrapper");
-  const preview = document.getElementById("pdfPreview");
-  const resizeHandle = document.getElementById("resizeHandle");
+    if (wrapper && preview) {
+      let isDragging = false;
+      let isResizing = false;
 
-  if(wrapper && preview){
+      let offsetX, offsetY;
 
-    let isDragging = false;
-    let isResizing = false;
+      // DRAG START
+      wrapper.addEventListener("mousedown", function (e) {
+        if (e.target === resizeHandle) return;
 
-    let offsetX, offsetY;
+        isDragging = true;
+        offsetX = e.offsetX;
+        offsetY = e.offsetY;
+      });
 
-    // 🖱 DRAG
-    wrapper.addEventListener("mousedown", function(e){
-      if(e.target === resizeHandle) return; // avoid conflict
+      // MOVE
+      document.addEventListener("mousemove", function (e) {
+        const rect = preview.getBoundingClientRect();
 
-      isDragging = true;
-      offsetX = e.offsetX;
-      offsetY = e.offsetY;
-    });
+        if (isDragging) {
+          let x = e.clientX - rect.left - offsetX;
+          let y = e.clientY - rect.top - offsetY;
 
-    document.addEventListener("mousemove", function(e){
+          wrapper.style.left = x + "px";
+          wrapper.style.top = y + "px";
+        }
 
-      const rect = preview.getBoundingClientRect();
+        if (isResizing) {
+          let newWidth = e.clientX - wrapper.getBoundingClientRect().left;
+          wrapper.style.width = newWidth + "px";
+        }
+      });
 
-      // DRAG
-      if(isDragging){
-        let x = e.clientX - rect.left - offsetX;
-        let y = e.clientY - rect.top - offsetY;
+      // STOP
+      document.addEventListener("mouseup", function () {
+        isDragging = false;
+        isResizing = false;
+      });
 
-        wrapper.style.left = x + "px";
-        wrapper.style.top = y + "px";
-      }
+      // RESIZE HANDLE
+      resizeHandle.addEventListener("mousedown", function (e) {
+        e.stopPropagation();
+        isResizing = true;
+      });
 
-      // RESIZE
-      if(isResizing){
-        let newWidth = e.clientX - wrapper.getBoundingClientRect().left;
-        wrapper.style.width = newWidth + "px";
-      }
+      // SAVE DATA BEFORE SUBMIT
+      document.querySelector("form").addEventListener("submit", function () {
+        const rect = preview.getBoundingClientRect();
+        const boxRect = wrapper.getBoundingClientRect();
 
-    });
+        document.getElementById("x").value = boxRect.left - rect.left;
+        document.getElementById("y").value = boxRect.top - rect.top;
 
-    document.addEventListener("mouseup", function(){
-      isDragging = false;
-      isResizing = false;
-    });
+        document.getElementById("imgWidth").value = rect.width;
+        document.getElementById("imgHeight").value = rect.height;
 
-    // 🧩 RESIZE HANDLE
-    resizeHandle.addEventListener("mousedown", function(e){
-      e.stopPropagation();
-      isResizing = true;
-    });
-
-    // 📤 SAVE DATA
-    document.querySelector("form").addEventListener("submit", function(){
-
-      const rect = preview.getBoundingClientRect();
-      const boxRect = wrapper.getBoundingClientRect();
-
-      document.getElementById("x").value = boxRect.left - rect.left;
-      document.getElementById("y").value = boxRect.top - rect.top;
-
-      document.getElementById("imgWidth").value = rect.width;
-      document.getElementById("imgHeight").value = rect.height;
-
-      document.getElementById("boxWidth").value = boxRect.width;
-      document.getElementById("boxHeight").value = boxRect.height;
-
-    });
-
-  }
-
-});
+        document.getElementById("boxWidth").value = boxRect.width;
+        document.getElementById("boxHeight").value = boxRect.height;
+      });
+    }
+  });
 </script>
 
 {% endblock %}
