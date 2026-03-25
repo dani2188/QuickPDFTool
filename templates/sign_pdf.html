@@ -95,68 +95,19 @@
 <!-- ========================= -->
 <script>
   document.addEventListener("DOMContentLoaded", function () {
-    const wrapper = document.getElementById("signatureWrapper");
-    const preview = document.getElementById("pdfPreview");
-    const resizeHandle = document.getElementById("resizeHandle");
+    const signatureInput = document.getElementById("signatureInput");
+    const signatureName = document.getElementById("signatureName");
 
-    if (wrapper && preview) {
-      let isDragging = false;
-      let isResizing = false;
+    if (signatureInput) {
+      signatureInput.addEventListener("change", function () {
+        if (signatureInput.files.length > 0) {
+          if (signatureName) {
+            signatureName.textContent = signatureInput.files[0].name;
+          }
 
-      let offsetX, offsetY;
-
-      // DRAG START
-      wrapper.addEventListener("mousedown", function (e) {
-        if (e.target === resizeHandle) return;
-
-        isDragging = true;
-        offsetX = e.offsetX;
-        offsetY = e.offsetY;
-      });
-
-      // MOVE
-      document.addEventListener("mousemove", function (e) {
-        const rect = preview.getBoundingClientRect();
-
-        if (isDragging) {
-          let x = e.clientX - rect.left - offsetX;
-          let y = e.clientY - rect.top - offsetY;
-
-          wrapper.style.left = x + "px";
-          wrapper.style.top = y + "px";
+          // 🔥 AUTO SUBMIT FORM
+          signatureInput.closest("form").submit();
         }
-
-        if (isResizing) {
-          let newWidth = e.clientX - wrapper.getBoundingClientRect().left;
-          wrapper.style.width = newWidth + "px";
-        }
-      });
-
-      // STOP
-      document.addEventListener("mouseup", function () {
-        isDragging = false;
-        isResizing = false;
-      });
-
-      // RESIZE HANDLE
-      resizeHandle.addEventListener("mousedown", function (e) {
-        e.stopPropagation();
-        isResizing = true;
-      });
-
-      // SAVE DATA BEFORE SUBMIT
-      document.querySelector("form").addEventListener("submit", function () {
-        const rect = preview.getBoundingClientRect();
-        const boxRect = wrapper.getBoundingClientRect();
-
-        document.getElementById("x").value = boxRect.left - rect.left;
-        document.getElementById("y").value = boxRect.top - rect.top;
-
-        document.getElementById("imgWidth").value = rect.width;
-        document.getElementById("imgHeight").value = rect.height;
-
-        document.getElementById("boxWidth").value = boxRect.width;
-        document.getElementById("boxHeight").value = boxRect.height;
       });
     }
   });
