@@ -3,7 +3,8 @@
 <h1>Sign PDF</h1>
 <p class="subtitle">Add your signature to PDF documents.</p>
 
-<form method="POST" enctype="multipart/form-data">
+<!-- ✅ IMPORTANT: disable auto-submit -->
+<form method="POST" enctype="multipart/form-data" class="no-auto-submit">
   <!-- PDF Upload -->
   <div id="dropArea" class="upload-box">
     <p>
@@ -31,7 +32,6 @@
   </div>
 
   <p class="file-info">Max file size: 10MB • Files are automatically deleted</p>
-
   <p class="file-info">Recommended: transparent PNG for best results</p>
 
   <button class="main-btn">Sign PDF</button>
@@ -63,6 +63,63 @@
     <li>Fast digital signing</li>
     <li>Secure processing</li>
   </ul>
-
-  {% endblock %}
 </div>
+
+<!-- ✅ PAGE-SPECIFIC JS -->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const fileInput = document.getElementById("fileInput");
+    const fileName = document.getElementById("fileName");
+
+    const signatureInput = document.getElementById("signatureInput");
+    const signatureName = document.getElementById("signatureName");
+
+    const dropArea = document.getElementById("dropArea");
+
+    // 📄 PDF file name update
+    if (fileInput && fileName) {
+      fileInput.addEventListener("change", function () {
+        if (this.files.length > 0) {
+          fileName.textContent = this.files[0].name;
+        }
+      });
+    }
+
+    // ✍️ Signature file name update
+    if (signatureInput && signatureName) {
+      signatureInput.addEventListener("change", function () {
+        if (this.files.length > 0) {
+          signatureName.textContent = this.files[0].name;
+        }
+      });
+    }
+
+    // 🖱 Click upload
+    if (dropArea && fileInput) {
+      dropArea.addEventListener("click", () => fileInput.click());
+
+      // Drag over
+      dropArea.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        dropArea.style.borderColor = "#e5322d";
+      });
+
+      // Drag leave
+      dropArea.addEventListener("dragleave", () => {
+        dropArea.style.borderColor = "#ccc";
+      });
+
+      // Drop
+      dropArea.addEventListener("drop", (e) => {
+        e.preventDefault();
+        fileInput.files = e.dataTransfer.files;
+
+        if (fileInput.files.length > 0) {
+          fileName.textContent = fileInput.files[0].name;
+        }
+      });
+    }
+  });
+</script>
+
+{% endblock %}

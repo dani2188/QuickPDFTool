@@ -69,10 +69,12 @@
         const fileName = document.getElementById("fileName");
 
         if (dropArea && fileInput && fileInput.closest("form")) {
+          // CLICK → open file picker
           dropArea.addEventListener("click", () => {
             fileInput.click();
           });
 
+          // FILE SELECT
           fileInput.addEventListener("change", () => {
             if (fileInput.files.length > 0) {
               if (fileName) {
@@ -84,22 +86,27 @@
                 }
               }
 
-              // ✅ CONDITIONAL AUTO SUBMIT
-              if (!fileInput.classList.contains("no-auto-submit")) {
-                fileInput.closest("form").submit();
+              // ✅ FIXED: check FORM (not input)
+              const form = fileInput.closest("form");
+
+              if (!form.classList.contains("no-auto-submit")) {
+                form.submit();
               }
             }
           });
 
+          // DRAG OVER
           dropArea.addEventListener("dragover", (e) => {
             e.preventDefault();
             dropArea.style.borderColor = "#e5322d";
           });
 
+          // DRAG LEAVE
           dropArea.addEventListener("dragleave", () => {
             dropArea.style.borderColor = "#ccc";
           });
 
+          // DROP FILE
           dropArea.addEventListener("drop", (e) => {
             e.preventDefault();
 
@@ -110,9 +117,11 @@
                 fileName.textContent = fileInput.files[0].name;
               }
 
-              // ✅ CONDITIONAL AUTO SUBMIT
-              if (!fileInput.classList.contains("no-auto-submit")) {
-                fileInput.closest("form").submit();
+              // ✅ FIXED: check FORM (not input)
+              const form = fileInput.closest("form");
+
+              if (!form.classList.contains("no-auto-submit")) {
+                form.submit();
               }
             }
           });
