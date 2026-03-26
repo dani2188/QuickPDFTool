@@ -169,4 +169,38 @@
   });
 </script>
 
+<script>
+  const fileInput = document.getElementById("fileInput");
+  const signatureInput = document.getElementById("signatureInput");
+
+  if (fileInput) {
+    fileInput.addEventListener("change", () => {
+      const fileName = document.getElementById("fileName");
+      fileName.textContent = fileInput.files[0]?.name || "No file selected";
+    });
+  }
+
+  if (signatureInput) {
+    signatureInput.addEventListener("change", () => {
+      const signatureName = document.getElementById("signatureName");
+      signatureName.textContent =
+        signatureInput.files[0]?.name || "No file selected";
+    });
+  }
+</script>
+
 {% endblock %}
+
+<!-- ========================= -->
+<!-- FILE INPUT HANDLING -->
+<!-- ========================= -->
+<script>
+  fileInput.addEventListener("change", () => {
+    document.getElementById("fileName").textContent =
+      fileInput.files[0]?.name || "No file selected";
+  });
+  signatureInput.addEventListener("change", () => {
+    document.getElementById("signatureName").textContent =
+      signatureInput.files[0]?.name || "No file selected";
+  });
+</script>

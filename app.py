@@ -196,7 +196,11 @@ def download(filename):
 @app.route("/download-file/<filename>")
 def download_file(filename):
 
-    path = os.path.join(UPLOAD_FOLDER, filename)
+    safe_filename = secure_filename(filename)
+    path = os.path.join(UPLOAD_FOLDER, safe_filename)
+
+    if not os.path.exists(path):
+        return "File not found", 404
 
     return send_file(path, as_attachment=True)
 
@@ -256,17 +260,14 @@ def split_pdf():
 
         file = request.files["pdf"]
 
-        if file.filename == "":
-            return "No file selected"
+        if not file or file.filename == "":
+            return "No file selected", 400
 
         filename = secure_filename(file.filename)
         input_path = os.path.join(UPLOAD_FOLDER, filename)
 
         file.save(input_path)
         delete_file_later(input_path)
-        delete_file_later(output_path)
-
-
 
         reader = PdfReader(input_path)
 
@@ -277,14 +278,14 @@ def split_pdf():
             writer = PdfWriter()
             writer.add_page(page)
 
-            output_filename = f"{uuid.uuid4()}_page_{i+1}.jpg"
+            output_filename = f"{uuid.uuid4()}_page_{i+1}.pdf"
             output_path = os.path.join(UPLOAD_FOLDER, output_filename)
-
 
             with open(output_path, "wb") as output_file:
                 writer.write(output_file)
 
             output_files.append(output_filename)
+            delete_file_later(output_path)
 
         return render_template("split_result.html", files=output_files)
 
@@ -403,9 +404,9 @@ def rotate_pdf():
     if request.method == "POST":
 
         file = request.files["pdf"]
-        rotation = int(request.form.get("rotation"))
+        rotation = int(request.form.get("rotation", 0)) % 360
 
-        if file.filename == "":
+        if not file or file.filename == "":
             return "No file selected"
 
         filename = secure_filename(file.filename)
@@ -419,7 +420,12 @@ def rotate_pdf():
         writer = PdfWriter()
 
         for page in reader.pages:
-            page.rotate(rotation)
+            if hasattr(page, "rotate_clockwise"):
+                page = page.rotate_clockwise(rotation)
+            elif hasattr(page, "rotate"):
+                page.rotate(rotation)
+            else:
+                raise RuntimeError("Unsupported PyPDF2 page rotate method")
             writer.add_page(page)
 
         output_filename = f"rotated_{filename}"
@@ -838,9 +844,9 @@ def sign_pdf():
             pdf_width = page.rect.width
             pdf_height = page.rect.height
 
-            # ✅ SCALE POSITION
+            # ✅ SCALE POSITION (PDF coordinate origin is bottom-left; preview origin is top-left)
             pdf_x = (x / img_width) * pdf_width
-            pdf_y = (y / img_height) * pdf_height
+            pdf_y = ((img_height - y - box_height) / img_height) * pdf_height
 
             pdf_w = (box_width / img_width) * pdf_width
             pdf_h = (box_height / img_height) * pdf_height
