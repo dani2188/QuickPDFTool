@@ -33,15 +33,15 @@
   <!-- ========================= -->
   {% if preview is defined and preview %}
 
-  <div style="position: relative; display: inline-block">
-    <!-- PDF -->
+  <div style="position: relative; display: inline-block; margin-top: 20px">
+    <!-- PDF PREVIEW -->
     <img
       src="{{ url_for('static', filename=preview) }}"
       id="pdfPreview"
-      style="max-width: 500px"
+      style="max-width: 500px; pointer-events: none"
     />
 
-    <!-- SIGNATURE -->
+    <!-- SIGNATURE BOX -->
     <div
       id="signatureWrapper"
       style="
@@ -51,6 +51,7 @@
         width: 120px;
         cursor: move;
         z-index: 10;
+        pointer-events: auto;
       "
     >
       <img
@@ -58,6 +59,7 @@
         style="width: 100%; display: block"
       />
 
+      <!-- RESIZE HANDLE -->
       <div
         id="resizeHandle"
         style="
@@ -95,21 +97,75 @@
 <!-- ========================= -->
 <script>
   document.addEventListener("DOMContentLoaded", function () {
-    const signatureInput = document.getElementById("signatureInput");
-    const signatureName = document.getElementById("signatureName");
+    const wrapper = document.getElementById("signatureWrapper");
+    const preview = document.getElementById("pdfPreview");
+    const resizeHandle = document.getElementById("resizeHandle");
 
-    if (signatureInput) {
-      signatureInput.addEventListener("change", function () {
-        if (signatureInput.files.length > 0) {
-          if (signatureName) {
-            signatureName.textContent = signatureInput.files[0].name;
-          }
+    if (!wrapper || !preview) return;
 
-          // 🔥 AUTO SUBMIT FORM
-          signatureInput.closest("form").submit();
-        }
-      });
-    }
+    let isDragging = false;
+    let isResizing = false;
+
+    let offsetX = 0;
+    let offsetY = 0;
+
+    wrapper.style.userSelect = "none";
+
+    // START DRAG
+    wrapper.addEventListener("mousedown", function (e) {
+      e.preventDefault();
+
+      if (e.target === resizeHandle) return;
+
+      isDragging = true;
+      offsetX = e.offsetX;
+      offsetY = e.offsetY;
+    });
+
+    // MOVE
+    document.addEventListener("mousemove", function (e) {
+      const rect = preview.getBoundingClientRect();
+
+      if (isDragging) {
+        let x = e.clientX - rect.left - offsetX;
+        let y = e.clientY - rect.top - offsetY;
+
+        wrapper.style.left = x + "px";
+        wrapper.style.top = y + "px";
+      }
+
+      if (isResizing) {
+        let newWidth = e.clientX - wrapper.getBoundingClientRect().left;
+        wrapper.style.width = newWidth + "px";
+      }
+    });
+
+    // STOP
+    document.addEventListener("mouseup", function () {
+      isDragging = false;
+      isResizing = false;
+    });
+
+    // RESIZE HANDLE
+    resizeHandle.addEventListener("mousedown", function (e) {
+      e.stopPropagation();
+      isResizing = true;
+    });
+
+    // SAVE DATA BEFORE SUBMIT
+    document.querySelector("form").addEventListener("submit", function () {
+      const rect = preview.getBoundingClientRect();
+      const boxRect = wrapper.getBoundingClientRect();
+
+      document.getElementById("x").value = boxRect.left - rect.left;
+      document.getElementById("y").value = boxRect.top - rect.top;
+
+      document.getElementById("imgWidth").value = rect.width;
+      document.getElementById("imgHeight").value = rect.height;
+
+      document.getElementById("boxWidth").value = boxRect.width;
+      document.getElementById("boxHeight").value = boxRect.height;
+    });
   });
 </script>
 
