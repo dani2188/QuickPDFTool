@@ -1437,110 +1437,123 @@ def crop_pdf():
 def crop_pdf_guide():
     return render_template("crop_pdf_guide.html")
 
-@app.route("/add-text-to-pdf", methods=["GET", "POST"])
-def add_text_to_pdf():
+@app.route("/sign-pdf", methods=["GET", "POST"])
+def sign_pdf():
 
-    import fitz
+    import fitz  # PyMuPDF
     from PIL import Image
     import uuid
-
-    preview_filename = None
-    filename = None
+    import os
 
     if request.method == "POST":
 
-        file = request.files.get("pdf")
+        pdf_file = request.files.get("pdf")
+        signature_file = request.files.get("signature")
         existing_file = request.form.get("existing_file")
 
-        # ✅ STEP 1 — GENERATE PREVIEW
-        if file and file.filename != "":
+        # =========================
+        # ✅ STEP 1 — UPLOAD + PREVIEW
+        # =========================
+        if (
+            pdf_file
+            and signature_file
+            and pdf_file.filename
+            and signature_file.filename
+        ):
 
-            filename = secure_filename(file.filename)
-            input_path = os.path.join(UPLOAD_FOLDER, filename)
-            file.save(input_path)
+            pdf_name = f"{uuid.uuid4()}_{secure_filename(pdf_file.filename)}"
+            sig_name = f"{uuid.uuid4()}_{secure_filename(signature_file.filename)}"
 
-            doc = fitz.open(input_path)
+            pdf_path = os.path.join(UPLOAD_FOLDER, pdf_name)
+            sig_path = os.path.join(UPLOAD_FOLDER, sig_name)
+
+            pdf_file.save(pdf_path)
+            signature_file.save(sig_path)
+
+            # 🔥 GENERATE PREVIEW (FIRST PAGE ONLY)
+            doc = fitz.open(pdf_path)
             page = doc[0]
 
             pix = page.get_pixmap(matrix=fitz.Matrix(2, 2))
             img = Image.frombytes("RGB", [pix.width, pix.height], pix.samples)
 
-            preview_filename = f"{uuid.uuid4()}.jpg"
-            preview_path = os.path.join("static", preview_filename)
+            preview_name = f"{uuid.uuid4()}.jpg"
+            preview_path = os.path.join("static", preview_name)
 
             img.save(preview_path, "JPEG")
 
-            # ✅ optional cleanup
+            # optional cleanup
             delete_file_later(preview_path, delay=600)
 
             return render_template(
-                "add_text_to_pdf.html",
-                preview=preview_filename,
-                filename=filename
+                "sign_pdf.html",
+                preview=preview_name,
+                filename=pdf_name,
+                signature=sig_name
             )
 
-        # ✅ STEP 2 — APPLY TEXT
+        # =========================
+        # ✅ STEP 2 — APPLY SIGNATURE
+        # =========================
         elif existing_file:
 
-            input_path = os.path.join(UPLOAD_FOLDER, existing_file)
+            pdf_path = os.path.join(UPLOAD_FOLDER, existing_file)
 
-            text = request.form.get("text")
-            if not text:
-                return "No text provided", 400
+            sig_filename = request.form.get("signature_file")
+            sig_path = os.path.join(UPLOAD_FOLDER, sig_filename)
 
-            x = float(request.form.get("x", 50))
-            y = float(request.form.get("y", 50))
+            # 🔒 SECURITY CHECK
+            if not os.path.exists(pdf_path) or not os.path.exists(sig_path):
+                return "File missing", 400
 
-            img_width = float(request.form.get("img_width"))
-            img_height = float(request.form.get("img_height"))
+            # 📍 POSITION FROM FRONTEND
+            x = float(request.form.get("x", 0))
+            y = float(request.form.get("y", 0))
+            img_width = float(request.form.get("img_width", 1))
+            img_height = float(request.form.get("img_height", 1))
 
-            font_size = int(request.form.get("font_size", 12))
-            color_hex = request.form.get("color", "#000000")
+            box_width = float(request.form.get("box_width", 100))
+            box_height = float(request.form.get("box_height", 50))
 
-            color = tuple(int(color_hex[i:i+2], 16)/255 for i in (1, 3, 5))
-
-            doc = fitz.open(input_path)
+            doc = fitz.open(pdf_path)
             page = doc[0]
 
             pdf_width = page.rect.width
             pdf_height = page.rect.height
-            # position
+
+            # =========================
+            # ✅ CORRECT SCALING
+            # =========================
+
             pdf_x = (x / img_width) * pdf_width
+
+            pdf_w = (box_width / img_width) * pdf_width
+            pdf_h = (box_height / img_height) * pdf_height
+
+            # 🔥 FINAL FIX (NO MORE JUMPING)
             pdf_y = pdf_height - (y / img_height) * pdf_height - pdf_h
 
-            box_width = float(request.form.get("box_width"))
-            box_height = float(request.form.get("box_height"))
+            rect = fitz.Rect(pdf_x, pdf_y, pdf_x + pdf_w, pdf_y + pdf_h)
 
-            pdf_box_width = (box_width / img_width) * pdf_width
-            pdf_box_height = (box_height / img_height) * pdf_height
+            # 🖊 INSERT SIGNATURE
+            page.insert_image(rect, filename=sig_path)
 
-            rect = fitz.Rect(
-                pdf_x,
-                pdf_y,
-                pdf_x + pdf_box_width,
-                pdf_y + pdf_box_height
-            )
-
-            page.insert_textbox(
-                rect,
-                text,
-                fontsize=font_size,
-                color=color,
-                align=0
-            )
-
-            output_filename = f"text_{uuid.uuid4()}.pdf"
-            output_path = os.path.join(UPLOAD_FOLDER, output_filename)
+            output_name = f"signed_{uuid.uuid4()}.pdf"
+            output_path = os.path.join(UPLOAD_FOLDER, output_name)
 
             doc.save(output_path)
 
-            # ✅ cleanup AFTER use
-            delete_file_later(input_path)
+            # 🧹 CLEANUP
             delete_file_later(output_path)
+            delete_file_later(pdf_path, delay=60)
+            delete_file_later(sig_path, delay=60)
 
             return send_file(output_path, as_attachment=True)
 
-    return render_template("add_text_to_pdf.html")
+    # =========================
+    # ✅ DEFAULT PAGE
+    # =========================
+    return render_template("sign_pdf.html")
 
 @app.route("/how-to-add-text-to-pdf")
 def add_text_guide():
