@@ -201,17 +201,3 @@
 </script>
 
 {% endblock %}
-
-<!-- ========================= -->
-<!-- FILE INPUT HANDLING -->
-<!-- ========================= -->
-<script>
-  fileInput.addEventListener("change", () => {
-    document.getElementById("fileName").textContent =
-      fileInput.files[0]?.name || "No file selected";
-  });
-  signatureInput.addEventListener("change", () => {
-    document.getElementById("signatureName").textContent =
-      signatureInput.files[0]?.name || "No file selected";
-  });
-</script>
