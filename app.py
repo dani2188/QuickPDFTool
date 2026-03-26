@@ -1506,7 +1506,7 @@ def add_text_to_pdf():
             pdf_height = page.rect.height
             # position
             pdf_x = (x / img_width) * pdf_width
-            pdf_y = (y / img_height) * pdf_height
+            pdf_y = pdf_height - (y / img_height) * pdf_height - pdf_h
 
             box_width = float(request.form.get("box_width"))
             box_height = float(request.form.get("box_height"))
