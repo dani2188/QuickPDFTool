@@ -33,15 +33,15 @@
   <!-- ========================= -->
   {% if preview is defined and preview %}
 
-  <div style="position: relative; display: inline-block; margin-top: 20px">
-    <!-- PDF PREVIEW -->
+  <div style="position: relative; display: inline-block">
+    <!-- PDF -->
     <img
       src="{{ url_for('static', filename=preview) }}"
       id="pdfPreview"
       style="max-width: 500px"
     />
 
-    <!-- SIGNATURE BOX -->
+    <!-- SIGNATURE -->
     <div
       id="signatureWrapper"
       style="
@@ -50,6 +50,7 @@
         left: 50px;
         width: 120px;
         cursor: move;
+        z-index: 10;
       "
     >
       <img
@@ -57,7 +58,6 @@
         style="width: 100%; display: block"
       />
 
-      <!-- RESIZE HANDLE -->
       <div
         id="resizeHandle"
         style="
