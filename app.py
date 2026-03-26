@@ -748,6 +748,10 @@ def unlock_pdf_guide():
 def add_page_numbers_guide():
     return render_template("add_page_numbers_guide.html")
 
+@app.route("/how-to-sign-pdf")
+def sign_pdf_guide():
+    return render_template("sign_pdf_guide.html")
+
 @app.route("/how-to-word-to-pdf")
 def word_to_pdf_guide():
     return render_template("word_to_pdf_guide.html")
