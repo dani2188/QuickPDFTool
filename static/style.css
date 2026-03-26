@@ -430,3 +430,6 @@ a:hover {
   }
 }
 
+#signatureWrapper {
+  border: 1px dashed #ccc;
+}
