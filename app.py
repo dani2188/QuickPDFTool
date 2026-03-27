@@ -1404,11 +1404,6 @@ def sign_pdf():
             box_width = float(request.form.get("box_width", 100))
             box_height = float(request.form.get("box_height", 50))
 
-            print("X:", x)
-            print("Y:", y)
-            print("IMG_HEIGHT:", img_height)
-            print("BOX_HEIGHT:", box_height)
-
             doc = fitz.open(pdf_path)
             page = doc[0]
 
@@ -1425,7 +1420,7 @@ def sign_pdf():
             pdf_h = (box_height / img_height) * pdf_height
 
             # 🔥 FINAL FIX (NO MORE JUMPING)
-            pdf_y = pdf_height - ((y + box_height) / img_height) * pdf_height
+            pdf_y = (y / img_height) * pdf_height
 
             rect = fitz.Rect(pdf_x, pdf_y, pdf_x + pdf_w, pdf_y + pdf_h)
 
