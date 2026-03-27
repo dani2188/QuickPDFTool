@@ -168,11 +168,17 @@
 
     // SAVE DATA BEFORE SUBMIT
     document.querySelector("form").addEventListener("submit", function () {
-      const rect = preview.getBoundingClientRect();
-      const boxRect = wrapper.getBoundingClientRect();
+      const x = wrapper.offsetLeft;
+      const y = wrapper.offsetTop;
 
-      document.getElementById("x").value = boxRect.left - rect.left;
-      document.getElementById("y").value = boxRect.top - rect.top;
+      document.getElementById("x").value = x;
+      document.getElementById("y").value = y;
+
+      document.getElementById("imgWidth").value = preview.clientWidth;
+      document.getElementById("imgHeight").value = preview.clientHeight;
+
+      document.getElementById("boxWidth").value = wrapper.offsetWidth;
+      document.getElementById("boxHeight").value = wrapper.offsetHeight;
 
       document.getElementById("imgWidth").value = rect.width;
       document.getElementById("imgHeight").value = rect.height;
