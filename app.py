@@ -1361,7 +1361,10 @@ def sign_pdf():
 
             # 🔥 GENERATE PREVIEW (FIRST PAGE ONLY)
             doc = fitz.open(pdf_path)
-            page = doc[0]
+            page_num = int(request.form.get("page", 1)) - 1
+            if page_num < 0 or page_num >= len(doc):
+                page_num = 0
+            page = doc[page_num]
 
             pix = page.get_pixmap(matrix=fitz.Matrix(2, 2))
             img = Image.frombytes("RGB", [pix.width, pix.height], pix.samples)
@@ -1378,7 +1381,8 @@ def sign_pdf():
                 "sign_pdf.html",
                 preview=preview_name,
                 filename=pdf_name,
-                signature=sig_name
+                signature=sig_name,
+                page=page_num + 1
             )
 
         # =========================
@@ -1404,8 +1408,12 @@ def sign_pdf():
             box_width = float(request.form.get("box_width", 100))
             box_height = float(request.form.get("box_height", 50))
 
+            page_num = int(request.form.get("page", 1)) - 1
+
             doc = fitz.open(pdf_path)
-            page = doc[0]
+            if page_num < 0 or page_num >= len(doc):
+                page_num = 0
+            page = doc[page_num]
 
             pdf_width = page.rect.width
             pdf_height = page.rect.height

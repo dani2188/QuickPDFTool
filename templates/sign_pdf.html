@@ -7,6 +7,7 @@
   <ol>
     <li>Upload the PDF document to sign.</li>
     <li>Upload your signature image (PNG/JPG/GIF).</li>
+    <li>Select the page number to sign (default: 1).</li>
     <li>Drag the signature box to the correct position on the preview.</li>
     <li>Use the resize handle to scale the signature.</li>
     <li>Click "Apply Signature" to save and download the signed PDF.</li>
@@ -34,6 +35,11 @@
     <p id="signatureName">No file selected</p>
   </div>
 
+  <div class="upload-box">
+    <p>Select Page Number</p>
+    <input type="number" name="page" value="1" min="1" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;" />
+  </div>
+
   <br />
   <button class="main-btn">Upload & Continue</button>
 
@@ -43,6 +49,8 @@
   <!-- STEP 2 — PREVIEW + EDIT -->
   <!-- ========================= -->
   {% if preview is defined and preview %}
+
+  <h2>Preview of Page {{ page }}</h2>
 
   <div style="position: relative; display: inline-block; margin-top: 20px">
     <!-- PDF PREVIEW -->
@@ -99,6 +107,7 @@
 
   <input type="hidden" name="existing_file" value="{{ filename }}" />
   <input type="hidden" name="signature_file" value="{{ signature }}" />
+  <input type="hidden" name="page" value="{{ page }}" />
 
   <br /><br />
   <button class="main-btn">Apply Signature</button>
