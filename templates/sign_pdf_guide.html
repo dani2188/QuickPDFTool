@@ -1,47 +1,91 @@
-{% extends "base.html" %} {% block title %} How to Sign a PDF Online {% endblock
-%} {% block description %} Learn how to electronically sign a PDF using our free
-PDF signer tool. {% endblock %} {% block content %}
+{% extends "base.html" %}
 
-<h1>How to Sign a PDF</h1>
+{% block title %}How to Sign a PDF Online – Step-by-Step Guide{% endblock %}
+
+{% block description %}Learn how to add your signature to a PDF online for free. Upload your PDF, position your signature image, and download the signed document instantly.{% endblock %}
+
+{% block content %}
+
+<h1>How to Sign a PDF Online</h1>
 
 <p>
-  Add a signature to your PDF document in a few simple steps using our online
-  PDF signer.
+  Adding a signature to a PDF doesn't require any software. Our free
+  <a href="/sign-pdf">Sign PDF tool</a> lets you upload your signature image and
+  place it anywhere on the document — no account needed.
 </p>
 
-<h2>Step 1 – Upload your PDF</h2>
+<h2>Step 1 – Open the Sign PDF tool</h2>
 <p>
-  Open the <a href="/sign-pdf">Sign PDF tool</a> and upload the PDF file you
-  want to sign.
+  Go to the <a href="/sign-pdf">Sign PDF page</a>. You will see two upload boxes:
+  one for your PDF document and one for your signature image.
 </p>
 
-<h2>Step 2 – Upload your signature image</h2>
+<h2>Step 2 – Upload your PDF</h2>
 <p>
-  Upload a signature image (PNG, JPG, or GIF) using the signature upload box.
+  Click the PDF upload box (or drag and drop your file onto it). The file must be
+  under 10MB. Any standard PDF document works.
 </p>
 
-<h2>Step 3 – Select the page to sign</h2>
-<p>Enter the page number you want to sign (e.g., 1 for the first page).</p>
-
-<h2>Step 4 – Position and resize the signature</h2>
+<h2>Step 3 – Upload your signature image</h2>
 <p>
-  Use drag-and-drop to move the signature on the preview, and use the corner
-  handle to resize it.
+  Click the signature upload box and select your signature image. Supported
+  formats are PNG, JPG, and GIF. For the best result, use a PNG with a
+  transparent background so the signature blends naturally with the document.
 </p>
 
-<h2>Step 5 – Apply signature and download</h2>
+<h2>Step 4 – Choose the page to sign</h2>
 <p>
-  Click "Apply Signature" to embed the signature into the PDF, then download the
-  signed PDF.
+  Enter the page number you want the signature to appear on. Page 1 is selected
+  by default. Click <strong>Upload &amp; Continue</strong> to generate a preview.
 </p>
 
-<h2>Why use this tool?</h2>
-<ul>
-  <li>Fast electronic signatures without installing software</li>
-  <li>Preview the location before saving</li>
-  <li>Supports PDF documents up to 10MB</li>
+<h2>Step 5 – Position and resize the signature</h2>
+<p>
+  A preview of the selected page will appear with your signature overlaid on it.
+  You can:
+</p>
+<ul class="benefits">
+  <li>Drag the signature box to move it anywhere on the page</li>
+  <li>Drag the red corner handle to resize the signature</li>
+</ul>
+<p>
+  Take your time to position it exactly where the signature line is on the
+  document.
+</p>
+
+<h2>Step 6 – Apply and download</h2>
+<p>
+  Click <strong>Apply Signature</strong>. The signature is embedded into the PDF
+  at the position you set, and the signed file downloads automatically.
+</p>
+
+<h2>Tips for a clean signature</h2>
+<ul class="benefits">
+  <li>Use a PNG with a transparent background for a professional look</li>
+  <li>Sign on white paper with a dark pen, then photograph or scan it</li>
+  <li>Crop the image tightly around the signature before uploading</li>
+  <li>Resize the box on the preview to match the signature line on the document</li>
 </ul>
 
-<p>You can start now on the <a href="/sign-pdf">Sign PDF page</a>.</p>
+<h2>Is it secure?</h2>
+<p>
+  All uploaded files are processed on our server and automatically deleted within
+  10 minutes. No files are stored permanently and no account is required.
+</p>
+
+<div class="browse-tools" style="margin-top: 28px;">
+  <a href="/sign-pdf" class="main-btn">Sign a PDF Now</a>
+</div>
+
+<div class="more-tools" style="margin-top: 36px;">
+  <h3>Related PDF Tools</h3>
+  <div class="tools-mini-grid">
+    <a href="/protect-pdf">Protect PDF</a>
+    <a href="/add-watermark">Add Watermark</a>
+    <a href="/add-page-numbers">Add Page Numbers</a>
+    <a href="/add-text-to-pdf">Add Text to PDF</a>
+    <a href="/compress-pdf">Compress PDF</a>
+  </div>
+</div>
 
 {% endblock %}

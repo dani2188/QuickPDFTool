@@ -232,7 +232,7 @@ def merge_pdf():
         for file in files:
 
             if file.filename != "":
-                filename = secure_filename(file.filename)
+                filename = f"{uuid.uuid4()}_{secure_filename(file.filename)}"
                 path = os.path.join(UPLOAD_FOLDER, filename)
                 file.save(path)
                 delete_file_later(path)
@@ -263,7 +263,7 @@ def split_pdf():
         if not file or file.filename == "":
             return "No file selected", 400
 
-        filename = secure_filename(file.filename)
+        filename = f"{uuid.uuid4()}_{secure_filename(file.filename)}"
         input_path = os.path.join(UPLOAD_FOLDER, filename)
 
         file.save(input_path)
@@ -409,12 +409,12 @@ def rotate_pdf():
         if not file or file.filename == "":
             return "No file selected"
 
-        filename = secure_filename(file.filename)
+        filename = f"{uuid.uuid4()}_{secure_filename(file.filename)}"
         input_path = os.path.join(UPLOAD_FOLDER, filename)
 
         file.save(input_path)
         delete_file_later(input_path)
-    
+
 
         reader = PdfReader(input_path)
         writer = PdfWriter()
@@ -425,10 +425,10 @@ def rotate_pdf():
             elif hasattr(page, "rotate"):
                 page.rotate(rotation)
             else:
-                raise RuntimeError("Unsupported PyPDF2 page rotate method")
+                page._data["/Rotate"] = rotation
             writer.add_page(page)
 
-        output_filename = f"rotated_{filename}"
+        output_filename = f"{uuid.uuid4()}_rotated.pdf"
         output_path = os.path.join(UPLOAD_FOLDER, output_filename)
         delete_file_later(output_path)
 
@@ -445,12 +445,15 @@ def delete_pdf_pages():
     if request.method == "POST":
 
         file = request.files["pdf"]
-        pages_to_delete = request.form.get("pages")
+        pages_to_delete = request.form.get("pages", "").strip()
 
         if file.filename == "":
             return "No file selected"
 
-        filename = secure_filename(file.filename)
+        if not pages_to_delete:
+            return "Please enter page numbers to delete (e.g. 2,5,7)", 400
+
+        filename = f"{uuid.uuid4()}_{secure_filename(file.filename)}"
         input_path = os.path.join(UPLOAD_FOLDER, filename)
 
         file.save(input_path)
@@ -459,14 +462,17 @@ def delete_pdf_pages():
         reader = PdfReader(input_path)
         writer = PdfWriter()
 
-        delete_pages = [int(p.strip()) - 1 for p in pages_to_delete.split(",")]
+        try:
+            delete_pages = [int(p.strip()) - 1 for p in pages_to_delete.split(",") if p.strip()]
+        except ValueError:
+            return "Invalid page numbers. Use format: 2,5,7", 400
 
         for i, page in enumerate(reader.pages):
 
             if i not in delete_pages:
                 writer.add_page(page)
 
-        output_filename = f"edited_{filename}"
+        output_filename = f"{uuid.uuid4()}_edited.pdf"
         output_path = os.path.join(UPLOAD_FOLDER, output_filename)
         delete_file_later(output_path)
 
@@ -530,7 +536,7 @@ def word_to_pdf():
         output_path = os.path.join(UPLOAD_FOLDER, output_filename)
         delete_file_later(output_path)
 
-        subprocess.run([
+        result = subprocess.run([
             "libreoffice",
             "--headless",
             "--convert-to",
@@ -539,6 +545,9 @@ def word_to_pdf():
             "--outdir",
             UPLOAD_FOLDER
         ])
+
+        if result.returncode != 0 or not os.path.exists(output_path):
+            return "Conversion failed. Make sure your file is a valid .docx document.", 500
 
         return send_file(output_path, as_attachment=True)
 
@@ -830,28 +839,21 @@ def remove_watermark():
         if file.filename == "":
             return "No file selected"
 
-        filename = secure_filename(file.filename)
+        filename = f"{uuid.uuid4()}_{secure_filename(file.filename)}"
         input_path = os.path.join(UPLOAD_FOLDER, filename)
 
         file.save(input_path)
         delete_file_later(input_path)
-        
 
-        reader = PdfReader(input_path)
-        writer = PdfWriter()
-
-        for page in reader.pages:
-
-            page.clear()
-
-            writer.add_page(page)
-
-        output_filename = f"cleaned_{filename}"
+        output_filename = f"{uuid.uuid4()}_cleaned.pdf"
         output_path = os.path.join(UPLOAD_FOLDER, output_filename)
         delete_file_later(output_path)
 
-        with open(output_path, "wb") as f:
-            writer.write(f)
+        doc = fitz.open(input_path)
+        for page in doc:
+            page.clean_contents()
+        doc.save(output_path)
+        doc.close()
 
         return send_file(output_path, as_attachment=True)
 
@@ -1451,6 +1453,86 @@ def sign_pdf():
     # ✅ DEFAULT PAGE
     # =========================
     return render_template("sign_pdf.html")
+
+@app.route("/add-text-to-pdf", methods=["GET", "POST"])
+def add_text_to_pdf():
+
+    if request.method == "POST":
+
+        pdf_file = request.files.get("pdf")
+        existing_file = request.form.get("existing_file")
+
+        # Step 1: Upload + generate preview
+        if pdf_file and pdf_file.filename:
+
+            pdf_name = f"{uuid.uuid4()}_{secure_filename(pdf_file.filename)}"
+            pdf_path = os.path.join(UPLOAD_FOLDER, pdf_name)
+            pdf_file.save(pdf_path)
+
+            doc = fitz.open(pdf_path)
+            page = doc[0]
+            pix = page.get_pixmap(matrix=fitz.Matrix(2, 2))
+            img = Image.frombytes("RGB", [pix.width, pix.height], pix.samples)
+            doc.close()
+
+            preview_name = f"{uuid.uuid4()}.jpg"
+            preview_path = os.path.join("static", preview_name)
+            img.save(preview_path, "JPEG")
+
+            delete_file_later(pdf_path, delay=600)
+            delete_file_later(preview_path, delay=600)
+
+            return render_template(
+                "add_text_to_pdf.html",
+                preview=preview_name,
+                filename=pdf_name,
+            )
+
+        # Step 2: Apply text to PDF
+        elif existing_file:
+
+            pdf_path = os.path.join(UPLOAD_FOLDER, existing_file)
+
+            if not os.path.exists(pdf_path):
+                return "File missing or expired. Please upload again.", 400
+
+            x = float(request.form.get("x", 0))
+            y = float(request.form.get("y", 0))
+            text = request.form.get("text", "")
+            font_size = float(request.form.get("font_size", 12))
+            color_hex = request.form.get("color", "#000000").lstrip("#")
+            img_width = float(request.form.get("img_width", 1) or 1)
+            img_height = float(request.form.get("img_height", 1) or 1)
+
+            r = int(color_hex[0:2], 16) / 255
+            g = int(color_hex[2:4], 16) / 255
+            b = int(color_hex[4:6], 16) / 255
+
+            doc = fitz.open(pdf_path)
+            page = doc[0]
+
+            pdf_x = (x / img_width) * page.rect.width
+            pdf_y = (y / img_height) * page.rect.height
+
+            page.insert_text(
+                (pdf_x, pdf_y + font_size),
+                text,
+                fontsize=font_size,
+                color=(r, g, b)
+            )
+
+            output_name = f"{uuid.uuid4()}_text_added.pdf"
+            output_path = os.path.join(UPLOAD_FOLDER, output_name)
+            doc.save(output_path)
+            doc.close()
+
+            delete_file_later(pdf_path, delay=60)
+            delete_file_later(output_path)
+
+            return send_file(output_path, as_attachment=True)
+
+    return render_template("add_text_to_pdf.html")
+
 
 @app.route("/how-to-add-text-to-pdf")
 def add_text_guide():

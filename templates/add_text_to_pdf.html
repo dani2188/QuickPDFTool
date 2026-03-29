@@ -4,11 +4,15 @@
 
 <form method="POST" enctype="multipart/form-data">
   <!-- UPLOAD -->
+  {% if not preview %}
   <div id="dropArea" class="upload-box">
-    <p>Drag & drop your PDF or click</p>
-    <input type="file" name="pdf" id="fileInput" hidden />
+    <p>Drag &amp; drop your PDF or <span class="upload-link">click to upload</span></p>
+    <input type="file" name="pdf" id="fileInput" accept=".pdf" />
     <p id="fileName">No file selected</p>
   </div>
+  <p class="file-info">Max file size: 10MB • Files are automatically deleted</p>
+  <button class="main-btn">Upload PDF</button>
+  {% endif %}
 
   {% if preview %}
 

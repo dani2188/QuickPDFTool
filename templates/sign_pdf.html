@@ -1,18 +1,27 @@
-{% extends "base.html" %} {% block content %}
+{% extends "base.html" %} {% block title %}Sign PDF Online – Add Signature to PDF{% endblock %}
+{% block description %}Add your signature to any PDF online for free. Upload your PDF, place your signature image, and download the signed document instantly.{% endblock %}
+
+{% block content %}
 
 <h1>Sign PDF</h1>
 
+<p class="subtitle">Add your signature to any PDF document — drag, resize, and position it exactly where you need.</p>
+
+{% if preview is not defined or not preview %}
 <div class="feature-guide">
-  <h2>How to use</h2>
-  <ol>
-    <li>Upload the PDF document to sign.</li>
-    <li>Upload your signature image (PNG/JPG/GIF).</li>
-    <li>Select the page number to sign (default: 1).</li>
-    <li>Drag the signature box to the correct position on the preview.</li>
-    <li>Use the resize handle to scale the signature.</li>
-    <li>Click "Apply Signature" to save and download the signed PDF.</li>
-  </ol>
+  <h2>How to sign a PDF</h2>
+  <ul class="steps">
+    <li><span class="step-number">1</span> Upload your PDF document below</li>
+    <li><span class="step-number">2</span> Upload your signature image (PNG, JPG, or GIF)</li>
+    <li><span class="step-number">3</span> Choose which page to sign</li>
+    <li><span class="step-number">4</span> Drag and resize the signature on the preview</li>
+    <li><span class="step-number">5</span> Click "Apply Signature" to download</li>
+  </ul>
+  <p style="margin-top: 12px; font-size: 0.9rem;">
+    Need more detail? Read the <a href="/how-to-sign-pdf">full guide on how to sign a PDF</a>.
+  </p>
 </div>
+{% endif %}
 
 <form method="POST" enctype="multipart/form-data" class="no-auto-submit">
   <!-- ========================= -->
@@ -188,17 +197,11 @@
 
     // SAVE DATA BEFORE SUBMIT
     document.querySelector("form").addEventListener("submit", function () {
-      const x = wrapper.offsetLeft;
-      const y = wrapper.offsetTop;
+      const rect = preview.getBoundingClientRect();
+      const boxRect = wrapper.getBoundingClientRect();
 
-      document.getElementById("x").value = x;
-      document.getElementById("y").value = y;
-
-      document.getElementById("imgWidth").value = preview.clientWidth;
-      document.getElementById("imgHeight").value = preview.clientHeight;
-
-      document.getElementById("boxWidth").value = wrapper.offsetWidth;
-      document.getElementById("boxHeight").value = wrapper.offsetHeight;
+      document.getElementById("x").value = wrapper.offsetLeft;
+      document.getElementById("y").value = wrapper.offsetTop;
 
       document.getElementById("imgWidth").value = rect.width;
       document.getElementById("imgHeight").value = rect.height;
