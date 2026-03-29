@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
+Disallow: /uploads/
 
 Sitemap: https://quickpdftool.onrender.com/sitemap.xml

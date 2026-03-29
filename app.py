@@ -314,7 +314,15 @@ def merge_pdf():
 
 @app.errorhandler(413)
 def too_large(e):
-    return "File too large. Maximum allowed size is 10MB.", 413
+    return render_template("413.html"), 413
+
+@app.errorhandler(404)
+def not_found(e):
+    return render_template("404.html"), 404
+
+@app.errorhandler(500)
+def server_error(e):
+    return render_template("500.html"), 500
 
 
 @app.route("/split-pdf", methods=["GET", "POST"])

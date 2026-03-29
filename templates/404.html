@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}Page Not Found – QuickPDFTool{% endblock %}
+{% block description %}The page you are looking for does not exist.{% endblock %}
+
+{% block content %}
+
+<h1>404 – Page Not Found</h1>
+<p class="subtitle">The page you are looking for doesn't exist or has been moved.</p>
+
+<a href="/" class="main-btn">Go to Homepage</a>
+
+<div class="more-tools" style="margin-top: 40px;">
+  <h3>Popular Tools</h3>
+  <div class="tools-mini-grid">
+    <a href="/compress-pdf">Compress PDF</a>
+    <a href="/merge-pdf">Merge PDF</a>
+    <a href="/split-pdf">Split PDF</a>
+    <a href="/pdf-to-jpg">PDF to JPG</a>
+    <a href="/pdf-to-word">PDF to Word</a>
+  </div>
+</div>
+
+{% endblock %}
