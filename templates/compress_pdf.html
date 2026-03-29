@@ -17,49 +17,35 @@ reduce file size while maintaining quality. {% endblock %} {% block content %}
     <h3>Compression Settings</h3>
 
     <!-- LEVEL -->
-    <label><strong>Compression level:</strong></label
-    ><br />
+    <label><strong>Compression level:</strong></label><br />
 
     <label>
       <input type="radio" name="level" value="low" />
-      Low (fast, minimal compression) </label
-    ><br />
+      Low – preserve quality, minimal size reduction
+    </label><br />
 
     <label>
       <input type="radio" name="level" value="medium" checked />
-      Medium (recommended) </label
-    ><br />
+      Medium – balanced quality and size (recommended)
+    </label><br />
 
     <label>
       <input type="radio" name="level" value="high" />
-      Strong (maximum compression)
-    </label>
+      High – smaller file, 72 DPI images
+    </label><br />
 
-    <br /><br />
-
-    <!-- TARGET SIZE -->
     <label>
-      <input type="checkbox" id="useTarget" />
-      Target file size (MB) </label
-    ><br />
-
-    <input
-      type="number"
-      name="target_size"
-      id="targetSize"
-      placeholder="e.g. 1"
-      class="input-field"
-      disabled
-    />
+      <input type="radio" name="level" value="extreme" />
+      Extreme – maximum compression, grayscale, 50 DPI
+    </label>
 
     <br /><br />
 
     <!-- EMAIL MODE -->
     <label>
       <input type="checkbox" name="email_opt" value="1" />
-      Optimize for email (smaller size, lower quality)
+      Optimize for email (forces high compression)
     </label>
-    ```
   </div>
 
   <button class="main-btn">Compress PDF</button>

@@ -52,32 +52,96 @@ def compress_pdf(input_path, output_path, level="medium", target_size=None, emai
         else:
             gs_command = "gs"
 
-        # 🎯 LEVEL MAPPING
-        if email_opt:
-            pdf_setting = "/screen"  # strongest
-        elif level == "low":
-            pdf_setting = "/prepress"
-        elif level == "medium":
-            pdf_setting = "/ebook"
-        else:
-            pdf_setting = "/screen"
-
         temp_output = output_path + ".tmp"
 
-        command = [
+        # Base flags shared by all levels
+        base_flags = [
             gs_command,
             "-sDEVICE=pdfwrite",
             "-dCompatibilityLevel=1.4",
-            f"-dPDFSETTINGS={pdf_setting}",
             "-dDetectDuplicateImages=true",
             "-dCompressFonts=true",
             "-dSubsetFonts=true",
             "-dNOPAUSE",
             "-dQUIET",
             "-dBATCH",
-            f"-sOutputFile={temp_output}",
-            input_path
         ]
+
+        if level == "low":
+            # Minimal — preserve quality, just re-optimise structure
+            extra = [
+                "-dPDFSETTINGS=/prepress",
+            ]
+
+        elif level == "medium":
+            # Balanced — 120 DPI, downsample everything above target
+            extra = [
+                "-dPDFSETTINGS=/ebook",
+                "-dDownsampleColorImages=true",
+                "-dColorImageDownsampleType=/Bicubic",
+                "-dColorImageResolution=120",
+                "-dColorImageDownsampleThreshold=1.0",
+                "-dDownsampleGrayImages=true",
+                "-dGrayImageDownsampleType=/Bicubic",
+                "-dGrayImageResolution=120",
+                "-dGrayImageDownsampleThreshold=1.0",
+            ]
+
+        elif level == "extreme":
+            # Maximum — 50 DPI + convert to grayscale (huge reduction for colour PDFs)
+            extra = [
+                "-dPDFSETTINGS=/screen",
+                "-dDownsampleColorImages=true",
+                "-dColorImageDownsampleType=/Bicubic",
+                "-dColorImageResolution=50",
+                "-dColorImageDownsampleThreshold=1.0",
+                "-dDownsampleGrayImages=true",
+                "-dGrayImageDownsampleType=/Bicubic",
+                "-dGrayImageResolution=50",
+                "-dGrayImageDownsampleThreshold=1.0",
+                "-dDownsampleMonoImages=true",
+                "-dMonoImageResolution=100",
+                "-dMonoImageDownsampleThreshold=1.0",
+                "-sColorConversionStrategy=Gray",
+                "-dProcessColorModel=/DeviceGray",
+            ]
+
+        else:
+            # High (default strong) — 72 DPI, downsample everything, force JPEG
+            extra = [
+                "-dPDFSETTINGS=/screen",
+                "-dDownsampleColorImages=true",
+                "-dColorImageDownsampleType=/Bicubic",
+                "-dColorImageResolution=72",
+                "-dColorImageDownsampleThreshold=1.0",
+                "-dDownsampleGrayImages=true",
+                "-dGrayImageDownsampleType=/Bicubic",
+                "-dGrayImageResolution=72",
+                "-dGrayImageDownsampleThreshold=1.0",
+                "-dDownsampleMonoImages=true",
+                "-dMonoImageResolution=150",
+                "-dMonoImageDownsampleThreshold=1.0",
+                "-dAutoFilterColorImages=false",
+                "-dColorImageFilter=/DCTEncode",
+                "-dAutoFilterGrayImages=false",
+                "-dGrayImageFilter=/DCTEncode",
+            ]
+
+        if email_opt:
+            # Override to high-compression screen preset when email mode is on
+            extra = [
+                "-dPDFSETTINGS=/screen",
+                "-dDownsampleColorImages=true",
+                "-dColorImageDownsampleType=/Bicubic",
+                "-dColorImageResolution=72",
+                "-dColorImageDownsampleThreshold=1.0",
+                "-dDownsampleGrayImages=true",
+                "-dGrayImageDownsampleType=/Bicubic",
+                "-dGrayImageResolution=72",
+                "-dGrayImageDownsampleThreshold=1.0",
+            ]
+
+        command = base_flags + extra + [f"-sOutputFile={temp_output}", input_path]
 
         subprocess.run(command, check=True)
 
