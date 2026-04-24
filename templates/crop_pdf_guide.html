@@ -1,104 +1,106 @@
 {% extends "base.html" %}
 
-{% block title %}How to Crop PDF Pages Online | QuickPDFTool{% endblock %}
+{% block title %}How to Crop PDF Pages Online | Trim PDF Margins Free{% endblock %}
 
-{% block description %}
-Learn how to crop PDF pages online for free. Remove margins, white borders, and unwanted space from your PDF documents easily.
-{% endblock %}
+{% block description %}Learn how to crop PDF pages online for free. Remove unwanted margins, trim white space, or resize PDF page content. Step-by-step guide with tips and FAQs.{% endblock %}
 
 {% block content %}
 
+<article class="guide-article">
+
 <h1>How to Crop PDF Pages</h1>
 
-<p class="subtitle">
-Remove unwanted margins and white borders from your PDF pages quickly.
-</p>
-
-<div class="steps">
-
-<li>
-<span class="step-number">1</span>
-Upload your PDF document.
-</li>
-
-<li>
-<span class="step-number">2</span>
-Adjust the margins you want to crop from the page.
-</li>
-
-<li>
-<span class="step-number">3</span>
-Download the cropped PDF instantly.
-</li>
-
-</div>
-
-
-<div class="seo-content">
-
-<h2>Crop PDF Pages Online</h2>
-
 <p>
-PDF files often contain extra white margins or unwanted borders that make the document look unbalanced. Cropping a PDF allows you to remove these unnecessary areas and focus only on the important content.
+Cropping a PDF adjusts the visible area of its pages — effectively trimming margins or removing unwanted white space, headers, footers, or borders. This is useful for removing oversized margins from scanned documents, cutting away page borders added by printing software, or focusing on a specific region of a page.
 </p>
 
 <p>
-With our free online crop PDF tool, you can easily adjust the page margins and improve the layout of your document without installing any software.
+Our free online PDF crop tool lets you specify how much to trim from each side of every page. No software installation needed.
 </p>
 
+<h2>Step 1 – Open the Crop PDF Tool</h2>
 
-<h2>Why Crop a PDF?</h2>
+<p>
+Go to our <a href="/crop-pdf">Crop PDF tool</a>. You'll see a file upload area where you can click to select your PDF or drag and drop it onto the page.
+</p>
+
+<h2>Step 2 – Set Your Crop Values</h2>
+
+<p>
+After uploading your PDF, enter the number of points to crop from each side of the page:
+</p>
 
 <ul>
-
-<li>Remove white borders around pages</li>
-
-<li>Improve document layout</li>
-
-<li>Prepare PDFs for printing</li>
-
-<li>Remove unwanted page areas</li>
-
+  <li><strong>Left:</strong> How much to trim from the left edge</li>
+  <li><strong>Right:</strong> How much to trim from the right edge</li>
+  <li><strong>Top:</strong> How much to trim from the top</li>
+  <li><strong>Bottom:</strong> How much to trim from the bottom</li>
 </ul>
 
-
-<h2>Benefits of Cropping PDF Files</h2>
-
 <p>
-Cropping PDF pages helps create cleaner and more professional documents. It also improves readability and ensures that the content fits better when printing or sharing the file.
+PDF dimensions are measured in points (1 inch = 72 points). A standard A4 page is 595 × 842 points. A standard US Letter page is 612 × 792 points. To remove a 1-inch margin from the left side, enter 72 in the Left field. To remove a half-inch margin from the top, enter 36 in the Top field.
 </p>
 
 <p>
-This tool allows you to crop PDF margins quickly and download the updated document instantly.
+You can set different values for each side independently, so you can trim just the right margin or just the top, without affecting other sides.
 </p>
 
-</div>
+<h2>Step 3 – Download the Cropped PDF</h2>
 
+<p>
+After processing, download the cropped PDF. All pages will have the specified amount trimmed from each specified edge. Review the result by opening the PDF to confirm the crop is correct.
+</p>
 
-<div class="more-tools">
+<h2>Understanding PDF Cropping</h2>
 
-<h3>More PDF Tools</h3>
+<p>
+It's important to understand that PDF cropping adjusts the <em>visible area</em> (the media box or crop box) of the page, but it does not permanently delete the content outside the crop area. The content still exists in the file — it is simply hidden from view. This means:
+</p>
 
-<div class="tools-mini-grid">
+<ul>
+  <li>The file size may not decrease significantly after cropping, because the hidden content is still present.</li>
+  <li>Some PDF viewers or software may reveal the hidden content if they ignore the crop settings.</li>
+  <li>If you need to truly remove content from the edges (not just hide it), use a full PDF editor.</li>
+</ul>
 
-<a href="/compress-pdf">Compress PDF</a>
+<h2>Common Uses for Cropping PDFs</h2>
 
-<a href="/merge-pdf">Merge PDF</a>
+<p><strong>Removing scanner borders:</strong> Document scanners often add a black or grey border around scanned pages. Cropping removes these borders for a cleaner look.</p>
 
-<a href="/split-pdf">Split PDF</a>
+<p><strong>Trimming oversized margins:</strong> Some PDFs are created with very large margins by default. Cropping reduces the white space so the content takes up more of the visible area.</p>
 
-<a href="/rotate-pdf">Rotate PDF</a>
+<p><strong>Extracting a region of a page:</strong> If a PDF page contains a diagram or chart in a corner, you can crop the page to focus on just that region.</p>
 
-<a href="/delete-pdf-pages">Delete Pages</a>
+<p><strong>Preparing for screen reading:</strong> Cropping away large margins makes PDF text larger and easier to read on tablets, phones, and e-readers where screen real estate is limited.</p>
 
-<a href="/pdf-to-word">PDF to Word</a>
+<p><strong>Removing headers and footers:</strong> If a PDF has large headers or footers with branding or page decoration you don't need, crop the top and bottom to remove them.</p>
 
-<a href="/pdf-to-jpg">PDF to JPG</a>
+<h2>Frequently Asked Questions</h2>
 
-<a href="/pdf-to-excel">PDF to Excel</a>
+<h3>Will cropping reduce the file size?</h3>
+<p>
+Cropping adjusts the visible area but does not delete the hidden content from the file. File size may decrease slightly, but a significant reduction should not be expected from cropping alone. For file size reduction, use our <a href="/compress-pdf">Compress PDF tool</a>.
+</p>
 
-</div>
+<h3>Can I crop different amounts on different pages?</h3>
+<p>
+The tool applies the same crop values to all pages. To crop pages differently, split the PDF first, crop each part separately, then merge the results.
+</p>
 
-</div>
+<h3>Can I undo a crop?</h3>
+<p>
+Yes, because the original content is still in the file. However, to restore the original visible area you would need a PDF editor that can reset the crop box, or simply re-upload the original uncropped file.
+</p>
+
+<h2>Related Tools</h2>
+
+<ul>
+  <li><a href="/crop-pdf">Crop PDF</a> – Crop your PDF pages now</li>
+  <li><a href="/rotate-pdf">Rotate PDF</a> – Fix page orientation</li>
+  <li><a href="/compress-pdf">Compress PDF</a> – Reduce file size</li>
+  <li><a href="/delete-pdf-pages">Delete PDF Pages</a> – Remove entire pages</li>
+</ul>
+
+</article>
 
 {% endblock %}

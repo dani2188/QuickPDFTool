@@ -1,65 +1,108 @@
 {% extends "base.html" %}
 
 {% block title %}
-How to Delete Pages from a PDF
+How to Delete Pages from a PDF – Remove PDF Pages Online
 {% endblock %}
 
 {% block description %}
-Learn how to remove pages from a PDF document using our free PDF page remover.
+Learn how to delete specific pages from a PDF file quickly and for free. Step-by-step guide with tips, use cases, and answers to common questions about removing PDF pages.
 {% endblock %}
 
 {% block content %}
 
+<article class="guide-article">
+
 <h1>How to Delete Pages from a PDF</h1>
 
 <p>
-Sometimes PDF documents contain unnecessary pages. Removing them helps make the file cleaner and easier to share.
+Sometimes a PDF contains pages you don't need — blank pages at the end, a cover sheet you don't want to share, a confidential section, or simply pages that are no longer relevant. Deleting those pages reduces file size and keeps your document focused on what matters.
 </p>
-
-<h2>Step 1 – Upload the PDF</h2>
 
 <p>
-Use our <a href="/delete-pdf-pages">Delete PDF Pages tool</a> and upload your file.
+Our free online tool lets you specify exactly which pages to remove and creates a clean new PDF without those pages. No software installation needed, and your files are deleted from our server automatically after use.
 </p>
 
-<h2>Step 2 – Choose pages to remove</h2>
+<h2>Step 1 – Open the Delete Pages Tool</h2>
 
 <p>
-Select the pages you want to delete.
+Go to our <a href="/delete-pdf-pages">Delete PDF Pages tool</a>. You'll see a file upload area where you can select your PDF by clicking or by dragging and dropping it.
 </p>
 
-<h2>Step 3 – Download the updated PDF</h2>
+<h2>Step 2 – Specify the Pages to Delete</h2>
 
 <p>
-Download the edited document with the unwanted pages removed.
+After uploading, enter the page numbers you want to remove. Use comma-separated values to specify multiple pages. For example:
 </p>
-
-<h2>Why remove PDF pages?</h2>
 
 <ul>
-<li>Clean up large documents</li>
-<li>Remove blank pages</li>
-<li>Share only relevant information</li>
-<li>Reduce file size</li>
+  <li><strong>2</strong> — deletes page 2</li>
+  <li><strong>2, 5, 7</strong> — deletes pages 2, 5, and 7</li>
+  <li><strong>1, 3, 10</strong> — deletes the first page, third page, and tenth page</li>
 </ul>
 
 <p>
-Use our <a href="/delete-pdf-pages">PDF page remover</a>.
+All other pages will be kept in their original order. The page numbers refer to the actual page position in the document (not any printed page numbers on the pages themselves).
 </p>
 
-<div class="ad-container">
+<h2>Step 3 – Download the Edited PDF</h2>
 
-<ins class="adsbygoogle"
-style="display:block"
-data-ad-client="ca-pub-1115814677653739"
-data-ad-slot="1234567890"
-data-ad-format="auto"
-data-full-width-responsive="true"></ins>
+<p>
+Click the submit button and the tool will generate a new PDF with your specified pages removed. Download the result to your device. The original file is not modified — the tool creates a new clean version.
+</p>
 
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
+<h2>Tips for Deleting PDF Pages</h2>
 
-</div>
+<ul>
+  <li><strong>Count pages carefully:</strong> Open your PDF in a viewer and note which page numbers correspond to the content you want to remove before entering them in the tool.</li>
+  <li><strong>Blank pages:</strong> Scanners and printers often create blank pages at the end of a document. Delete these to reduce file size and improve presentation.</li>
+  <li><strong>Remove duplicate pages:</strong> If a document was scanned twice or has redundant pages, remove duplicates to create a clean file.</li>
+  <li><strong>Large page deletions:</strong> If you need to keep only a few pages from a long document, it may be easier to <a href="/split-pdf">split the PDF</a> and then only keep the pages you want.</li>
+  <li><strong>After deletion, compress:</strong> Deleting pages reduces file size, but compressing the result with our <a href="/compress-pdf">Compress PDF tool</a> can reduce it even further.</li>
+</ul>
+
+<h2>Common Reasons to Delete PDF Pages</h2>
+
+<p><strong>Remove blank pages:</strong> Scanning documents sometimes produces empty pages between sections. Deleting them makes the document cleaner and smaller.</p>
+
+<p><strong>Strip confidential sections:</strong> Before sharing a document, remove pages that contain private or sensitive information not meant for the recipient.</p>
+
+<p><strong>Remove a cover sheet:</strong> When sending an internal document externally, remove the internal cover or routing slip that was only meant for internal use.</p>
+
+<p><strong>Fix a scanning error:</strong> If one page was scanned twice or at the wrong orientation and can't be easily fixed, delete it and rescan that page separately, then merge the corrected version back in.</p>
+
+<p><strong>Trim a downloaded PDF:</strong> PDF forms and guides downloaded from the internet often include pages of terms, advertisements, or unneeded instructions. Delete them to keep only the essential content.</p>
+
+<h2>Frequently Asked Questions</h2>
+
+<h3>Can I delete a range of pages (e.g. pages 5 through 10)?</h3>
+<p>
+Currently the tool accepts individual page numbers separated by commas. To delete a range, list each page number: for example, enter <em>5, 6, 7, 8, 9, 10</em> to remove pages 5 through 10.
+</p>
+
+<h3>Will the remaining pages be renumbered?</h3>
+<p>
+The remaining pages shift up to fill the gaps. If you delete page 3 from a 10-page document, what was page 4 becomes page 3 in the resulting file, and so on.
+</p>
+
+<h3>Is the original file changed?</h3>
+<p>
+No. The tool creates a new PDF file with the specified pages removed. Your original file is not modified.
+</p>
+
+<h3>What if I delete all the pages by mistake?</h3>
+<p>
+If you accidentally delete too many pages, simply re-upload the original file and start again. The original is safe on your device.
+</p>
+
+<h2>Related Tools</h2>
+
+<ul>
+  <li><a href="/delete-pdf-pages">Delete PDF Pages</a> – Remove pages from your PDF now</li>
+  <li><a href="/split-pdf">Split PDF</a> – Extract individual pages from a PDF</li>
+  <li><a href="/merge-pdf">Merge PDF</a> – Combine pages from multiple PDFs</li>
+  <li><a href="/compress-pdf">Compress PDF</a> – Reduce the size of your edited file</li>
+</ul>
+
+</article>
 
 {% endblock %}

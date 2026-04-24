@@ -1,65 +1,106 @@
 {% extends "base.html" %}
 
 {% block title %}
-How to Protect a PDF – Add Password Protection
+How to Password Protect a PDF – Secure Your PDF Files Online
 {% endblock %}
 
 {% block description %}
-Learn how to protect a PDF file with a password using our free PDF protection tool.
+Learn how to add password protection to a PDF file. Prevent unauthorised access to your documents with our free online PDF protection tool. Step-by-step guide with tips and FAQs.
 {% endblock %}
 
 {% block content %}
 
-<h1>How to Protect a PDF</h1>
+<article class="guide-article">
+
+<h1>How to Password Protect a PDF</h1>
 
 <p>
-Protecting a PDF with a password ensures that only authorized users can open the document.
+PDF password protection prevents unauthorised people from opening, reading, or printing your document. It's an important security measure for contracts, financial records, confidential reports, personal identification documents, and any other sensitive information you share digitally.
 </p>
-
-<h2>Step 1 – Upload your PDF</h2>
 
 <p>
-Go to our <a href="/protect-pdf">Protect PDF tool</a> and upload the document.
+Our free online tool adds strong encryption to your PDF in seconds. No software installation is needed, and your file is processed securely and deleted from our server after use.
 </p>
 
-<h2>Step 2 – Set a password</h2>
+<h2>Step 1 – Open the Protect PDF Tool</h2>
 
 <p>
-Enter a password to secure the file.
+Go to our <a href="/protect-pdf">Protect PDF tool</a>. You'll see a file upload area where you can select your PDF by clicking or dragging and dropping it onto the page.
 </p>
 
-<h2>Step 3 – Download the protected PDF</h2>
+<h2>Step 2 – Upload Your PDF and Set a Password</h2>
 
 <p>
-Download the secured document.
+Upload your PDF file and enter the password you want to set. Choose a strong password — use a mix of uppercase letters, lowercase letters, numbers, and special characters. Avoid simple words or dates that others could guess.
 </p>
 
-<h2>Why protect PDF files?</h2>
+<p>
+<strong>Important:</strong> Remember or securely save your password. If you forget it, there is no way to recover it from the file itself. Keep a record of the password in a secure password manager.
+</p>
+
+<h2>Step 3 – Download Your Protected PDF</h2>
+
+<p>
+After processing, download the protected PDF. When anyone tries to open this file, they will be prompted to enter the password. Without the correct password, the document cannot be viewed.
+</p>
+
+<p>
+Test the file immediately after downloading by opening it to confirm it requires the password and that your chosen password works correctly.
+</p>
+
+<h2>Tips for Protecting PDF Files</h2>
 
 <ul>
-<li>Secure confidential documents</li>
-<li>Prevent unauthorized access</li>
-<li>Protect sensitive data</li>
-<li>Control document sharing</li>
+  <li><strong>Use a unique password:</strong> Don't reuse a password you use elsewhere. If that password is compromised, your document would be at risk too.</li>
+  <li><strong>Share the password separately:</strong> Never send the password in the same email as the protected PDF. Use a separate channel — a phone call, text message, or different email — to communicate the password.</li>
+  <li><strong>Compress before protecting:</strong> If your PDF is large, <a href="/compress-pdf">compress it</a> before adding a password. This makes the protected file smaller and easier to email.</li>
+  <li><strong>Protect scanned documents:</strong> Scanned copies of IDs, contracts, and financial documents should always be password-protected before sharing by email.</li>
+  <li><strong>Consider what protection you actually need:</strong> Password protection prevents opening. If you need to allow reading but prevent editing, consider using additional restrictions — though this depends on the PDF software being used to open it.</li>
 </ul>
 
+<h2>When Should You Protect a PDF?</h2>
+
+<p><strong>Sending contracts:</strong> Legal agreements, NDAs, and employment contracts often contain sensitive terms. Password-protecting them limits access to the intended recipient.</p>
+
+<p><strong>Sharing financial documents:</strong> Bank statements, tax returns, and payslips contain personal financial data. Always protect these before emailing.</p>
+
+<p><strong>Academic submissions:</strong> Some academic institutions require students to submit work as protected PDFs to prevent unauthorised modification.</p>
+
+<p><strong>Medical records:</strong> Patient records and medical reports must be kept confidential. Password protection is a basic layer of security for these files.</p>
+
+<p><strong>Business proposals and pricing:</strong> Protect pricing sheets, business proposals, and quote documents to ensure they are only opened by the intended recipient.</p>
+
+<h2>Frequently Asked Questions</h2>
+
+<h3>What happens if I forget the password?</h3>
 <p>
-Use our <a href="/protect-pdf">PDF protection tool</a>.
+There is no way to recover a forgotten password from the PDF file. This is by design — it means no one, including us, can read your document without the password. Always keep a secure copy of the password.
 </p>
 
-<div class="ad-container">
+<h3>Is the protection strong enough for sensitive documents?</h3>
+<p>
+Our tool uses standard PDF encryption which is suitable for most personal and business use cases. For highly sensitive legal or financial documents, consider using dedicated professional tools or combining PDF protection with other security measures.
+</p>
 
-<ins class="adsbygoogle"
-style="display:block"
-data-ad-client="ca-pub-1115814677653739"
-data-ad-slot="1234567890"
-data-ad-format="auto"
-data-full-width-responsive="true"></ins>
+<h3>Can I remove the password later?</h3>
+<p>
+Yes. Use our <a href="/unlock-pdf">Unlock PDF tool</a> to remove the password when you have it. You'll need the current password to unlock the file.
+</p>
 
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
+<h3>Can I protect a PDF that's already been protected?</h3>
+<p>
+You'll need to <a href="/unlock-pdf">unlock it</a> first, then apply the new password. You cannot add a second layer of protection on top of an existing one without removing the first.
+</p>
 
-</div>
+<h2>Related Tools</h2>
+
+<ul>
+  <li><a href="/protect-pdf">Protect PDF</a> – Add a password to your PDF now</li>
+  <li><a href="/unlock-pdf">Unlock PDF</a> – Remove a password from a PDF</li>
+  <li><a href="/compress-pdf">Compress PDF</a> – Reduce file size before protecting</li>
+  <li><a href="/merge-pdf">Merge PDF</a> – Combine documents before protecting</li>
+</ul>
+
+</article>
 
 {% endblock %}
