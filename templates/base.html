@@ -35,6 +35,7 @@
           <a href="/">Home</a>
           <a href="/pdf-tools">All Tools</a>
           <a href="/blog">Guides</a>
+          <a href="/about">About</a>
           <a href="https://quickimagetools.onrender.com/" target="_blank">
             Image Tools
           </a>
@@ -49,6 +50,7 @@
       <p>Free online tools to compress, merge, convert and edit PDF files.</p>
 
       <div class="footer-links">
+        <a href="/about">About</a>
         <a href="/privacy-policy">Privacy Policy</a>
         <a href="/terms">Terms</a>
         <a href="/contact">Contact</a>
@@ -57,6 +59,39 @@
         </a>
       </div>
     </footer>
+
+    <!-- Cookie Consent Banner -->
+    <div id="cookie-banner" style="display:none; position:fixed; bottom:0; left:0; right:0; background:#222; color:#fff; padding:16px 24px; z-index:9999; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; font-size:14px;">
+      <p style="margin:0; flex:1; min-width:200px;">
+        We use cookies to improve your experience and to show relevant ads via Google AdSense.
+        By clicking "Accept", you consent to our use of cookies.
+        <a href="/privacy-policy" style="color:#aad4f5;">Learn more</a>.
+      </p>
+      <div style="display:flex; gap:10px;">
+        <button onclick="acceptCookies()" style="background:#e5322d; color:#fff; border:none; padding:8px 20px; border-radius:4px; cursor:pointer; font-size:14px;">Accept</button>
+        <button onclick="declineCookies()" style="background:#555; color:#fff; border:none; padding:8px 20px; border-radius:4px; cursor:pointer; font-size:14px;">Decline</button>
+      </div>
+    </div>
+
+    <script>
+      (function() {
+        var consent = localStorage.getItem('cookie_consent');
+        var banner = document.getElementById('cookie-banner');
+        if (!consent && banner) {
+          banner.style.display = 'flex';
+        }
+      })();
+
+      function acceptCookies() {
+        localStorage.setItem('cookie_consent', 'accepted');
+        document.getElementById('cookie-banner').style.display = 'none';
+      }
+
+      function declineCookies() {
+        localStorage.setItem('cookie_consent', 'declined');
+        document.getElementById('cookie-banner').style.display = 'none';
+      }
+    </script>
 
     <!-- ✅ GLOBAL JS (UPLOAD + DRAG DROP + AUTO SUBMIT) -->
     <script>
