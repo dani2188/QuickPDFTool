@@ -46,6 +46,26 @@ reduce file size while maintaining quality. {% endblock %} {% block content %}
       <input type="checkbox" name="email_opt" value="1" />
       Optimize for email (forces high compression)
     </label>
+
+    <br /><br />
+
+    <!-- CUSTOM TARGET SIZE -->
+    <label>
+      <input type="checkbox" id="useTarget" />
+      Target a specific file size (best effort — not always possible)
+    </label><br />
+
+    <label>
+      Target size (MB):
+      <input
+        type="number"
+        id="targetSize"
+        name="target_size"
+        min="0.1"
+        step="0.1"
+        disabled
+      />
+    </label>
   </div>
 
   <button class="main-btn">Compress PDF</button>

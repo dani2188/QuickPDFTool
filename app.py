@@ -16,6 +16,7 @@ from werkzeug.utils import secure_filename
 from pdf2docx import Converter
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
+import json
 
 
 
@@ -44,108 +45,145 @@ def delete_file_later(file_path, delay=300):
 # PDF COMPRESSION ENGINE
 # -----------------------------
 
+# Ghostscript flag sets per level, ordered from lightest to most aggressive.
+# Reused both for single-pass compression and for the target-size best-effort loop.
+COMPRESSION_PRESETS = {
+    "low": [
+        # Minimal — preserve quality, just re-optimise structure
+        "-dPDFSETTINGS=/prepress",
+    ],
+    "medium": [
+        # Balanced — 120 DPI, downsample everything above target
+        "-dPDFSETTINGS=/ebook",
+        "-dDownsampleColorImages=true",
+        "-dColorImageDownsampleType=/Bicubic",
+        "-dColorImageResolution=120",
+        "-dColorImageDownsampleThreshold=1.0",
+        "-dDownsampleGrayImages=true",
+        "-dGrayImageDownsampleType=/Bicubic",
+        "-dGrayImageResolution=120",
+        "-dGrayImageDownsampleThreshold=1.0",
+    ],
+    "high": [
+        # 72 DPI, downsample everything, force JPEG
+        "-dPDFSETTINGS=/screen",
+        "-dDownsampleColorImages=true",
+        "-dColorImageDownsampleType=/Bicubic",
+        "-dColorImageResolution=72",
+        "-dColorImageDownsampleThreshold=1.0",
+        "-dDownsampleGrayImages=true",
+        "-dGrayImageDownsampleType=/Bicubic",
+        "-dGrayImageResolution=72",
+        "-dGrayImageDownsampleThreshold=1.0",
+        "-dDownsampleMonoImages=true",
+        "-dMonoImageResolution=150",
+        "-dMonoImageDownsampleThreshold=1.0",
+        "-dAutoFilterColorImages=false",
+        "-dColorImageFilter=/DCTEncode",
+        "-dAutoFilterGrayImages=false",
+        "-dGrayImageFilter=/DCTEncode",
+    ],
+    "extreme": [
+        # Maximum — 50 DPI + convert to grayscale (huge reduction for colour PDFs)
+        "-dPDFSETTINGS=/screen",
+        "-dDownsampleColorImages=true",
+        "-dColorImageDownsampleType=/Bicubic",
+        "-dColorImageResolution=50",
+        "-dColorImageDownsampleThreshold=1.0",
+        "-dDownsampleGrayImages=true",
+        "-dGrayImageDownsampleType=/Bicubic",
+        "-dGrayImageResolution=50",
+        "-dGrayImageDownsampleThreshold=1.0",
+        "-dDownsampleMonoImages=true",
+        "-dMonoImageResolution=100",
+        "-dMonoImageDownsampleThreshold=1.0",
+        "-sColorConversionStrategy=Gray",
+        "-dProcessColorModel=/DeviceGray",
+    ],
+}
+
+EMAIL_OPT_FLAGS = [
+    "-dPDFSETTINGS=/screen",
+    "-dDownsampleColorImages=true",
+    "-dColorImageDownsampleType=/Bicubic",
+    "-dColorImageResolution=72",
+    "-dColorImageDownsampleThreshold=1.0",
+    "-dDownsampleGrayImages=true",
+    "-dGrayImageDownsampleType=/Bicubic",
+    "-dGrayImageResolution=72",
+    "-dGrayImageDownsampleThreshold=1.0",
+]
+
+# Order to escalate through when chasing a target file size (lightest to strongest).
+TARGET_SIZE_LEVEL_ORDER = ["low", "medium", "high", "extreme"]
+
+
+def _run_ghostscript(extra_flags, input_path, temp_output):
+    gs_command = "gswin64c" if platform.system() == "Windows" else "gs"
+
+    base_flags = [
+        gs_command,
+        "-sDEVICE=pdfwrite",
+        "-dCompatibilityLevel=1.4",
+        "-dDetectDuplicateImages=true",
+        "-dCompressFonts=true",
+        "-dSubsetFonts=true",
+        "-dNOPAUSE",
+        "-dQUIET",
+        "-dBATCH",
+    ]
+
+    command = base_flags + extra_flags + [f"-sOutputFile={temp_output}", input_path]
+    subprocess.run(command, check=True)
+
+
 def compress_pdf(input_path, output_path, level="medium", target_size=None, email_opt=False):
 
+    temp_output = output_path + ".tmp"
+    meta_path = output_path + ".meta.json"
+
+    target_bytes = None
+    if target_size:
+        try:
+            target_bytes = float(target_size) * 1024 * 1024
+        except (TypeError, ValueError):
+            target_bytes = None
+
     try:
-        if platform.system() == "Windows":
-            gs_command = "gswin64c"
-        else:
-            gs_command = "gs"
+        if target_bytes:
+            # Best-effort loop: escalate through presets until we're under the
+            # target, or we run out of presets — an exact target can't always
+            # be guaranteed (e.g. a dense scanned page has a size floor).
+            attempts = []
+            target_met = False
+            final_level = None
 
-        temp_output = output_path + ".tmp"
+            for candidate_level in TARGET_SIZE_LEVEL_ORDER:
+                _run_ghostscript(COMPRESSION_PRESETS[candidate_level], input_path, temp_output)
+                size = os.path.getsize(temp_output)
+                attempts.append({"level": candidate_level, "size_bytes": size})
+                final_level = candidate_level
 
-        # Base flags shared by all levels
-        base_flags = [
-            gs_command,
-            "-sDEVICE=pdfwrite",
-            "-dCompatibilityLevel=1.4",
-            "-dDetectDuplicateImages=true",
-            "-dCompressFonts=true",
-            "-dSubsetFonts=true",
-            "-dNOPAUSE",
-            "-dQUIET",
-            "-dBATCH",
-        ]
+                if size <= target_bytes:
+                    target_met = True
+                    break
 
-        if level == "low":
-            # Minimal — preserve quality, just re-optimise structure
-            extra = [
-                "-dPDFSETTINGS=/prepress",
-            ]
+            os.replace(temp_output, output_path)
 
-        elif level == "medium":
-            # Balanced — 120 DPI, downsample everything above target
-            extra = [
-                "-dPDFSETTINGS=/ebook",
-                "-dDownsampleColorImages=true",
-                "-dColorImageDownsampleType=/Bicubic",
-                "-dColorImageResolution=120",
-                "-dColorImageDownsampleThreshold=1.0",
-                "-dDownsampleGrayImages=true",
-                "-dGrayImageDownsampleType=/Bicubic",
-                "-dGrayImageResolution=120",
-                "-dGrayImageDownsampleThreshold=1.0",
-            ]
-
-        elif level == "extreme":
-            # Maximum — 50 DPI + convert to grayscale (huge reduction for colour PDFs)
-            extra = [
-                "-dPDFSETTINGS=/screen",
-                "-dDownsampleColorImages=true",
-                "-dColorImageDownsampleType=/Bicubic",
-                "-dColorImageResolution=50",
-                "-dColorImageDownsampleThreshold=1.0",
-                "-dDownsampleGrayImages=true",
-                "-dGrayImageDownsampleType=/Bicubic",
-                "-dGrayImageResolution=50",
-                "-dGrayImageDownsampleThreshold=1.0",
-                "-dDownsampleMonoImages=true",
-                "-dMonoImageResolution=100",
-                "-dMonoImageDownsampleThreshold=1.0",
-                "-sColorConversionStrategy=Gray",
-                "-dProcessColorModel=/DeviceGray",
-            ]
+            meta = {
+                "target_requested_bytes": target_bytes,
+                "target_met": target_met,
+                "final_level": final_level,
+                "final_size_bytes": os.path.getsize(output_path),
+                "attempts": attempts,
+            }
+            with open(meta_path, "w") as f:
+                json.dump(meta, f)
 
         else:
-            # High (default strong) — 72 DPI, downsample everything, force JPEG
-            extra = [
-                "-dPDFSETTINGS=/screen",
-                "-dDownsampleColorImages=true",
-                "-dColorImageDownsampleType=/Bicubic",
-                "-dColorImageResolution=72",
-                "-dColorImageDownsampleThreshold=1.0",
-                "-dDownsampleGrayImages=true",
-                "-dGrayImageDownsampleType=/Bicubic",
-                "-dGrayImageResolution=72",
-                "-dGrayImageDownsampleThreshold=1.0",
-                "-dDownsampleMonoImages=true",
-                "-dMonoImageResolution=150",
-                "-dMonoImageDownsampleThreshold=1.0",
-                "-dAutoFilterColorImages=false",
-                "-dColorImageFilter=/DCTEncode",
-                "-dAutoFilterGrayImages=false",
-                "-dGrayImageFilter=/DCTEncode",
-            ]
-
-        if email_opt:
-            # Override to high-compression screen preset when email mode is on
-            extra = [
-                "-dPDFSETTINGS=/screen",
-                "-dDownsampleColorImages=true",
-                "-dColorImageDownsampleType=/Bicubic",
-                "-dColorImageResolution=72",
-                "-dColorImageDownsampleThreshold=1.0",
-                "-dDownsampleGrayImages=true",
-                "-dGrayImageDownsampleType=/Bicubic",
-                "-dGrayImageResolution=72",
-                "-dGrayImageDownsampleThreshold=1.0",
-            ]
-
-        command = base_flags + extra + [f"-sOutputFile={temp_output}", input_path]
-
-        subprocess.run(command, check=True)
-
-        os.rename(temp_output, output_path)
+            extra = EMAIL_OPT_FLAGS if email_opt else COMPRESSION_PRESETS.get(level, COMPRESSION_PRESETS["medium"])
+            _run_ghostscript(extra, input_path, temp_output)
+            os.replace(temp_output, output_path)
 
     except Exception as e:
         print("Compression ERROR:", e)
@@ -248,12 +286,31 @@ def download(filename):
         compressed_mb = "-"
         reduction = "-"
 
+    # If compression was run with a target size, surface whether it was hit.
+    target_info = None
+    meta_path = compressed_path + ".meta.json"
+
+    if os.path.exists(meta_path):
+        try:
+            with open(meta_path) as f:
+                meta = json.load(f)
+
+            target_info = {
+                "met": meta.get("target_met"),
+                "target_mb": round(meta.get("target_requested_bytes", 0) / (1024 * 1024), 2),
+            }
+        except (ValueError, OSError):
+            target_info = None
+
+        delete_file_later(meta_path, delay=600)
+
     return render_template(
         "result.html",
         file_name=filename,
         original_size=original_mb,
         compressed_size=compressed_mb,
-        reduction=reduction
+        reduction=reduction,
+        target_info=target_info,
     )
 
 

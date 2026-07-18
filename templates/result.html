@@ -48,6 +48,25 @@ margin-top:15px;
 background:#c62823;
 }
 
+.target-met{
+color:#2e7d32;
+background:#e8f5e9;
+padding:10px 14px;
+border-radius:6px;
+font-size:14px;
+margin:15px 0;
+}
+
+.target-missed{
+color:#8a6100;
+background:#fff8e1;
+padding:10px 14px;
+border-radius:6px;
+font-size:14px;
+margin:15px 0;
+text-align:left;
+}
+
 </style>
 
 </head>
@@ -65,6 +84,18 @@ background:#c62823;
 <p class="stats"><strong>Compressed size:</strong> {{ compressed_size }} MB</p>
 
 <p class="stats"><strong>Space saved:</strong> {{ reduction }} %</p>
+
+{% if target_info %}
+  {% if target_info.met %}
+  <p class="target-met">🎯 Target reached — your file is under {{ target_info.target_mb }} MB.</p>
+  {% else %}
+  <p class="target-missed">
+    ⚠️ We compressed as much as possible, but couldn't get under {{ target_info.target_mb }} MB
+    without destroying quality. This can happen with image-heavy or already-compressed PDFs —
+    try splitting the document into smaller parts instead.
+  </p>
+  {% endif %}
+{% endif %}
 
 <br>
 

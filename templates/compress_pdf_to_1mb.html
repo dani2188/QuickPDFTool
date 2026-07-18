@@ -11,6 +11,8 @@ compressor. {% endblock %} {% block content %}
 
 <div class="upload-box">
   <form action="/compress-pdf" method="POST" enctype="multipart/form-data">
+    <input type="hidden" name="target_size" value="1" />
+
     <label class="upload-area">
       <input type="file" name="pdf" required />
 
@@ -23,7 +25,7 @@ compressor. {% endblock %} {% block content %}
       </p>
     </label>
 
-    <button class="main-btn">Compress PDF</button>
+    <button class="main-btn">Compress to 1MB</button>
   </form>
 </div>
 
