@@ -9,12 +9,17 @@ email. {% endblock %} {% block content %}
   Reduce PDF size so your document can be sent easily as an email attachment.
 </p>
 
-<!-- ✅ CTA SECTION -->
-<div class="upload-tool">
-  <a href="/compress-pdf" class="main-btn">Compress PDF Now</a>
-</div>
+<!-- ✅ UPLOAD FORM (posts straight to the compressor with email optimization forced on) -->
+<form method="POST" action="/compress-pdf" enctype="multipart/form-data">
+  <input type="hidden" name="email_opt" value="1" />
 
-<p class="file-info">Max file size: 10MB • Files are automatically deleted</p>
+  {% set input_name="pdf" %} {% set accept_types=".pdf" %} {% set multiple=false %}
+  {% include "components/upload.html" %}
+
+  <button class="main-btn">Compress for Email</button>
+
+  <p class="file-info">Max file size: 10MB • Files are automatically deleted</p>
+</form>
 
 <!-- ✅ SEO CONTENT -->
 <div class="seo-content">
@@ -29,19 +34,14 @@ email. {% endblock %} {% block content %}
   <h2>How to compress a PDF for email</h2>
 
   <ul class="steps">
-    <li>
-      <span class="step-number">1</span>
-      Open the&nbsp;<a href="/compress-pdf">Compress PDF tool</a>
-    </li>
+    <li><span class="step-number">1</span> Upload your PDF file above</li>
 
-    <li><span class="step-number">2</span> Upload your PDF file</li>
+    <li><span class="step-number">2</span> Click "Compress for Email"</li>
 
-    <li><span class="step-number">3</span> Click "Compress PDF"</li>
-
-    <li><span class="step-number">4</span> Download the smaller file</li>
+    <li><span class="step-number">3</span> Download the smaller file</li>
 
     <li>
-      <span class="step-number">5</span>
+      <span class="step-number">4</span>
       Attach the compressed file to your email
     </li>
   </ul>
