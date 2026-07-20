@@ -1,169 +1,171 @@
-<!doctype html>
-<html>
-  <head>
-    <!-- Google tag -->
-    <script
-      async
-      src="https://www.googletagmanager.com/gtag/js?id=G-XL3SFKPQS3"
-    ></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag() {
-        dataLayer.push(arguments);
-      }
-      gtag("js", new Date());
-      gtag("config", "G-XL3SFKPQS3");
-    </script>
+{% extends "base.html" %}
 
-    <meta charset="UTF-8" />
-    <title>
-      Free PDF Tools Online – Compress, Merge, Split and Convert PDFs
-    </title>
-    <meta
-      name="description"
-      content="Free online PDF tools to compress, merge, split, convert and edit PDF files quickly and securely. No installation required."
-    />
+{% block title %}Free PDF Tools Online – Compress, Merge, Split and Convert PDFs{% endblock %}
+{% block description %}Free online PDF tools to compress, merge, split, convert and edit PDF files quickly and securely. No installation required.{% endblock %}
 
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='style.css') }}"
-    />
-  </head>
+{# Homepage keeps its own analytics and intentionally shows no AdSense #}
+{% block adsense %}{% endblock %}
 
-  <body>
-    <header class="topbar">
-      <div class="header-wrapper">
-        <div class="logo">
-          <a href="/">QuickPDFTool</a>
-        </div>
+{% block head %}
+<!-- Google tag -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XL3SFKPQS3"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() {
+    dataLayer.push(arguments);
+  }
+  gtag("js", new Date());
+  gtag("config", "G-XL3SFKPQS3");
+</script>
+{% endblock %}
 
-        <nav class="menu">
-          <a href="/">Home</a>
-          <a href="/pdf-tools">All Tools</a>
-          <a href="/blog">Guides</a>
-          <!-- link to quickimagetools -->
-          <a href="https://quickimagetools.onrender.com/" target="_blank">
-            Image Tools
-          </a>
-        </nav>
-      </div>
-    </header>
+{% block content %}
+<h1>Free PDF Tools Online</h1>
 
-    <div class="main-container">
-      <h1>Free PDF Tools Online</h1>
+<p class="subtitle">
+  Compress, merge, split, convert and edit PDF files easily — directly in
+  your browser.
+</p>
 
-      <p class="subtitle">
-        Compress, merge, split, convert and edit PDF files easily — directly in
-        your browser.
-      </p>
+<div class="features">
+  <div class="feature">⚡ Fast processing</div>
+  <div class="feature">🔒 Secure files</div>
+  <div class="feature">💻 No installation</div>
+</div>
 
-      <div class="features">
-        <div class="feature">⚡ Fast processing</div>
-        <div class="feature">🔒 Secure files</div>
-        <div class="feature">💻 No installation</div>
-      </div>
+<!-- TOOLS GRID -->
+<div class="tools-grid">
+  <a href="/compress-pdf" class="tool-card">
+    <span class="tool-card-icon">📦</span>
+    <span class="tool-card-title">Compress PDF</span>
+    <span class="tool-card-desc">Reduce file size</span>
+  </a>
+  <a href="/merge-pdf" class="tool-card">
+    <span class="tool-card-icon">📑</span>
+    <span class="tool-card-title">Merge PDF</span>
+    <span class="tool-card-desc">Combine into one</span>
+  </a>
+  <a href="/split-pdf" class="tool-card">
+    <span class="tool-card-icon">✂️</span>
+    <span class="tool-card-title">Split PDF</span>
+    <span class="tool-card-desc">Separate pages</span>
+  </a>
+  <a href="/pdf-to-jpg" class="tool-card">
+    <span class="tool-card-icon">🖼</span>
+    <span class="tool-card-title">PDF to JPG</span>
+    <span class="tool-card-desc">Export as images</span>
+  </a>
+  <a href="/rotate-pdf" class="tool-card">
+    <span class="tool-card-icon">🔄</span>
+    <span class="tool-card-title">Rotate PDF</span>
+    <span class="tool-card-desc">Fix orientation</span>
+  </a>
+  <a href="/sign-pdf" class="tool-card">
+    <span class="tool-card-icon">✍️</span>
+    <span class="tool-card-title">Sign PDF</span>
+    <span class="tool-card-desc">Add your signature</span>
+  </a>
+  <a href="/convert-pdf" class="tool-card">
+    <span class="tool-card-icon">🔄</span>
+    <span class="tool-card-title">Convert PDF</span>
+    <span class="tool-card-desc">Change formats</span>
+  </a>
+  <a href="/edit-pdf" class="tool-card">
+    <span class="tool-card-icon">✏️</span>
+    <span class="tool-card-title">Edit PDF</span>
+    <span class="tool-card-desc">Modify content</span>
+  </a>
+  <a href="/organize-pdf" class="tool-card">
+    <span class="tool-card-icon">📂</span>
+    <span class="tool-card-title">Organize PDF</span>
+    <span class="tool-card-desc">Reorder pages</span>
+  </a>
+</div>
 
-      <!-- TOOLS GRID -->
+<div class="browse-tools">
+  <a href="/pdf-tools" class="main-btn">View All Tools</a>
+</div>
 
-      <div class="tools-grid">
-        <a href="/compress-pdf" class="tool-card">📦 Compress PDF</a>
-        <a href="/merge-pdf" class="tool-card">📑 Merge PDF</a>
-        <a href="/split-pdf" class="tool-card">✂️ Split PDF</a>
-        <a href="/pdf-to-jpg" class="tool-card">🖼 PDF to JPG</a>
-        <a href="/rotate-pdf" class="tool-card">🔄 Rotate PDF</a>
-        <a href="/sign-pdf" class="tool-card">✍️ Sign PDF</a>
-        <a href="/convert-pdf" class="tool-card">🔄 Convert PDF</a>
-        <a href="/edit-pdf" class="tool-card">✏️ Edit PDF</a>
-        <a href="/organize-pdf" class="tool-card">📂 Organize PDF</a>
-      </div>
+<!-- SEO CONTENT -->
+<div class="seo-content">
+  <h2>What is QuickPDFTool?</h2>
 
-      <div class="browse-tools">
-        <a href="/pdf-tools" class="main-btn">View All Tools</a>
-      </div>
+  <p>
+    QuickPDFTool is a free online platform that provides a complete set of
+    PDF tools to help you manage your documents efficiently. Whether you
+    need to compress large PDF files, merge multiple documents, split
+    pages, or convert files into different formats, our tools are designed
+    to be fast, secure, and easy to use.
+  </p>
 
-      <!-- NEW SEO CONTENT -->
+  <p>
+    All processing happens directly in your browser, which means you don't
+    need to install any software. This makes QuickPDFTool accessible from
+    any device, including desktops, tablets, and mobile phones.
+  </p>
 
-      <div class="seo-content">
-        <h2>What is QuickPDFTool?</h2>
+  <h2>Why Choose Our PDF Tools?</h2>
 
-        <p>
-          QuickPDFTool is a free online platform that provides a complete set of
-          PDF tools to help you manage your documents efficiently. Whether you
-          need to compress large PDF files, merge multiple documents, split
-          pages, or convert files into different formats, our tools are designed
-          to be fast, secure, and easy to use.
-        </p>
+  <ul class="benefits">
+    <li>
+      <strong>Fast performance:</strong> Process your files in seconds
+    </li>
+    <li>
+      <strong>Secure:</strong> Files are automatically deleted after
+      processing
+    </li>
+    <li><strong>Free:</strong> No hidden costs or subscriptions</li>
+    <li>
+      <strong>Easy to use:</strong> Simple interface with no learning
+      curve
+    </li>
+  </ul>
 
-        <p>
-          All processing happens directly in your browser, which means you don't
-          need to install any software. This makes QuickPDFTool accessible from
-          any device, including desktops, tablets, and mobile phones.
-        </p>
+  <h2>Popular PDF Tools</h2>
 
-        <h2>Why Choose Our PDF Tools?</h2>
+  <p>
+    Our most used tools include:
+    <a href="/compress-pdf">Compress PDF</a>,
+    <a href="/merge-pdf">Merge PDF</a>,
+    <a href="/split-pdf">Split PDF</a>,
+    <a href="/pdf-to-jpg">PDF to JPG</a>,
+    <a href="/pdf-to-word">PDF to Word</a>.
+  </p>
 
-        <ul class="benefits">
-          <li>
-            <strong>Fast performance:</strong> Process your files in seconds
-          </li>
-          <li>
-            <strong>Secure:</strong> Files are automatically deleted after
-            processing
-          </li>
-          <li><strong>Free:</strong> No hidden costs or subscriptions</li>
-          <li>
-            <strong>Easy to use:</strong> Simple interface with no learning
-            curve
-          </li>
-        </ul>
+  <p>
+    Each tool is optimized to deliver high-quality results while keeping
+    the process simple and fast.
+  </p>
 
-        <h2>Popular PDF Tools</h2>
+  <h2>How It Works</h2>
 
-        <p>
-          Our most used tools include:
-          <a href="/compress-pdf">Compress PDF</a>,
-          <a href="/merge-pdf">Merge PDF</a>,
-          <a href="/split-pdf">Split PDF</a>,
-          <a href="/pdf-to-jpg">PDF to JPG</a>,
-          <a href="/pdf-to-word">PDF to Word</a>.
-        </p>
+  <ul class="steps">
+    <li><span class="step-number">1</span> Select the tool you need</li>
+    <li><span class="step-number">2</span> Upload your file</li>
+    <li><span class="step-number">3</span> Process your document</li>
+    <li>
+      <span class="step-number">4</span> Download the result instantly
+    </li>
+  </ul>
 
-        <p>
-          Each tool is optimized to deliver high-quality results while keeping
-          the process simple and fast.
-        </p>
+  <h2>Learn How to Use Our Tools</h2>
 
-        <h2>How It Works</h2>
+  <p>If you're new to PDF tools, check out our step-by-step guides:</p>
 
-        <ul class="steps">
-          <li><span class="step-number">1</span> Select the tool you need</li>
-          <li><span class="step-number">2</span> Upload your file</li>
-          <li><span class="step-number">3</span> Process your document</li>
-          <li>
-            <span class="step-number">4</span> Download the result instantly
-          </li>
-        </ul>
+  <ul class="benefits">
+    <li><a href="/how-to-compress-pdf">How to compress a PDF</a></li>
+    <li><a href="/how-to-merge-pdf">How to merge PDF files</a></li>
+    <li><a href="/how-to-split-pdf">How to split a PDF</a></li>
+    <li><a href="/how-to-pdf-to-jpg">How to convert PDF to JPG</a></li>
+  </ul>
 
-        <h2>Learn How to Use Our Tools</h2>
+  <h2>Online PDF Tools for Everyday Use</h2>
 
-        <p>If you're new to PDF tools, check out our step-by-step guides:</p>
-
-        <ul class="benefits">
-          <li><a href="/how-to-compress-pdf">How to compress a PDF</a></li>
-          <li><a href="/how-to-merge-pdf">How to merge PDF files</a></li>
-          <li><a href="/how-to-split-pdf">How to split a PDF</a></li>
-          <li><a href="/how-to-pdf-to-jpg">How to convert PDF to JPG</a></li>
-        </ul>
-
-        <h2>Online PDF Tools for Everyday Use</h2>
-
-        <p>
-          Whether you're a student, professional, or business owner,
-          QuickPDFTool helps you handle PDF documents quickly and efficiently.
-          From reducing file size for email attachments to converting documents
-          for presentations, our tools are designed to save you time.
-        </p>
-      </div>
-    </div>
-  </body>
-</html>
+  <p>
+    Whether you're a student, professional, or business owner,
+    QuickPDFTool helps you handle PDF documents quickly and efficiently.
+    From reducing file size for email attachments to converting documents
+    for presentations, our tools are designed to save you time.
+  </p>
+</div>
+{% endblock %}
