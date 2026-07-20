@@ -887,6 +887,15 @@ input[type="radio"] {
   max-width: 320px;
 }
 
+.footer-ecosystem {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.footer-ecosystem strong {
+  color: var(--brand);
+}
+
 .footer-social {
   display: flex;
   gap: 10px;
