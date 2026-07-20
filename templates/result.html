@@ -1,125 +1,46 @@
-<!DOCTYPE html>
-<html>
+{% extends "base.html" %}
 
-<head>
+{% block title %}Compression Result – HelloBrivio{% endblock %}
+{% block description %}Your PDF has been compressed. Download the smaller file.{% endblock %}
 
-<title>Compression Result</title>
-
-<style>
-
-body{
-font-family: Arial, sans-serif;
-text-align:center;
-background:#f4f5f7;
-margin-top:80px;
-}
-
-.result-box{
-background:white;
-padding:35px;
-display:inline-block;
-border-radius:10px;
-box-shadow:0 2px 10px rgba(0,0,0,0.1);
-}
-
-.success{
-color:#2e7d32;
-font-size:18px;
-margin-bottom:20px;
-}
-
-.stats{
-font-size:16px;
-margin:8px 0;
-}
-
-.download-btn{
-background:#e5322d;
-color:white;
-padding:12px 25px;
-border:none;
-border-radius:6px;
-font-size:16px;
-cursor:pointer;
-margin-top:15px;
-}
-
-.download-btn:hover{
-background:#c62823;
-}
-
-.target-met{
-color:#2e7d32;
-background:#e8f5e9;
-padding:10px 14px;
-border-radius:6px;
-font-size:14px;
-margin:15px 0;
-}
-
-.target-missed{
-color:#8a6100;
-background:#fff8e1;
-padding:10px 14px;
-border-radius:6px;
-font-size:14px;
-margin:15px 0;
-text-align:left;
-}
-
-</style>
-
-</head>
-
-<body>
-
+{% block content %}
 <h2>Compression complete</h2>
 
 <div class="result-box">
+  <p class="success">✔ Your PDF has been successfully compressed.</p>
 
-<p class="success">✔ Your PDF has been successfully compressed.</p>
+  <p class="stats"><strong>Original size:</strong> {{ original_size }} MB</p>
+  <p class="stats"><strong>Compressed size:</strong> {{ compressed_size }} MB</p>
+  <p class="stats"><strong>Space saved:</strong> {{ reduction }} %</p>
 
-<p class="stats"><strong>Original size:</strong> {{ original_size }} MB</p>
-
-<p class="stats"><strong>Compressed size:</strong> {{ compressed_size }} MB</p>
-
-<p class="stats"><strong>Space saved:</strong> {{ reduction }} %</p>
-
-{% if target_info %}
-  {% if target_info.met %}
-  <p class="target-met">🎯 Target reached — your file is under {{ target_info.target_mb }} MB.</p>
-  {% else %}
-  <p class="target-missed">
-    ⚠️ We compressed as much as possible, but couldn't get under {{ target_info.target_mb }} MB
-    without destroying quality. This can happen with image-heavy or already-compressed PDFs —
-    try splitting the document into smaller parts instead.
-  </p>
+  {% if target_info %}
+    {% if target_info.met %}
+    <p class="target-met">🎯 Target reached — your file is under {{ target_info.target_mb }} MB.</p>
+    {% else %}
+    <p class="target-missed">
+      ⚠️ We compressed as much as possible, but couldn't get under {{ target_info.target_mb }} MB
+      without destroying quality. This can happen with image-heavy or already-compressed PDFs —
+      try splitting the document into smaller parts instead.
+    </p>
+    {% endif %}
   {% endif %}
-{% endif %}
 
-<br>
+  <br />
 
-<a href="/download-file/{{ file_name }}">
-<button class="download-btn">Download compressed PDF</button>
-</a>
-
+  <a href="/download-file/{{ file_name }}" class="main-btn">Download compressed PDF</a>
 </div>
-
-</body>
 
 <div class="ad-container">
-
-<ins class="adsbygoogle"
-style="display:block"
-data-ad-client="ca-pub-1115814677653739"
-data-ad-slot="1234567890"
-data-ad-format="auto"
-data-full-width-responsive="true"></ins>
-
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
+  <ins
+    class="adsbygoogle"
+    style="display:block"
+    data-ad-client="ca-pub-1115814677653739"
+    data-ad-slot="1234567890"
+    data-ad-format="auto"
+    data-full-width-responsive="true"
+  ></ins>
+  <script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+  </script>
 </div>
-
-</html>
+{% endblock %}

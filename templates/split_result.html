@@ -1,28 +1,22 @@
-<!DOCTYPE html>
-<html>
+{% extends "base.html" %}
 
-<head>
-<title>PDF Split Result</title>
-</head>
+{% block title %}Split PDF Result – HelloBrivio{% endblock %}
+{% block description %}Your PDF has been split. Download each page below.{% endblock %}
 
-<body style="font-family:Arial; text-align:center; margin-top:100px">
-
+{% block content %}
 <h2>Your PDF has been split</h2>
 
-<p>Download each page:</p>
+<p class="subtitle">Download each page below.</p>
 
-<ul>
-
-{% for file in files %}
-
-<li>
-<a href="/download-file/{{ file }}">{{ file }}</a>
-</li>
-
-{% endfor %}
-
+<ul class="download-list">
+  {% for file in files %}
+  <li>
+    <a href="/download-file/{{ file }}">{{ file }}</a>
+  </li>
+  {% endfor %}
 </ul>
 
-</body>
-
-</html>
+<div class="browse-tools">
+  <a href="/pdf-tools" class="main-btn">Back to All Tools</a>
+</div>
+{% endblock %}

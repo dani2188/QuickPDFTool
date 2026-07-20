@@ -1,87 +1,69 @@
-<!doctype html>
+{% extends "base.html" %}
 
-<html>
-  <head>
-    <title>Processing PDF – Please Wait</title>
-    <meta
-      name="description"
-      content="We are compressing your PDF file. Please wait while the process completes."
-    />
+{% block title %}Processing PDF – Please Wait{% endblock %}
+{% block description %}We are processing your PDF file. Please wait while the process completes.{% endblock %}
 
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='style.css') }}"
-    />
+{% block content %}
+<h2>Processing your PDF...</h2>
 
-    <script>
-      function checkFile() {
-        fetch("/status/{{ file_name }}")
-          .then((response) => response.json())
-          .then((data) => {
-            if (data.ready) {
-              window.location.href = "/download/{{ file_name }}";
-            }
-          })
-          .catch(() => console.log("Status check failed"));
-      }
+<div class="spinner"></div>
 
-      document.addEventListener("DOMContentLoaded", function () {
-        setInterval(checkFile, 2000);
-      });
-    </script>
-  </head>
+<p class="subtitle">Please wait while we optimize your file</p>
 
-  <body>
-    <div class="main-container">
-      <h2>Processing your PDF...</h2>
+<div class="progress-bar">
+  <div class="progress-fill" id="progressFill"></div>
+</div>
 
-      <div class="spinner"></div>
+<p class="file-info">This may take 5–20 seconds depending on file size</p>
 
-      <p class="subtitle">Please wait while we optimize your file</p>
+<p class="file-info">
+  🔒 Your files are secure and automatically deleted after processing
+</p>
 
-      <!-- 🔥 PROGRESS FEEL (FAKE BUT EFFECTIVE) -->
-      <div class="progress-bar">
-        <div class="progress-fill" id="progressFill"></div>
-      </div>
+<div class="tools-links">
+  <h3>Try other tools while waiting</h3>
 
-      <p class="file-info">This may take 5–20 seconds depending on file size</p>
+  <div class="tools-mini-grid">
+    <a href="/merge-pdf">Merge PDF</a>
+    <a href="/split-pdf">Split PDF</a>
+    <a href="/jpg-to-pdf">JPG to PDF</a>
+    <a href="/pdf-to-jpg">PDF to JPG</a>
+    <a href="/rotate-pdf">Rotate PDF</a>
+    <a href="/delete-pdf-pages">Delete Pages</a>
+    <a href="/pdf-to-word">PDF to Word</a>
+    <a href="/word-to-pdf">Word to PDF</a>
+  </div>
+</div>
 
-      <!-- 🔥 TRUST ELEMENT -->
-      <p class="file-info">
-        🔒 Your files are secure and automatically deleted after processing
-      </p>
-
-      <!-- 🔥 KEEP USER ENGAGED -->
-      <div class="tools-links">
-        <h3>Try other tools while waiting</h3>
-
-        <div class="tools-mini-grid">
-          <a href="/merge-pdf">Merge PDF</a>
-          <a href="/split-pdf">Split PDF</a>
-          <a href="/jpg-to-pdf">JPG to PDF</a>
-          <a href="/pdf-to-jpg">PDF to JPG</a>
-          <a href="/rotate-pdf">Rotate PDF</a>
-          <a href="/delete-pdf-pages">Delete Pages</a>
-          <a href="/pdf-to-word">PDF to Word</a>
-          <a href="/word-to-pdf">Word to PDF</a>
-        </div>
-      </div>
-    </div>
-
-    <!-- 🔥 FAKE PROGRESS ANIMATION -->
-    <script>
-      let width = 0;
-      const bar = document.getElementById("progressFill");
-
-      function animateProgress() {
-        if (width < 90) {
-          width += Math.random() * 5;
-          bar.style.width = width + "%";
-          setTimeout(animateProgress, 500);
+<script>
+  // Poll for the finished file, then go to the download/result page.
+  function checkFile() {
+    fetch("/status/{{ file_name }}")
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.ready) {
+          window.location.href = "/download/{{ file_name }}";
         }
-      }
+      })
+      .catch(() => console.log("Status check failed"));
+  }
 
-      document.addEventListener("DOMContentLoaded", animateProgress);
-    </script>
-  </body>
-</html>
+  document.addEventListener("DOMContentLoaded", function () {
+    setInterval(checkFile, 2000);
+  });
+
+  // Progress animation (visual only)
+  let width = 0;
+  function animateProgress() {
+    const bar = document.getElementById("progressFill");
+    if (!bar) return;
+    if (width < 90) {
+      width += Math.random() * 5;
+      bar.style.width = width + "%";
+      setTimeout(animateProgress, 500);
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", animateProgress);
+</script>
+{% endblock %}
