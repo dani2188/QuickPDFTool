@@ -127,3 +127,5 @@ If you are not happy with the result, simply re-upload the original PDF and try 
 </article>
 
 {% endblock %}
+
+{% block jsonld %}{% from "components/jsonld.html" import howto %}{{ howto(self.title(), self.description(), request.path, ["Prepare Your Signature Image", "Open the Sign PDF Tool", "Upload Your PDF and Signature", "Position and Resize Your Signature", "Apply and Download the Signed PDF"]) }}{% endblock %}

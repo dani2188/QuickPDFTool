@@ -105,3 +105,5 @@ No. Only the password protection layer is removed. All text, images, formatting,
 </article>
 
 {% endblock %}
+
+{% block jsonld %}{% from "components/jsonld.html" import howto %}{{ howto(self.title(), self.description(), request.path, ["Open the Unlock PDF Tool", "Enter the Current Password", "Download the Unlocked PDF"]) }}{% endblock %}

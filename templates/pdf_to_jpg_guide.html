@@ -105,3 +105,5 @@ Yes. Scanned PDFs are already image-based, so they convert particularly well. Th
 </article>
 
 {% endblock %}
+
+{% block jsonld %}{% from "components/jsonld.html" import howto %}{{ howto(self.title(), self.description(), request.path, ["Open the PDF to JPG Tool", "Upload Your PDF", "Download the JPG Images"]) }}{% endblock %}

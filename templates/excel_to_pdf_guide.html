@@ -96,3 +96,5 @@ The tool works best with .xlsx format. If you have a .xls file, open it in Excel
 </article>
 
 {% endblock %}
+
+{% block jsonld %}{% from "components/jsonld.html" import howto %}{{ howto(self.title(), self.description(), request.path, ["Open the Excel to PDF Tool", "Upload Your Excel File", "Download the PDF"]) }}{% endblock %}

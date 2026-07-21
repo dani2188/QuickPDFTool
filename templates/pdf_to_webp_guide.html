@@ -94,3 +94,5 @@ You'll need to <a href="/unlock-pdf">remove the password</a> before converting.
 </article>
 
 {% endblock %}
+
+{% block jsonld %}{% from "components/jsonld.html" import howto %}{{ howto(self.title(), self.description(), request.path, ["Open the PDF to WebP Tool", "Upload Your PDF", "Download the WebP Images"]) }}{% endblock %}

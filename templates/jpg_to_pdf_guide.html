@@ -98,3 +98,5 @@ There is no strict limit. However, very large numbers of high-resolution images 
 </article>
 
 {% endblock %}
+
+{% block jsonld %}{% from "components/jsonld.html" import howto %}{{ howto(self.title(), self.description(), request.path, ["Open the JPG to PDF Tool", "Upload Your Images", "Download Your PDF"]) }}{% endblock %}

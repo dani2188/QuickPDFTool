@@ -94,3 +94,5 @@ High-resolution PNG images embed at full quality, which can result in large PDFs
 </article>
 
 {% endblock %}
+
+{% block jsonld %}{% from "components/jsonld.html" import howto %}{{ howto(self.title(), self.description(), request.path, ["Open the PNG to PDF Tool", "Upload Your PNG Images", "Download Your PDF"]) }}{% endblock %}

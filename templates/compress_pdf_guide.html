@@ -125,3 +125,5 @@ This happens when the PDF has already been heavily optimised, or when it contain
 </article>
 
 {% endblock %}
+
+{% block jsonld %}{% from "components/jsonld.html" import howto %}{{ howto(self.title(), self.description(), request.path, ["Open the Compress PDF Tool", "Choose Your Compression Level", "Download Your Compressed PDF"]) }}{% endblock %}

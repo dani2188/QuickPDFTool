@@ -77,3 +77,5 @@ block content %}
 </div>
 
 {% endblock %}
+
+{% block jsonld %}{% from "components/jsonld.html" import webapp %}{{ webapp(self.title(), self.description(), request.path) }}{% endblock %}

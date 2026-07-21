@@ -113,3 +113,5 @@ Basic document content including text and images is always preserved. Complex in
 </article>
 
 {% endblock %}
+
+{% block jsonld %}{% from "components/jsonld.html" import howto %}{{ howto(self.title(), self.description(), request.path, ["Open the Merge PDF Tool", "Upload All Your PDF Files", "Download the Merged PDF"]) }}{% endblock %}

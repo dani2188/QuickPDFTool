@@ -97,3 +97,5 @@ Currently the tool supports text watermarks. For image watermarks such as a comp
 </article>
 
 {% endblock %}
+
+{% block jsonld %}{% from "components/jsonld.html" import howto %}{{ howto(self.title(), self.description(), request.path, ["Open the Add Watermark Tool", "Upload Your PDF and Enter Watermark Text", "Download the Watermarked PDF"]) }}{% endblock %}

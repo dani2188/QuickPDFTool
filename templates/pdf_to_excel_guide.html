@@ -94,3 +94,5 @@ Minor errors in column alignment are common with complex tables. Open the Excel 
 </article>
 
 {% endblock %}
+
+{% block jsonld %}{% from "components/jsonld.html" import howto %}{{ howto(self.title(), self.description(), request.path, ["Open the PDF to Excel Tool", "Upload Your PDF", "Download the Excel File"]) }}{% endblock %}

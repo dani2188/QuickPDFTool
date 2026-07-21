@@ -95,3 +95,5 @@ You'll need to <a href="/unlock-pdf">remove the password</a> first. Then add pag
 </article>
 
 {% endblock %}
+
+{% block jsonld %}{% from "components/jsonld.html" import howto %}{{ howto(self.title(), self.description(), request.path, ["Open the Add Page Numbers Tool", "Upload Your PDF", "Download the Numbered PDF"]) }}{% endblock %}

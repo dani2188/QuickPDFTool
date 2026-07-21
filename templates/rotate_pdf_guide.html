@@ -103,3 +103,5 @@ You'll need to <a href="/unlock-pdf">remove the password</a> first, then rotate 
 </article>
 
 {% endblock %}
+
+{% block jsonld %}{% from "components/jsonld.html" import howto %}{{ howto(self.title(), self.description(), request.path, ["Open the Rotate PDF Tool", "Choose Your Rotation Angle", "Download the Rotated PDF"]) }}{% endblock %}

@@ -1,0 +1,51 @@
+{# JSON-LD structured-data macros. Import per page and call inside
+   {% block jsonld %} to override the site-wide WebSite default in base.html.
+   All values are rendered through | tojson so quotes/entities/</script> are
+   safely escaped. #}
+
+{% macro webapp(name, description, path) -%}
+<script type="application/ld+json">
+{{ {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": name.split() | join(" "),
+  "description": description.split() | join(" "),
+  "url": "https://hellobrivio.com" ~ path,
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "Any",
+  "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
+  "publisher": {"@type": "Organization", "name": "HelloBrivio"}
+} | tojson }}
+</script>
+{%- endmacro %}
+
+{% macro howto(name, description, path, steps) -%}
+{% set ns = namespace(items=[]) %}
+{% for s in steps %}
+{% set _ = ns.items.append({"@type": "HowToStep", "position": loop.index, "name": s}) %}
+{% endfor %}
+<script type="application/ld+json">
+{{ {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": name.split() | join(" "),
+  "description": description.split() | join(" "),
+  "url": "https://hellobrivio.com" ~ path,
+  "step": ns.items
+} | tojson }}
+</script>
+{%- endmacro %}
+
+{% macro faqpage(items) -%}
+{% set ns = namespace(qa=[]) %}
+{% for it in items %}
+{% set _ = ns.qa.append({"@type": "Question", "name": it.q, "acceptedAnswer": {"@type": "Answer", "text": it.a}}) %}
+{% endfor %}
+<script type="application/ld+json">
+{{ {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": ns.qa
+} | tojson }}
+</script>
+{%- endmacro %}

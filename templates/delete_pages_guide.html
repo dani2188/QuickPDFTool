@@ -106,3 +106,5 @@ If you accidentally delete too many pages, simply re-upload the original file an
 </article>
 
 {% endblock %}
+
+{% block jsonld %}{% from "components/jsonld.html" import howto %}{{ howto(self.title(), self.description(), request.path, ["Open the Delete Pages Tool", "Specify the Pages to Delete", "Download the Edited PDF"]) }}{% endblock %}

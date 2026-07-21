@@ -100,3 +100,5 @@ Files up to 20MB are supported. For larger documents, try compressing images in 
 </article>
 
 {% endblock %}
+
+{% block jsonld %}{% from "components/jsonld.html" import howto %}{{ howto(self.title(), self.description(), request.path, ["Open the Word to PDF Tool", "Upload Your Word Document", "Download Your PDF"]) }}{% endblock %}

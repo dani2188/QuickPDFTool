@@ -92,3 +92,5 @@ You'll need to <a href="/unlock-pdf">remove the password</a> before extracting i
 </article>
 
 {% endblock %}
+
+{% block jsonld %}{% from "components/jsonld.html" import howto %}{{ howto(self.title(), self.description(), request.path, ["Open the Extract Images Tool", "Upload Your PDF", "Download the Images"]) }}{% endblock %}

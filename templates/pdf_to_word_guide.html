@@ -105,3 +105,5 @@ Review the document carefully, make your edits, then use our <a href="/word-to-p
 </article>
 
 {% endblock %}
+
+{% block jsonld %}{% from "components/jsonld.html" import howto %}{{ howto(self.title(), self.description(), request.path, ["Open the PDF to Word Tool", "Upload Your PDF", "Download and Edit the Word Document"]) }}{% endblock %}

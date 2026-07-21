@@ -90,3 +90,5 @@ Remove the existing watermark first (if possible), then add the new one using ou
 </article>
 
 {% endblock %}
+
+{% block jsonld %}{% from "components/jsonld.html" import howto %}{{ howto(self.title(), self.description(), request.path, ["Open the Remove Watermark Tool", "Upload Your PDF", "Download the Cleaned PDF"]) }}{% endblock %}

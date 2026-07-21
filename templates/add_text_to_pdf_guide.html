@@ -109,3 +109,5 @@ Once the text is embedded, it cannot be easily changed. Keep the original unedit
 </article>
 
 {% endblock %}
+
+{% block jsonld %}{% from "components/jsonld.html" import howto %}{{ howto(self.title(), self.description(), request.path, ["Open the Add Text Tool", "Upload Your PDF and See the Preview", "Type Your Text and Position It", "Download the Updated PDF"]) }}{% endblock %}

@@ -104,3 +104,5 @@ You'll need to <a href="/unlock-pdf">unlock it</a> first, then apply the new pas
 </article>
 
 {% endblock %}
+
+{% block jsonld %}{% from "components/jsonld.html" import howto %}{{ howto(self.title(), self.description(), request.path, ["Open the Protect PDF Tool", "Upload Your PDF and Set a Password", "Download Your Protected PDF"]) }}{% endblock %}

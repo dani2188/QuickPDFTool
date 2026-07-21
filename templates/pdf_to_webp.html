@@ -47,3 +47,5 @@ pages as optimized WebP images for web use. {% endblock %} {% block content %}
 </div>
 
 {% endblock %}
+
+{% block jsonld %}{% from "components/jsonld.html" import webapp %}{{ webapp(self.title(), self.description(), request.path) }}{% endblock %}

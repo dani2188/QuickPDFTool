@@ -19,7 +19,7 @@ Every indexable page must have:
 | Twitter Card | `twitter:card=summary`, `twitter:title`, `twitter:description` | ✅ in `base.html` |
 | One `<h1>` | exactly one per page | ✅ |
 | Structured headings | `h1 → h2 → h3`, no skips | ✅ |
-| JSON-LD | `WebApplication` / `HowTo` / `FAQPage` / `BreadcrumbList` | ◑ site-wide `WebSite` in `base.html` `{% block jsonld %}`; per-page types **to add** |
+| JSON-LD | `WebApplication` / `HowTo` / `FAQPage` / `BreadcrumbList` | ✅ `WebSite` (site-wide default) · `WebApplication` (26 tool pages) · `HowTo` (24 guides) via `components/jsonld.html` macros. `FAQPage` macro available; `BreadcrumbList` **to add** |
 
 > **Keyword rule:** when adding the brand suffix, keep the keywords first — `Compress PDF – QuickPDFTools`, never `QuickPDFTools – Home`.
 
@@ -43,23 +43,23 @@ These reuse the existing `title` / `description` blocks, so every page that exte
 
 ## 3. JSON-LD templates
 
+Implemented via reusable macros in [`templates/components/jsonld.html`](../templates/components/jsonld.html) — `webapp()`, `howto()`, `faqpage()`. Each page overrides `{% block jsonld %}`; names/descriptions are pulled from the page's own `title`/`description` blocks (whitespace-collapsed) so there's no duplication.
+
 **Tool page → `WebApplication`:**
-```json
-{
-  "@context": "https://schema.org",
-  "@type": "WebApplication",
-  "name": "Compress PDF",
-  "applicationCategory": "UtilitiesApplication",
-  "operatingSystem": "Any",
-  "offers": { "@type": "Offer", "price": "0" }
-}
+```jinja
+{% block jsonld %}{% from "components/jsonld.html" import webapp %}
+{{ webapp(self.title(), self.description(), request.path) }}{% endblock %}
 ```
 
-**Guide page → `HowTo`** (mirror the visible `.steps`).
-**FAQ blocks → `FAQPage`** (mirror the visible Q&A).
-**All pages → `BreadcrumbList`** once breadcrumbs ship.
+**Guide page → `HowTo`** (steps mirror the guide's "Step N" headings):
+```jinja
+{% block jsonld %}{% from "components/jsonld.html" import howto %}
+{{ howto(self.title(), self.description(), request.path,
+   ["Open the tool", "Upload your PDF", "Download the result"]) }}{% endblock %}
+```
 
-Provide these via an optional `{% block jsonld %}` in `base.html` so only relevant pages emit them.
+**FAQ blocks → `FAQPage`** via `faqpage([{ "q": …, "a": … }])` (macro ready; not yet applied).
+**All pages → `BreadcrumbList`** once breadcrumbs ship.
 
 ---
 

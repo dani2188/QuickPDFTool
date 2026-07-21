@@ -105,3 +105,5 @@ There is no hard page limit. However, very large PDFs may take a moment longer t
 </article>
 
 {% endblock %}
+
+{% block jsonld %}{% from "components/jsonld.html" import howto %}{{ howto(self.title(), self.description(), request.path, ["Open the Split PDF Tool", "Upload Your PDF", "Download the Extracted Pages"]) }}{% endblock %}

@@ -104,3 +104,5 @@ Yes, because the original content is still in the file. However, to restore the 
 </article>
 
 {% endblock %}
+
+{% block jsonld %}{% from "components/jsonld.html" import howto %}{{ howto(self.title(), self.description(), request.path, ["Open the Crop PDF Tool", "Set Your Crop Values", "Download the Cropped PDF"]) }}{% endblock %}
