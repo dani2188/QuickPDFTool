@@ -12,11 +12,20 @@
       content="{% block description %}Free online PDF tools to compress, convert and edit PDF files{% endblock %}"
     />
 
+    <!-- Canonical (single primary host: hellobrivio.com) -->
+    <link rel="canonical" href="https://hellobrivio.com{{ request.path }}" />
+
     <!-- Open Graph -->
     <meta property="og:site_name" content="QuickPDFTools" />
     <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://hellobrivio.com{{ request.path }}" />
     <meta property="og:title" content="{% block og_title %}{{ self.title() }}{% endblock %}" />
     <meta property="og:description" content="{% block og_description %}{{ self.description() }}{% endblock %}" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="{{ self.title() }}" />
+    <meta name="twitter:description" content="{{ self.description() }}" />
 
     <!-- Favicon (inline SVG, no external file needed) -->
     <link
@@ -39,6 +48,18 @@
     {% endblock %}
 
     {% block head %}{% endblock %}
+
+    {% block jsonld %}
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "QuickPDFTools",
+        "url": "https://hellobrivio.com/",
+        "publisher": { "@type": "Organization", "name": "HelloBrivio" }
+      }
+    </script>
+    {% endblock %}
   </head>
 
   <body>

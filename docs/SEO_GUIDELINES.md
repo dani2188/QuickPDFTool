@@ -14,28 +14,30 @@ Every indexable page must have:
 |---|---|---|
 | Unique `<title>` | `{% block title %}` — keyword-first, brand suffix ` – QuickPDFTools` | ✅ per-page titles; ◑ brand suffix not uniform |
 | Unique meta description | `{% block description %}` | ✅ |
-| Canonical URL | `<link rel="canonical" href="https://quickpdftool.onrender.com{{ request.path }}">` in `base.html` head | ⬜ **to add** |
-| Open Graph | `og:site_name`, `og:type`, `og:title`, `og:description` | ✅ in `base.html` |
-| Twitter Card | `twitter:card=summary`, `twitter:title`, `twitter:description` | ⬜ **to add** |
+| Canonical URL | `<link rel="canonical" href="https://hellobrivio.com{{ request.path }}">` in `base.html` head | ✅ |
+| Open Graph | `og:site_name`, `og:type`, `og:url`, `og:title`, `og:description` | ✅ in `base.html` |
+| Twitter Card | `twitter:card=summary`, `twitter:title`, `twitter:description` | ✅ in `base.html` |
 | One `<h1>` | exactly one per page | ✅ |
 | Structured headings | `h1 → h2 → h3`, no skips | ✅ |
-| JSON-LD | `WebApplication` / `HowTo` / `FAQPage` / `BreadcrumbList` | ⬜ **to add** |
+| JSON-LD | `WebApplication` / `HowTo` / `FAQPage` / `BreadcrumbList` | ◑ site-wide `WebSite` in `base.html` `{% block jsonld %}`; per-page types **to add** |
 
 > **Keyword rule:** when adding the brand suffix, keep the keywords first — `Compress PDF – QuickPDFTools`, never `QuickPDFTools – Home`.
 
 ---
 
-## 2. Recommended `base.html` head additions
+## 2. `base.html` head (implemented)
 
 ```html
-<link rel="canonical" href="https://quickpdftool.onrender.com{{ request.path }}" />
+<link rel="canonical" href="https://hellobrivio.com{{ request.path }}" />
+
+<meta property="og:url" content="https://hellobrivio.com{{ request.path }}" />
 
 <meta name="twitter:card" content="summary" />
 <meta name="twitter:title" content="{{ self.title() }}" />
 <meta name="twitter:description" content="{{ self.description() }}" />
 ```
 
-These reuse the existing `title` / `description` blocks, so no per-page work is required.
+These reuse the existing `title` / `description` blocks, so every page that extends `base.html` gets them with no per-page work. The canonical/og:url host is fixed to `hellobrivio.com` (not derived from `request.host`) so signals consolidate regardless of which host served the page.
 
 ---
 
@@ -101,4 +103,4 @@ Google may report `http://` URLs as *Page with redirect* because `http` 301-redi
 - Don't submit `http://` URLs in Search Console.
 
 ## 10. Domain note
-The live product runs on `hellobrivio.com` and `quickpdftool.onrender.com`. Pick **one** canonical host and make canonical tags, sitemap, and robots all agree on it. Update `robots.txt` / `sitemap.xml` if the canonical host changes.
+Primary host is **`hellobrivio.com`**. Canonical tags, `og:url`, `sitemap.xml`, and `robots.txt` all agree on it (aligned 2026-07). `quickpdftool.onrender.com` still resolves (Render default) but is non-canonical — do not link to it or list it in the sitemap. If the primary host ever changes, update all four in one pass.
