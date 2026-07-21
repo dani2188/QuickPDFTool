@@ -1406,7 +1406,7 @@ def pdf_to_webp_guide():
 
 @app.route("/ads.txt")
 def ads():
-    return send_file("ads.txt")
+    return send_file("templates/ads.txt", mimetype="text/plain")
 
 
 @app.route("/crop-pdf", methods=["GET", "POST"])
