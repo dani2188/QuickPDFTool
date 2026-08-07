@@ -171,6 +171,7 @@ Icons are **emoji glyphs** (no icon font, no SVG sprite) for zero-cost, universa
 | Edit | ✏️ |
 | Organize | 📂 |
 | Security (protect/unlock) | 🔒 |
+| Redact | ⬛ |
 | Performance / fast | ⚡ |
 | Installation-free | 💻 |
 | Upload | ⬆ (via `.upload-area::before`) |

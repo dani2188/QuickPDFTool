@@ -1,5 +1,5 @@
 import fitz
-from PIL import Image
+from PIL import Image, ImageFilter
 from PyPDF2 import PdfMerger, PdfReader, PdfWriter
 
 from flask import Flask, request, render_template, send_file, jsonify
@@ -39,6 +39,101 @@ def delete_file_later(file_path, delay=300):
             os.remove(file_path)
 
     threading.Thread(target=delete, daemon=True).start()
+
+
+# -----------------------------
+# REDACT PDF HELPERS
+# -----------------------------
+
+def _render_pdf_page_preview(doc, page_index):
+    """Render one PDF page to a JPEG in static/ for the redact-pdf editor preview."""
+    page = doc[page_index]
+    pix = page.get_pixmap(matrix=fitz.Matrix(2, 2))
+    img = Image.frombytes("RGB", [pix.width, pix.height], pix.samples)
+
+    preview_name = f"{uuid.uuid4()}.jpg"
+    preview_path = os.path.join("static", preview_name)
+    img.save(preview_path, "JPEG")
+
+    delete_file_later(preview_path, delay=600)
+    return preview_name
+
+
+def _apply_pdf_redactions(doc, areas):
+    """Permanently black out / whiteout / blur / pixelate the given areas.
+
+    `areas` is a list of dicts (page, x, y, width, height, style, imgWidth,
+    imgHeight) in browser-preview pixel space; coordinates are scaled to
+    each page's PDF space before being applied.
+    """
+    by_page = {}
+    for area in areas:
+        try:
+            page_num = int(area.get("page", 1))
+            x = float(area["x"])
+            y = float(area["y"])
+            w = float(area["width"])
+            h = float(area["height"])
+            img_w = float(area.get("imgWidth") or 1)
+            img_h = float(area.get("imgHeight") or 1)
+            style = area.get("style", "black")
+        except (KeyError, TypeError, ValueError):
+            continue
+
+        if style not in ("black", "white", "blur", "pixelate"):
+            style = "black"
+        if w <= 0 or h <= 0 or img_w <= 0 or img_h <= 0:
+            continue
+
+        by_page.setdefault(page_num, []).append((x, y, w, h, img_w, img_h, style))
+
+    for page_num, rects in by_page.items():
+        if page_num < 1 or page_num > len(doc):
+            continue
+        page = doc[page_num - 1]
+        pdf_w, pdf_h = page.rect.width, page.rect.height
+
+        pdf_rects = []
+        for (x, y, w, h, img_w, img_h, style) in rects:
+            scale_x = pdf_w / img_w
+            scale_y = pdf_h / img_h
+            rect = fitz.Rect(x * scale_x, y * scale_y, (x + w) * scale_x, (y + h) * scale_y)
+            rect = rect & page.rect
+            if rect.is_empty or rect.width <= 0 or rect.height <= 0:
+                continue
+            pdf_rects.append((rect, style))
+
+        # Render blur/pixelate regions BEFORE redacting — apply_redactions()
+        # strips the underlying content, so the source pixels must be
+        # captured first.
+        pending_images = []
+        for rect, style in pdf_rects:
+            if style not in ("blur", "pixelate"):
+                continue
+            pix = page.get_pixmap(matrix=fitz.Matrix(3, 3), clip=rect)
+            region = Image.frombytes("RGB", [pix.width, pix.height], pix.samples)
+            if style == "blur":
+                region = region.filter(ImageFilter.GaussianBlur(radius=10))
+            else:
+                factor = 14
+                small = region.resize(
+                    (max(1, region.width // factor), max(1, region.height // factor)),
+                    Image.NEAREST,
+                )
+                region = small.resize(region.size, Image.NEAREST)
+            buf = io.BytesIO()
+            region.save(buf, format="PNG")
+            pending_images.append((rect, buf.getvalue()))
+
+        for rect, style in pdf_rects:
+            fill = (0, 0, 0) if style == "black" else (1, 1, 1)
+            page.add_redact_annot(rect, fill=fill)
+
+        if pdf_rects:
+            page.apply_redactions()
+
+        for rect, image_bytes in pending_images:
+            page.insert_image(rect, stream=image_bytes)
 
 
 # -----------------------------
@@ -1671,6 +1766,105 @@ def add_text_to_pdf():
 @app.route("/how-to-add-text-to-pdf")
 def add_text_guide():
     return render_template("add_text_to_pdf_guide.html")
+
+
+@app.route("/redact-pdf", methods=["GET", "POST"])
+def redact_pdf():
+
+    if request.method == "POST":
+
+        pdf_file = request.files.get("pdf")
+        existing_file = request.form.get("existing_file")
+
+        # =========================
+        # STEP 1 — UPLOAD + PREVIEW FIRST PAGE
+        # =========================
+        if pdf_file and pdf_file.filename:
+
+            pdf_name = f"{uuid.uuid4()}_{secure_filename(pdf_file.filename)}"
+            pdf_path = os.path.join(UPLOAD_FOLDER, pdf_name)
+            pdf_file.save(pdf_path)
+
+            doc = fitz.open(pdf_path)
+            total_pages = len(doc)
+            preview_name = _render_pdf_page_preview(doc, 0)
+            doc.close()
+
+            delete_file_later(pdf_path, delay=600)
+
+            return render_template(
+                "redact_pdf.html",
+                preview=preview_name,
+                filename=pdf_name,
+                page=1,
+                total_pages=total_pages,
+                areas_json="[]",
+            )
+
+        # =========================
+        # STEP 2 — NAVIGATE PAGES OR APPLY REDACTIONS
+        # =========================
+        elif existing_file:
+
+            pdf_path = os.path.join(UPLOAD_FOLDER, existing_file)
+
+            if not os.path.exists(pdf_path):
+                return "File missing or expired. Please upload again.", 400
+
+            action = request.form.get("action", "apply")
+            areas_json = request.form.get("areas", "[]")
+
+            doc = fitz.open(pdf_path)
+            total_pages = len(doc)
+
+            if action == "apply":
+                try:
+                    areas = json.loads(areas_json)
+                    if not isinstance(areas, list):
+                        areas = []
+                except (ValueError, TypeError):
+                    areas = []
+
+                _apply_pdf_redactions(doc, areas)
+
+                output_name = f"{uuid.uuid4()}_redacted.pdf"
+                output_path = os.path.join(UPLOAD_FOLDER, output_name)
+                doc.save(output_path)
+                doc.close()
+
+                delete_file_later(pdf_path, delay=60)
+                delete_file_later(output_path)
+
+                return send_file(output_path, as_attachment=True)
+
+            current_page = int(request.form.get("current_page", 1) or 1)
+            if action == "prev":
+                target_page = current_page - 1
+            elif action == "next":
+                target_page = current_page + 1
+            else:
+                target_page = current_page
+
+            target_page = max(1, min(total_pages, target_page))
+            preview_name = _render_pdf_page_preview(doc, target_page - 1)
+            doc.close()
+
+            return render_template(
+                "redact_pdf.html",
+                preview=preview_name,
+                filename=existing_file,
+                page=target_page,
+                total_pages=total_pages,
+                areas_json=areas_json,
+            )
+
+    return render_template("redact_pdf.html")
+
+
+@app.route("/how-to-redact-pdf")
+def redact_pdf_guide():
+    return render_template("redact_pdf_guide.html")
+
 
 from flask import send_from_directory
 

@@ -1,0 +1,486 @@
+{% extends "base.html" %}
+
+{% block title %}Hide Sensitive Information in a PDF – Redact PDF Online{% endblock %}
+{% block description %}Black out, blur, or pixelate confidential text, numbers, or images in a PDF before sharing. Draw redaction boxes on any page and download a permanently secured PDF — free, no signup.{% endblock %}
+
+{% block content %}
+
+<h1>Hide Sensitive Information in a PDF</h1>
+<p class="subtitle">Black out, blur, or pixelate confidential text, numbers, or images — then download a PDF that permanently hides them. Also known as redacting a PDF.</p>
+
+{% if not preview %}
+<div class="feature-guide">
+  <h2>How it works</h2>
+  <ul class="steps">
+    <li><span class="step-number">1</span> Upload your PDF document below</li>
+    <li><span class="step-number">2</span> Choose the page and draw a box over anything you want to hide</li>
+    <li><span class="step-number">3</span> Pick a style — black, white, blur, or pixelate</li>
+    <li><span class="step-number">4</span> Click "Apply Redaction" and download the secured PDF</li>
+  </ul>
+  <p style="margin-top: 12px; font-size: 0.9rem;">
+    Need more detail? Read the <a href="/how-to-redact-pdf">full guide on hiding sensitive information in a PDF</a>.
+  </p>
+</div>
+{% endif %}
+
+<form method="POST" enctype="multipart/form-data" id="redactForm">
+
+  {% if not preview %}
+  <div id="dropArea" class="upload-box">
+    <p>Drag &amp; drop your PDF or <span class="upload-link">click to upload</span></p>
+    <input type="file" name="pdf" id="fileInput" accept=".pdf" hidden />
+    <p id="fileName">No file selected</p>
+  </div>
+  <p class="file-info">Max file size: 20MB • Files are automatically deleted</p>
+  <button class="main-btn">Upload PDF</button>
+  {% endif %}
+
+  {% if preview %}
+  <div class="redact-editor">
+
+    <div class="redact-page-nav">
+      <button
+        type="submit"
+        name="action"
+        value="prev"
+        class="main-btn btn-secondary"
+        {% if page <= 1 %}disabled{% endif %}
+        aria-label="Previous page"
+      >‹ Previous</button>
+
+      <span class="redact-page-indicator">Page {{ page }} of {{ total_pages }}</span>
+
+      <button
+        type="submit"
+        name="action"
+        value="next"
+        class="main-btn btn-secondary"
+        {% if page >= total_pages %}disabled{% endif %}
+        aria-label="Next page"
+      >Next ›</button>
+    </div>
+
+    <div class="redact-toolbar">
+      <button type="button" id="addAreaBtn" class="main-btn btn-secondary">Add Area</button>
+      <button type="button" id="deleteSelectedBtn" class="main-btn btn-secondary">Delete Selected</button>
+      <button type="button" id="clearAllBtn" class="main-btn btn-secondary">Clear All</button>
+
+      <label for="styleSelect">Style</label>
+      <select id="styleSelect" class="input-field redact-style-select">
+        <option value="black">⬛ Black</option>
+        <option value="white">⬜ White</option>
+        <option value="blur">🌫 Blur</option>
+        <option value="pixelate">🔲 Pixelate</option>
+      </select>
+    </div>
+
+    <div class="relative-container redact-canvas-wrap" id="canvasWrap">
+      <img
+        src="{{ url_for('static', filename=preview) }}"
+        id="pdfPreview"
+        alt="Preview of page {{ page }} — draw a box over anything to redact"
+        draggable="false"
+      />
+    </div>
+
+    <div class="redact-apply-row">
+      <button type="submit" name="action" value="apply" class="main-btn">Apply Redaction &amp; Download</button>
+      <p class="file-info">Redacted areas are permanently removed. Your original file is never modified.</p>
+    </div>
+
+  </div>
+
+  <input type="hidden" name="existing_file" value="{{ filename }}" />
+  <input type="hidden" name="current_page" id="currentPageField" value="{{ page }}" />
+  <input type="hidden" name="areas" id="areasField" value="{{ areas_json }}" />
+  {% endif %}
+</form>
+
+{% if not preview %}
+<div class="seo-content">
+  <h2>Redact PDF Online — Permanently Hide Confidential Information</h2>
+
+  <p>
+    Use this tool to black out, blur, or pixelate sensitive text, numbers, signatures, or images in a PDF
+    before you share it. Unlike simply drawing a box over text in a PDF viewer, this tool removes the
+    underlying content from the page — so it can't be recovered by copying text, editing the file, or
+    zooming into a blurred region.
+  </p>
+
+  <h3>Why redact a PDF?</h3>
+  <ul class="benefits">
+    <li>Remove Social Security numbers, account numbers, and personal details</li>
+    <li>Black out confidential contract terms before sharing externally</li>
+    <li>Blur or pixelate faces, signatures, or photos</li>
+    <li>Anonymize documents for legal, medical, or research use</li>
+  </ul>
+
+  <h3>Privacy &amp; security</h3>
+  <p>
+    Your file is processed on a secure server and deleted automatically within minutes. Redaction is
+    permanent — the covered content is removed from the page data, not just hidden underneath a shape.
+  </p>
+
+  <h3>More PDF Tools</h3>
+  <div class="tools-mini-grid">
+    <a href="/sign-pdf">Sign PDF</a>
+    <a href="/add-text-to-pdf">Add Text to PDF</a>
+    <a href="/crop-pdf">Crop PDF</a>
+    <a href="/protect-pdf">Protect PDF</a>
+    <a href="/unlock-pdf">Unlock PDF</a>
+  </div>
+
+  <div class="browse-tools">
+    <a href="/pdf-tools" class="main-btn">View All Tools</a>
+  </div>
+</div>
+{% endif %}
+
+<!-- ========================= -->
+<!-- REDACTION EDITOR SCRIPT -->
+<!-- ========================= -->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const canvasWrap = document.getElementById("canvasWrap");
+    const previewImg = document.getElementById("pdfPreview");
+    const areasField = document.getElementById("areasField");
+    const currentPageField = document.getElementById("currentPageField");
+    const form = document.getElementById("redactForm");
+    const styleSelect = document.getElementById("styleSelect");
+    const addAreaBtn = document.getElementById("addAreaBtn");
+    const deleteSelectedBtn = document.getElementById("deleteSelectedBtn");
+    const clearAllBtn = document.getElementById("clearAllBtn");
+
+    if (!canvasWrap || !previewImg || !areasField || !form) return;
+
+    const currentPage = parseInt(currentPageField.value, 10) || 1;
+
+    let areas = [];
+    try {
+      areas = JSON.parse(areasField.value || "[]");
+      if (!Array.isArray(areas)) areas = [];
+    } catch (e) {
+      areas = [];
+    }
+
+    let nextId = 1;
+    areas.forEach(function (a) {
+      if (a.id && a.id >= nextId) nextId = a.id + 1;
+    });
+
+    let selectedId = null;
+
+    function boxesOnCurrentPage() {
+      return areas.filter(function (a) {
+        return a.page === currentPage;
+      });
+    }
+
+    function clearSelection() {
+      canvasWrap.querySelectorAll(".redact-box.selected").forEach(function (el) {
+        el.classList.remove("selected");
+      });
+      selectedId = null;
+    }
+
+    function selectBox(id, el) {
+      clearSelection();
+      selectedId = id;
+      el.classList.add("selected");
+      const area = areas.find(function (a) {
+        return a.id === id;
+      });
+      if (area && styleSelect) styleSelect.value = area.style;
+    }
+
+    function removeArea(id) {
+      areas = areas.filter(function (a) {
+        return a.id !== id;
+      });
+      const el = canvasWrap.querySelector('.redact-box[data-id="' + id + '"]');
+      if (el) el.remove();
+      if (selectedId === id) selectedId = null;
+    }
+
+    function createBoxElement(boxData) {
+      const box = document.createElement("div");
+      box.className = "redact-box";
+      box.dataset.id = boxData.id;
+      box.dataset.style = boxData.style;
+      box.style.left = boxData.x + "px";
+      box.style.top = boxData.y + "px";
+      box.style.width = boxData.width + "px";
+      box.style.height = boxData.height + "px";
+
+      const handle = document.createElement("div");
+      handle.className = "redact-handle";
+      box.appendChild(handle);
+
+      const del = document.createElement("button");
+      del.type = "button";
+      del.className = "redact-delete";
+      del.setAttribute("aria-label", "Delete this redaction area");
+      del.textContent = "×";
+      box.appendChild(del);
+
+      del.addEventListener("pointerdown", function (e) {
+        e.stopPropagation();
+      });
+      del.addEventListener("click", function (e) {
+        e.stopPropagation();
+        removeArea(boxData.id);
+      });
+
+      box.addEventListener("pointerdown", function (e) {
+        if (e.target === handle || e.target === del) return;
+        e.preventDefault();
+        e.stopPropagation();
+        selectBox(boxData.id, box);
+        box.setPointerCapture(e.pointerId);
+
+        const startX = e.clientX;
+        const startY = e.clientY;
+        const origLeft = box.offsetLeft;
+        const origTop = box.offsetTop;
+        const imgRect = previewImg.getBoundingClientRect();
+
+        function onMove(ev) {
+          let newLeft = origLeft + (ev.clientX - startX);
+          let newTop = origTop + (ev.clientY - startY);
+          newLeft = Math.max(0, Math.min(newLeft, imgRect.width - box.offsetWidth));
+          newTop = Math.max(0, Math.min(newTop, imgRect.height - box.offsetHeight));
+          box.style.left = newLeft + "px";
+          box.style.top = newTop + "px";
+        }
+
+        function onUp(ev) {
+          box.releasePointerCapture(ev.pointerId);
+          document.removeEventListener("pointermove", onMove);
+          document.removeEventListener("pointerup", onUp);
+        }
+
+        document.addEventListener("pointermove", onMove);
+        document.addEventListener("pointerup", onUp);
+      });
+
+      handle.addEventListener("pointerdown", function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        selectBox(boxData.id, box);
+        handle.setPointerCapture(e.pointerId);
+        const imgRect = previewImg.getBoundingClientRect();
+
+        function onMove(ev) {
+          const boxRect = box.getBoundingClientRect();
+          let newWidth = ev.clientX - boxRect.left;
+          let newHeight = ev.clientY - boxRect.top;
+          newWidth = Math.max(20, Math.min(newWidth, imgRect.width - box.offsetLeft));
+          newHeight = Math.max(20, Math.min(newHeight, imgRect.height - box.offsetTop));
+          box.style.width = newWidth + "px";
+          box.style.height = newHeight + "px";
+        }
+
+        function onUp(ev) {
+          handle.releasePointerCapture(ev.pointerId);
+          document.removeEventListener("pointermove", onMove);
+          document.removeEventListener("pointerup", onUp);
+        }
+
+        document.addEventListener("pointermove", onMove);
+        document.addEventListener("pointerup", onUp);
+      });
+
+      return box;
+    }
+
+    function renderCurrentPage() {
+      canvasWrap.querySelectorAll(".redact-box").forEach(function (el) {
+        el.remove();
+      });
+      const imgRect = previewImg.getBoundingClientRect();
+      boxesOnCurrentPage().forEach(function (area) {
+        const scale = area.imgWidth ? imgRect.width / area.imgWidth : 1;
+        canvasWrap.appendChild(
+          createBoxElement({
+            id: area.id,
+            x: area.x * scale,
+            y: area.y * scale,
+            width: area.width * scale,
+            height: area.height * scale,
+            style: area.style,
+          })
+        );
+      });
+    }
+
+    function addNewArea(x, y, width, height, style) {
+      const imgRect = previewImg.getBoundingClientRect();
+      const area = {
+        id: nextId++,
+        page: currentPage,
+        x: x,
+        y: y,
+        width: width,
+        height: height,
+        style: style || (styleSelect ? styleSelect.value : "black"),
+        imgWidth: imgRect.width,
+        imgHeight: imgRect.height,
+      };
+      areas.push(area);
+      canvasWrap.appendChild(createBoxElement(area));
+      const el = canvasWrap.querySelector('.redact-box[data-id="' + area.id + '"]');
+      if (el) selectBox(area.id, el);
+      return area;
+    }
+
+    // Draw a new box by clicking + dragging on empty canvas space
+    canvasWrap.addEventListener("pointerdown", function (e) {
+      if (e.target !== previewImg && e.target !== canvasWrap) return;
+
+      const imgRect = previewImg.getBoundingClientRect();
+      const startX = Math.max(0, Math.min(e.clientX - imgRect.left, imgRect.width));
+      const startY = Math.max(0, Math.min(e.clientY - imgRect.top, imgRect.height));
+
+      const ghost = document.createElement("div");
+      ghost.className = "redact-box redact-ghost";
+      ghost.dataset.style = styleSelect ? styleSelect.value : "black";
+      ghost.style.left = startX + "px";
+      ghost.style.top = startY + "px";
+      ghost.style.width = "0px";
+      ghost.style.height = "0px";
+      canvasWrap.appendChild(ghost);
+
+      let moved = false;
+
+      function onMove(ev) {
+        const curX = Math.max(0, Math.min(ev.clientX - imgRect.left, imgRect.width));
+        const curY = Math.max(0, Math.min(ev.clientY - imgRect.top, imgRect.height));
+        const left = Math.min(startX, curX);
+        const top = Math.min(startY, curY);
+        const width = Math.abs(curX - startX);
+        const height = Math.abs(curY - startY);
+        if (width > 4 || height > 4) moved = true;
+        ghost.style.left = left + "px";
+        ghost.style.top = top + "px";
+        ghost.style.width = width + "px";
+        ghost.style.height = height + "px";
+      }
+
+      function onUp() {
+        document.removeEventListener("pointermove", onMove);
+        document.removeEventListener("pointerup", onUp);
+        const left = parseFloat(ghost.style.left);
+        const top = parseFloat(ghost.style.top);
+        const width = parseFloat(ghost.style.width);
+        const height = parseFloat(ghost.style.height);
+        ghost.remove();
+        if (moved && width >= 15 && height >= 15) {
+          addNewArea(left, top, width, height);
+        } else {
+          clearSelection();
+        }
+      }
+
+      document.addEventListener("pointermove", onMove);
+      document.addEventListener("pointerup", onUp);
+    });
+
+    if (addAreaBtn) {
+      addAreaBtn.addEventListener("click", function () {
+        const imgRect = previewImg.getBoundingClientRect();
+        const width = Math.min(160, imgRect.width * 0.5);
+        const height = Math.min(60, imgRect.height * 0.3);
+        const x = (imgRect.width - width) / 2;
+        const y = (imgRect.height - height) / 2;
+        addNewArea(x, y, width, height);
+      });
+    }
+
+    if (deleteSelectedBtn) {
+      deleteSelectedBtn.addEventListener("click", function () {
+        if (selectedId !== null) removeArea(selectedId);
+      });
+    }
+
+    if (clearAllBtn) {
+      clearAllBtn.addEventListener("click", function () {
+        if (areas.length === 0) return;
+        if (!confirm("Remove all redaction areas on every page?")) return;
+        areas = [];
+        selectedId = null;
+        canvasWrap.querySelectorAll(".redact-box").forEach(function (el) {
+          el.remove();
+        });
+      });
+    }
+
+    if (styleSelect) {
+      styleSelect.addEventListener("change", function () {
+        if (selectedId === null) return;
+        const area = areas.find(function (a) {
+          return a.id === selectedId;
+        });
+        if (!area) return;
+        area.style = styleSelect.value;
+        const el = canvasWrap.querySelector('.redact-box[data-id="' + selectedId + '"]');
+        if (el) el.dataset.style = area.style;
+      });
+    }
+
+    document.addEventListener("keydown", function (e) {
+      if (
+        (e.key === "Delete" || e.key === "Backspace") &&
+        selectedId !== null &&
+        document.activeElement &&
+        !["INPUT", "SELECT", "TEXTAREA"].includes(document.activeElement.tagName)
+      ) {
+        e.preventDefault();
+        removeArea(selectedId);
+      }
+    });
+
+    // Sync live DOM box positions back into `areas` before any submit
+    // (Previous / Next / Apply all funnel through here).
+    form.addEventListener("submit", function () {
+      const imgRect = previewImg.getBoundingClientRect();
+      canvasWrap.querySelectorAll(".redact-box").forEach(function (el) {
+        const id = parseInt(el.dataset.id, 10);
+        const area = areas.find(function (a) {
+          return a.id === id;
+        });
+        if (!area) return;
+        area.x = el.offsetLeft;
+        area.y = el.offsetTop;
+        area.width = el.offsetWidth;
+        area.height = el.offsetHeight;
+        area.imgWidth = imgRect.width;
+        area.imgHeight = imgRect.height;
+      });
+      areasField.value = JSON.stringify(areas);
+    });
+
+    function boot() {
+      renderCurrentPage();
+    }
+
+    if (previewImg.complete && previewImg.naturalWidth > 0) {
+      boot();
+    } else {
+      previewImg.addEventListener("load", boot, { once: true });
+    }
+  });
+</script>
+
+<script>
+  const fileInput = document.getElementById("fileInput");
+  if (fileInput) {
+    fileInput.addEventListener("change", () => {
+      const fileName = document.getElementById("fileName");
+      if (fileName) fileName.textContent = fileInput.files[0]?.name || "No file selected";
+    });
+  }
+</script>
+
+{% endblock %}
+
+{% block jsonld %}{% from "components/jsonld.html" import webapp %}{{ webapp(self.title(), self.description(), request.path) }}{% endblock %}
