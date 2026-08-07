@@ -452,6 +452,12 @@ h3 {
   margin-top: var(--s3);
 }
 
+/* .seo-content a turns links brand-red, which otherwise beats .main-btn's
+   white text by specificity and makes this CTA invisible on its red bg */
+.seo-content .browse-tools a {
+  color: #fff;
+}
+
 /* ============================================================= */
 /* UPLOAD AREAS                                                  */
 /* ============================================================= */
