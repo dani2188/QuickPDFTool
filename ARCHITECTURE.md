@@ -1,10 +1,10 @@
 # Architecture Overview
 
-This document describes the current architecture of the PDF/Image tools web app as of 2026-07-18. It reflects what exists in the repo today, not a target design.
+This document describes the current architecture of the PDF/Image tools web app as of 2026-08-12. It reflects what exists in the repo today, not a target design.
 
 ## 1. Summary
 
-A single-process **Flask** web application that offers ~35 browser-based PDF/image conversion and editing tools (compress, merge, split, convert, watermark, sign, etc.), similar in spirit to iLovePDF/Smallpdf. There is no build step, no frontend framework, and no database — it's server-rendered HTML + a monolithic Python backend that shells out to external binaries (Ghostscript, LibreOffice) and Python libraries (PyMuPDF, PyPDF2, Pillow, pdf2docx) to do the actual file processing.
+A single-process **Flask** web application that offers ~37 browser-based PDF/image conversion and editing tools (compress, merge, split, convert, watermark, sign, redact, etc.), similar in spirit to iLovePDF/Smallpdf. There is no build step, no frontend framework, and no database — it's server-rendered HTML + a monolithic Python backend that shells out to external binaries (Ghostscript, LibreOffice) and Python libraries (PyMuPDF, PyPDF2, Pillow, pdf2docx) to do the actual file processing.
 
 ## 2. Tech stack
 
@@ -23,7 +23,7 @@ A single-process **Flask** web application that offers ~35 browser-based PDF/ima
 ## 3. Code layout
 
 ```
-app.py                 # entire backend: ~1,627 lines, ~35+ routes, all in one file
+app.py                 # entire backend: ~1,956 lines, ~75 routes, all in one file
 templates/             # one Jinja2 template per tool page, usually paired with a *_guide.html SEO page
 templates/components/  # shared partials (e.g. upload.html)
 static/style.css        # single global stylesheet
@@ -75,7 +75,7 @@ Two tool families depend on binaries **not installed via pip** — they must exi
 
 ## 8. Notable architectural characteristics / risks
 
-- **Monolith file**: all routes live in one 1,627-line `app.py`. Adding a tool means copy-pasting the upload/process/cleanup boilerplate from a similar route.
+- **Monolith file**: all routes live in one 1,956-line `app.py`. Adding a tool means copy-pasting the upload/process/cleanup boilerplate from a similar route.
 - **No shared processing/service layer**: file-save, UUID-naming, and cleanup-scheduling logic is duplicated per-route instead of factored into helpers.
 - **Unpinned dependencies**: `requirements.txt` has no version pins (`flask`, `Pillow`, `PyMuPDF`, etc. with no `==`), so `pip install` on Render can silently pick up newer major versions than what's used/tested locally.
 - **In-process, in-memory cleanup**: `delete_file_later` uses a sleeping daemon thread per file rather than a scheduled task/cron — cleanup is lost on process restart, and with `--workers 1` this is fine, but it wouldn't scale to multiple Gunicorn workers (each worker has its own thread pool and no shared knowledge of what's pending deletion).
