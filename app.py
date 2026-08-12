@@ -1289,6 +1289,64 @@ def pdf_to_png_guide():
 def png_to_pdf_guide():
     return render_template("png_to_pdf_guide.html")
 
+
+@app.route("/svg-to-pdf", methods=["GET", "POST"])
+def svg_to_pdf():
+
+    if request.method == "POST":
+
+        files = request.files.getlist("images")
+
+        saved_paths = []
+        output_doc = fitz.open()
+
+        for file in files:
+
+            if not file.filename:
+                continue
+            if not file.filename.lower().endswith(".svg"):
+                continue
+
+            filename = f"{uuid.uuid4()}_{secure_filename(file.filename)}"
+            path = os.path.join(UPLOAD_FOLDER, filename)
+            file.save(path)
+            saved_paths.append(path)
+
+            try:
+                svg_doc = fitz.open(path)
+                pdf_bytes = svg_doc.convert_to_pdf()
+                svg_doc.close()
+
+                page_pdf = fitz.open(stream=pdf_bytes, filetype="pdf")
+                output_doc.insert_pdf(page_pdf)
+                page_pdf.close()
+            except Exception:
+                continue
+
+        for path in saved_paths:
+            delete_file_later(path)
+
+        if len(output_doc) == 0:
+            output_doc.close()
+            return "No valid SVG files were uploaded.", 400
+
+        output_filename = f"{uuid.uuid4()}_converted.pdf"
+        output_path = os.path.join(UPLOAD_FOLDER, output_filename)
+        output_doc.save(output_path)
+        output_doc.close()
+
+        delete_file_later(output_path)
+
+        return send_file(output_path, as_attachment=True)
+
+    return render_template("svg_to_pdf.html")
+
+
+@app.route("/how-to-svg-to-pdf")
+def svg_to_pdf_guide():
+    return render_template("svg_to_pdf_guide.html")
+
+
 @app.route("/compress-pdf-for-email")
 def compress_pdf_for_email():
     return render_template("compress_pdf_for_email.html")

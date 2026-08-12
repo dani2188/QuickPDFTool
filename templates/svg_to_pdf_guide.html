@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+
+{% block title %}How to Convert SVG to PDF – Keep Vector Graphics Sharp{% endblock %}
+
+{% block description %}Learn how to convert SVG files to PDF online for free, without rasterizing your vector graphics into a fixed-resolution image. Step-by-step guide with tips and FAQs.{% endblock %}
+
+{% block content %}
+
+<article class="guide-article">
+
+<h1>How to Convert SVG to PDF</h1>
+
+<p>
+SVG (Scalable Vector Graphics) is the format most design tools export logos, icons, and diagrams in,
+because it describes shapes and text as mathematical paths rather than a grid of pixels — it looks
+sharp at any size. The problem is that not every device, printer, or recipient can open an SVG file
+directly. PDF solves that: it's universally supported, and because PDF is <em>also</em> a vector
+format, converting SVG to PDF keeps every path and letter exactly as crisp as the original — nothing
+gets rasterized into a fixed-resolution image along the way.
+</p>
+
+<h2>Step 1 – Open the SVG to PDF Tool</h2>
+
+<p>
+Go to our <a href="/svg-to-pdf">SVG to PDF converter</a>. You'll see a file upload area where you can
+select one or more SVG files.
+</p>
+
+<h2>Step 2 – Upload Your SVG Files</h2>
+
+<p>
+Select all the SVG files you want to include. You can select several at once — each one becomes its
+own page in the resulting PDF, in the order you selected them, and each page is sized to match that
+SVG's own dimensions.
+</p>
+
+<h2>Step 3 – Download Your PDF</h2>
+
+<p>
+Click "Convert to PDF" and your file downloads automatically. Open it in any PDF viewer and zoom in —
+the shapes and text stay perfectly sharp, because they were never converted into pixels.
+</p>
+
+<h2>Why this matters: vector vs. rasterized conversion</h2>
+
+<p>
+Some online converters turn an SVG into a PNG or JPG screenshot first, then place that image on a PDF
+page. That approach locks the graphic to whatever resolution the screenshot was taken at — zoom in far
+enough in the PDF and edges get blurry or blocky. This tool instead converts the SVG's actual paths
+and text directly into the PDF's own vector drawing instructions, so there's no fixed resolution to
+run out of.
+</p>
+
+<h2>Tips for best results</h2>
+
+<ul>
+  <li><strong>Embed your fonts or use standard ones:</strong> If your SVG references a custom font that isn't embedded in the file, some viewers may substitute a different font when rendering it. Most design tools have an "outline text" or "convert text to paths" export option that avoids this entirely.</li>
+  <li><strong>Check your SVG's width/height attributes:</strong> The PDF page size is taken directly from the SVG's own dimensions. If a page comes out an unexpected size, check the SVG's <code>width</code>/<code>height</code> or <code>viewBox</code> values in the source file.</li>
+  <li><strong>Combining several graphics:</strong> Upload them together to get one multi-page PDF instead of converting and merging separately.</li>
+  <li><strong>Very complex SVGs:</strong> Extremely detailed vector art (thousands of paths, embedded raster images, filters) may take a little longer to process, but will still convert.</li>
+</ul>
+
+<h2>Common Uses for SVG to PDF Conversion</h2>
+
+<p><strong>Sending a logo to a printer:</strong> Print shops and promotional product vendors often ask for a PDF rather than an SVG, since it's the standard file format their prepress software expects.</p>
+
+<p><strong>Sharing a diagram with someone who can't open SVG:</strong> Not every email client or office program previews SVG files inline. A PDF opens everywhere.</p>
+
+<p><strong>Archiving design exports:</strong> Icons and illustrations exported from design software convert into a stable, self-contained PDF for long-term storage.</p>
+
+<p><strong>Including vector art in a report:</strong> Convert a chart or diagram exported as SVG into a PDF page that can be combined with other documents using <a href="/merge-pdf">Merge PDF</a>.</p>
+
+<h2>Frequently Asked Questions</h2>
+
+<h3>Will my SVG's colours and gradients be preserved?</h3>
+<p>
+Yes — colours, gradients, strokes, and fills convert directly into the PDF's own vector drawing
+instructions along with the shapes themselves.
+</p>
+
+<h3>What happens to text in my SVG?</h3>
+<p>
+Text converts into real PDF text where possible, using an equivalent font. If your SVG already
+converted its text to paths/outlines during export (common when a design tool is used), it converts as
+shapes instead — either way, it stays sharp.
+</p>
+
+<h3>Can I convert multiple SVG files into one PDF?</h3>
+<p>
+Yes. Select multiple files when uploading and each one becomes its own page in a single PDF, in the
+order you selected them.
+</p>
+
+<h3>Is there a file size limit?</h3>
+<p>
+Yes, 20MB per file, consistent with our other conversion tools.
+</p>
+
+<h3>Is my file kept after conversion?</h3>
+<p>
+No. Files are processed on a secure server and deleted automatically within minutes — nothing is
+stored permanently.
+</p>
+
+<h2>Related Tools</h2>
+
+<ul>
+  <li><a href="/svg-to-pdf">SVG to PDF</a> – Convert your vector graphics now</li>
+  <li><a href="/jpg-to-pdf">JPG to PDF</a> – Convert JPG images to PDF</li>
+  <li><a href="/png-to-pdf">PNG to PDF</a> – Convert PNG images to PDF</li>
+  <li><a href="/merge-pdf">Merge PDF</a> – Combine PDFs together</li>
+</ul>
+
+</article>
+
+{% endblock %}
+
+{% block jsonld %}{% from "components/jsonld.html" import howto %}{{ howto(self.title(), self.description(), request.path, ["Open the SVG to PDF Tool", "Upload Your SVG Files", "Download Your PDF"]) }}{% endblock %}
