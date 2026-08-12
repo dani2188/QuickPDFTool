@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 
-{% block title %}Edit PDF Online – Free PDF Editor Tools{% endblock %}
+{% block title %}Edit PDF Online – Add Text, Sign, Redact, Watermark & More{% endblock %}
 
 {% block description %}
-Edit PDF files online for free. Rotate pages, delete pages, add page numbers, protect or unlock PDF documents easily.
+Edit a PDF online: add text or a signature, redact sensitive information, add or remove a watermark, rotate or crop pages, add page numbers, or password-protect the file. Free, no signup.
 {% endblock %}
 
 {% block content %}
@@ -11,54 +11,115 @@ Edit PDF files online for free. Rotate pages, delete pages, add page numbers, pr
 <h1>Edit PDF Files Online</h1>
 
 <p class="subtitle">
-Modify and organize your PDF documents quickly and easily.
+Add, remove, or adjust content in a PDF — then secure it, all without installing anything.
 </p>
 
 <div class="tools-grid">
-
-<a href="/rotate-pdf" class="tool-card">Rotate PDF</a>
-
-<a href="/delete-pdf-pages" class="tool-card">Delete Pages</a>
-
-<a href="/add-page-numbers" class="tool-card">Add Page Numbers</a>
-
-<a href="/protect-pdf" class="tool-card">Protect PDF</a>
-
-<a href="/unlock-pdf" class="tool-card">Unlock PDF</a>
-
+  <a href="/add-text-to-pdf" class="tool-card">📝 Add Text to PDF</a>
+  <a href="/sign-pdf" class="tool-card">✍️ Sign PDF</a>
+  <a href="/redact-pdf" class="tool-card">⬛ Redact PDF</a>
+  <a href="/add-watermark" class="tool-card">💧 Add Watermark</a>
+  <a href="/remove-watermark" class="tool-card">🧹 Remove Watermark</a>
+  <a href="/rotate-pdf" class="tool-card">🔄 Rotate PDF</a>
+  <a href="/crop-pdf" class="tool-card">✂️ Crop PDF</a>
+  <a href="/delete-pdf-pages" class="tool-card">🗑 Delete Pages</a>
+  <a href="/add-page-numbers" class="tool-card">🔢 Add Page Numbers</a>
+  <a href="/protect-pdf" class="tool-card">🔒 Protect PDF</a>
+  <a href="/unlock-pdf" class="tool-card">🔓 Unlock PDF</a>
 </div>
-
 
 <div class="seo-content">
 
-<h2>Edit PDF Files Easily</h2>
-
 <p>
-Use our free PDF editing tools to modify your documents online.
-You can rotate pages, remove pages, add page numbers or protect your PDF files with a password.
+"Editing a PDF" covers a wide range of tasks — adding your signature to a contract, hiding a
+confidential paragraph before sharing a file, or simply fixing a sideways scanned page. Below is a
+quick guide to which tool fits which job, grouped by what you're actually trying to accomplish.
 </p>
 
-<h3>How to edit a PDF</h3>
-
-<ul class="steps">
-
-<li>
-<span class="step-number">1</span>
-Upload your PDF document
-</li>
-
-<li>
-<span class="step-number">2</span>
-Choose the editing tool you need
-</li>
-
-<li>
-<span class="step-number">3</span>
-Download the updated PDF
-</li>
-
+<h2>Adding something to the page</h2>
+<ul class="benefits">
+  <li><strong><a href="/add-text-to-pdf">Add Text to PDF</a></strong> — type a date, note, or label directly onto a page.</li>
+  <li><strong><a href="/sign-pdf">Sign PDF</a></strong> — place your signature image exactly where it needs to go.</li>
+  <li><strong><a href="/add-watermark">Add Watermark</a></strong> — stamp "Draft," "Confidential," or a logo across every page.</li>
+  <li><strong><a href="/add-page-numbers">Add Page Numbers</a></strong> — number pages automatically for a report or printed booklet.</li>
 </ul>
+
+<h2>Removing or hiding something</h2>
+<ul class="benefits">
+  <li><strong><a href="/redact-pdf">Redact PDF</a></strong> — permanently black out, blur, or pixelate sensitive text or images before sharing. Unlike a shape drawn on top, the underlying content is actually deleted.</li>
+  <li><strong><a href="/remove-watermark">Remove Watermark</a></strong> — clean up a watermark left over from an earlier version of the file.</li>
+  <li><strong><a href="/delete-pdf-pages">Delete Pages</a></strong> — drop pages you don't want in the final document.</li>
+</ul>
+
+<h2>Adjusting the page layout</h2>
+<ul class="benefits">
+  <li><strong><a href="/rotate-pdf">Rotate PDF</a></strong> — fix pages that were scanned sideways or upside down.</li>
+  <li><strong><a href="/crop-pdf">Crop PDF</a></strong> — trim margins or a scanner border.</li>
+</ul>
+
+<h2>Securing the file</h2>
+<ul class="benefits">
+  <li><strong><a href="/protect-pdf">Protect PDF</a></strong> — add a password so only people you share it with can open the file.</li>
+  <li><strong><a href="/unlock-pdf">Unlock PDF</a></strong> — remove a password from a PDF you own so it can be edited or converted again.</li>
+</ul>
+
+<h2>Tip: work in the right order</h2>
+<p>
+If a document needs several edits, do them in this order: content changes first (text, signature,
+redaction, watermark), then layout fixes (rotate, crop, page numbers), and <strong>add a password
+last</strong>. Encrypting the file first will block every other tool from opening it — you'd have to
+unlock it again before you could make any further changes.
+</p>
+
+<h2>Frequently Asked Questions</h2>
+
+<h3>Can I use several editing tools on the same file, one after another?</h3>
+<p>
+Yes — download the result from one tool, then upload that file into the next. Each tool works on
+whatever PDF you give it, so you can chain edits together.
+</p>
+
+<h3>Is redaction actually permanent, or just a black box drawn on top?</h3>
+<p>
+It's permanent. Our <a href="/redact-pdf">Redact PDF tool</a> deletes the underlying text and image
+data in the covered area — it can't be recovered by copying text or editing the file.
+</p>
+
+<h3>Will editing a PDF reduce its file size?</h3>
+<p>
+Not usually — these tools focus on content and layout, not compression. To shrink the file, run it
+through <a href="/compress-pdf">Compress PDF</a> afterward.
+</p>
+
+<h3>Do I need an account to edit a PDF?</h3>
+<p>
+No. Every tool works directly in your browser with no signup, and files are deleted from our server
+automatically within minutes.
+</p>
+
+<h3>More PDF Tools</h3>
+<div class="tools-mini-grid">
+  <a href="/compress-pdf">Compress PDF</a>
+  <a href="/convert-pdf">Convert PDF</a>
+  <a href="/organize-pdf">Organize PDF</a>
+  <a href="/merge-pdf">Merge PDF</a>
+  <a href="/split-pdf">Split PDF</a>
+</div>
+
+<div class="browse-tools">
+  <a href="/pdf-tools" class="main-btn">View All Tools</a>
+</div>
 
 </div>
 
+{% endblock %}
+
+{% block jsonld %}
+{% from "components/jsonld.html" import faqpage %}
+{{ faqpage([
+  {"q": "Can I use several editing tools on the same file, one after another?", "a": "Yes — download the result from one tool, then upload that file into the next tool."},
+  {"q": "Is redaction actually permanent, or just a black box drawn on top?", "a": "It's permanent. The Redact PDF tool deletes the underlying text and image data in the covered area."},
+  {"q": "Will editing a PDF reduce its file size?", "a": "Not usually. Use the Compress PDF tool afterward to shrink the file."},
+  {"q": "Do I need an account to edit a PDF?", "a": "No. Every tool works directly in your browser with no signup, and files are deleted automatically within minutes."}
+]) }}
 {% endblock %}

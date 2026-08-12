@@ -1,12 +1,12 @@
 {% extends "base.html" %} {% block title %} Compress PDF for Email – Reduce PDF
-Size for Attachments {% endblock %} {% block description %} Compress PDF files
-for email attachments. Reduce PDF size quickly so your file can be sent by
-email. {% endblock %} {% block content %}
+Size for Attachments {% endblock %} {% block description %} Compress a PDF so
+it survives your email provider's attachment limit — accounting for the
+size increase email encoding adds. Free, no signup. {% endblock %} {% block content %}
 
 <h1>Compress PDF for Email</h1>
 
 <p class="subtitle">
-  Reduce PDF size so your document can be sent easily as an email attachment.
+  Reduce PDF size so your document sends as an email attachment on the first try.
 </p>
 
 <!-- ✅ UPLOAD FORM (posts straight to the compressor with email optimization forced on) -->
@@ -31,35 +31,78 @@ email. {% endblock %} {% block content %}
     file size while keeping the document readable.
   </p>
 
+  <h2>The hidden reason attachments bounce below the stated limit</h2>
+  <p>
+    Email attachments aren't sent as raw bytes — they're base64-encoded first,
+    which inflates the file by roughly <strong>37%</strong> before it ever
+    reaches your provider's limit check. A file that's 24MB on your disk can
+    become over 32MB in transit, which is why an attachment can bounce even
+    though it looks well under the stated cap. As a rule of thumb, aim for
+    your compressed PDF to be no more than <strong>70–75% of the provider's
+    stated limit</strong> to leave room for that overhead.
+  </p>
+
   <h2>How to compress a PDF for email</h2>
 
   <ul class="steps">
     <li><span class="step-number">1</span> Upload your PDF file above</li>
-
     <li><span class="step-number">2</span> Click "Compress for Email"</li>
-
     <li><span class="step-number">3</span> Download the smaller file</li>
-
     <li>
       <span class="step-number">4</span>
       Attach the compressed file to your email
     </li>
   </ul>
 
-  <h2>Email attachment size limits</h2>
-
-  <p>Different email providers allow different attachment sizes:</p>
+  <h2>Email attachment size limits (and the safe target to aim for)</h2>
 
   <ul class="benefits">
-    <li>Gmail: 25 MB</li>
-    <li>Outlook: 20 MB</li>
-    <li>Yahoo Mail: 25 MB</li>
+    <li><strong>Gmail:</strong> 25 MB limit — aim for under ~18 MB</li>
+    <li><strong>Outlook / Microsoft 365:</strong> 20 MB limit — aim for under ~14 MB</li>
+    <li><strong>Yahoo Mail:</strong> 25 MB limit — aim for under ~18 MB</li>
+    <li><strong>Company/corporate mail servers:</strong> often much stricter (5–10 MB) — check with your IT department if unsure</li>
   </ul>
 
   <p>
-    If your PDF exceeds these limits, compressing it can help reduce its size
-    enough to send it successfully.
+    This tool applies a high-compression preset tuned specifically for this
+    situation, downsampling images to a web-friendly resolution so text-heavy
+    reports and scanned documents both land comfortably under typical limits
+    in one pass.
   </p>
+
+  <h2>If it's still too large</h2>
+  <p>
+    Very large or image-dense PDFs (50+ pages, high-resolution scans) may not
+    compress enough to email directly. In that case, either
+    <a href="/split-pdf">split the file</a> into smaller sections and send
+    them separately, or share it as a link via Google Drive, Dropbox, or
+    OneDrive instead of attaching it.
+  </p>
+
+  <h2>Frequently Asked Questions</h2>
+
+  <h3>Why did my attachment bounce even though it's under the size limit?</h3>
+  <p>
+    Because of base64 encoding overhead (see above) — the file grows by
+    roughly a third once it's actually transmitted as an attachment. Compress
+    it further, or send it as a cloud storage link instead.
+  </p>
+
+  <h3>Will this reduce quality more than the regular Compress PDF tool?</h3>
+  <p>
+    It uses a similarly strong setting to the "High" level on the
+    <a href="/compress-pdf">regular Compress PDF tool</a>, downsampling
+    images to 72 DPI — good for on-screen reading, not ideal if the recipient
+    needs to print at full quality.
+  </p>
+
+  <h3>What if I need an exact file size instead?</h3>
+  <p>
+    Use <a href="/compress-pdf-to-1mb">Compress PDF to 1MB</a> or the target
+    size option on the <a href="/compress-pdf">main Compress PDF tool</a> if
+    you need to hit a specific number rather than "small enough for email."
+  </p>
+
 </div>
 
 <!-- ✅ RELATED TOOLS -->
@@ -68,6 +111,7 @@ email. {% endblock %} {% block content %}
 
   <div class="tools-mini-grid">
     <a href="/compress-pdf">Compress PDF</a>
+    <a href="/compress-pdf-to-1mb">Compress PDF to 1MB</a>
     <a href="/merge-pdf">Merge PDF</a>
     <a href="/split-pdf">Split PDF</a>
     <a href="/pdf-to-jpg">PDF to JPG</a>
@@ -75,6 +119,18 @@ email. {% endblock %} {% block content %}
   </div>
 </div>
 
+<div class="browse-tools">
+  <a href="/pdf-tools" class="main-btn">View All Tools</a>
+</div>
+
 {% endblock %}
 
-{% block jsonld %}{% from "components/jsonld.html" import webapp %}{{ webapp(self.title(), self.description(), request.path) }}{% endblock %}
+{% block jsonld %}
+{% from "components/jsonld.html" import webapp, faqpage %}
+{{ webapp(self.title(), self.description(), request.path) }}
+{{ faqpage([
+  {"q": "Why did my attachment bounce even though it's under the size limit?", "a": "Email attachments are base64-encoded, which inflates the file by roughly a third in transit. Compress further, or send it as a cloud storage link instead."},
+  {"q": "Will this reduce quality more than the regular Compress PDF tool?", "a": "It uses a similarly strong setting to the High level on the regular tool, downsampling images to 72 DPI."},
+  {"q": "What if I need an exact file size instead?", "a": "Use Compress PDF to 1MB, or the target size option on the main Compress PDF tool, if you need to hit a specific number."}
+]) }}
+{% endblock %}

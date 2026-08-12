@@ -1,12 +1,14 @@
 {% extends "base.html" %} {% block title %} Compress PDF to 1MB Online – Reduce
-PDF File Size {% endblock %} {% block description %} Compress PDF files to 1MB
-online for free. Reduce PDF file size quickly and easily using our PDF
-compressor. {% endblock %} {% block content %}
+PDF File Size {% endblock %} {% block description %} Compress a PDF to under
+1MB online for free — the size most application forms, portals, and upload
+fields require. Best-effort target compression, no signup. {% endblock %} {%
+block content %}
 
 <h1>Compress PDF to 1MB</h1>
 
 <p class="subtitle">
-  Reduce your PDF file size to under 1MB quickly and securely.
+  Shrink your PDF to fit a 1MB upload limit — the size cap used by most job
+  applications, university portals, and government forms.
 </p>
 
 <div class="upload-box">
@@ -30,44 +32,96 @@ compressor. {% endblock %} {% block content %}
 </div>
 
 <div class="seo-content">
-  <h2>Reduce PDF File Size to 1MB</h2>
 
+  <h2>Why 1MB specifically?</h2>
   <p>
-    Large PDF files can be difficult to upload or send by email. Using a PDF
-    compressor allows you to reduce the file size while keeping the document
-    readable.
+    1MB has become an informal standard cap for online forms: job application
+    portals, university admissions systems, visa and government document
+    uploaders, and many HR systems reject anything larger. It's small enough
+    for their servers to handle in bulk, but usually still large enough for a
+    multi-page scanned document or a text-based PDF with a few images.
   </p>
 
+  <h2>How this tool tries to hit 1MB</h2>
   <p>
-    Our <a href="/compress-pdf">PDF compressor</a> automatically optimizes
-    images and removes unnecessary data to make the file smaller.
+    Rather than applying one fixed setting, this tool compresses your file,
+    checks the resulting size, and — if it's still over 1MB — automatically
+    re-compresses with a stronger setting and tries again, escalating through
+    increasingly aggressive image downsampling until the file fits or no
+    further reduction is possible.
+  </p>
+  <p>
+    This is a <strong>best-effort</strong> process, not a guarantee. A PDF
+    that's mostly sharp, high-resolution photos can usually be squeezed under
+    1MB. A PDF that's already 1MB of pure text (rare, since text compresses
+    extremely well) may not shrink much further, because there's no image
+    data left to downsample.
   </p>
 
-  <h2>How to compress a PDF to 1MB</h2>
-
-  <ul class="steps">
-    <li><span class="step-number">1</span> Upload your PDF file</li>
-
-    <li><span class="step-number">2</span> Click Compress</li>
-
-    <li><span class="step-number">3</span> Download the smaller file</li>
+  <h2>If your file still won't fit under 1MB</h2>
+  <ul class="benefits">
+    <li><strong>Split it first.</strong> Use <a href="/split-pdf">Split PDF</a> to break a long document into smaller sections, then compress each one — many upload forms accept multiple smaller files.</li>
+    <li><strong>Remove pages you don't need.</strong> A cover sheet, blank page, or duplicate scan adds size for no benefit — try <a href="/delete-pdf-pages">Delete Pages</a> first.</li>
+    <li><strong>Re-scan at a lower resolution.</strong> If the original is a phone scan, a 300 DPI scan compresses to 1MB far more easily than a 600+ DPI one.</li>
+    <li><strong>Use the full <a href="/compress-pdf">Compress PDF tool</a></strong> and manually pick "Extreme" — it converts images to grayscale, which shrinks colour scans significantly more than the automatic target-size loop alone if colour isn't required.</li>
   </ul>
-</div>
 
-<div class="more-tools">
-  <h3>Related PDF Tools</h3>
+  <h2>Frequently Asked Questions</h2>
 
+  <h3>Will my PDF always end up exactly at or under 1MB?</h3>
+  <p>
+    Not always — see above. The tool always returns the smallest version it
+    could produce, even if that's slightly over 1MB, rather than degrading the
+    document until it's unreadable.
+  </p>
+
+  <h3>Does hitting 1MB mean my text becomes blurry?</h3>
+  <p>
+    No. Text is vector data and is never downsampled or blurred by
+    compression — only embedded images are affected. A text-only PDF will
+    look identical after compression.
+  </p>
+
+  <h3>What's the difference between this and the regular Compress PDF tool?</h3>
+  <p>
+    The <a href="/compress-pdf">Compress PDF tool</a> lets you pick a fixed
+    quality level (Low/Medium/High/Extreme) or type in any target size you
+    want. This page is a shortcut that's pre-set to target exactly 1MB, since
+    that's the size most people searching for this tool actually need.
+  </p>
+
+  <h3>Is this different from compressing for email?</h3>
+  <p>
+    Yes — <a href="/compress-pdf-for-email">Compress PDF for Email</a> applies
+    one fixed high-compression setting tuned for typical email attachment
+    limits (20–25MB), while this page keeps re-compressing until the file is
+    at or near exactly 1MB, whatever that takes.
+  </p>
+
+  <h3>More PDF Tools</h3>
   <div class="tools-mini-grid">
+    <a href="/compress-pdf">Compress PDF</a>
+    <a href="/compress-pdf-for-email">Compress PDF for Email</a>
     <a href="/merge-pdf">Merge PDF</a>
-
     <a href="/split-pdf">Split PDF</a>
-
     <a href="/pdf-to-word">PDF to Word</a>
-
-    <a href="/jpg-to-pdf">JPG to PDF</a>
   </div>
+
+  <div class="browse-tools">
+    <a href="/pdf-tools" class="main-btn">View All Tools</a>
+  </div>
+
 </div>
 
 {% endblock %}
 
-{% block jsonld %}{% from "components/jsonld.html" import webapp %}{{ webapp(self.title(), self.description(), request.path) }}{% endblock %}
+{% block jsonld %}
+{% from "components/jsonld.html" import webapp, faqpage %}
+{{ webapp(self.title(), self.description(), request.path) }}
+{{ faqpage([
+  {"q": "Will my PDF always end up exactly at or under 1MB?", "a": "Not always. Image-heavy files usually compress under 1MB; already-minimal or text-only files may not shrink much further. The tool returns the smallest version it could produce."},
+  {"q": "Does hitting 1MB mean my text becomes blurry?", "a": "No. Text is vector data and is never downsampled by compression — only embedded images are affected."},
+  {"q": "What's the difference between this and the regular Compress PDF tool?", "a": "The regular tool lets you pick a fixed quality level or any target size. This page is a shortcut pre-set to target exactly 1MB."},
+  {"q": "Is this different from compressing for email?", "a": "Yes. Compress PDF for Email applies one fixed high-compression setting; this page keeps re-compressing until the file is at or near exactly 1MB."}
+]) }}
+{% endblock %}

@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 
-{% block title %}Organize PDF Files Online – Merge, Split or Remove Pages{% endblock %}
+{% block title %}Organize PDF Files Online – Merge, Split, Reorder & Remove Pages{% endblock %}
 
 {% block description %}
-Organize PDF documents online. Merge PDFs, split PDF pages or delete pages from your document easily and for free.
+Organize PDF documents online: merge multiple files into one, split a PDF into separate files, remove unwanted pages, or pull out embedded images. Free, no signup.
 {% endblock %}
 
 {% block content %}
@@ -11,50 +11,111 @@ Organize PDF documents online. Merge PDFs, split PDF pages or delete pages from 
 <h1>Organize PDF Files Online</h1>
 
 <p class="subtitle">
-Rearrange and organize your PDF documents easily.
+Combine, split, and clean up PDF documents so they're structured the way you need.
 </p>
 
 <div class="tools-grid">
-
-<a href="/merge-pdf" class="tool-card">Merge PDF</a>
-
-<a href="/split-pdf" class="tool-card">Split PDF</a>
-
-<a href="/delete-pdf-pages" class="tool-card">Delete Pages</a>
-
+  <a href="/merge-pdf" class="tool-card">📑 Merge PDF</a>
+  <a href="/split-pdf" class="tool-card">✂️ Split PDF</a>
+  <a href="/delete-pdf-pages" class="tool-card">🗑 Delete Pages</a>
+  <a href="/rotate-pdf" class="tool-card">🔄 Rotate PDF</a>
+  <a href="/extract-images" class="tool-card">🖼 Extract Images</a>
 </div>
-
 
 <div class="seo-content">
 
-<h2>Organize PDF Documents Easily</h2>
-
 <p>
-Use our free online PDF organizer to merge files together, split large PDFs into individual pages, or remove unnecessary pages from your documents.
-These tools help you manage and restructure PDF files quickly and securely.
+"Organizing" a PDF usually means restructuring it — combining several files into one, breaking one
+large file into smaller pieces, or getting rid of pages you don't need. Here's how to handle the most
+common situations.
 </p>
 
-<h3>How to organize a PDF</h3>
+<h2>Combining scanned pages or reports into one file</h2>
+<p>
+If you've scanned a multi-page document as separate files, or you need to send several reports as a
+single attachment, use <strong><a href="/merge-pdf">Merge PDF</a></strong>. Upload the files in the
+order you want them combined — the merge keeps that order in the final document.
+</p>
 
-<ul class="steps">
+<h2>Breaking a large document into pieces</h2>
+<p>
+Use <strong><a href="/split-pdf">Split PDF</a></strong> when a PDF is too long to send as-is, or when
+you only need to share a specific chapter or section rather than the whole file. You can extract a
+page range or split every page into its own file.
+</p>
 
-<li>
-<span class="step-number">1</span>
-Upload your PDF file
-</li>
+<h2>Removing pages you don't need</h2>
+<p>
+<strong><a href="/delete-pdf-pages">Delete Pages</a></strong> removes specific pages — a blank scan, a
+cover sheet, or an outdated section — without touching the rest of the document.
+</p>
 
-<li>
-<span class="step-number">2</span>
-Choose the tool you need
-</li>
+<h2>Pulling out just the images</h2>
+<p>
+If a PDF contains photos or diagrams you need on their own (for a presentation, a report, or reuse
+elsewhere), <strong><a href="/extract-images">Extract Images</a></strong> saves every embedded image
+as a separate file instead of exporting entire pages.
+</p>
 
-<li>
-<span class="step-number">3</span>
-Download your organized document
-</li>
+<h2>Tip: reordering pages without a dedicated "reorder" tool</h2>
+<p>
+There's a simple two-step trick for putting pages in a different order: first run
+<a href="/split-pdf">Split PDF</a> to break the document into individual pages, then run
+<a href="/merge-pdf">Merge PDF</a> and re-upload those pages in the order you actually want them.
+Because Merge keeps your upload order as the final page order, this gives you full control over page
+order with tools you already have.
+</p>
 
-</ul>
+<h2>Frequently Asked Questions</h2>
+
+<h3>Can I merge PDFs of different page sizes?</h3>
+<p>
+Yes. Each page keeps its own original size in the merged file — pages aren't stretched or cropped to
+match each other.
+</p>
+
+<h3>What's the difference between Split and Delete Pages?</h3>
+<p>
+Split PDF produces one or more new files from sections of the original (useful when you want to keep
+multiple parts). Delete Pages removes specific pages and gives you back a single file with the rest
+intact.
+</p>
+
+<h3>Is there a limit to how many files I can merge?</h3>
+<p>
+There's no fixed file count, but the combined size is limited by the 20MB per-file upload limit that
+applies across all of our tools.
+</p>
+
+<h3>Will organizing a PDF affect the quality of scanned pages?</h3>
+<p>
+No — merging, splitting, and deleting pages don't re-compress or re-render page content, so scanned
+image quality stays exactly as it was in the original file.
+</p>
+
+<h3>More PDF Tools</h3>
+<div class="tools-mini-grid">
+  <a href="/compress-pdf">Compress PDF</a>
+  <a href="/edit-pdf">Edit PDF</a>
+  <a href="/convert-pdf">Convert PDF</a>
+  <a href="/crop-pdf">Crop PDF</a>
+  <a href="/add-page-numbers">Add Page Numbers</a>
+</div>
+
+<div class="browse-tools">
+  <a href="/pdf-tools" class="main-btn">View All Tools</a>
+</div>
 
 </div>
 
+{% endblock %}
+
+{% block jsonld %}
+{% from "components/jsonld.html" import faqpage %}
+{{ faqpage([
+  {"q": "Can I merge PDFs of different page sizes?", "a": "Yes. Each page keeps its own original size in the merged file."},
+  {"q": "What's the difference between Split and Delete Pages?", "a": "Split PDF produces new files from sections of the original. Delete Pages removes specific pages and returns one file with the rest intact."},
+  {"q": "Is there a limit to how many files I can merge?", "a": "There's no fixed file count, but the 20MB per-file upload limit applies to each file."},
+  {"q": "Will organizing a PDF affect the quality of scanned pages?", "a": "No — merging, splitting, and deleting pages don't re-compress or re-render page content."}
+]) }}
 {% endblock %}
