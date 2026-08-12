@@ -36,6 +36,21 @@
 </script>
 {%- endmacro %}
 
+{% macro article(name, description, path, datePublished) -%}
+<script type="application/ld+json">
+{{ {
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": name.split() | join(" "),
+  "description": description.split() | join(" "),
+  "url": "https://hellobrivio.com" ~ path,
+  "datePublished": datePublished,
+  "author": {"@type": "Organization", "name": "HelloBrivio"},
+  "publisher": {"@type": "Organization", "name": "HelloBrivio"}
+} | tojson }}
+</script>
+{%- endmacro %}
+
 {% macro faqpage(items) -%}
 {% set ns = namespace(qa=[]) %}
 {% for it in items %}

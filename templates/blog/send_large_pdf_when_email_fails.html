@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block title %}How to Send a Large PDF When Email Rejects It{% endblock %}
+
+{% block description %}
+A decision tree for getting a large PDF to its recipient when email keeps bouncing it back — compress, split, or share a link — and how to pick the right one fast.
+{% endblock %}
+
+{% block content %}
+
+<article class="guide-article">
+
+<h1>How to Send a Large PDF When Email Rejects It</h1>
+<p><em>Published August 2026</em></p>
+
+<p>
+An attachment bounces, or your email client just refuses to add the file in the first place. Before
+trying random things, it helps to know which fix actually matches your situation — compressing,
+splitting, and link-sharing solve different problems.
+</p>
+
+<h2>Step 1: Find out how far over the limit you actually are</h2>
+<p>
+Most providers cap attachments around 20–25MB — but the real ceiling is lower than the number they
+advertise, because attachments are base64-encoded for transit, which inflates the file by roughly a
+third. A 24MB file can fail a 25MB limit check simply because of that overhead. See our
+<a href="/blog/pdf-file-size-explained">guide to what makes PDFs large</a> if you're not sure why your
+file is the size it is.
+</p>
+
+<ul class="benefits">
+  <li><strong>Modestly over the limit</strong> (say, 30MB trying to fit in 25MB) → compression alone will usually fix it.</li>
+  <li><strong>Way over the limit</strong> (100MB+) → compression won't be enough on its own; split the file or share a link instead.</li>
+  <li><strong>Already small but still bouncing</strong> → check whether your organisation's mail server has a stricter limit than the public provider limits.</li>
+</ul>
+
+<h2>Option 1: Compress it</h2>
+<p>
+Run the file through <a href="/compress-pdf-for-email">Compress PDF for Email</a>, which applies a
+compression setting tuned for this exact situation and aims well under typical provider limits to
+leave room for encoding overhead. This is the fastest fix and the right first move for most
+image-heavy PDFs.
+</p>
+
+<h2>Option 2: Split it into parts</h2>
+<p>
+If the document doesn't need to arrive as one file — a long report, a multi-chapter document, a set of
+scanned forms — use <a href="/split-pdf">Split PDF</a> to break it into smaller sections and send them
+as separate attachments, or across a couple of emails. This works even when compression alone can't
+get a huge file under the limit.
+</p>
+
+<h2>Option 3: Share a link instead of attaching the file</h2>
+<p>
+For files that need to stay intact and are still too large after compression (dense scans, design
+files exported to PDF, anything past 50–100MB), upload it to a cloud storage service you already use —
+Google Drive, Dropbox, OneDrive, or a transfer service like WeTransfer — and send the recipient a link
+instead of an attachment. There's no realistic size ceiling this way, though it does mean the
+recipient needs an extra click to download rather than opening it inline.
+</p>
+
+<h2>Which one should I actually use?</h2>
+<p>
+Try compression first — it's the least disruptive and takes seconds. If the result is still too big,
+move to splitting if the content can be sensibly divided, or a shared link if it can't (or if the
+recipient specifically needs one complete file).
+</p>
+
+<h2>Frequently Asked Questions</h2>
+
+<h3>Why does my file still bounce after compressing it once?</h3>
+<p>
+If the original was extremely image-heavy (very high resolution scans, for example), one compression
+pass may not be enough. Try a stronger setting on the <a href="/compress-pdf">main Compress PDF
+tool</a> (High or Extreme) rather than the email-optimised default.
+</p>
+
+<h3>Does splitting a PDF lose any quality?</h3>
+<p>
+No — splitting just divides existing pages into separate files. Nothing on any page is re-rendered or
+compressed in the process.
+</p>
+
+<h3>Is sharing a cloud link less secure than attaching a file?</h3>
+<p>
+It depends on the link's sharing settings — a link set to "anyone with the link" is more exposed than
+a direct attachment sent to a specific address. If the document is sensitive, set the link to require
+sign-in or restrict it to specific people, and consider <a href="/protect-pdf">password-protecting</a>
+the PDF itself either way.
+</p>
+
+<h2>Related Tools</h2>
+<div class="tools-mini-grid">
+  <a href="/compress-pdf-for-email">Compress PDF for Email</a>
+  <a href="/compress-pdf">Compress PDF</a>
+  <a href="/split-pdf">Split PDF</a>
+  <a href="/protect-pdf">Protect PDF</a>
+</div>
+
+</article>
+
+{% endblock %}
+
+{% block jsonld %}
+{% from "components/jsonld.html" import article %}
+{{ article(self.title(), self.description(), request.path, "2026-08-12") }}
+{% endblock %}

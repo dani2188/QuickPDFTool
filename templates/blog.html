@@ -1,20 +1,52 @@
 {% extends "base.html" %}
 
 {% block title %}
-PDF Guides – QuickPDFTools
+PDF Tips & Guides – QuickPDFTools Blog
 {% endblock %}
 
 {% block description %}
-Learn how to compress, merge, split and edit PDF files with our free guides.
+Practical, plain-English articles about PDF file size, security, and everyday document problems — plus step-by-step guides for every QuickPDFTools tool.
 {% endblock %}
 
 {% block content %}
 
-<h1>PDF Guides</h1>
+<h1>PDF Tips & Guides</h1>
 
 <p class="subtitle">
-Learn how to work with PDF files easily.
+Practical answers to real PDF problems, and step-by-step instructions for every tool.
 </p>
+
+<h2 class="tools-section">Latest Articles</h2>
+
+<div class="tools-grid">
+
+  <a href="/blog/pdf-file-size-explained" class="tool-card">
+    <span class="tool-card-icon">📦</span>
+    <span class="tool-card-title">Why Is My PDF So Large?</span>
+    <span class="tool-card-desc">What actually takes up space in a PDF — and when compression can't help.</span>
+  </a>
+
+  <a href="/blog/pdf-security-basics" class="tool-card">
+    <span class="tool-card-icon">🔒</span>
+    <span class="tool-card-title">Passwords, Redaction & Watermarks</span>
+    <span class="tool-card-desc">Three different PDF security tools, and the mistake that leaves data exposed.</span>
+  </a>
+
+  <a href="/blog/prepare-pdf-for-job-application" class="tool-card">
+    <span class="tool-card-icon">📄</span>
+    <span class="tool-card-title">Prepare Your Resume PDF</span>
+    <span class="tool-card-desc">A six-point checklist before you submit a PDF resume to an online application.</span>
+  </a>
+
+  <a href="/blog/send-large-pdf-when-email-fails" class="tool-card">
+    <span class="tool-card-icon">✉️</span>
+    <span class="tool-card-title">When Email Rejects Your PDF</span>
+    <span class="tool-card-desc">A decision tree: compress, split, or share a link — which one actually fits your file.</span>
+  </a>
+
+</div>
+
+<h2 class="tools-section">How-To Guides</h2>
 
 <div class="tools-grid">
 
@@ -106,7 +138,20 @@ How to Sign a PDF
 How to Add Text to a PDF
 </a>
 
+<a href="/how-to-redact-pdf" class="tool-card">
+How to Hide Sensitive Information in a PDF
+</a>
+
+<a href="/how-to-crop-pdf" class="tool-card">
+How to Crop PDF Pages
+</a>
+
+<a href="/how-to-pdf-to-webp" class="tool-card">
+How to Convert PDF to WebP
+</a>
 
 </div>
 
 {% endblock %}
+
+{% block jsonld %}{% from "components/jsonld.html" import webapp %}{{ webapp(self.title(), self.description(), request.path) }}{% endblock %}

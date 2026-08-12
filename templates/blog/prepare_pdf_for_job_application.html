@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block title %}How to Prepare Your Resume PDF for Online Job Applications{% endblock %}
+
+{% block description %}
+A practical checklist for turning your resume into a PDF that opens cleanly, fits application portal size limits, and doesn't leak information you didn't mean to share.
+{% endblock %}
+
+{% block content %}
+
+<article class="guide-article">
+
+<h1>How to Prepare Your Resume PDF for Online Job Applications</h1>
+<p><em>Published August 2026</em></p>
+
+<p>
+Most job application systems (Applicant Tracking Systems, or ATS) accept a PDF resume, but "accept" and
+"display correctly" aren't the same thing. Here's a short checklist to run through before you hit
+submit — most of these take under a minute.
+</p>
+
+<h2>1. Convert from Word to PDF instead of "printing to PDF" from a viewer</h2>
+<p>
+If your resume started as a Word document, convert it properly with
+<a href="/word-to-pdf">Word to PDF</a> rather than opening it in a random viewer and using a print-to-PDF
+option, which can shift fonts, spacing, or margins depending on what's installed on that computer.
+Converting directly from the source file preserves the layout you actually designed.
+</p>
+
+<h2>2. Check the file size against the portal's limit</h2>
+<p>
+A huge number of application systems cap uploads at exactly 1MB or 2MB — often without saying so
+clearly until the upload fails. A text-based resume is almost never naturally that large unless it
+contains a high-resolution photo or a background graphic. If your file is unexpectedly big, run it
+through <a href="/compress-pdf-to-1mb">Compress PDF to 1MB</a> before uploading.
+</p>
+
+<h2>3. Name the file like a person will read it</h2>
+<p>
+"resume_final_v3(1).pdf" or "Document1.pdf" is a small but real red flag to a recruiter skimming a
+folder of forty applications. Rename the file to something like <code>FirstName-LastName-Resume.pdf</code>
+before uploading — this isn't something any tool does automatically, it's just worth doing by hand.
+</p>
+
+<h2>4. Double-check what's actually visible on the page</h2>
+<p>
+Open the finished PDF and read it exactly as a recruiter would — not just skim it. Check that no text
+box overlaps another, that a table didn't get cut off at a page break, and that any hyperlinks (email,
+LinkedIn, portfolio) are the right ones. This step catches more real problems than any tool can.
+</p>
+
+<h2>5. Consider what personal information is on the page</h2>
+<p>
+A home address, date of birth, or a national ID number is not required by most employers and adds
+unnecessary risk if the file is ever forwarded or leaked. If an older resume template includes fields
+like this and you want to remove them without reformatting the whole document, our
+<a href="/redact-pdf">Redact PDF tool</a> can permanently black out a specific line without touching
+anything else on the page.
+</p>
+
+<h2>6. Keep a copy of exactly what you sent</h2>
+<p>
+Save the final PDF you actually uploaded, not just the Word source. If you get a call back weeks
+later, you'll want to know precisely which version of your resume — and which job description
+wording, if you tailored it — that employer saw.
+</p>
+
+<h2>Frequently Asked Questions</h2>
+
+<h3>Will an ATS actually read text correctly from a PDF resume?</h3>
+<p>
+Yes, as long as the PDF was created from a real text document (like Word) rather than scanned or
+exported as flattened images. Text created digitally remains selectable and machine-readable inside
+the PDF.
+</p>
+
+<h3>Should I compress my resume even if it's already small?</h3>
+<p>
+No need — compression only matters if you're bumping against an upload limit. A well-formatted
+text-based resume is typically well under 1MB already.
+</p>
+
+<h3>Is it ever better to submit a Word file instead of a PDF?</h3>
+<p>
+Only if the job posting specifically asks for one. PDF is the safer default because it displays
+identically everywhere, while a Word file can reflow or shift fonts depending on the reader's
+software and installed fonts.
+</p>
+
+<h2>Related Tools</h2>
+<div class="tools-mini-grid">
+  <a href="/word-to-pdf">Word to PDF</a>
+  <a href="/compress-pdf-to-1mb">Compress PDF to 1MB</a>
+  <a href="/redact-pdf">Redact PDF</a>
+  <a href="/pdf-to-word">PDF to Word</a>
+</div>
+
+</article>
+
+{% endblock %}
+
+{% block jsonld %}
+{% from "components/jsonld.html" import article %}
+{{ article(self.title(), self.description(), request.path, "2026-08-12") }}
+{% endblock %}

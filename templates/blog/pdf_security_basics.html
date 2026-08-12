@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block title %}Passwords, Redaction & Watermarks: PDF Security Explained{% endblock %}
+
+{% block description %}
+Passwords, redaction, and watermarks solve different problems. A plain-English guide to which PDF security tool actually does what — and the common mistake that leaves sensitive data exposed.
+{% endblock %}
+
+{% block content %}
+
+<article class="guide-article">
+
+<h1>Passwords, Redaction, and Watermarks: A Plain-English Guide to PDF Security</h1>
+<p><em>Published August 2026</em></p>
+
+<p>
+"PDF security" gets used as a catch-all term, but a password, a redaction, and a watermark protect
+against three completely different threats. Using the wrong one — or assuming one does the job of
+another — is how sensitive information ends up exposed even when someone thought they'd secured it.
+</p>
+
+<h2>Passwords: control who can open the file at all</h2>
+<p>
+A password answers one question: <em>can this person open the file?</em> Add one with
+<a href="/protect-pdf">Protect PDF</a> and only someone with the password can view the document at
+all. It does nothing to the content itself — once someone has the password and opens the file, they
+see everything exactly as it was. If you legitimately own a PDF and lost or need to remove its
+password, use <a href="/unlock-pdf">Unlock PDF</a>.
+</p>
+<p>
+<strong>Good for:</strong> preventing an unauthorised person from opening a file at all — a contract
+attached to an email that gets forwarded, a document on a shared drive.<br>
+<strong>Not good for:</strong> hiding specific information from someone who <em>is</em> allowed to open
+the file.
+</p>
+
+<h2>Redaction: permanently remove specific information</h2>
+<p>
+Redaction answers a different question: <em>can everyone who opens this file see this one paragraph,
+number, or photo?</em> Real redaction — like our <a href="/redact-pdf">Redact PDF tool</a> — deletes
+the underlying text or image data in the area you cover, not just draws a shape on top of it.
+</p>
+<p>
+<strong>The mistake that keeps happening:</strong> drawing a black rectangle over text in a PDF
+viewer or presentation program without actually redacting it. The text is still there underneath —
+selecting it and copying it, or opening the file in a different program, can reveal exactly what was
+"hidden." This has caused real, embarrassing data leaks for governments and companies. If you need
+information gone, it has to be genuinely deleted from the page data, not covered.
+</p>
+<p>
+<strong>Good for:</strong> hiding a social security number, account number, or signature before
+sharing a document — while still letting people read everything else.<br>
+<strong>Not good for:</strong> restricting who can open the file (a password does that).
+</p>
+
+<h2>Watermarks: mark or attribute, not protect</h2>
+<p>
+A watermark — added with <a href="/add-watermark">Add Watermark</a> — stamps text or a logo across
+every page. It's often assumed to be a security feature ("DRAFT," "CONFIDENTIAL," a company name),
+but it doesn't actually restrict anything: the underlying content is still fully readable, selectable,
+and copyable. A watermark communicates a status or origin; it doesn't enforce anything. If you've
+received a file with a watermark you need removed (for example, cleaning up a template before reusing
+it), <a href="/remove-watermark">Remove Watermark</a> handles that.
+</p>
+<p>
+<strong>Good for:</strong> marking a document as a draft, or attributing it to your organisation.<br>
+<strong>Not good for:</strong> preventing copying, editing, or redistribution — it does not do that.
+</p>
+
+<h2>Putting it together</h2>
+<p>
+For a document with sensitive sections that also needs to be restricted to specific recipients: redact
+the sensitive parts first, then add a password last. Adding the password first would block the
+redaction tool (and any other editor) from opening the file — you'd have to unlock it again before you
+could make any changes.
+</p>
+
+<h2>Frequently Asked Questions</h2>
+
+<h3>If I password-protect a PDF, do I still need to redact anything?</h3>
+<p>
+Only if you don't fully trust everyone you're sharing the password with to see every part of the
+document. A password controls access to the whole file, not to specific sections within it.
+</p>
+
+<h3>Can a watermark be removed by anyone who receives the file?</h3>
+<p>
+If they have access to the right tools, yes — a watermark isn't a security control, just visible
+markup layered onto the page.
+</p>
+
+<h3>Is drawing a box over text in a PDF viewer the same as redacting it?</h3>
+<p>
+No, and this is the most common security mistake with PDFs. If the box is just a shape on top of the
+text, the text is still fully present underneath and can be recovered. True redaction deletes the
+underlying content.
+</p>
+
+<h2>Related Tools</h2>
+<div class="tools-mini-grid">
+  <a href="/protect-pdf">Protect PDF</a>
+  <a href="/unlock-pdf">Unlock PDF</a>
+  <a href="/redact-pdf">Redact PDF</a>
+  <a href="/add-watermark">Add Watermark</a>
+  <a href="/remove-watermark">Remove Watermark</a>
+</div>
+
+</article>
+
+{% endblock %}
+
+{% block jsonld %}
+{% from "components/jsonld.html" import article %}
+{{ article(self.title(), self.description(), request.path, "2026-08-12") }}
+{% endblock %}

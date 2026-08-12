@@ -933,6 +933,26 @@ def blog():
     return render_template("blog.html")
 
 
+@app.route("/blog/pdf-file-size-explained")
+def blog_pdf_file_size_explained():
+    return render_template("blog/pdf_file_size_explained.html")
+
+
+@app.route("/blog/pdf-security-basics")
+def blog_pdf_security_basics():
+    return render_template("blog/pdf_security_basics.html")
+
+
+@app.route("/blog/prepare-pdf-for-job-application")
+def blog_prepare_pdf_for_job_application():
+    return render_template("blog/prepare_pdf_for_job_application.html")
+
+
+@app.route("/blog/send-large-pdf-when-email-fails")
+def blog_send_large_pdf_when_email_fails():
+    return render_template("blog/send_large_pdf_when_email_fails.html")
+
+
 @app.route("/how-to-compress-pdf")
 def compress_pdf_guide():
     return render_template("compress_pdf_guide.html")
