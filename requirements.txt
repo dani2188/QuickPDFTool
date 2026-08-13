@@ -4,7 +4,7 @@ PyPDF2
 Pillow
 pdf2docx
 python-docx
-reportlab
+reportlab<4.4.3  # 4.4.3+ calls hashlib.md5(usedforsecurity=...), unsupported before Python 3.9
 pdfplumber
 pandas
 openpyxl
