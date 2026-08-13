@@ -3,14 +3,14 @@
 <h1>Convert Excel to PDF</h1>
 <p class="subtitle">Convert Excel spreadsheets into PDF documents.</p>
 
-<form method="POST" enctype="multipart/form-data">
+<form method="POST" enctype="multipart/form-data" class="no-auto-submit">
   <div id="dropArea" class="upload-box">
     <p>
       Drag & drop your file here or
       <span class="upload-link">click to upload</span>
     </p>
 
-    <input type="file" name="excel" id="fileInput" multiple hidden />
+    <input type="file" name="excel" id="fileInput" hidden />
 
     <p id="fileName">No file selected</p>
   </div>
