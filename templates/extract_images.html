@@ -7,20 +7,22 @@
 <h1>Extract Images from PDF</h1>
 <p class="subtitle">Extract all embedded images from your PDF.</p>
 
-<div id="dropArea" class="upload-box">
-  <p>
-    Drag & drop your file here or
-    <span class="upload-link">click to upload</span>
-  </p>
+<form method="POST" enctype="multipart/form-data">
+  <div id="dropArea" class="upload-box">
+    <p>
+      Drag & drop your file here or
+      <span class="upload-link">click to upload</span>
+    </p>
 
-  <input type="file" name="pdf" id="fileInput" hidden />
+    <input type="file" name="pdf" id="fileInput" hidden />
 
-  <p id="fileName">No file selected</p>
-</div>
+    <p id="fileName">No file selected</p>
+  </div>
 
-<p class="file-info">Max file size: 20MB • Files are automatically deleted</p>
+  <p class="file-info">Max file size: 20MB • Files are automatically deleted</p>
 
-<button class="main-btn">Extract Images</button>
+  <button class="main-btn">Extract Images</button>
+</form>
 
 <p>Need help? <a href="/how-to-extract-images-from-pdf">Read our guide</a></p>
 

@@ -647,12 +647,7 @@ def rotate_pdf():
         writer = PdfWriter()
 
         for page in reader.pages:
-            if hasattr(page, "rotate_clockwise"):
-                page = page.rotate_clockwise(rotation)
-            elif hasattr(page, "rotate"):
-                page.rotate(rotation)
-            else:
-                page._data["/Rotate"] = rotation
+            page.rotate(rotation)
             writer.add_page(page)
 
         output_filename = f"{uuid.uuid4()}_rotated.pdf"

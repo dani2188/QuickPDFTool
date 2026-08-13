@@ -3,22 +3,31 @@
 <h1>Add Watermark to PDF</h1>
 <p class="subtitle">Add text watermark to your PDF files.</p>
 
-<div id="dropArea" class="upload-box">
-  <p>
-    Drag & drop your file here or
-    <span class="upload-link">click to upload</span>
-  </p>
+<form method="POST" enctype="multipart/form-data" class="no-auto-submit">
+  <div id="dropArea" class="upload-box">
+    <p>
+      Drag & drop your file here or
+      <span class="upload-link">click to upload</span>
+    </p>
 
-  <input type="file" name="pdf" id="fileInput" hidden />
+    <input type="file" name="pdf" id="fileInput" hidden />
 
-  <p id="fileName">No file selected</p>
-</div>
+    <p id="fileName">No file selected</p>
+  </div>
 
-<p class="file-info">Max file size: 20MB • Files are automatically deleted</p>
+  <p class="file-info">Max file size: 20MB • Files are automatically deleted</p>
 
-<input type="text" name="text" placeholder="Enter watermark text" />
+  <input
+    type="text"
+    name="text"
+    class="input-field"
+    placeholder="Enter watermark text"
+    style="max-width: 560px; margin: var(--s2) auto; display: block"
+    required
+  />
 
-<button class="main-btn">Add Watermark</button>
+  <button class="main-btn">Add Watermark</button>
+</form>
 
 <p>Need help? <a href="/how-to-add-watermark-pdf">Read our guide</a></p>
 
