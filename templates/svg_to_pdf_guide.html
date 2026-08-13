@@ -51,6 +51,13 @@ and text directly into the PDF's own vector drawing instructions, so there's no 
 run out of.
 </p>
 
+<p>
+This includes diagram arrowheads defined with SVG <code>&lt;marker&gt;</code> elements — the technique
+almost every flowchart, architecture diagram, and chart export tool uses to draw arrows on connector
+lines. Many lightweight SVG converters drop these silently, leaving lines with no arrowheads; this
+tool specifically detects and preserves them.
+</p>
+
 <h2>Tips for best results</h2>
 
 <ul>

@@ -17,6 +17,9 @@ from pdf2docx import Converter
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
 import json
+import re
+import math
+import xml.etree.ElementTree as ET
 
 
 
@@ -1290,6 +1293,181 @@ def png_to_pdf_guide():
     return render_template("png_to_pdf_guide.html")
 
 
+def _svg_element_points(el):
+    """Extract an ordered point list from a <path>/<line>/<polyline> element."""
+    tag = el.tag.split("}")[-1] if "}" in el.tag else el.tag
+
+    if tag == "line":
+        try:
+            return [
+                (float(el.get("x1", 0)), float(el.get("y1", 0))),
+                (float(el.get("x2", 0)), float(el.get("y2", 0))),
+            ]
+        except (TypeError, ValueError):
+            return []
+
+    if tag == "polyline":
+        return _svg_parse_point_list(el.get("points", ""))
+
+    d = el.get("d")
+    return _svg_parse_path_d(d) if d else []
+
+
+def _svg_parse_path_d(d):
+    """Minimal M/L(/Z) SVG path-data parser -> list of (x, y) points."""
+    tokens = re.findall(r"[MLmlZz]|-?\d*\.?\d+(?:[eE][-+]?\d+)?", d)
+    pts = []
+    i = 0
+    while i < len(tokens):
+        t = tokens[i]
+        if t in ("M", "L", "m", "l", "Z", "z"):
+            i += 1
+            continue
+        try:
+            x, y = float(t), float(tokens[i + 1])
+        except (IndexError, ValueError):
+            break
+        pts.append((x, y))
+        i += 2
+    return pts
+
+
+def _svg_parse_point_list(points_attr):
+    nums = re.findall(r"-?\d*\.?\d+(?:[eE][-+]?\d+)?", points_attr or "")
+    return [(float(nums[i]), float(nums[i + 1])) for i in range(0, len(nums) - 1, 2)]
+
+
+def _svg_mat_mul(m1, m2):
+    a1, b1, c1, d1, e1, f1 = m1
+    a2, b2, c2, d2, e2, f2 = m2
+    return (
+        a1 * a2 + c1 * b2, b1 * a2 + d1 * b2,
+        a1 * c2 + c1 * d2, b1 * c2 + d1 * d2,
+        a1 * e2 + c1 * f2 + e1, b1 * e2 + d1 * f2 + f1,
+    )
+
+
+def _svg_apply_mat(m, pt):
+    a, b, c, d, e, f = m
+    x, y = pt
+    return (a * x + c * y + e, b * x + d * y + f)
+
+
+def _inline_svg_markers(svg_bytes):
+    """Bake <marker> arrowheads (marker-start/marker-end) into plain absolute
+    -coordinate <path> elements before handing the SVG to MuPDF.
+
+    MuPDF's SVG parser both silently drops most marker references and
+    mis-handles chained transform= attributes, so real-world flowchart/
+    diagram SVGs (which almost always use markers for arrowheads) lose most
+    of their arrows on conversion. All the placement math (translate along
+    the path's end tangent, rotate per orient="auto", scale per the default
+    markerUnits="strokeWidth") is done here in plain Python, so the emitted
+    geometry needs no transform support at all -- just M/L/Z path data.
+
+    Anything this can't confidently parse (curves, unknown units) is left
+    untouched rather than guessed at.
+    """
+    try:
+        root = ET.fromstring(svg_bytes)
+    except ET.ParseError:
+        return svg_bytes
+
+    SVG_NS = "http://www.w3.org/2000/svg"
+
+    def tag(el):
+        return el.tag.split("}")[-1] if "}" in el.tag else el.tag
+
+    markers = {tag_el.get("id"): tag_el for tag_el in root.iter() if tag(tag_el) == "marker" and tag_el.get("id")}
+    if not markers:
+        return svg_bytes
+
+    def resolve(value):
+        if not value:
+            return None
+        m = re.match(r"url\(#([^)]+)\)", value.strip())
+        return markers.get(m.group(1)) if m else None
+
+    new_nodes = []
+
+    for el in list(root.iter()):
+        if tag(el) not in ("path", "line", "polyline"):
+            continue
+
+        pts = _svg_element_points(el)
+        if len(pts) < 2:
+            continue
+
+        try:
+            stroke_width = float(el.get("stroke-width", "1") or "1")
+        except ValueError:
+            stroke_width = 1.0
+
+        for attr, is_start in (("marker-start", True), ("marker-end", False)):
+            marker_el = resolve(el.get(attr))
+            if marker_el is None:
+                continue
+
+            if is_start:
+                anchor = pts[0]
+                tx, ty = pts[1][0] - pts[0][0], pts[1][1] - pts[0][1]
+            else:
+                anchor = pts[-1]
+                tx, ty = pts[-1][0] - pts[-2][0], pts[-1][1] - pts[-2][1]
+
+            angle = math.degrees(math.atan2(ty, tx))
+            orient = marker_el.get("orient", "0")
+            if orient not in ("auto", "auto-start-reverse"):
+                try:
+                    angle = float(orient)
+                except ValueError:
+                    pass
+            elif orient == "auto-start-reverse" and is_start:
+                angle += 180
+
+            marker_units = marker_el.get("markerUnits", "strokeWidth")
+            scale = stroke_width if marker_units == "strokeWidth" else 1.0
+
+            try:
+                ref_x = float(marker_el.get("refX", "0") or "0")
+                ref_y = float(marker_el.get("refY", "0") or "0")
+            except ValueError:
+                ref_x = ref_y = 0.0
+
+            m = (1, 0, 0, 1, anchor[0], anchor[1])
+            r = math.radians(angle)
+            m = _svg_mat_mul(m, (math.cos(r), math.sin(r), -math.sin(r), math.cos(r), 0, 0))
+            m = _svg_mat_mul(m, (scale, 0, 0, scale, 0, 0))
+            m = _svg_mat_mul(m, (1, 0, 0, 1, -ref_x, -ref_y))
+
+            for child in list(marker_el):
+                child_tag = tag(child)
+                if child_tag == "path" and child.get("d"):
+                    child_pts = _svg_parse_path_d(child.get("d"))
+                elif child_tag == "polygon" and child.get("points"):
+                    child_pts = _svg_parse_point_list(child.get("points"))
+                else:
+                    continue
+                if not child_pts:
+                    continue
+
+                transformed = [_svg_apply_mat(m, p) for p in child_pts]
+                d_str = "M " + " L ".join(f"{x:.3f},{y:.3f}" for x, y in transformed) + " Z"
+
+                new_path = ET.Element(f"{{{SVG_NS}}}path", {"d": d_str})
+                fill = child.get("fill")
+                if fill:
+                    new_path.set("fill", fill)
+                new_nodes.append(new_path)
+
+            del el.attrib[attr]
+
+    for node in new_nodes:
+        root.append(node)
+
+    return ET.tostring(root, encoding="utf-8")
+
+
 @app.route("/svg-to-pdf", methods=["GET", "POST"])
 def svg_to_pdf():
 
@@ -1313,7 +1491,11 @@ def svg_to_pdf():
             saved_paths.append(path)
 
             try:
-                svg_doc = fitz.open(path)
+                with open(path, "rb") as f:
+                    svg_bytes = f.read()
+                svg_bytes = _inline_svg_markers(svg_bytes)
+
+                svg_doc = fitz.open(stream=svg_bytes, filetype="svg")
                 pdf_bytes = svg_doc.convert_to_pdf()
                 svg_doc.close()
 
