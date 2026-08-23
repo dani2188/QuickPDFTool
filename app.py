@@ -1,5 +1,5 @@
 import fitz
-from PIL import Image, ImageFilter
+from PIL import Image, ImageFilter, ImageOps
 from PyPDF2 import PdfMerger, PdfReader, PdfWriter
 
 from flask import Flask, request, render_template, send_file, jsonify
@@ -214,6 +214,15 @@ EMAIL_OPT_FLAGS = [
 
 # Order to escalate through when chasing a target file size (lightest to strongest).
 TARGET_SIZE_LEVEL_ORDER = ["low", "medium", "high", "extreme"]
+
+# JPEG re-encode quality per level -- mirrors the Low/Medium/High/Extreme
+# naming used by the PDF compressor, for one consistent mental model.
+JPG_COMPRESSION_QUALITY = {
+    "low": 90,
+    "medium": 75,
+    "high": 60,
+    "extreme": 40,
+}
 
 
 def _run_ghostscript(extra_flags, input_path, temp_output):
@@ -973,6 +982,93 @@ def jpg_to_pdf_guide():
 @app.route("/how-to-pdf-to-jpg")
 def pdf_to_jpg_guide():
     return render_template("pdf_to_jpg_guide.html")
+
+
+@app.route("/compress-jpg", methods=["GET", "POST"])
+def compress_jpg():
+
+    if request.method == "POST":
+
+        files = request.files.getlist("images")
+        level = request.form.get("level", "medium")
+        quality = JPG_COMPRESSION_QUALITY.get(level, 75)
+
+        results = []
+        compressed_paths = []
+        total_original = 0
+        total_compressed = 0
+
+        for file in files:
+
+            if not file.filename:
+                continue
+            if not file.filename.lower().endswith((".jpg", ".jpeg")):
+                continue
+
+            display_name = secure_filename(file.filename)
+            input_path = os.path.join(UPLOAD_FOLDER, f"{uuid.uuid4()}_{display_name}")
+            file.save(input_path)
+            delete_file_later(input_path, delay=60)
+
+            original_size = os.path.getsize(input_path)
+
+            output_name = f"{uuid.uuid4()}_{display_name}"
+            output_path = os.path.join(UPLOAD_FOLDER, output_name)
+
+            try:
+                img = Image.open(input_path)
+                img = ImageOps.exif_transpose(img)  # bake in orientation before EXIF is stripped
+                img = img.convert("RGB")
+                img.save(output_path, "JPEG", quality=quality, optimize=True)
+            except Exception:
+                continue
+
+            compressed_size = os.path.getsize(output_path)
+            delete_file_later(output_path)
+
+            total_original += original_size
+            total_compressed += compressed_size
+
+            reduction = round((1 - compressed_size / original_size) * 100, 1) if original_size else 0
+
+            results.append({
+                "filename": output_name,
+                "display_name": display_name,
+                "original_kb": round(original_size / 1024, 1),
+                "compressed_kb": round(compressed_size / 1024, 1),
+                "reduction": reduction,
+            })
+            compressed_paths.append(output_path)
+
+        if not results:
+            return "No valid JPG files were uploaded.", 400
+
+        zip_filename = f"{uuid.uuid4()}_compressed_jpgs.zip"
+        zip_path = os.path.join(UPLOAD_FOLDER, zip_filename)
+
+        with zipfile.ZipFile(zip_path, "w") as zipf:
+            for r, p in zip(results, compressed_paths):
+                zipf.write(p, arcname=r["display_name"])
+
+        delete_file_later(zip_path)
+
+        total_reduction = round((1 - total_compressed / total_original) * 100, 1) if total_original else 0
+
+        return render_template(
+            "compress_jpg_result.html",
+            results=results,
+            zip_file=zip_filename,
+            total_original_kb=round(total_original / 1024, 1),
+            total_compressed_kb=round(total_compressed / 1024, 1),
+            total_reduction=total_reduction,
+        )
+
+    return render_template("compress_jpg.html")
+
+
+@app.route("/how-to-compress-jpg")
+def compress_jpg_guide():
+    return render_template("compress_jpg_guide.html")
 
 
 @app.route("/how-to-rotate-pdf")

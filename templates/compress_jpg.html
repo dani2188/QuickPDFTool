@@ -1,0 +1,115 @@
+{% extends "base.html" %} {% block title %} Compress JPG Online – Reduce JPG
+File Size {% endblock %} {% block description %} Compress JPG images online for
+free. Reduce photo file size while keeping quality, one file or a whole batch
+at once. {% endblock %} {% block content %}
+
+<h1>Compress JPG</h1>
+
+<p class="subtitle">Shrink JPG photos quickly — one file or a whole batch at once.</p>
+
+<form method="POST" enctype="multipart/form-data">
+  {% set button_text="Select JPG Files" %} {% set input_name="images" %} {%
+  set accept_types=".jpg,.jpeg" %} {% set multiple=true %} {% include
+  "components/upload.html" %}
+
+  <div class="options-box">
+    <h3>Compression Settings</h3>
+
+    <label><strong>Compression level:</strong></label><br />
+
+    <label>
+      <input type="radio" name="level" value="low" />
+      Low – barely visible difference, smallest size reduction
+    </label><br />
+
+    <label>
+      <input type="radio" name="level" value="medium" checked />
+      Medium – balanced quality and size (recommended)
+    </label><br />
+
+    <label>
+      <input type="radio" name="level" value="high" />
+      High – noticeably smaller, still clear on screen
+    </label><br />
+
+    <label>
+      <input type="radio" name="level" value="extreme" />
+      Extreme – maximum size reduction, visible quality loss
+    </label>
+  </div>
+
+  <button class="main-btn">Compress JPG</button>
+  <p class="file-info">Max file size: 20MB per file • Files are automatically deleted</p>
+</form>
+
+<p>
+  Need help? Read our
+  <a href="/how-to-compress-jpg">guide on how to compress JPG files</a>.
+</p>
+
+<div class="seo-content">
+  <h2>Compress JPG Images Online</h2>
+
+  <p>
+    This free tool re-encodes your JPG photos at a lower quality setting to shrink their file size —
+    useful before emailing photos, uploading to a site with a size limit, or just saving storage space.
+    Upload one file or several at once; each is compressed individually and you get them all back in a
+    single ZIP, plus individual download links.
+  </p>
+
+  <h2>How to compress a JPG</h2>
+
+  <ul class="steps">
+    <li><span class="step-number">1</span> Upload one or more JPG files</li>
+    <li><span class="step-number">2</span> Choose a compression level (medium is recommended for most photos)</li>
+    <li><span class="step-number">3</span> Click Compress JPG</li>
+    <li><span class="step-number">4</span> Download the smaller files</li>
+  </ul>
+
+  <h2>Compression Levels Explained</h2>
+
+  <p><strong>Low:</strong> A light re-encode with almost no visible change. Best when you only need to trim a little size off an already-decent photo.</p>
+  <p><strong>Medium:</strong> A balanced setting that noticeably shrinks the file while photos still look sharp on screen. Good default for most everyday photos.</p>
+  <p><strong>High:</strong> Stronger compression for when file size matters more than pixel-perfect detail — still fine for web use and messaging.</p>
+  <p><strong>Extreme:</strong> Maximum size reduction. Visible quality loss (blocky shadows, softer detail), best reserved for thumbnails or when every kilobyte counts.</p>
+
+  <h2>When Should You Compress a JPG?</h2>
+
+  <p><strong>Emailing photos:</strong> A handful of full-resolution phone photos can easily exceed an email attachment limit — compress them first.</p>
+  <p><strong>Uploading to a website or form:</strong> Many upload fields cap image size; compression gets you under the limit without cropping.</p>
+  <p><strong>Faster-loading pages:</strong> Smaller images mean quicker page loads if you're publishing photos online.</p>
+  <p><strong>Saving storage:</strong> Compressing a large batch of photos before archiving frees up real space.</p>
+
+  <h2>Frequently Asked Questions</h2>
+
+  <h3>Will compressing lose quality?</h3>
+  <p>JPG compression is "lossy" by nature, so yes, some detail is discarded — but at Low or Medium settings the difference is barely visible on screen. Higher levels trade more quality for smaller files.</p>
+
+  <h3>Can I compress several photos at once?</h3>
+  <p>Yes. Select multiple files and each is compressed individually with the same level, then bundled into one ZIP for download.</p>
+
+  <h3>Does this remove my photo's location/EXIF data?</h3>
+  <p>Yes — re-encoding strips EXIF metadata (including GPS location, camera model, and timestamp), which also shaves off a little extra size. The photo's visual orientation is preserved either way.</p>
+
+  <h3>Can I compress PNG or other formats here?</h3>
+  <p>This tool is specifically for JPG/JPEG files. To convert a PNG to a JPG first, or to work with PDFs, see our other <a href="/pdf-tools">PDF and image tools</a>.</p>
+</div>
+
+<div class="more-tools">
+  <h3>More Tools</h3>
+
+  <div class="tools-mini-grid">
+    <a href="/jpg-to-pdf">JPG to PDF</a>
+    <a href="/pdf-to-jpg">PDF to JPG</a>
+    <a href="/png-to-pdf">PNG to PDF</a>
+    <a href="/compress-pdf">Compress PDF</a>
+  </div>
+</div>
+
+<div class="browse-tools">
+  <a href="/pdf-tools" class="main-btn">View All Tools</a>
+</div>
+
+{% endblock %}
+
+{% block jsonld %}{% from "components/jsonld.html" import webapp %}{{ webapp(self.title(), self.description(), request.path) }}{% endblock %}

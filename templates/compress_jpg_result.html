@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Compression Result – QuickPDFTools{% endblock %}
+{% block description %}Your JPG images have been compressed. Download the smaller files.{% endblock %}
+
+{% block content %}
+
+<h1>Compression Complete</h1>
+
+<div class="result-box">
+  <p class="success">✔ {{ results|length }} file(s) compressed successfully.</p>
+
+  <p class="stats"><strong>Original total:</strong> {{ total_original_kb }} KB</p>
+  <p class="stats"><strong>Compressed total:</strong> {{ total_compressed_kb }} KB</p>
+  <p class="stats"><strong>Space saved:</strong> {{ total_reduction }} %</p>
+
+  <br />
+
+  <a href="/download-file/{{ zip_file }}" class="main-btn">⬇️ Download All (ZIP)</a>
+</div>
+
+<ul class="download-list">
+  {% for r in results %}
+  <li>
+    <a href="/download-file/{{ r.filename }}">
+      {{ r.display_name }} — {{ r.original_kb }}KB → {{ r.compressed_kb }}KB ({{ r.reduction }}% smaller)
+    </a>
+  </li>
+  {% endfor %}
+</ul>
+
+<div class="more-tools">
+  <h3>More Tools</h3>
+  <div class="tools-mini-grid">
+    <a href="/compress-jpg">Compress More JPGs</a>
+    <a href="/jpg-to-pdf">JPG to PDF</a>
+    <a href="/compress-pdf">Compress PDF</a>
+  </div>
+</div>
+
+<div class="ad-container">
+  <ins
+    class="adsbygoogle"
+    style="display:block"
+    data-ad-client="ca-pub-1115814677653739"
+    data-ad-slot="1234567890"
+    data-ad-format="auto"
+    data-full-width-responsive="true"
+  ></ins>
+  <script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+  </script>
+</div>
+
+{% endblock %}

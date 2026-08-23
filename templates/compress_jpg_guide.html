@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+
+{% block title %}How to Compress a JPG – Reduce Photo File Size{% endblock %}
+
+{% block description %}Learn how to compress JPG photos to reduce file size, one image or a whole batch at once. Step-by-step guide with tips, compression levels explained, and FAQs.{% endblock %}
+
+{% block content %}
+
+<article class="guide-article">
+
+<h1>How to Compress a JPG File</h1>
+
+<p>
+Modern phone cameras produce photos that are several megabytes each — great for print, often too
+large for email, messaging apps, or a website upload field. Compressing a JPG re-encodes it at a
+slightly lower quality setting, shrinking the file substantially while keeping it looking clear on
+screen.
+</p>
+
+<p>
+This guide walks through compressing JPGs using our free online tool, which handles a single photo or
+a whole batch at once.
+</p>
+
+<h2>Step 1 – Open the Compress JPG Tool</h2>
+
+<p>
+Go to our <a href="/compress-jpg">Compress JPG tool</a>. You'll see a file upload area — click to
+browse or drag and drop your photos directly onto the page.
+</p>
+
+<h2>Step 2 – Select Your Photos</h2>
+
+<p>
+You can select a single JPG or several at once. Each file is compressed individually using the same
+settings, so a mixed batch of large and small photos all get treated consistently.
+</p>
+
+<h2>Step 3 – Choose a Compression Level</h2>
+
+<ul>
+  <li><strong>Low:</strong> Barely visible difference, smallest size reduction. Best when you only need to trim a little off an already-reasonable file.</li>
+  <li><strong>Medium (recommended):</strong> A balanced setting — noticeably smaller files that still look sharp on screen. The right default for most photos.</li>
+  <li><strong>High:</strong> Stronger reduction for when file size matters more than fine detail. Still fine for web pages and messaging.</li>
+  <li><strong>Extreme:</strong> Maximum size reduction, with visible quality loss (softer detail, blockier shadows). Best for thumbnails or when every kilobyte counts.</li>
+</ul>
+
+<h2>Step 4 – Download Your Compressed Photos</h2>
+
+<p>
+Click "Compress JPG." When it's done, you'll see the total space saved along with a "Download All
+(ZIP)" button and an individual download link for each file, showing its before-and-after size.
+</p>
+
+<h2>Tips for Getting the Best Results</h2>
+
+<ul>
+  <li><strong>Start with Medium</strong> and only go stronger if the files are still too large. This preserves the best quality for the size reduction you actually need.</li>
+  <li><strong>Photos with lots of fine detail</strong> (foliage, fabric texture, crowds) show compression artifacts sooner than simple photos — use a lighter setting for these.</li>
+  <li><strong>Already-compressed JPGs</strong> (screenshots re-saved multiple times, or images downloaded from social media) won't shrink much further — they've likely already lost the redundant data a compressor would remove.</li>
+  <li><strong>For screenshots or graphics with text</strong>, a PNG usually compresses better than a JPG at equivalent visual quality — JPG's lossy compression tends to blur sharp edges and text.</li>
+</ul>
+
+<h2>Common Uses for JPG Compression</h2>
+
+<p><strong>Emailing photos:</strong> A handful of full-resolution phone photos can easily exceed an attachment limit — compress the batch before sending.</p>
+
+<p><strong>Uploading to a form or portal:</strong> Many upload fields cap image file size; compression gets you under the limit without cropping or resizing.</p>
+
+<p><strong>Faster websites:</strong> Smaller images mean quicker page loads if you're publishing photos online.</p>
+
+<p><strong>Saving storage:</strong> Compressing a large batch of photos before archiving frees up real space on disk or in cloud storage.</p>
+
+<h2>Frequently Asked Questions</h2>
+
+<h3>Will compressing my photo make it blurry?</h3>
+<p>
+At Low or Medium settings, the difference is barely visible on a normal screen. Extreme compression
+does introduce visible quality loss — that's the tradeoff for the smaller file size.
+</p>
+
+<h3>Can I compress a large batch of photos at once?</h3>
+<p>
+Yes. Select as many JPG files as you need — each is compressed individually with the level you chose,
+then bundled into one ZIP for download, along with individual links per file.
+</p>
+
+<h3>Does this strip my photo's location data?</h3>
+<p>
+Yes. Re-encoding removes EXIF metadata, including GPS location, camera model, and timestamp — which
+also shaves off a small amount of extra size. This is often a welcome side effect before sharing
+photos publicly. The photo's visual orientation is preserved regardless.
+</p>
+
+<h3>Is my photo stored after compressing?</h3>
+<p>
+No. Files are processed on a secure server and deleted automatically within minutes — nothing is kept
+permanently.
+</p>
+
+<h3>Can I compress PNG images with this tool?</h3>
+<p>
+This tool is specifically tuned for JPG/JPEG files. For other formats or PDF-related conversions, see
+our <a href="/pdf-tools">full list of tools</a>.
+</p>
+
+<h2>Related Tools</h2>
+
+<ul>
+  <li><a href="/compress-jpg">Compress JPG</a> – Shrink your photos now</li>
+  <li><a href="/jpg-to-pdf">JPG to PDF</a> – Combine JPGs into a PDF</li>
+  <li><a href="/pdf-to-jpg">PDF to JPG</a> – Export PDF pages as JPG images</li>
+  <li><a href="/compress-pdf">Compress PDF</a> – Reduce PDF file size</li>
+</ul>
+
+</article>
+
+{% endblock %}
+
+{% block jsonld %}
+{% from "components/jsonld.html" import howto, faqpage %}
+{{ howto(self.title(), self.description(), request.path, ["Open the Compress JPG Tool", "Select Your Photos", "Choose a Compression Level", "Download Your Compressed Photos"]) }}
+{{ faqpage([
+  {"q": "Will compressing my photo make it blurry?", "a": "At Low or Medium settings the difference is barely visible on a normal screen. Extreme compression introduces visible quality loss in exchange for a smaller file."},
+  {"q": "Can I compress a large batch of photos at once?", "a": "Yes. Select as many JPG files as you need; each is compressed individually then bundled into one ZIP, with individual download links too."},
+  {"q": "Does this strip my photo's location data?", "a": "Yes, re-encoding removes EXIF metadata including GPS location, camera model, and timestamp."},
+  {"q": "Is my photo stored after compressing?", "a": "No. Files are processed on a secure server and deleted automatically within minutes."}
+]) }}
+{% endblock %}
