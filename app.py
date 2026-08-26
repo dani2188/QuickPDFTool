@@ -914,6 +914,10 @@ def add_page_numbers():
 def pdf_tools():
     return render_template("pdf_tools.html")
 
+@app.route("/image-tools")
+def image_tools():
+    return render_template("image_tools.html")
+
 @app.route("/sitemap.xml")
 def sitemap():
     return send_file("sitemap.xml", mimetype="application/xml")
