@@ -1,0 +1,191 @@
+{% extends "base.html" %} {% block title %} Resize Image Online – Social Media
+Image Sizes {% endblock %} {% block description %} Resize a photo to the exact
+dimensions for Instagram, TikTok, YouTube, Facebook, or X. Fits your image
+without cropping or stretching — free, no signup. {% endblock %} {% block content %}
+
+<h1>Resize Image</h1>
+
+<p class="subtitle">Fit any photo to the exact size a platform expects — no cropping, no stretching.</p>
+
+<form method="POST" enctype="multipart/form-data" class="no-auto-submit">
+  <div id="dropArea" class="upload-box">
+    <p>
+      Drag & drop your image here or
+      <span class="upload-link">click to upload</span>
+    </p>
+
+    <input type="file" name="image" id="fileInput" accept="image/*" hidden />
+
+    <p id="fileName">No file selected</p>
+  </div>
+
+  <p class="file-info">Max file size: 20MB • Files are automatically deleted</p>
+
+  <div class="options-box">
+    <h3>Resize Settings</h3>
+
+    <label><strong>Target size:</strong></label><br />
+
+    <label>
+      <input type="radio" name="preset" value="1080x1080" checked />
+      Instagram Post – 1080 × 1080 (1:1)
+    </label><br />
+
+    <label>
+      <input type="radio" name="preset" value="1080x1350" />
+      Instagram Portrait – 1080 × 1350 (4:5)
+    </label><br />
+
+    <label>
+      <input type="radio" name="preset" value="1080x1920" />
+      Instagram Story / Reels / TikTok – 1080 × 1920 (9:16)
+    </label><br />
+
+    <label>
+      <input type="radio" name="preset" value="1280x720" />
+      YouTube Thumbnail – 1280 × 720 (16:9)
+    </label><br />
+
+    <label>
+      <input type="radio" name="preset" value="1200x630" />
+      Facebook Post – 1200 × 630 (1.91:1)
+    </label><br />
+
+    <label>
+      <input type="radio" name="preset" value="1200x675" />
+      X (Twitter) Post – 1200 × 675 (16:9)
+    </label>
+
+    <br /><br />
+
+    <label class="field-label" for="formatSelect"><strong>Output format:</strong></label>
+    <select id="formatSelect" name="format" class="input-field" style="max-width: 400px">
+      <option value="png">PNG (lossless, best for logos)</option>
+      <option value="jpg">JPG (smaller file, best for photos)</option>
+    </select>
+
+    <div id="qualityGroup" style="display: none; margin-top: 16px">
+      <label class="field-label" for="quality">
+        JPG quality: <span id="qualityVal">90%</span>
+      </label>
+      <input type="range" id="quality" name="quality" min="50" max="100" step="5" value="90" />
+    </div>
+
+    <input type="hidden" name="width" id="widthField" value="1080" />
+    <input type="hidden" name="height" id="heightField" value="1080" />
+  </div>
+
+  <button class="main-btn">Resize Image</button>
+</form>
+
+<p>
+  Need help? Read our
+  <a href="/how-to-resize-image">guide on how to resize an image</a>.
+</p>
+
+<div class="seo-content">
+  <h2>Resize an Image Online</h2>
+
+  <p>
+    Every social platform expects a different image size, and uploading the wrong dimensions gets your
+    photo auto-cropped in ways you don't control. This tool fits your image to the exact size a preset
+    calls for — scaling it down to fit within the target box and padding any leftover space with white,
+    rather than stretching or cropping any part of your photo away.
+  </p>
+
+  <h2>How to Resize an Image</h2>
+
+  <ul class="steps">
+    <li><span class="step-number">1</span> Upload your photo (JPG, PNG, or most other image formats)</li>
+    <li><span class="step-number">2</span> Pick a preset for the platform you're posting to</li>
+    <li><span class="step-number">3</span> Choose PNG or JPG output</li>
+    <li><span class="step-number">4</span> Click Resize Image and download the result</li>
+  </ul>
+
+  <h2>Social Media Image Size Reference</h2>
+  <p>Bookmark these recommended dimensions. Platforms occasionally change their specs — check the platform's official help center if in doubt.</p>
+
+  <div class="table-wrap">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Platform</th>
+          <th>Content Type</th>
+          <th>Recommended Size</th>
+          <th>Aspect Ratio</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Instagram</td><td>Square Post</td><td>1080 × 1080</td><td>1:1</td></tr>
+        <tr><td>Instagram</td><td>Portrait Post</td><td>1080 × 1350</td><td>4:5</td></tr>
+        <tr><td>Instagram</td><td>Story / Reels</td><td>1080 × 1920</td><td>9:16</td></tr>
+        <tr><td>TikTok</td><td>Video / Cover</td><td>1080 × 1920</td><td>9:16</td></tr>
+        <tr><td>YouTube</td><td>Thumbnail</td><td>1280 × 720</td><td>16:9</td></tr>
+        <tr><td>Facebook</td><td>Post / Share</td><td>1200 × 630</td><td>1.91:1</td></tr>
+        <tr><td>X (Twitter)</td><td>In-feed Image</td><td>1200 × 675</td><td>16:9</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Frequently Asked Questions</h2>
+
+  <h3>Will resizing crop or stretch my photo?</h3>
+  <p>No. The image is scaled down to fit entirely within the target dimensions, keeping its original proportions. If the shape doesn't match exactly, white padding fills the remaining space — nothing is cropped or distorted.</p>
+
+  <h3>Why does my resized image have white bars?</h3>
+  <p>That's the padding described above — it appears when your photo's aspect ratio doesn't exactly match the preset you chose (for example, a landscape photo resized to a square). It's the tradeoff for never cropping content out of your photo.</p>
+
+  <h3>PNG or JPG — which should I choose?</h3>
+  <p>PNG is lossless and better for graphics, logos, or anything with sharp edges or text. JPG produces a smaller file and is usually the better choice for photos.</p>
+
+  <h3>Is my photo stored after resizing?</h3>
+  <p>No. Files are processed on a secure server and deleted automatically within minutes.</p>
+
+  <h3>More Tools</h3>
+  <div class="tools-mini-grid">
+    <a href="/remove-background">Remove Background</a>
+    <a href="/compress-jpg">Compress JPG</a>
+    <a href="/jpg-to-pdf">JPG to PDF</a>
+  </div>
+</div>
+
+<div class="browse-tools">
+  <a href="/pdf-tools" class="main-btn">View All Tools</a>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const presetInputs = Array.from(document.querySelectorAll('input[name="preset"]'));
+    const widthField = document.getElementById("widthField");
+    const heightField = document.getElementById("heightField");
+    const formatSelect = document.getElementById("formatSelect");
+    const qualityGroup = document.getElementById("qualityGroup");
+    const qualityInput = document.getElementById("quality");
+    const qualityVal = document.getElementById("qualityVal");
+
+    function syncPreset() {
+      const checked = presetInputs.find(function (r) { return r.checked; });
+      if (!checked) return;
+      const [w, h] = checked.value.split("x");
+      widthField.value = w;
+      heightField.value = h;
+    }
+    presetInputs.forEach(function (r) { r.addEventListener("change", syncPreset); });
+    syncPreset();
+
+    if (formatSelect && qualityGroup) {
+      formatSelect.addEventListener("change", function () {
+        qualityGroup.style.display = formatSelect.value === "jpg" ? "block" : "none";
+      });
+    }
+    if (qualityInput && qualityVal) {
+      qualityInput.addEventListener("input", function () {
+        qualityVal.textContent = qualityInput.value + "%";
+      });
+    }
+  });
+</script>
+
+{% endblock %}
+
+{% block jsonld %}{% from "components/jsonld.html" import webapp %}{{ webapp(self.title(), self.description(), request.path) }}{% endblock %}

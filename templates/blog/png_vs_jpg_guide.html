@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+
+{% block title %}PNG vs JPG: Which Image Format Should You Use?{% endblock %}
+
+{% block description %}A clear guide to PNG vs JPG: how they differ, when to use each, and a quick decision guide for photos, logos, transparency, and web performance.{% endblock %}
+
+{% block content %}
+
+<article class="guide-article">
+
+<h1>PNG vs JPG: Which Image Format Should You Use?</h1>
+<p><em>Published April 2026</em></p>
+
+<p>Choosing between PNG and JPG (also written JPEG) is one of the most common decisions in digital image workflows — and making the wrong choice can mean bloated file sizes, unexpected quality loss, or a missing transparent background. Understanding the difference takes about five minutes and saves a lot of frustration.</p>
+
+<p>This guide explains what each format is, how they differ, and gives you clear rules for when to use each one.</p>
+
+<h2>What is JPG?</h2>
+
+<p>JPG (Joint Photographic Experts Group) is a lossy compression format designed specifically for photographs. "Lossy" means that when you save a file as JPG, some image data is permanently discarded to make the file smaller. The more you compress, the smaller the file — but the more visible artifacts appear, especially in areas of flat color and sharp edges.</p>
+
+<p>JPG supports millions of colors and is ideal for images with gradual tonal variations — like the subtle color transitions in a sunset photo or a human face. It does not support transparency.</p>
+
+<p><strong>JPG at a glance:</strong></p>
+<ul class="benefits">
+  <li>✓ Very small file sizes for photographs</li>
+  <li>✓ Excellent for photos with many colors and gradients</li>
+  <li>✓ Universally supported by all browsers, apps, and platforms</li>
+  <li>✗ Lossy — each save reduces quality</li>
+  <li>✗ No transparency support</li>
+  <li>✗ Compression artifacts visible in text, logos, and sharp edges</li>
+</ul>
+
+<h2>What is PNG?</h2>
+
+<p>PNG (Portable Network Graphics) is a lossless compression format. "Lossless" means that no image data is discarded when saving — a PNG file is a perfect copy of the original pixel data. The trade-off is that PNG files are typically 3–10× larger than equivalent JPG files.</p>
+
+<p>PNG supports full transparency (the alpha channel), making it the standard format for graphics that need to be placed on varying backgrounds — logos, icons, illustrations, and background-removed photos.</p>
+
+<p><strong>PNG at a glance:</strong></p>
+<ul class="benefits">
+  <li>✓ Lossless — no quality degradation on save</li>
+  <li>✓ Supports transparency (alpha channel)</li>
+  <li>✓ Sharp, artifact-free rendering of text and graphics</li>
+  <li>✓ Ideal for screenshots, logos, and UI graphics</li>
+  <li>✗ Much larger file sizes than JPG for photographs</li>
+  <li>✗ Overkill for full-color photography</li>
+</ul>
+
+<h2>The Key Differences: PNG vs JPG</h2>
+
+<div class="table-wrap">
+  <table class="data-table">
+    <thead>
+      <tr><th>Feature</th><th>PNG</th><th>JPG</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Compression</td><td>Lossless</td><td>Lossy</td></tr>
+      <tr><td>File Size</td><td>Large</td><td>Small</td></tr>
+      <tr><td>Transparency</td><td>Yes</td><td>No</td></tr>
+      <tr><td>Re-save Quality</td><td>No loss</td><td>Degrades each time</td></tr>
+      <tr><td>Best for</td><td>Logos, text, graphics, screenshots</td><td>Photos, social media images</td></tr>
+      <tr><td>Max Colors</td><td>16.7 million</td><td>16.7 million</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<h2>When to Use JPG</h2>
+
+<ul class="benefits">
+  <li><strong>Photographs</strong> — portraits, landscapes, travel photos, food photography. JPG's lossy compression is virtually invisible at high quality settings and produces much smaller files than PNG.</li>
+  <li><strong>Social media posts</strong> — platforms like Instagram and Facebook convert everything to JPG anyway. Starting with a JPG at high quality gives you the most control over the process.</li>
+  <li><strong>Website images</strong> — for photos and hero images on websites, JPG keeps file sizes small and page loads fast without a visible quality penalty.</li>
+  <li><strong>Email attachments</strong> — when sending photos via email, JPG produces much smaller files that are quicker to send and download.</li>
+</ul>
+
+<h2>When to Use PNG</h2>
+
+<ul class="benefits">
+  <li><strong>Logos and brand assets</strong> — logos often contain flat colors, text, and sharp edges that compress poorly as JPG. PNG preserves crisp edges without artifacts.</li>
+  <li><strong>Images with transparency</strong> — any time you need a transparent background — icons, stickers, cut-out subjects — PNG is the only choice. JPG cannot store transparency.</li>
+  <li><strong>Screenshots and UI graphics</strong> — interface screenshots with sharp text and pixel-exact graphics always look better as PNG than JPG.</li>
+  <li><strong>Archiving or editing</strong> — if you're saving an image you'll edit further later, save as PNG. Since it's lossless, repeated edits and re-saves won't degrade the image quality like they would with JPG.</li>
+  <li><strong>Images with text overlays</strong> — text in images compresses very poorly as JPG, producing blurry or blocky artifacts around the letters. Use PNG for any graphic that contains text.</li>
+</ul>
+
+<h2>The "Re-save Problem" with JPG</h2>
+
+<p>One important thing to understand about JPG is that quality is lost every single time you save the file. If you open a JPG, make a small edit, and save it again, quality is reduced. Do this five times, and the degradation becomes clearly visible — especially in smooth gradients and areas of flat color.</p>
+
+<p>This is why you should always keep your original images as PNG or in a raw format, and only export to JPG as the final step for a specific purpose (like posting to social media). Never use JPG as your working/archival format.</p>
+
+<h2>What About WebP?</h2>
+
+<p>WebP is a newer format developed by Google that combines the best of both worlds: it supports both lossy and lossless compression, and it supports transparency. WebP files are typically 25–35% smaller than equivalent JPGs at the same quality level.</p>
+
+<p>WebP is now supported by all modern browsers and is increasingly used on websites for faster loading. However, it's not yet accepted everywhere — some older image editors and platforms don't fully support it. For most social media use cases, stick with JPG or PNG for maximum compatibility. If you need to go from PDF to WebP directly, see our <a href="/pdf-to-webp">PDF to WebP tool</a>.</p>
+
+<h2>Quick Decision Guide</h2>
+
+<ul class="benefits">
+  <li><strong>Is your image a photograph?</strong> → Use JPG at 85–95% quality.</li>
+  <li><strong>Does your image have a transparent background?</strong> → Use PNG.</li>
+  <li><strong>Is your image a logo, icon, or contains text?</strong> → Use PNG.</li>
+  <li><strong>Is this for social media posting?</strong> → JPG is fine (platforms convert anyway).</li>
+  <li><strong>Will you edit this image further later?</strong> → Save as PNG for archiving, export as JPG when done.</li>
+  <li><strong>Is file size critical (website performance)?</strong> → JPG for photos, or consider WebP.</li>
+</ul>
+
+<h2>Choosing the Right Format in Our Image Resizer</h2>
+
+<p>When you resize an image using our <a href="/resize-image">free Image Resizer</a>, you can choose to export as either PNG or JPG. Use the guidelines above to decide:</p>
+
+<ul>
+  <li>Resizing a photo for Instagram? → JPG at 90% quality.</li>
+  <li>Resizing a logo or graphic with transparency? → PNG.</li>
+  <li>Resizing a photo you'll edit again later? → PNG to preserve quality.</li>
+</ul>
+
+<h2>Related Guides</h2>
+<ul>
+  <li><a href="/blog/optimize-images-for-web">How to Optimize Images for Faster Website Loading</a></li>
+  <li><a href="/blog/how-to-resize-images-for-social-media">How to Resize Images for Social Media</a></li>
+  <li><a href="/resize-image">Resize Image</a> — try the tool now</li>
+</ul>
+
+</article>
+
+{% endblock %}
+
+{% block jsonld %}
+{% from "components/jsonld.html" import article %}
+{{ article(self.title(), self.description(), request.path, "2026-04-28") }}
+{% endblock %}

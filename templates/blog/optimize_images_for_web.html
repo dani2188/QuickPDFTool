@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block title %}How to Optimize Images for Faster Website Loading{% endblock %}
+
+{% block description %}Learn how to optimize images for faster website loading. Covers resizing, compression, choosing the right format, and how image optimization impacts SEO and Core Web Vitals.{% endblock %}
+
+{% block content %}
+
+<article class="guide-article">
+
+<h1>How to Optimize Images for Faster Website Loading</h1>
+<p><em>Published April 2026</em></p>
+
+<p>Images are the single largest contributor to page weight on most websites. According to HTTP Archive data, images account for over 50% of the average webpage's total byte size. This makes image optimization the highest-impact action you can take to speed up your website.</p>
+
+<p>This guide covers the key techniques for optimizing images — from choosing the right format to resizing correctly and compressing efficiently — with practical steps you can take today without any paid tools.</p>
+
+<h2>Why Image Optimization Matters</h2>
+
+<p>Page speed directly affects your business in multiple measurable ways:</p>
+
+<ul class="benefits">
+  <li><strong>SEO ranking:</strong> Google uses page speed as a direct ranking factor, particularly through its Core Web Vitals metrics. Slow-loading images hurt your Largest Contentful Paint (LCP) score, which is one of the three core metrics.</li>
+  <li><strong>User experience:</strong> Research consistently shows that users abandon pages that take more than 3 seconds to load. A 1-second delay in page response time reduces conversions by 7%.</li>
+  <li><strong>Mobile performance:</strong> Mobile users often have slower connections and less powerful processors. Images that are fine on desktop can make a mobile page unusable.</li>
+  <li><strong>Bandwidth costs:</strong> If you're paying for a CDN or hosting bandwidth, large unoptimized images translate directly to higher monthly bills.</li>
+</ul>
+
+<h2>Step 1: Resize Images to Their Display Size</h2>
+
+<p>The single biggest optimization most websites need is resizing images to the size at which they're actually displayed. It sounds obvious, but it's extremely common to upload a 4000 × 3000 pixel camera photo when the image will be displayed at 800 × 600 pixels on the page. The browser downloads the full 4000px image, then scales it down — wasting the extra data entirely.</p>
+
+<p><strong>Rule of thumb:</strong> resize your image so its pixel dimensions match the largest size it will be displayed at on your page, multiplied by 2 for high-DPI (retina) screens. So if an image is displayed at 600px wide, resize it to 1200px wide before uploading.</p>
+
+<p>You can resize images for free using our <a href="/resize-image">Resize Image tool</a>.</p>
+
+<h2>Step 2: Choose the Right File Format</h2>
+
+<p>Choosing the correct format can reduce file size by 50% or more with no visible quality difference:</p>
+
+<ul class="benefits">
+  <li><strong>JPG</strong> — use for photographs. Lossy compression produces very small files with minimal visible degradation at quality settings of 80–90%. Never use PNG for photos on a website.</li>
+  <li><strong>PNG</strong> — use for logos, icons, screenshots, and graphics with text or sharp edges. PNG is lossless, so these crisp-edged elements stay sharp. For photos, PNG produces files 3–10× larger than JPG with no visible benefit.</li>
+  <li><strong>WebP</strong> — Google's modern format supports both lossy and lossless compression and produces files 25–35% smaller than JPG or PNG at equivalent quality. Supported by all modern browsers.</li>
+  <li><strong>SVG</strong> — for logos and icons that need to scale to any size without pixelation, SVG (Scalable Vector Graphics) is ideal. SVG files are tiny and resolution-independent. Our <a href="/svg-to-pdf">SVG to PDF tool</a> can convert one into a PDF when you need to share it that way.</li>
+</ul>
+
+<h2>Step 3: Compress Your Images</h2>
+
+<p>After resizing and choosing the right format, compression is the next optimization. The goal is to find the lowest quality setting that still looks good at the display size.</p>
+
+<p>For JPG, a quality setting of 80–85% is usually imperceptible to the human eye for photographs on a screen, while reducing file size by 50–70% compared to 100% quality. Our <a href="/compress-jpg">Compress JPG tool</a> handles this in a batch, showing you the before-and-after size for each file.</p>
+
+<p>For PNG, compression tools can remove metadata and apply more efficient lossless encoding to reduce file sizes by 20–40% without any quality change.</p>
+
+<h2>Step 4: Use Responsive Images</h2>
+
+<p>A single image that looks great at 1400px wide is overkill on a 375px wide phone screen. Responsive images let the browser download the appropriately sized image for the current device, saving significant bandwidth on mobile.</p>
+
+<p>In HTML, you can implement responsive images using the <code>srcset</code> attribute:</p>
+
+<pre>&lt;img
+  src="image-800.jpg"
+  srcset="image-400.jpg 400w, image-800.jpg 800w, image-1200.jpg 1200w"
+  sizes="(max-width: 600px) 400px, (max-width: 900px) 800px, 1200px"
+  alt="Description of the image"
+/&gt;</pre>
+
+<p>This tells the browser to use the 400px image on small screens, the 800px image on medium screens, and the 1200px image on large screens. The browser chooses automatically.</p>
+
+<h2>Step 5: Use Lazy Loading</h2>
+
+<p>By default, browsers load all images on a page — even those that are far below the visible area. Lazy loading delays the loading of off-screen images until the user scrolls near them. This significantly improves initial page load time.</p>
+
+<pre>&lt;img src="image.jpg" loading="lazy" alt="Description" /&gt;</pre>
+
+<p>The <code>loading="lazy"</code> attribute is supported by all modern browsers and requires no JavaScript. Add it to any image that isn't visible in the initial viewport.</p>
+
+<h2>Step 6: Always Include Alt Text</h2>
+
+<p>Alt text isn't a performance optimization, but it matters for SEO and accessibility. Every image on your site should have descriptive alt text that explains what's in the image, for example <code>alt="Golden retriever puppy playing in a green field"</code> rather than leaving it empty. Alt text is read by screen readers for visually impaired users, and it's what search engines use to understand the content of your images.</p>
+
+<h2>How Image Optimization Affects Core Web Vitals</h2>
+
+<p>Google's Core Web Vitals measure three aspects of page experience. Images have a major impact on two of them:</p>
+
+<ul class="benefits">
+  <li><strong>Largest Contentful Paint (LCP):</strong> this measures how quickly the largest content element on the page loads. In most cases, that element is a hero image or banner. A large, unoptimized hero image is the most common reason for a poor LCP score.</li>
+  <li><strong>Cumulative Layout Shift (CLS):</strong> this measures visual stability — whether elements jump around as the page loads. Images without explicit width and height attributes cause layout shifts because the browser doesn't know how much space to reserve before the image loads. Always set <code>width</code> and <code>height</code> attributes on your images.</li>
+</ul>
+
+<h2>Image Optimization Checklist</h2>
+
+<ul class="benefits">
+  <li>Resize images to their display size (2× for retina)</li>
+  <li>Use JPG for photographs, PNG for graphics/logos</li>
+  <li>Consider WebP for better compression</li>
+  <li>Compress JPGs to 80–85% quality</li>
+  <li>Implement responsive images with srcset</li>
+  <li>Add loading="lazy" to below-the-fold images</li>
+  <li>Set explicit width and height attributes</li>
+  <li>Add descriptive alt text to every image</li>
+  <li>Use a CDN to serve images from a location near your users</li>
+</ul>
+
+<h2>Related Guides</h2>
+<ul>
+  <li><a href="/blog/png-vs-jpg-guide">PNG vs JPG: Which Image Format Should You Use?</a></li>
+  <li><a href="/blog/how-to-resize-images-for-social-media">How to Resize Images for Social Media</a></li>
+  <li><a href="/compress-jpg">Compress JPG</a> — try the tool now</li>
+</ul>
+
+</article>
+
+{% endblock %}
+
+{% block jsonld %}
+{% from "components/jsonld.html" import article %}
+{{ article(self.title(), self.description(), request.path, "2026-04-28") }}
+{% endblock %}

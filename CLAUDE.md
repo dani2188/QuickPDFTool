@@ -38,7 +38,8 @@ The standing rule for UI/docs/architecture work: **preserve all existing tool fu
 ## 3. Branding model (get names right)
 
 - **HelloBrivio** = the ecosystem/company. **QuickPDFTools** = this product.
-- Header shows the product name (**QuickPDFTools**). Footer says **"Part of the HelloBrivio ecosystem"** with sibling cross-links (QuickImageTools ↗, future QuickVideoTools / QuickAITools).
+- Header shows the product name (**QuickPDFTools**). Footer says **"Part of the HelloBrivio ecosystem"** with sibling cross-links (future QuickVideoTools / QuickAITools).
+- **Image tools are first-party, not a sibling product.** The former standalone QuickImageTools site was merged in (2026-08-25): Resize Image, Remove Background, and Compress JPG are native routes here, not external links. Its content (blog guides) was ported into `/blog`. Do not re-add an external `quickimagetools.onrender.com` link to the nav/footer.
 - Only the site **chrome** is rebranded. **Do not mass-rewrite SEO/body copy** (some still says "QuickPDFTool") — that is a separate, deliberate milestone.
 
 ---

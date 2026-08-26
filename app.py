@@ -20,6 +20,7 @@ import json
 import re
 import math
 import xml.etree.ElementTree as ET
+import requests
 
 
 
@@ -960,6 +961,31 @@ def blog_send_large_pdf_when_email_fails():
     return render_template("blog/send_large_pdf_when_email_fails.html")
 
 
+@app.route("/blog/how-to-resize-images-for-social-media")
+def blog_how_to_resize_images_for_social_media():
+    return render_template("blog/how_to_resize_images_for_social_media.html")
+
+
+@app.route("/blog/instagram-image-sizes-guide")
+def blog_instagram_image_sizes_guide():
+    return render_template("blog/instagram_image_sizes_guide.html")
+
+
+@app.route("/blog/png-vs-jpg-guide")
+def blog_png_vs_jpg_guide():
+    return render_template("blog/png_vs_jpg_guide.html")
+
+
+@app.route("/blog/optimize-images-for-web")
+def blog_optimize_images_for_web():
+    return render_template("blog/optimize_images_for_web.html")
+
+
+@app.route("/blog/how-to-remove-image-background")
+def blog_how_to_remove_image_background():
+    return render_template("blog/how_to_remove_image_background.html")
+
+
 @app.route("/how-to-compress-pdf")
 def compress_pdf_guide():
     return render_template("compress_pdf_guide.html")
@@ -1069,6 +1095,149 @@ def compress_jpg():
 @app.route("/how-to-compress-jpg")
 def compress_jpg_guide():
     return render_template("compress_jpg_guide.html")
+
+
+def _letterbox_resize(img, target_w, target_h):
+    """Scale img to fit entirely within (target_w, target_h), preserving
+    aspect ratio, and center it on a white canvas of that exact size --
+    pads with white bars, never crops or stretches.
+    """
+    img = ImageOps.exif_transpose(img)
+
+    img_ratio = img.width / img.height
+    target_ratio = target_w / target_h
+
+    if img_ratio > target_ratio:
+        new_w = target_w
+        new_h = max(1, round(target_w / img_ratio))
+    else:
+        new_h = target_h
+        new_w = max(1, round(target_h * img_ratio))
+
+    resized = img.resize((new_w, new_h), Image.LANCZOS)
+
+    canvas = Image.new("RGB", (target_w, target_h), (255, 255, 255))
+    offset = ((target_w - new_w) // 2, (target_h - new_h) // 2)
+
+    if resized.mode in ("RGBA", "LA") or (resized.mode == "P" and "transparency" in resized.info):
+        resized = resized.convert("RGBA")
+        canvas.paste(resized, offset, resized)
+    else:
+        canvas.paste(resized.convert("RGB"), offset)
+
+    return canvas
+
+
+@app.route("/resize-image", methods=["GET", "POST"])
+def resize_image():
+
+    if request.method == "POST":
+
+        file = request.files.get("image")
+
+        if not file or not file.filename:
+            return "No file selected", 400
+
+        try:
+            width = max(1, min(int(request.form.get("width", 1080)), 4000))
+            height = max(1, min(int(request.form.get("height", 1080)), 4000))
+        except ValueError:
+            width, height = 1080, 1080
+
+        fmt = "jpg" if request.form.get("format") == "jpg" else "png"
+
+        try:
+            quality = max(50, min(int(request.form.get("quality", 90)), 100))
+        except ValueError:
+            quality = 90
+
+        input_name = secure_filename(file.filename)
+        input_path = os.path.join(UPLOAD_FOLDER, f"{uuid.uuid4()}_{input_name}")
+        file.save(input_path)
+        delete_file_later(input_path, delay=60)
+
+        try:
+            img = Image.open(input_path)
+            img.load()
+        except Exception:
+            return "Could not read that image file.", 400
+
+        result = _letterbox_resize(img, width, height)
+
+        output_name = f"{uuid.uuid4()}_resized.{fmt}"
+        output_path = os.path.join(UPLOAD_FOLDER, output_name)
+
+        if fmt == "jpg":
+            result.save(output_path, "JPEG", quality=quality, optimize=True)
+        else:
+            result.save(output_path, "PNG", optimize=True)
+
+        delete_file_later(output_path)
+
+        return send_file(output_path, as_attachment=True)
+
+    return render_template("resize_image.html")
+
+
+@app.route("/how-to-resize-image")
+def resize_image_guide():
+    return render_template("resize_image_guide.html")
+
+
+@app.route("/remove-background", methods=["GET", "POST"])
+def remove_background():
+
+    if request.method == "POST":
+
+        file = request.files.get("image")
+
+        if not file or not file.filename:
+            return "No file selected", 400
+
+        api_key = os.environ.get("REMOVE_BG_API_KEY")
+        if not api_key:
+            return (
+                "Background removal isn't configured on this server yet "
+                "(missing REMOVE_BG_API_KEY).",
+                503,
+            )
+
+        input_name = secure_filename(file.filename)
+        input_path = os.path.join(UPLOAD_FOLDER, f"{uuid.uuid4()}_{input_name}")
+        file.save(input_path)
+        delete_file_later(input_path, delay=60)
+
+        try:
+            with open(input_path, "rb") as f:
+                response = requests.post(
+                    "https://api.remove.bg/v1.0/removebg",
+                    files={"image_file": f},
+                    data={"size": "auto"},
+                    headers={"X-Api-Key": api_key},
+                    timeout=60,
+                )
+        except requests.RequestException:
+            return "Could not reach the background removal service. Please try again.", 502
+
+        if response.status_code != 200:
+            return "Could not remove the background from that image. Please try a different file.", 400
+
+        output_name = f"{uuid.uuid4()}_no_bg.png"
+        output_path = os.path.join(UPLOAD_FOLDER, output_name)
+
+        with open(output_path, "wb") as f:
+            f.write(response.content)
+
+        delete_file_later(output_path)
+
+        return send_file(output_path, as_attachment=True)
+
+    return render_template("remove_background.html")
+
+
+@app.route("/how-to-remove-background")
+def remove_background_guide():
+    return render_template("remove_background_guide.html")
 
 
 @app.route("/how-to-rotate-pdf")

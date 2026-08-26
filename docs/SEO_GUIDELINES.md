@@ -93,7 +93,7 @@ Implemented via reusable macros in [`templates/components/jsonld.html`](../templ
 - 4–6 links per cluster; keep them stable so link equity accumulates.
 
 ## 8. Cross-product (ecosystem) linking
-- Link to sibling products with the ` ↗` external marker and `rel="noopener"` (e.g. **QuickImageTools**).
+- Link to sibling products with the ` ↗` external marker and `rel="noopener"` (e.g. future QuickVideoTools). QuickImageTools is no longer external — it was merged in as native routes (2026-08-25); link to it internally like any other tool.
 - Footer names the ecosystem: "Part of the HelloBrivio ecosystem."
 
 ## 9. Known issue — "Page with redirect"

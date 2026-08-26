@@ -644,6 +644,40 @@ input[type="radio"] {
 }
 
 /* ============================================================= */
+/* DATA TABLE                                                    */
+/* ============================================================= */
+
+.table-wrap {
+  max-width: 700px;
+  margin: var(--s3) auto;
+  overflow-x: auto;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 14px;
+}
+
+.data-table th,
+.data-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--line);
+  white-space: nowrap;
+}
+
+.data-table th {
+  background: var(--surface-2);
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.data-table tr:last-child td {
+  border-bottom: none;
+}
+
+/* ============================================================= */
 /* RELATED TOOLS (mini grid)                                     */
 /* ============================================================= */
 

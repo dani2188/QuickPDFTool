@@ -78,6 +78,6 @@ There is none — that's the point. Deploy = push to the default branch; Render 
 
 ## 12. Cross-product integration
 - All products share this design system, component library, and standards.
-- Cross-link in the nav/footer with the ` ↗` marker (QuickPDFTools ↔ QuickImageTools ↔ …).
+- Cross-link in the nav/footer with the ` ↗` marker (QuickPDFTools ↔ future QuickVideoTools ↔ …). QuickImageTools was merged into QuickPDFTools as native routes (2026-08-25), not cross-linked externally.
 - Present a unified identity: each product shows its own name in the header and "Part of the HelloBrivio ecosystem" in the footer.
 - When these standards evolve, update the reference implementation (QuickPDFTools) first, then propagate.

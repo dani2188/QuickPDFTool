@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block title %}How to Remove the Background from a Photo Online{% endblock %}
+
+{% block description %}Learn how to remove an image's background automatically and get a clean transparent PNG — for product photos, profile pictures, and creative work. Step-by-step guide and FAQs.{% endblock %}
+
+{% block content %}
+
+<article class="guide-article">
+
+<h1>How to Remove the Background from a Photo</h1>
+
+<p>
+Cutting a subject out from its background used to mean a fiddly manual selection in an image editor.
+Automatic background removal detects the main subject and strips everything else out in seconds,
+leaving a transparent PNG you can drop onto any background — a product listing, a presentation slide,
+a different photo entirely.
+</p>
+
+<h2>Step 1 – Open the Background Remover</h2>
+
+<p>
+Go to our <a href="/remove-background">Background Remover tool</a>. Upload a photo by clicking the
+upload area or dragging it in.
+</p>
+
+<h2>Step 2 – Click Remove Background</h2>
+
+<p>
+The subject is detected automatically — no manual selection or masking needed. Processing usually
+takes a few seconds.
+</p>
+
+<h2>Step 3 – Download Your Transparent PNG</h2>
+
+<p>
+The result downloads as a PNG with a transparent background, ready to place on a website, a document,
+or a different backdrop entirely.
+</p>
+
+<h2>Getting the Best Result</h2>
+
+<ul>
+  <li><strong>Use a clear, well-lit subject.</strong> Strong contrast between the subject and its background produces the most accurate cut-out.</li>
+  <li><strong>Simple backgrounds work best.</strong> A plain wall, solid backdrop, or uncluttered scene is detected more reliably than a busy one.</li>
+  <li><strong>Watch fine edges.</strong> Hair, fur, and sharp object edges are usually handled well; very wispy or semi-transparent details (glass, smoke, sheer fabric) can be less precise.</li>
+  <li><strong>High resolution helps.</strong> A sharper source photo gives the detection more detail to work with around the subject's edges.</li>
+</ul>
+
+<h2>Common Uses</h2>
+
+<p><strong>E-commerce product photos:</strong> A clean, background-free product shot is the standard for most online marketplaces and shop listings.</p>
+
+<p><strong>Profile pictures:</strong> Isolate yourself from a distracting background before adding a plain color or a different scene.</p>
+
+<p><strong>Presentations and composites:</strong> Drop a cut-out subject onto a slide, thumbnail, or graphic without carrying its original background along.</p>
+
+<p><strong>Logos and scanned graphics:</strong> Strip a white or solid background out of a scanned or photographed logo to get a usable transparent version.</p>
+
+<h2>Frequently Asked Questions</h2>
+
+<h3>What file formats are supported?</h3>
+<p>Upload JPG, PNG, or WebP. The result is always delivered as a PNG with a transparent background.</p>
+
+<h3>How accurate is the background removal?</h3>
+<p>It performs very well on clear subjects — people, animals, products — set against a reasonably simple background. Complex or cluttered scenes may be less precise around fine edges.</p>
+
+<h3>Are my images stored or shared?</h3>
+<p>Your image is uploaded to our server, sent securely to a background-removal service purely to process your request, and deleted automatically within minutes. See our <a href="/privacy-policy">Privacy Policy</a> for details.</p>
+
+<h3>Can I use the result commercially?</h3>
+<p>Yes — the transparent PNG is your processed image, free to use for products, marketing, or any other purpose.</p>
+
+<h2>Related Tools</h2>
+
+<ul>
+  <li><a href="/remove-background">Remove Background</a> – Process a photo now</li>
+  <li><a href="/resize-image">Resize Image</a> – Fit a photo to a platform's exact dimensions</li>
+  <li><a href="/compress-jpg">Compress JPG</a> – Shrink a photo's file size</li>
+</ul>
+
+</article>
+
+{% endblock %}
+
+{% block jsonld %}
+{% from "components/jsonld.html" import howto, faqpage %}
+{{ howto(self.title(), self.description(), request.path, ["Open the Background Remover", "Click Remove Background", "Download Your Transparent PNG"]) }}
+{{ faqpage([
+  {"q": "What file formats are supported?", "a": "Upload JPG, PNG, or WebP. The result is always delivered as a PNG with a transparent background."},
+  {"q": "How accurate is the background removal?", "a": "It performs very well on clear subjects against a reasonably simple background. Complex or cluttered scenes may be less precise around fine edges."},
+  {"q": "Are my images stored or shared?", "a": "Your image is sent securely to a background-removal service purely to process your request, and deleted automatically within minutes."},
+  {"q": "Can I use the result commercially?", "a": "Yes, the transparent PNG is your processed image, free to use for any purpose."}
+]) }}
+{% endblock %}

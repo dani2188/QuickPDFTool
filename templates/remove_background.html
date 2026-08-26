@@ -1,0 +1,83 @@
+{% extends "base.html" %} {% block title %} Remove Image Background Online –
+Free Background Remover {% endblock %} {% block description %} Remove the
+background from a photo automatically and download a transparent PNG. Free,
+no signup, works on product photos, portraits, and more. {% endblock %} {% block content %}
+
+<h1>Remove Background from Image</h1>
+
+<p class="subtitle">Automatically cut out the background and download a transparent PNG.</p>
+
+<form method="POST" enctype="multipart/form-data" class="no-auto-submit">
+  <div id="dropArea" class="upload-box">
+    <p>
+      Drag & drop your image here or
+      <span class="upload-link">click to upload</span>
+    </p>
+
+    <input type="file" name="image" id="fileInput" accept="image/*" hidden />
+
+    <p id="fileName">No file selected</p>
+  </div>
+
+  <p class="file-info">Max file size: 20MB • Files are automatically deleted</p>
+
+  <button class="main-btn">Remove Background</button>
+</form>
+
+<p>
+  Need help? Read our
+  <a href="/how-to-remove-background">guide on how to remove an image background</a>.
+</p>
+
+<div class="seo-content">
+  <h2>How It Works</h2>
+  <ul class="steps">
+    <li><span class="step-number">1</span> Upload a photo with a clear subject</li>
+    <li><span class="step-number">2</span> The subject is automatically detected and the background is removed</li>
+    <li><span class="step-number">3</span> Download a transparent PNG</li>
+  </ul>
+
+  <h2>Perfect For</h2>
+  <ul class="benefits">
+    <li><strong>Product photos:</strong> Clean cut-outs for online shops and marketplace listings.</li>
+    <li><strong>Profile pictures:</strong> Isolate yourself from a busy or distracting background.</li>
+    <li><strong>Creative work:</strong> Composites, stickers, thumbnails, and presentation graphics.</li>
+    <li><strong>Logos and graphics:</strong> Strip a white or solid background out of a scanned logo.</li>
+  </ul>
+
+  <h2>Tips for the Best Results</h2>
+  <ul class="benefits">
+    <li><strong>Use a clear, well-lit subject.</strong> Sharp contrast between the subject and background gives the most accurate cut-out.</li>
+    <li><strong>Simple backgrounds work best.</strong> A plain wall or solid backdrop is detected more reliably than a busy, cluttered scene.</li>
+    <li><strong>Fine details like hair or fur</strong> are usually handled well, but very wispy or semi-transparent edges (glass, smoke) can be less precise.</li>
+  </ul>
+
+  <h2>Frequently Asked Questions</h2>
+
+  <h3>What file formats are supported?</h3>
+  <p>Upload JPG, PNG, or WebP. The result is always delivered as a PNG with a transparent background.</p>
+
+  <h3>How accurate is the background removal?</h3>
+  <p>It performs very well on clear subjects — people, animals, products — against a reasonably simple background. Complex or cluttered scenes may be less precise around fine edges.</p>
+
+  <h3>Are my images stored or shared?</h3>
+  <p>Your image is uploaded to our server, sent securely to a background-removal service purely to process the request, and deleted automatically within minutes. See our <a href="/privacy-policy">Privacy Policy</a> for details.</p>
+
+  <h3>Is this free?</h3>
+  <p>Yes, completely free, no account required.</p>
+
+  <h3>More Tools</h3>
+  <div class="tools-mini-grid">
+    <a href="/resize-image">Resize Image</a>
+    <a href="/compress-jpg">Compress JPG</a>
+    <a href="/jpg-to-pdf">JPG to PDF</a>
+  </div>
+</div>
+
+<div class="browse-tools">
+  <a href="/pdf-tools" class="main-btn">View All Tools</a>
+</div>
+
+{% endblock %}
+
+{% block jsonld %}{% from "components/jsonld.html" import webapp %}{{ webapp(self.title(), self.description(), request.path) }}{% endblock %}

@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+
+{% block title %}How to Resize an Image for Social Media{% endblock %}
+
+{% block description %}Learn how to resize a photo to fit Instagram, TikTok, YouTube, Facebook, or X's exact dimensions without cropping or stretching it. Step-by-step guide with size reference and FAQs.{% endblock %}
+
+{% block content %}
+
+<article class="guide-article">
+
+<h1>How to Resize an Image for Social Media</h1>
+
+<p>
+Upload a photo with the "wrong" dimensions to most platforms and it gets auto-cropped — sometimes
+cutting off exactly the part of the image you cared about. Resizing to the platform's actual
+recommended size first gives you control over how your photo appears instead of leaving it to an
+algorithm.
+</p>
+
+<h2>Step 1 – Open the Resize Image Tool</h2>
+
+<p>
+Go to our <a href="/resize-image">Resize Image tool</a>. Upload your photo by clicking the upload area
+or dragging it in.
+</p>
+
+<h2>Step 2 – Pick a Preset</h2>
+
+<p>
+Choose the preset matching where you're posting — Instagram square, Instagram Story/Reels, a YouTube
+thumbnail, and more are all built in. Each preset targets the exact pixel dimensions that platform
+recommends.
+</p>
+
+<h2>Step 3 – Choose PNG or JPG</h2>
+
+<p>
+PNG is lossless and better for graphics, logos, or screenshots with sharp edges or text. JPG produces a
+smaller file and usually looks just as good for ordinary photos — adjust the quality slider if you need
+a smaller file size.
+</p>
+
+<h2>Step 4 – Download Your Resized Image</h2>
+
+<p>
+Click "Resize Image" and the file downloads automatically, sized exactly to your chosen preset.
+</p>
+
+<h2>How the Resize Actually Works</h2>
+
+<p>
+Your photo is scaled down (never up, and never cropped) so it fits entirely within the target
+dimensions while keeping its original proportions. If your photo's shape doesn't exactly match the
+target — a landscape photo going into a square slot, for example — the leftover space is padded with
+white rather than cropping any part of your photo away. This means the entire original image is always
+preserved somewhere in the output, even if that means white bars on the sides or top and bottom.
+</p>
+
+<h2>Social Media Image Size Reference</h2>
+
+<div class="table-wrap">
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Platform</th>
+        <th>Content Type</th>
+        <th>Recommended Size</th>
+        <th>Aspect Ratio</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Instagram</td><td>Square Post</td><td>1080 × 1080</td><td>1:1</td></tr>
+      <tr><td>Instagram</td><td>Portrait Post</td><td>1080 × 1350</td><td>4:5</td></tr>
+      <tr><td>Instagram</td><td>Story / Reels</td><td>1080 × 1920</td><td>9:16</td></tr>
+      <tr><td>TikTok</td><td>Video / Cover</td><td>1080 × 1920</td><td>9:16</td></tr>
+      <tr><td>YouTube</td><td>Thumbnail</td><td>1280 × 720</td><td>16:9</td></tr>
+      <tr><td>Facebook</td><td>Post / Share</td><td>1200 × 630</td><td>1.91:1</td></tr>
+      <tr><td>X (Twitter)</td><td>In-feed Image</td><td>1200 × 675</td><td>16:9</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<p>Platform requirements can change — check the platform's official help center for the latest specs if in doubt.</p>
+
+<h2>Frequently Asked Questions</h2>
+
+<h3>Will resizing crop or stretch my photo?</h3>
+<p>No. Your photo is scaled to fit entirely within the target box, keeping its original proportions. Any leftover space is padded with white — nothing is ever cropped out or distorted.</p>
+
+<h3>Why does my resized image have white bars on the sides?</h3>
+<p>That happens when your photo's aspect ratio doesn't exactly match the preset you picked (for example, fitting a landscape photo into a square). It's the tradeoff for guaranteeing nothing gets cropped.</p>
+
+<h3>PNG or JPG — which should I pick?</h3>
+<p>PNG is lossless, so it's the better choice for graphics, logos, or anything with sharp edges or text. JPG compresses more and is usually the right call for ordinary photos.</p>
+
+<h3>Is there a size limit?</h3>
+<p>Yes, 20MB for the uploaded file, consistent with our other tools.</p>
+
+<h3>Is my photo stored after resizing?</h3>
+<p>No. Files are processed on a secure server and deleted automatically within minutes.</p>
+
+<h2>Related Tools</h2>
+
+<ul>
+  <li><a href="/resize-image">Resize Image</a> – Resize a photo now</li>
+  <li><a href="/remove-background">Remove Background</a> – Cut out the background from a photo</li>
+  <li><a href="/compress-jpg">Compress JPG</a> – Shrink a photo's file size</li>
+</ul>
+
+</article>
+
+{% endblock %}
+
+{% block jsonld %}
+{% from "components/jsonld.html" import howto, faqpage %}
+{{ howto(self.title(), self.description(), request.path, ["Open the Resize Image Tool", "Pick a Preset", "Choose PNG or JPG", "Download Your Resized Image"]) }}
+{{ faqpage([
+  {"q": "Will resizing crop or stretch my photo?", "a": "No. Your photo is scaled to fit entirely within the target box, keeping its original proportions. Leftover space is padded with white."},
+  {"q": "Why does my resized image have white bars on the sides?", "a": "That happens when your photo's aspect ratio doesn't exactly match the preset you picked. It's the tradeoff for guaranteeing nothing gets cropped."},
+  {"q": "PNG or JPG -- which should I pick?", "a": "PNG is lossless and better for graphics or text. JPG compresses more and usually looks fine for ordinary photos."},
+  {"q": "Is my photo stored after resizing?", "a": "No. Files are processed on a secure server and deleted automatically within minutes."}
+]) }}
+{% endblock %}
