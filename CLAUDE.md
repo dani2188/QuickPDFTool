@@ -1,6 +1,6 @@
 # CLAUDE.md — Rules to check FIRST, before any action
 
-This is **QuickPDFTools**, a product in the **HelloBrivio** ecosystem: a Flask monolith of ~35 browser-based PDF/image tools (server-rendered Jinja templates + one hand-written stylesheet). Read this before making changes.
+This is **QuickTools**, a product in the **HelloBrivio** ecosystem: a Flask monolith of ~38 browser-based PDF/image tools (server-rendered Jinja templates + one hand-written stylesheet). Read this before making changes.
 
 ---
 
@@ -37,10 +37,10 @@ The standing rule for UI/docs/architecture work: **preserve all existing tool fu
 
 ## 3. Branding model (get names right)
 
-- **HelloBrivio** = the ecosystem/company. **QuickPDFTools** = this product.
-- Header shows the product name (**QuickPDFTools**). Footer says **"Part of the HelloBrivio ecosystem"** with sibling cross-links (future QuickVideoTools / QuickAITools).
+- **HelloBrivio** = the ecosystem/company. **QuickTools** = this product (renamed from QuickPDFTools on 2026-08-26, since it now covers image tools too, not just PDFs).
+- Header shows the product name (**QuickTools**). Footer says **"Part of the HelloBrivio ecosystem"** with sibling cross-links (future QuickVideoTools / QuickAITools).
 - **Image tools are first-party, not a sibling product.** The former standalone QuickImageTools site was merged in (2026-08-25): Resize Image, Remove Background, and Compress JPG are native routes here, not external links. Its content (blog guides) was ported into `/blog`. Do not re-add an external `quickimagetools.onrender.com` link to the nav/footer.
-- Only the site **chrome** is rebranded. **Do not mass-rewrite SEO/body copy** (some still says "QuickPDFTool") — that is a separate, deliberate milestone.
+- The 2026-08-26 rename was propagated everywhere in one pass — page titles, meta descriptions, JSON-LD, and body copy across every page — unlike the previous QuickPDFTool → QuickPDFTools rename, which was chrome-only. There should be no live "QuickPDFTools" text left; if you find one, fix it.
 
 ---
 

@@ -1,6 +1,6 @@
-# Project Standards — QuickTools
+# Project Standards — HelloBrivio
 
-Development rules shared by every product in the **HelloBrivio / QuickTools** family. QuickPDFTools is the reference implementation; new products (QuickVideoTools, QuickAITools) start from these conventions. QuickImageTools was merged into QuickPDFTools as native routes (2026-08-25) rather than remaining a separate product.
+Development rules shared by every product in the **HelloBrivio** family. **QuickTools** (renamed from QuickPDFTools on 2026-08-26, once it covered both PDF and image tools) is the reference implementation; new products (QuickVideoTools, QuickAITools) start from these conventions. The former standalone QuickImageTools site was merged into QuickTools as native routes (2026-08-25) rather than remaining a separate product.
 
 Companion docs: [DESIGN_SYSTEM](./DESIGN_SYSTEM.md) · [COMPONENT_LIBRARY](./COMPONENT_LIBRARY.md) · [SEO_GUIDELINES](./SEO_GUIDELINES.md) · [ARCHITECTURE_GUIDELINES](./ARCHITECTURE_GUIDELINES.md).
 

@@ -1,6 +1,6 @@
-# Design System — QuickPDFTools
+# Design System — QuickTools
 
-The visual language for **QuickPDFTools**, a product in the **HelloBrivio** ecosystem. Every QuickTools product (future QuickVideoTools, QuickAITools) should adopt these tokens so the family looks like one brand. QuickImageTools (Resize Image, Remove Background, Compress JPG) was merged into QuickPDFTools as native tools on 2026-08-25 rather than remaining a separate sibling site.
+The visual language for **QuickTools** (renamed from QuickPDFTools on 2026-08-26), a product in the **HelloBrivio** ecosystem. Every HelloBrivio product (future QuickVideoTools, QuickAITools) should adopt these tokens so the family looks like one brand. QuickImageTools (Resize Image, Remove Background, Compress JPG) was merged into QuickTools as native tools on 2026-08-25 rather than remaining a separate sibling site.
 
 The single source of truth is [`static/style.css`](../static/style.css) — this document describes what lives there. When a value here and in the stylesheet disagree, the stylesheet wins and this doc should be updated.
 
@@ -10,10 +10,10 @@ The single source of truth is [`static/style.css`](../static/style.css) — this
 
 | | |
 |---|---|
-| **Product name** | QuickPDFTools |
+| **Product name** | QuickTools |
 | **Ecosystem / family** | HelloBrivio |
 | **Sibling products** | QuickVideoTools · QuickAITools (planned) |
-| **Header shows** | the product name (`QuickPDFTools`) |
+| **Header shows** | the product name (`QuickTools`) |
 | **Footer shows** | "Part of the HelloBrivio ecosystem" + sibling cross-links |
 | **Accent color** | `#e5322d` (brand red) — shared across the family |
 

@@ -1,6 +1,6 @@
 # Architecture Guidelines — QuickTools
 
-The architecture every QuickTools product follows. QuickPDFTools is the reference. For the concrete, current-state description of this app see [`../ARCHITECTURE.md`](../ARCHITECTURE.md); this document is the **prescriptive standard** for the family.
+The architecture every HelloBrivio product follows. QuickTools (renamed from QuickPDFTools on 2026-08-26) is the reference. For the concrete, current-state description of this app see [`../ARCHITECTURE.md`](../ARCHITECTURE.md); this document is the **prescriptive standard** for the family.
 
 ---
 
@@ -73,11 +73,11 @@ There is none — that's the point. Deploy = push to the default branch; Render 
 
 ## 11. Future migration strategy
 - If a product outgrows the monolith, split `app.py` by blueprint **without changing URLs** (routes are the public contract).
-- Extract shared chrome/CSS into a small internal package or git submodule so all QuickTools products consume one design system.
+- Extract shared chrome/CSS into a small internal package or git submodule so all HelloBrivio products consume one design system.
 - Introduce a job queue (RQ/Celery) only when synchronous processing becomes the bottleneck; keep the poll-based UX so templates don't change.
 
 ## 12. Cross-product integration
 - All products share this design system, component library, and standards.
-- Cross-link in the nav/footer with the ` ↗` marker (QuickPDFTools ↔ future QuickVideoTools ↔ …). QuickImageTools was merged into QuickPDFTools as native routes (2026-08-25), not cross-linked externally.
+- Cross-link in the nav/footer with the ` ↗` marker (QuickTools ↔ future QuickVideoTools ↔ …). QuickImageTools was merged into QuickTools as native routes (2026-08-25), not cross-linked externally.
 - Present a unified identity: each product shows its own name in the header and "Part of the HelloBrivio ecosystem" in the footer.
-- When these standards evolve, update the reference implementation (QuickPDFTools) first, then propagate.
+- When these standards evolve, update the reference implementation (QuickTools) first, then propagate.

@@ -1,4 +1,4 @@
-# Component Library — QuickPDFTools
+# Component Library — QuickTools
 
 Reusable UI building blocks. Everything here is plain server-rendered HTML + classes from [`static/style.css`](../static/style.css) — **no framework, no build step**. Most components live in [`templates/base.html`](../templates/base.html) (shared chrome) or are inlined into page templates; the upload card is a Jinja partial in [`templates/components/`](../templates/components/).
 

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#e5322d" />
 
-    <title>{% block title %}QuickPDFTools{% endblock %}</title>
+    <title>{% block title %}QuickTools{% endblock %}</title>
 
     <meta
       name="description"
@@ -16,7 +16,7 @@
     <link rel="canonical" href="https://hellobrivio.com{{ request.path }}" />
 
     <!-- Open Graph -->
-    <meta property="og:site_name" content="QuickPDFTools" />
+    <meta property="og:site_name" content="QuickTools" />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://hellobrivio.com{{ request.path }}" />
     <meta property="og:title" content="{% block og_title %}{{ self.title() }}{% endblock %}" />
@@ -54,7 +54,7 @@
       {
         "@context": "https://schema.org",
         "@type": "WebSite",
-        "name": "QuickPDFTools",
+        "name": "QuickTools",
         "url": "https://hellobrivio.com/",
         "publisher": { "@type": "Organization", "name": "HelloBrivio" }
       }
@@ -68,16 +68,16 @@
     <header class="topbar">
       <div class="header-wrapper">
         <div class="logo">
-          <a href="/">QuickPDFTools</a>
+          <a href="/">QuickTools</a>
         </div>
 
         <!-- Desktop navigation -->
         <nav class="nav-desktop" aria-label="Primary">
           <a href="/">Home</a>
           <a href="/pdf-tools">PDF Tools</a>
+          <a href="/resize-image">Image Tools</a>
           <a href="/blog">Guides</a>
           <a href="/about">About</a>
-          <a href="/resize-image">Image Tools</a>
         </nav>
 
         <!-- Mobile hamburger -->
@@ -101,9 +101,9 @@
       <button class="nav-close" id="navClose" aria-label="Close menu">&times;</button>
       <a href="/">Home</a>
       <a href="/pdf-tools">PDF Tools</a>
+      <a href="/resize-image">Image Tools</a>
       <a href="/blog">Guides</a>
       <a href="/about">About</a>
-      <a href="/resize-image">Image Tools</a>
     </nav>
 
     <main class="main-container" id="main">{% block content %}{% endblock %}</main>
@@ -111,14 +111,14 @@
     <footer class="footer">
       <div class="footer-grid">
         <div class="footer-col footer-brand">
-          <div class="footer-logo">QuickPDFTools</div>
+          <div class="footer-logo">QuickTools</div>
           <p>Free online PDF tools to compress, merge, convert and edit your documents — fast, secure, and installation-free.</p>
           <p class="footer-ecosystem">Part of the <strong>HelloBrivio</strong> ecosystem.</p>
           <div class="footer-social" aria-label="Social links">
             <!-- TODO: replace # with real social profile URLs when available -->
-            <a href="#" aria-label="QuickPDFTools on X">𝕏</a>
-            <a href="#" aria-label="QuickPDFTools on Facebook">f</a>
-            <a href="#" aria-label="QuickPDFTools on LinkedIn">in</a>
+            <a href="#" aria-label="QuickTools on X">𝕏</a>
+            <a href="#" aria-label="QuickTools on Facebook">f</a>
+            <a href="#" aria-label="QuickTools on LinkedIn">in</a>
           </div>
         </div>
 
@@ -158,7 +158,7 @@
       </div>
 
       <div class="footer-bottom">
-        <p>© 2026 QuickPDFTools — part of the HelloBrivio ecosystem.</p>
+        <p>© 2026 QuickTools — part of the HelloBrivio ecosystem.</p>
         <p>Free online tools to compress, merge, convert and edit your PDF files.</p>
       </div>
     </footer>

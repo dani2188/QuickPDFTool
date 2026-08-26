@@ -1,6 +1,6 @@
 # SEO Guidelines — QuickTools
 
-SEO standards for every QuickTools product. QuickPDFTools is heavily long-tail (one tool page + one "how-to" guide per feature); protecting that structure is the priority.
+SEO standards for every HelloBrivio product. QuickTools (renamed from QuickPDFTools on 2026-08-26) is heavily long-tail (one tool page + one "how-to" guide per feature); protecting that structure is the priority.
 
 Legend: ✅ implemented · ◑ partial · ⬜ standard to adopt.
 
@@ -12,7 +12,7 @@ Every indexable page must have:
 
 | Element | How | Status |
 |---|---|---|
-| Unique `<title>` | `{% block title %}` — keyword-first, brand suffix ` – QuickPDFTools` | ✅ per-page titles; ◑ brand suffix not uniform |
+| Unique `<title>` | `{% block title %}` — keyword-first, brand suffix ` – QuickTools` | ✅ per-page titles; ◑ brand suffix not uniform |
 | Unique meta description | `{% block description %}` | ✅ |
 | Canonical URL | `<link rel="canonical" href="https://hellobrivio.com{{ request.path }}">` in `base.html` head | ✅ |
 | Open Graph | `og:site_name`, `og:type`, `og:url`, `og:title`, `og:description` | ✅ in `base.html` |
@@ -21,7 +21,7 @@ Every indexable page must have:
 | Structured headings | `h1 → h2 → h3`, no skips | ✅ |
 | JSON-LD | `WebApplication` / `HowTo` / `FAQPage` / `BreadcrumbList` | ✅ `WebSite` (site-wide default) · `WebApplication` (26 tool pages) · `HowTo` (24 guides) via `components/jsonld.html` macros. `FAQPage` macro available; `BreadcrumbList` **to add** |
 
-> **Keyword rule:** when adding the brand suffix, keep the keywords first — `Compress PDF – QuickPDFTools`, never `QuickPDFTools – Home`.
+> **Keyword rule:** when adding the brand suffix, keep the keywords first — `Compress PDF – QuickTools`, never `QuickTools – Home`.
 
 ---
 
