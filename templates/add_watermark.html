@@ -1,4 +1,4 @@
-{% extends "base.html" %} {% block content %}
+{% extends "base.html" %} {% block title %}Add Watermark to PDF Online – Free Watermark Tool{% endblock %} {% block description %}Stamp text like "Draft" or "Confidential" across every page of a PDF. Free, no signup.{% endblock %} {% block content %}
 
 <h1>Add Watermark to PDF</h1>
 <p class="subtitle">Add text watermark to your PDF files.</p>
@@ -35,30 +35,56 @@
   <h2>Add Watermark to PDF Online</h2>
 
   <p>
-    Watermarks help protect your documents by adding visible text such as
-    "Confidential" or your brand name.
+    Stamp a line of text — "Confidential," "Draft," a company name — across
+    every page of a PDF. It's a quick way to mark a document's status or
+    origin before sharing it, without opening a desktop editor.
   </p>
 
-  <h3>How it works</h3>
+  <h2>How it works</h2>
 
   <ul class="steps">
-    <li><span class="step-number">1</span> Upload PDF</li>
-    <li><span class="step-number">2</span> Enter watermark text</li>
-    <li><span class="step-number">3</span> Click add watermark</li>
-    <li><span class="step-number">4</span> Download file</li>
+    <li><span class="step-number">1</span> Upload your PDF</li>
+    <li><span class="step-number">2</span> Enter the watermark text</li>
+    <li><span class="step-number">3</span> Click Add Watermark</li>
+    <li><span class="step-number">4</span> Download the watermarked file</li>
   </ul>
 
-  <h3>Use cases</h3>
+  <h2>When to use this tool</h2>
 
-  <ul class="benefits">
-    <li>Protect documents</li>
-    <li>Add branding</li>
-    <li>Mark drafts</li>
-  </ul>
+  <p><strong>Marking drafts:</strong> Stamp "Draft" across a document so reviewers don't mistake it for a final version.</p>
+  <p><strong>Confidentiality notices:</strong> Add "Confidential" to sensitive documents before sending them externally.</p>
+  <p><strong>Basic branding:</strong> Stamp a company or project name across shared copies.</p>
+
+  <h2>Important considerations</h2>
+
+  <p>
+    The watermark is placed in a fixed position and font on every page — there's
+    no option to change its size, angle, color, or placement. If you need a
+    diagonal watermark, a logo image, or per-page customization, this tool
+    won't cover that.
+  </p>
+
+  <h2>Frequently Asked Questions</h2>
+
+  <h3>Can I change where the watermark appears on the page?</h3>
+  <p>Not currently. The watermark text is placed in the same position on every page, with no option to reposition or rotate it.</p>
+
+  <h3>Can I use an image or logo as a watermark instead of text?</h3>
+  <p>No, this tool only supports text watermarks. Image-based watermarks aren't currently supported.</p>
+
+  <h3>Does the watermark appear on every page?</h3>
+  <p>Yes, the same text is stamped on every page of the uploaded PDF.</p>
+
+  <h3>Can I remove a watermark later if I change my mind?</h3>
+  <p>Yes — use the <a href="/remove-watermark">Remove Watermark tool</a> to strip overlays from a PDF afterward.</p>
+
+  <h3>Is my file kept private?</h3>
+  <p>Yes. Your uploaded file is processed and then automatically deleted from our server within a few minutes.</p>
 
   <h3>More PDF Tools</h3>
 
   <div class="tools-mini-grid">
+    <a href="/remove-watermark">Remove Watermark</a>
     <a href="/protect-pdf">Protect PDF</a>
     <a href="/unlock-pdf">Unlock PDF</a>
     <a href="/edit-pdf">Edit PDF</a>
@@ -67,4 +93,10 @@
 
 {% endblock %}
 
-{% block jsonld %}{% from "components/jsonld.html" import webapp %}{{ webapp(self.title(), self.description(), request.path) }}{% endblock %}
+{% block jsonld %}{% from "components/jsonld.html" import webapp, faqpage %}{{ webapp(self.title(), self.description(), request.path) }}{{ faqpage([
+  {"q": "Can I change where the watermark appears on the page?", "a": "Not currently. The watermark text is placed in the same position on every page, with no option to reposition or rotate it."},
+  {"q": "Can I use an image or logo as a watermark instead of text?", "a": "No, this tool only supports text watermarks. Image-based watermarks aren't currently supported."},
+  {"q": "Does the watermark appear on every page?", "a": "Yes, the same text is stamped on every page of the uploaded PDF."},
+  {"q": "Can I remove a watermark later if I change my mind?", "a": "Yes — use the Remove Watermark tool to strip overlays from a PDF afterward."},
+  {"q": "Is my file kept private?", "a": "Yes. Your uploaded file is processed and then automatically deleted from our server within a few minutes."}
+]) }}{% endblock %}

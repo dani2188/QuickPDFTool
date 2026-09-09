@@ -103,6 +103,13 @@ size increase email encoding adds. Free, no signup. {% endblock %} {% block cont
     you need to hit a specific number rather than "small enough for email."
   </p>
 
+  <h3>Is this different from just using the regular Compress PDF tool?</h3>
+  <p>
+    Not technically — this page posts straight to the same compressor with
+    the "optimize for email" option pre-selected, so you don't have to find
+    and check that setting yourself. It's a shortcut, not a separate engine.
+  </p>
+
 </div>
 
 <!-- ✅ RELATED TOOLS -->
@@ -132,6 +139,7 @@ size increase email encoding adds. Free, no signup. {% endblock %} {% block cont
 {{ faqpage([
   {"q": "Why did my attachment bounce even though it's under the size limit?", "a": "Email attachments are base64-encoded, which inflates the file by roughly a third in transit. Compress further, or send it as a cloud storage link instead."},
   {"q": "Will this reduce quality more than the regular Compress PDF tool?", "a": "It uses a similarly strong setting to the High level on the regular tool, downsampling images to 72 DPI."},
-  {"q": "What if I need an exact file size instead?", "a": "Use Compress PDF to 1MB, or the target size option on the main Compress PDF tool, if you need to hit a specific number."}
+  {"q": "What if I need an exact file size instead?", "a": "Use Compress PDF to 1MB, or the target size option on the main Compress PDF tool, if you need to hit a specific number."},
+  {"q": "Is this different from just using the regular Compress PDF tool?", "a": "Not technically -- this page posts to the same compressor with the optimize-for-email option pre-selected. It's a shortcut, not a separate engine."}
 ]) }}
 {% endblock %}

@@ -1,4 +1,4 @@
-{% extends "base.html" %} {% block content %}
+{% extends "base.html" %} {% block title %}Convert PDF to JPG Online – Free PDF to Image Converter{% endblock %} {% block description %}Convert every page of a PDF into a JPG image. Free, no signup.{% endblock %} {% block content %}
 
 <h1>Convert PDF to JPG</h1>
 
@@ -84,4 +84,10 @@
 
 {% endblock %}
 
-{% block jsonld %}{% from "components/jsonld.html" import webapp %}{{ webapp(self.title(), self.description(), request.path) }}{% endblock %}
+{% block jsonld %}{% from "components/jsonld.html" import webapp, faqpage %}{{ webapp(self.title(), self.description(), request.path) }}{{ faqpage([
+  {"q": "What quality are the output images?", "a": "Pages are rendered at 2x resolution with 90% JPEG quality, producing sharp images suitable for screen viewing, presentations, and web use."},
+  {"q": "How many pages can I convert at once?", "a": "Up to 20 pages are converted per upload. For longer documents, split them first and convert each section separately."},
+  {"q": "Can I convert just one page?", "a": "The tool converts all pages and lets you download them individually, so you can simply download the specific page you need."},
+  {"q": "Is there a difference between PDF to JPG and PDF to PNG?", "a": "JPG uses lossy compression and is best for photos and colour-rich pages. PNG is lossless and better for pages with text, diagrams, or transparency."},
+  {"q": "Are my files deleted after conversion?", "a": "Yes. All uploaded and converted files are automatically deleted from our server within a few minutes."}
+]) }}{% endblock %}

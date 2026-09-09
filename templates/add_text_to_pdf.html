@@ -1,4 +1,4 @@
-{% extends "base.html" %} {% block content %}
+{% extends "base.html" %} {% block title %}Add Text to PDF Online – Type Directly onto a PDF{% endblock %} {% block description %}Add typed text anywhere on a PDF page — a note, a date, a label. Free, no signup.{% endblock %} {% block content %}
 
 <h1>Add Text to PDF</h1>
 
@@ -176,6 +176,81 @@
   });
 </script>
 
+{% if not preview %}
+<div class="seo-content">
+  <p>
+    Add Text to PDF lets you type a note, a date, a label, or a short line of
+    text directly onto a PDF page without opening desktop software. Upload a
+    PDF, drag the text box to wherever it needs to sit on the page, then apply
+    it and download the edited file. It's aimed at quick, one-off edits — a
+    signature date, a stamp, a filled-in blank on a form — not full document
+    authoring.
+  </p>
+
+  <h2>How it works</h2>
+
+  <ul class="steps">
+    <li><span class="step-number">1</span> Upload your PDF</li>
+    <li><span class="step-number">2</span> A preview of the first page appears with an editable text box</li>
+    <li><span class="step-number">3</span> Type your text, drag it to the right spot, and set font size and color</li>
+    <li><span class="step-number">4</span> Click Apply Text to generate the edited PDF</li>
+    <li><span class="step-number">5</span> Download the file with your text embedded</li>
+  </ul>
+
+  <h2>When to use this tool</h2>
+
+  <p><strong>Filling in a blank:</strong> Add a name, date, or reference number to a form that doesn't have fillable fields.</p>
+  <p><strong>Quick annotations:</strong> Drop a short note or instruction onto a page before sending it along.</p>
+  <p><strong>Labeling scanned pages:</strong> Add a page title or category label to a scanned document.</p>
+
+  <h2>Important considerations</h2>
+
+  <p>
+    Text is added to the <strong>first page only</strong>. If you need text on
+    multiple pages, you'll need to run the file through the tool once per page
+    (export each page separately with <a href="/split-pdf">Split PDF</a> first,
+    add text, then <a href="/merge-pdf">merge</a> them back together).
+  </p>
+  <p>
+    There's a single font available, with adjustable size and color — this
+    isn't a full text editor, so it won't match an existing font already used
+    in the document.
+  </p>
+
+  <h2>Frequently Asked Questions</h2>
+
+  <h3>Can I add text to every page at once?</h3>
+  <p>Not in one pass — this tool places text on the first page only. For multiple pages, split the PDF, add text to each page individually, then merge the results back together.</p>
+
+  <h3>Can I change the font?</h3>
+  <p>You can change the size and color of the text, but the font itself is fixed. If you need custom fonts or full formatting control, this tool isn't the right fit.</p>
+
+  <h3>Will the position be exact?</h3>
+  <p>The text box position is scaled from where you drop it in the preview to the actual PDF page coordinates, so it lands in the same relative spot you placed it.</p>
+
+  <h3>Is my file kept private?</h3>
+  <p>Yes. Uploaded files and previews are automatically deleted from our server a short time after processing.</p>
+
+  <div class="more-tools">
+    <h3>More PDF Tools</h3>
+    <div class="tools-mini-grid">
+      <a href="/sign-pdf">Sign PDF</a>
+      <a href="/add-watermark">Add Watermark</a>
+      <a href="/edit-pdf">Edit PDF</a>
+      <a href="/add-page-numbers">Add Page Numbers</a>
+    </div>
+  </div>
+  <div class="browse-tools">
+    <a href="/pdf-tools" class="main-btn">View All Tools</a>
+  </div>
+</div>
+{% endif %}
+
 {% endblock %}
 
-{% block jsonld %}{% from "components/jsonld.html" import webapp %}{{ webapp(self.title(), self.description(), request.path) }}{% endblock %}
+{% block jsonld %}{% from "components/jsonld.html" import webapp, faqpage %}{{ webapp(self.title(), self.description(), request.path) }}{% if not preview %}{{ faqpage([
+  {"q": "Can I add text to every page at once?", "a": "Not in one pass — this tool places text on the first page only. For multiple pages, split the PDF, add text to each page individually, then merge the results back together."},
+  {"q": "Can I change the font?", "a": "You can change the size and color of the text, but the font itself is fixed. If you need custom fonts or full formatting control, this tool isn't the right fit."},
+  {"q": "Will the position be exact?", "a": "The text box position is scaled from where you drop it in the preview to the actual PDF page coordinates, so it lands in the same relative spot you placed it."},
+  {"q": "Is my file kept private?", "a": "Yes. Uploaded files and previews are automatically deleted from our server a short time after processing."}
+]) }}{% endif %}{% endblock %}

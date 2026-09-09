@@ -232,6 +232,79 @@
   }
 </script>
 
+{% if preview is not defined or not preview %}
+<div class="seo-content">
+  <h2>Sign a PDF Online</h2>
+
+  <p>
+    This tool places an image of your signature onto a PDF page — you upload the PDF and a picture of
+    your signature (a photo of a pen-and-paper signature works fine, as does a signature exported from
+    another app), then drag and resize it directly on a preview of the page until it's positioned
+    exactly where you want. There's no drawing pad here; the signature has to already exist as an
+    image file.
+  </p>
+
+  <p>
+    This produces a PDF with your signature image visually placed on the page — it's a straightforward
+    way to sign a document you're sending informally (a form, a letter, an internal agreement). It is
+    <strong>not</strong> a cryptographic digital signature and doesn't provide the tamper-evidence or
+    identity verification that formal e-signature services (like DocuSign) offer for legally-binding
+    contracts — for those, use a dedicated e-signature platform.
+  </p>
+
+  <h2>When to use this</h2>
+  <ul class="benefits">
+    <li>Signing a form, letter, or informal agreement without printing and scanning it</li>
+    <li>Adding a signature to a document before emailing it</li>
+    <li>Placing a consistent signature image across multiple documents</li>
+  </ul>
+
+  <h2>Important considerations</h2>
+  <ul class="benefits">
+    <li><strong>You need a signature image first.</strong> A photo of your signature on plain paper, cropped fairly close, works well — a transparent-background PNG looks the cleanest since there's no white box around it.</li>
+    <li><strong>This isn't a legal e-signature.</strong> For contracts that require verifiable, legally-binding electronic signatures, use a dedicated e-signature service instead.</li>
+    <li><strong>One signature, one page per pass.</strong> To sign multiple pages, apply the signature, download the result, then re-upload it to sign the next page.</li>
+  </ul>
+
+  <h2>Frequently Asked Questions</h2>
+
+  <h3>Can I draw my signature directly instead of uploading an image?</h3>
+  <p>
+    Not currently — you'll need a signature image (a photo or scan of a handwritten signature, or one
+    exported from a signature app) to upload.
+  </p>
+
+  <h3>Is this legally binding like DocuSign?</h3>
+  <p>
+    No. This visually places your signature image on the page but doesn't provide the cryptographic
+    verification, audit trail, or identity checks that dedicated e-signature platforms use for
+    legally-binding contracts.
+  </p>
+
+  <h3>Can I sign more than one page at once?</h3>
+  <p>
+    Each pass signs one page. To sign additional pages, download the result and repeat the process,
+    choosing the next page number.
+  </p>
+
+  <h2>More PDF Tools</h2>
+  <div class="tools-mini-grid">
+    <a href="/add-text-to-pdf">Add Text to PDF</a>
+    <a href="/redact-pdf">Redact PDF</a>
+    <a href="/protect-pdf">Protect PDF</a>
+    <a href="/compress-pdf">Compress PDF</a>
+  </div>
+</div>
+{% endif %}
+
 {% endblock %}
 
-{% block jsonld %}{% from "components/jsonld.html" import webapp %}{{ webapp(self.title(), self.description(), request.path) }}{% endblock %}
+{% block jsonld %}
+{% from "components/jsonld.html" import webapp, faqpage %}
+{{ webapp(self.title(), self.description(), request.path) }}
+{{ faqpage([
+  {"q": "Can I draw my signature directly instead of uploading an image?", "a": "Not currently -- you'll need a signature image (a photo, scan, or exported file) to upload."},
+  {"q": "Is this legally binding like DocuSign?", "a": "No. This visually places your signature image on the page but doesn't provide the cryptographic verification or audit trail that dedicated e-signature platforms use for legally-binding contracts."},
+  {"q": "Can I sign more than one page at once?", "a": "Each pass signs one page. Download the result and repeat to sign additional pages."}
+]) }}
+{% endblock %}

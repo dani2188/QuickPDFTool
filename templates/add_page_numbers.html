@@ -1,9 +1,9 @@
-{% extends "base.html" %} {% block title %}Add Page Numbers to PDF{% endblock %}
-{% block content %}
+{% extends "base.html" %} {% block title %}Add Page Numbers to PDF Online{% endblock %}
+{% block description %}Automatically number every page of a PDF, starting at 1. Free, no signup — numbers are placed in the bottom-right corner of each page.{% endblock %} {% block content %}
 
 <h1>Add Page Numbers</h1>
 
-<p class="subtitle">Automatically number pages in your PDF.</p>
+<p class="subtitle">Automatically number every page of a PDF, in order, starting at 1.</p>
 
 <form method="POST" enctype="multipart/form-data">
   {% set button_text="Select PDF File" %} {% set input_name="pdf" %} {% set
@@ -23,37 +23,63 @@
 </p>
 
 <div class="seo-content">
-  <h2>Unlock a Password Protected PDF</h2>
+  <h2>Add Page Numbers to a PDF</h2>
 
   <p>
-    Remove password protection from a PDF document. This allows you to open and
-    edit the file without restrictions.
+    This tool stamps a page number onto every page of your PDF, starting at 1 and counting up
+    sequentially through the document. Numbers are placed in the bottom-right corner of each page —
+    there's currently no option to change the position, starting number, or style, so this is a
+    one-click, no-configuration way to get straightforward sequential numbering.
   </p>
 
-  <h2>How to unlock a PDF</h2>
-
+  <h2>How it works</h2>
   <ul class="steps">
-    <li><span class="step-number">1</span> Upload the protected PDF</li>
-
-    <li><span class="step-number">2</span> Enter the password</li>
-
-    <li><span class="step-number">3</span> Download the unlocked PDF</li>
+    <li><span class="step-number">1</span> Upload your PDF</li>
+    <li><span class="step-number">2</span> Each page is numbered automatically, starting at 1</li>
+    <li><span class="step-number">3</span> Download the numbered PDF</li>
   </ul>
-</div>
 
-<div class="more-tools">
-  <h3>More PDF Tools</h3>
+  <h2>When to use this</h2>
+  <ul class="benefits">
+    <li>Preparing a printed report, thesis, or booklet where readers need to reference specific pages</li>
+    <li>Adding numbering to a document assembled from several merged PDFs</li>
+    <li>Making a long PDF easier to navigate and cite in discussions or reviews</li>
+  </ul>
+
+  <h2>Important considerations</h2>
+  <ul class="benefits">
+    <li><strong>Position and style aren't configurable.</strong> Numbers always go in the bottom-right corner in a plain numeral style — there's no option for "Page X of Y," Roman numerals, or a different corner.</li>
+    <li><strong>Very small or unusually-sized pages</strong> may show the number slightly differently placed relative to standard US Letter/A4 pages, since the numbering is overlaid using a standard page template.</li>
+    <li><strong>Do this after merging, before protecting.</strong> If you're combining files with <a href="/merge-pdf">Merge PDF</a>, number the combined result rather than each file separately — and add a password with <a href="/protect-pdf">Protect PDF</a> last, since encrypted PDFs can't be edited further.</li>
+  </ul>
+
+  <h2>Frequently Asked Questions</h2>
+
+  <h3>Can I start numbering from something other than 1, or use "Page X of Y"?</h3>
+  <p>
+    Not currently — every document is numbered sequentially starting at 1, with a plain number and no
+    "of Y" suffix.
+  </p>
+
+  <h3>Can I choose where on the page the number appears?</h3>
+  <p>
+    Not currently — numbers are placed in the bottom-right corner of every page.
+  </p>
+
+  <h3>Will this work correctly on non-standard page sizes?</h3>
+  <p>
+    It works on any page size, but the number's exact position is calculated relative to a standard
+    page template, so on unusually small or large custom page sizes it may sit slightly differently
+    than on standard Letter or A4 pages.
+  </p>
+
+  <h2>More PDF Tools</h2>
 
   <div class="tools-mini-grid">
-    <a href="/compress-pdf">Compress PDF</a>
-
     <a href="/merge-pdf">Merge PDF</a>
-
     <a href="/split-pdf">Split PDF</a>
-
-    <a href="/pdf-to-jpg">PDF to JPG</a>
-
     <a href="/rotate-pdf">Rotate PDF</a>
+    <a href="/protect-pdf">Protect PDF</a>
   </div>
 </div>
 
@@ -63,4 +89,12 @@
 
 {% endblock %}
 
-{% block jsonld %}{% from "components/jsonld.html" import webapp %}{{ webapp(self.title(), self.description(), request.path) }}{% endblock %}
+{% block jsonld %}
+{% from "components/jsonld.html" import webapp, faqpage %}
+{{ webapp(self.title(), self.description(), request.path) }}
+{{ faqpage([
+  {"q": "Can I start numbering from something other than 1, or use \"Page X of Y\"?", "a": "Not currently -- every document is numbered sequentially starting at 1, with a plain number."},
+  {"q": "Can I choose where on the page the number appears?", "a": "Not currently -- numbers are placed in the bottom-right corner of every page."},
+  {"q": "Will this work correctly on non-standard page sizes?", "a": "Yes, but the number's position is calculated relative to a standard page template, so it may sit slightly differently on unusual custom page sizes."}
+]) }}
+{% endblock %}

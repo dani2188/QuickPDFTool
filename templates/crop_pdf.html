@@ -1,4 +1,4 @@
-{% extends "base.html" %} {% block content %}
+{% extends "base.html" %} {% block title %}Crop PDF Pages Online – Trim Margins{% endblock %} {% block description %}Crop margins or a scanner border from PDF pages. Free, no signup.{% endblock %} {% block content %}
 
 <h1>Crop PDF Pages</h1>
 <p class="subtitle">
@@ -20,15 +20,15 @@
   <p class="file-info">Max file size: 20MB • Files are automatically deleted</p>
 
   <div class="crop-inputs">
-    <input type="number" name="top" placeholder="Top margin (px)" min="0" />
+    <input type="number" name="top" placeholder="Top margin (points)" min="0" />
     <input
       type="number"
       name="bottom"
-      placeholder="Bottom margin (px)"
+      placeholder="Bottom margin (points)"
       min="0"
     />
-    <input type="number" name="left" placeholder="Left margin (px)" min="0" />
-    <input type="number" name="right" placeholder="Right margin (px)" min="0" />
+    <input type="number" name="left" placeholder="Left margin (points)" min="0" />
+    <input type="number" name="right" placeholder="Right margin (points)" min="0" />
   </div>
 
   <button class="main-btn">Crop PDF</button>
@@ -37,8 +37,6 @@
 <p>
   Need help? <a href="/how-to-crop-pdf">Read our guide on cropping PDF pages</a>
 </p>
-
----
 
 <div class="seo-content">
   <h2>Crop PDF Online</h2>
@@ -77,7 +75,34 @@
     prevent losing important content.
   </p>
 
-  ---
+  <h2>Frequently Asked Questions</h2>
+
+  <h3>What unit are the margin values in?</h3>
+  <p>
+    Points, not pixels — the same unit PDF pages are measured in internally
+    (72 points = 1 inch). A standard US Letter page is 612 × 792 points, and
+    A4 is roughly 595 × 842 points. To remove a 1-inch margin, enter 72; for
+    half an inch, enter 36.
+  </p>
+
+  <h3>Does cropping delete the trimmed content permanently?</h3>
+  <p>
+    It removes the trimmed area from the visible page boundary. If you crop
+    too aggressively and need the original back, re-upload your unmodified
+    source file rather than trying to "un-crop" the result.
+  </p>
+
+  <h3>Can I crop each page differently?</h3>
+  <p>
+    No, the same top/bottom/left/right values are applied to every page in
+    the document in one pass.
+  </p>
+
+  <h3>Will cropping resize or distort the page content?</h3>
+  <p>
+    No. Cropping only changes the page boundary — everything inside the new
+    boundary stays at its original scale and position.
+  </p>
 
   <h3>More PDF Tools</h3>
 
@@ -97,4 +122,9 @@
 
 {% endblock %}
 
-{% block jsonld %}{% from "components/jsonld.html" import webapp %}{{ webapp(self.title(), self.description(), request.path) }}{% endblock %}
+{% block jsonld %}{% from "components/jsonld.html" import webapp, faqpage %}{{ webapp(self.title(), self.description(), request.path) }}{{ faqpage([
+  {"q": "What unit are the margin values in?", "a": "Points, not pixels -- the same unit PDF pages are measured in internally (72 points = 1 inch). A standard US Letter page is 612 x 792 points."},
+  {"q": "Does cropping delete the trimmed content permanently?", "a": "It removes the trimmed area from the visible page boundary. Re-upload your original file if you need it back -- there's no undo."},
+  {"q": "Can I crop each page differently?", "a": "No, the same top/bottom/left/right values are applied to every page in the document in one pass."},
+  {"q": "Will cropping resize or distort the page content?", "a": "No. Cropping only changes the page boundary -- everything inside the new boundary stays at its original scale and position."}
+]) }}{% endblock %}

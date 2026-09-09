@@ -111,6 +111,7 @@ image quality stays exactly as it was in the original file.
 {% endblock %}
 
 {% block jsonld %}
+{{ super() }}
 {% from "components/jsonld.html" import faqpage %}
 {{ faqpage([
   {"q": "Can I merge PDFs of different page sizes?", "a": "Yes. Each page keeps its own original size in the merged file."},

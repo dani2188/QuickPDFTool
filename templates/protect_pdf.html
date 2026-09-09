@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 
-{% block title %}Protect PDF Online – Add Password to PDF{% endblock %}
+{% block title %}Protect PDF Online – Add a Password to a PDF{% endblock %}
 
 {% block description %}
-Protect PDF files online by adding a password. Secure your documents quickly and for free.
+Add password protection to a PDF so it requires that password to open. Free, no signup — your file is never modified, only the downloaded copy is protected.
 {% endblock %}
 
 {% block content %}
@@ -11,7 +11,7 @@ Protect PDF files online by adding a password. Secure your documents quickly and
 <h1>Protect PDF</h1>
 
 <p class="subtitle">
-Add a password to secure your PDF document.
+Add a password to a PDF so only people who have it can open the file.
 </p>
 
 
@@ -24,10 +24,10 @@ Add a password to secure your PDF document.
 
 {% include "components/upload.html" %}
 
-<input 
-type="password" 
-name="password" 
-placeholder="Enter password" 
+<input
+type="password"
+name="password"
+placeholder="Enter password"
 required>
 
 <br><br>
@@ -46,38 +46,67 @@ Need help? Read our
 
 <div class="seo-content">
 
-<h2>Protect PDF Files Online</h2>
+<h2>Password-Protect a PDF Online</h2>
 
 <p>
-Use this free tool to add a password to your PDF documents.
-Password protection helps keep sensitive files secure and prevents unauthorized access.
+This tool encrypts a copy of your PDF with the password you choose, so anyone trying to open it —
+in any PDF reader, on any device — has to enter that password first. Your original uploaded file is
+never modified; a new, protected copy is generated for you to download.
 </p>
 
-<h3>How to protect a PDF</h3>
+<p>
+The password you set is required to open the file at all — it's an "open password," not a way to
+restrict specific actions like printing or copying within an already-open document. Whoever has the
+password can view, copy, and print freely once they're in.
+</p>
 
+<h2>How it works</h2>
 <ul class="steps">
-
-<li>
-<span class="step-number">1</span>
-Upload your PDF file
-</li>
-
-<li>
-<span class="step-number">2</span>
-Enter a password
-</li>
-
-<li>
-<span class="step-number">3</span>
-Download the protected PDF
-</li>
-
+<li><span class="step-number">1</span> Upload your PDF file</li>
+<li><span class="step-number">2</span> Enter a password</li>
+<li><span class="step-number">3</span> Download the protected PDF</li>
 </ul>
 
-</div>
+<h2>When to use this</h2>
+<ul class="benefits">
+  <li>Emailing a document with personal or financial information that shouldn't be readable if it's forwarded or intercepted</li>
+  <li>Sharing a file on a drive or link where you don't fully control who has access</li>
+  <li>Adding a basic barrier to a document before storing it somewhere less secure</li>
+</ul>
 
+<h2>Important considerations</h2>
+<ul class="benefits">
+  <li><strong>Choose a password you can actually remember or store safely.</strong> If it's lost, there's no way to recover the file's contents — the protection works both ways. Use <a href="/unlock-pdf">Unlock PDF</a> only if you already know the password and want to remove it later.</li>
+  <li><strong>Share the password through a different channel</strong> than the one you send the file through — emailing both together defeats the purpose.</li>
+  <li><strong>Order matters if you're also editing the document.</strong> Apply other edits (watermarks, signatures, redaction) first, then protect the file last — most tools, including this one, can't open an already-encrypted PDF.</li>
+</ul>
 
-<div class="more-tools">
+<h2>Frequently Asked Questions</h2>
+
+<h3>What if I forget the password after protecting my PDF?</h3>
+<p>
+There's no way to recover the file's contents without the password — that's the point of encryption.
+Keep it somewhere safe, like a password manager, before you close this tab.
+</p>
+
+<h3>Does this stop someone from printing or copying the content?</h3>
+<p>
+No. The password controls whether the file opens at all; once someone has entered it, they can read,
+copy, and print normally.
+</p>
+
+<h3>Can I protect a PDF that's already password-protected?</h3>
+<p>
+You'll need to remove the existing password first with <a href="/unlock-pdf">Unlock PDF</a> (which
+requires knowing that password), then apply a new one here.
+</p>
+
+<h3>Is my original file changed?</h3>
+<p>
+No. Your upload is used to generate a separate, protected copy for download; the original isn't
+modified. Both the upload and the generated file are deleted from our server automatically after
+processing.
+</p>
 
 <h3>More PDF Tools</h3>
 
@@ -92,10 +121,18 @@ Download the protected PDF
 
 </div>
 
-</div>
 <div class="browse-tools">
 <a href="/pdf-tools" class="main-btn">View All Tools</a>
 </div>
 
 {% endblock %}
-{% block jsonld %}{% from "components/jsonld.html" import webapp %}{{ webapp(self.title(), self.description(), request.path) }}{% endblock %}
+{% block jsonld %}
+{% from "components/jsonld.html" import webapp, faqpage %}
+{{ webapp(self.title(), self.description(), request.path) }}
+{{ faqpage([
+  {"q": "What if I forget the password after protecting my PDF?", "a": "There's no way to recover the file's contents without the password -- that's the point of encryption."},
+  {"q": "Does this stop someone from printing or copying the content?", "a": "No. The password controls whether the file opens at all; once opened, the content can be read, copied, and printed normally."},
+  {"q": "Can I protect a PDF that's already password-protected?", "a": "Remove the existing password first with Unlock PDF, then apply a new one."},
+  {"q": "Is my original file changed?", "a": "No. A separate protected copy is generated for download; both files are deleted automatically after processing."}
+]) }}
+{% endblock %}

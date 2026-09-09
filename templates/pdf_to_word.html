@@ -86,4 +86,10 @@ endblock %} {% block content %}
 
 {% endblock %}
 
-{% block jsonld %}{% from "components/jsonld.html" import webapp %}{{ webapp(self.title(), self.description(), request.path) }}{% endblock %}
+{% block jsonld %}{% from "components/jsonld.html" import webapp, faqpage %}{{ webapp(self.title(), self.description(), request.path) }}{{ faqpage([
+  {"q": "Will the formatting be preserved?", "a": "For digitally created PDFs, most formatting including headings, paragraphs, and basic layout is preserved. Complex elements like multi-column layouts, tables, or special fonts may require minor adjustments after conversion."},
+  {"q": "Does this work with scanned PDFs?", "a": "Scanned PDFs are images, not text, so conversion accuracy depends on the scan quality. For best results with scanned documents, try the PDF to Text tool first."},
+  {"q": "What software do I need to open the DOCX file?", "a": "Any modern word processor can open DOCX files, including Microsoft Word, Google Docs, and LibreOffice Writer."},
+  {"q": "Is there a page limit?", "a": "There is no page limit, but the maximum file size is 20 MB. Compress your PDF first if it exceeds this limit."},
+  {"q": "Can I convert Word back to PDF?", "a": "Yes. After editing in Word, use the Word to PDF tool to convert it back to a PDF document."}
+]) }}{% endblock %}

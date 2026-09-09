@@ -172,4 +172,10 @@ reduce file size while maintaining quality. {% endblock %} {% block content %}
 
 {% endblock %}
 
-{% block jsonld %}{% from "components/jsonld.html" import webapp %}{{ webapp(self.title(), self.description(), request.path) }}{% endblock %}
+{% block jsonld %}{% from "components/jsonld.html" import webapp, faqpage %}{{ webapp(self.title(), self.description(), request.path) }}{{ faqpage([
+  {"q": "Will compression reduce the quality of my text?", "a": "No. Text in PDF files is stored as vector data, not as images, so it is never affected by image compression. Only embedded images may be reduced in resolution depending on the level you choose."},
+  {"q": "How much smaller will my PDF be?", "a": "It depends on the content. Image-heavy PDFs can shrink by 50-90%. Text-only PDFs typically reduce by 10-30%. If your PDF was already heavily optimised, the reduction may be under 5%."},
+  {"q": "Is it safe to compress a PDF I will print later?", "a": "Use Low or Medium compression if you plan to print. These settings preserve enough resolution for quality print output. Avoid Extreme mode for documents that need to be printed."},
+  {"q": "Can I compress a password-protected PDF?", "a": "You will need to remove the password first, then compress the file, and optionally re-protect it afterwards."},
+  {"q": "Are there any limits on file size?", "a": "The maximum upload size is 20 MB. If your file is larger, try the email-optimised compressor which is tuned for large files, or split the document first and compress each part separately."}
+]) }}{% endblock %}

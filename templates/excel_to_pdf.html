@@ -1,4 +1,4 @@
-{% extends "base.html" %} {% block content %}
+{% extends "base.html" %} {% block title %}Excel to PDF Converter – Convert XLSX to PDF Online{% endblock %} {% block description %}Convert an Excel spreadsheet into a printable PDF document. Free, no signup.{% endblock %} {% block content %}
 
 <h1>Convert Excel to PDF</h1>
 <p class="subtitle">Convert Excel spreadsheets into PDF documents.</p>
@@ -29,25 +29,49 @@
   <h2>Convert Excel to PDF Online</h2>
 
   <p>
-    Convert Excel spreadsheets into professional PDF documents. Perfect for
-    sharing reports, invoices, or structured data.
+    Turn an Excel spreadsheet into a PDF that anyone can open, without needing
+    Excel installed. Each row of your spreadsheet becomes a line of text in
+    the PDF, making it easy to share a snapshot of your data as a document
+    that won't be accidentally edited.
   </p>
 
-  <h3>How to convert Excel to PDF</h3>
+  <h2>How to convert Excel to PDF</h2>
 
   <ul class="steps">
-    <li><span class="step-number">1</span> Upload your Excel file</li>
-    <li><span class="step-number">2</span> Click "Convert"</li>
-    <li><span class="step-number">3</span> Download the PDF</li>
+    <li><span class="step-number">1</span> Upload your Excel file (.xlsx)</li>
+    <li><span class="step-number">2</span> Click "Convert to PDF"</li>
+    <li><span class="step-number">3</span> Download the generated PDF</li>
   </ul>
 
-  <h3>Why use this tool?</h3>
+  <h2>When to use this tool</h2>
 
-  <ul class="benefits">
-    <li>Preserve formatting</li>
-    <li>Easy sharing</li>
-    <li>Works directly in browser</li>
-  </ul>
+  <p><strong>Sharing read-only data:</strong> Send a spreadsheet's contents to someone without a spreadsheet app, in a format they can't accidentally modify.</p>
+  <p><strong>Archiving a snapshot:</strong> Keep a fixed, non-editable record of a spreadsheet's data at a point in time.</p>
+  <p><strong>Quick printing:</strong> Generate a printable version of tabular data without opening Excel.</p>
+
+  <h2>Important considerations</h2>
+
+  <p>
+    This is a plain-text conversion: each row is printed as its values
+    separated by a pipe (<code>|</code>), one line per row. Cell colors, fonts,
+    column widths, borders, charts, and formulas are not preserved — only the
+    text values. If you need to keep your spreadsheet's visual formatting
+    intact, export directly to PDF from Excel instead.
+  </p>
+
+  <h2>Frequently Asked Questions</h2>
+
+  <h3>Will my spreadsheet's formatting (colors, fonts, borders) be preserved?</h3>
+  <p>No. This tool extracts the text values from each row and prints them as plain lines in the PDF — visual formatting isn't carried over.</p>
+
+  <h3>Are charts or images from my spreadsheet included?</h3>
+  <p>No, only the cell text values are converted. Charts and embedded images are not included in the output.</p>
+
+  <h3>Does it work with multiple sheets in one file?</h3>
+  <p>Only the first sheet in the workbook is converted. If your data is on a different sheet, move or copy it to the first sheet before uploading.</p>
+
+  <h3>Is there a row or file size limit?</h3>
+  <p>There's no fixed row limit, but the uploaded file must be under 20MB. Very large spreadsheets will produce a longer, multi-page PDF automatically.</p>
 
   <h3>More PDF Tools</h3>
 
@@ -65,4 +89,9 @@
 
 {% endblock %}
 
-{% block jsonld %}{% from "components/jsonld.html" import webapp %}{{ webapp(self.title(), self.description(), request.path) }}{% endblock %}
+{% block jsonld %}{% from "components/jsonld.html" import webapp, faqpage %}{{ webapp(self.title(), self.description(), request.path) }}{{ faqpage([
+  {"q": "Will my spreadsheet's formatting (colors, fonts, borders) be preserved?", "a": "No. This tool extracts the text values from each row and prints them as plain lines in the PDF — visual formatting isn't carried over."},
+  {"q": "Are charts or images from my spreadsheet included?", "a": "No, only the cell text values are converted. Charts and embedded images are not included in the output."},
+  {"q": "Does it work with multiple sheets in one file?", "a": "Only the first sheet in the workbook is converted. If your data is on a different sheet, move or copy it to the first sheet before uploading."},
+  {"q": "Is there a row or file size limit?", "a": "There's no fixed row limit, but the uploaded file must be under 20MB. Very large spreadsheets will produce a longer, multi-page PDF automatically."}
+]) }}{% endblock %}

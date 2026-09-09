@@ -26,26 +26,74 @@ pages as optimized WebP images for web use. {% endblock %} {% block content %}
   <h2>Convert PDF Pages to WebP Images</h2>
 
   <p>
-    WebP is a modern image format developed by Google that provides better
-    compression than JPG or PNG. Converting PDF pages to WebP images helps
-    reduce file sizes while maintaining high quality.
+    WebP is a modern image format that compresses more efficiently than JPG
+    or PNG at a similar visual quality, which makes it a good fit for images
+    that will be used on the web. This tool renders each page of your PDF as
+    a separate WebP image, ready to embed on a site or in a blog post.
   </p>
+
+  <h2>How it works</h2>
+
+  <ul class="steps">
+    <li><span class="step-number">1</span> Upload your PDF</li>
+    <li><span class="step-number">2</span> Each page is rendered at 2x resolution and saved as a WebP image</li>
+    <li><span class="step-number">3</span> Download the converted images</li>
+  </ul>
+
+  <h2>When to use this tool</h2>
+
+  <p><strong>Web publishing:</strong> Turn PDF pages into lightweight images to embed directly on a website or blog, where WebP loads faster than JPG or PNG.</p>
+  <p><strong>Previewing documents online:</strong> Generate page thumbnails for a document viewer without needing a PDF plugin.</p>
+  <p><strong>Reducing bandwidth:</strong> WebP's stronger compression means smaller image files for the same visual quality, which helps page load speed.</p>
+
+  <h2>Important considerations</h2>
 
   <p>
-    This is especially useful for websites, blogs, and online content where fast
-    loading images are important.
+    Up to 20 pages are converted per upload. Images are saved at quality 80,
+    which balances file size against visual quality — this isn't a lossless
+    format, so extremely fine detail may show minor compression artifacts.
+    WebP isn't supported by every older image viewer or editor; if you need
+    universal compatibility, use <a href="/pdf-to-jpg">PDF to JPG</a> or
+    <a href="/pdf-to-png">PDF to PNG</a> instead.
   </p>
 
-  <h2>Why Convert PDF to WebP?</h2>
+  <h2>Frequently Asked Questions</h2>
 
-  <ul class="benefits">
-    <li>Smaller image file sizes</li>
-    <li>Better website performance</li>
-    <li>Optimized images for web use</li>
-    <li>Modern image format supported by browsers</li>
-  </ul>
+  <h3>How many pages can I convert at once?</h3>
+  <p>Up to 20 pages per upload. For longer documents, split the file first with the <a href="/split-pdf">Split PDF tool</a> and convert each section separately.</p>
+
+  <h3>Why choose WebP over JPG or PNG?</h3>
+  <p>WebP typically produces smaller file sizes than JPG or PNG at a similar visual quality, which makes pages load faster when the images are used on a website.</p>
+
+  <h3>Will every program open a WebP file?</h3>
+  <p>Most modern browsers and operating systems support WebP, but some older software may not. If you need broader compatibility, convert to JPG or PNG instead.</p>
+
+  <h3>What quality setting is used?</h3>
+  <p>Pages are rendered at 2x resolution and saved at quality 80, a balance between file size and visual sharpness suitable for web use.</p>
+
+  <h3>Are my files deleted after conversion?</h3>
+  <p>Yes. Uploaded and converted files are automatically deleted from our server within a few minutes.</p>
+
+  <div class="more-tools">
+    <h3>More PDF Tools</h3>
+    <div class="tools-mini-grid">
+      <a href="/pdf-to-jpg">PDF to JPG</a>
+      <a href="/pdf-to-png">PDF to PNG</a>
+      <a href="/compress-jpg">Compress JPG</a>
+      <a href="/split-pdf">Split PDF</a>
+    </div>
+  </div>
+  <div class="browse-tools">
+    <a href="/pdf-tools" class="main-btn">View All Tools</a>
+  </div>
 </div>
 
 {% endblock %}
 
-{% block jsonld %}{% from "components/jsonld.html" import webapp %}{{ webapp(self.title(), self.description(), request.path) }}{% endblock %}
+{% block jsonld %}{% from "components/jsonld.html" import webapp, faqpage %}{{ webapp(self.title(), self.description(), request.path) }}{{ faqpage([
+  {"q": "How many pages can I convert at once?", "a": "Up to 20 pages per upload. For longer documents, split the file first and convert each section separately."},
+  {"q": "Why choose WebP over JPG or PNG?", "a": "WebP typically produces smaller file sizes than JPG or PNG at a similar visual quality, which makes pages load faster when the images are used on a website."},
+  {"q": "Will every program open a WebP file?", "a": "Most modern browsers and operating systems support WebP, but some older software may not. If you need broader compatibility, convert to JPG or PNG instead."},
+  {"q": "What quality setting is used?", "a": "Pages are rendered at 2x resolution and saved at quality 80, a balance between file size and visual sharpness suitable for web use."},
+  {"q": "Are my files deleted after conversion?", "a": "Yes. Uploaded and converted files are automatically deleted from our server within a few minutes."}
+]) }}{% endblock %}

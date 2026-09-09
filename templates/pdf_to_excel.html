@@ -1,4 +1,4 @@
-{% extends "base.html" %} {% block content %}
+{% extends "base.html" %} {% block title %}PDF to Excel Converter – Extract Tables to XLSX{% endblock %} {% block description %}Convert a PDF's tables into an editable Excel spreadsheet. Free, no signup.{% endblock %} {% block content %}
 
 <h1>Convert PDF to Excel</h1>
 <p class="subtitle">Extract tables from PDF into editable Excel files.</p>
@@ -29,25 +29,54 @@
   <h2>Convert PDF to Excel Online</h2>
 
   <p>
-    This tool converts PDF tables into editable Excel spreadsheets. Ideal for
-    financial data, reports, and structured documents.
+    Pull tabular data out of a PDF and into an editable Excel spreadsheet,
+    without retyping it by hand. The tool detects table structures on each
+    page and reconstructs them as spreadsheet rows and columns.
   </p>
 
-  <h3>How to convert PDF to Excel</h3>
+  <h2>How to convert PDF to Excel</h2>
 
   <ul class="steps">
     <li><span class="step-number">1</span> Upload your PDF</li>
-    <li><span class="step-number">2</span> Click "Convert"</li>
-    <li><span class="step-number">3</span> Download the Excel file</li>
+    <li><span class="step-number">2</span> Click Convert to Excel</li>
+    <li><span class="step-number">3</span> The tool detects tables on each page</li>
+    <li><span class="step-number">4</span> Download the resulting .xlsx file</li>
   </ul>
 
-  <h3>Benefits</h3>
+  <h2>When to use this tool</h2>
 
-  <ul class="benefits">
-    <li>✔ Extract tables accurately</li>
-    <li>✔ Edit data easily</li>
-    <li>✔ No manual copy-paste</li>
-  </ul>
+  <p><strong>Financial reports:</strong> Pull numbers from a PDF invoice, statement, or report into a spreadsheet for further analysis.</p>
+  <p><strong>Data entry avoidance:</strong> Skip manually retyping tables from a PDF into Excel.</p>
+  <p><strong>Combining data sources:</strong> Bring PDF-only data into a spreadsheet so it can be merged with other datasets.</p>
+
+  <h2>Important considerations</h2>
+
+  <p>
+    Table detection works best on PDFs with clear, bordered, or gridded
+    tables. Tables without visible borders, scanned images of tables, or
+    complex merged-cell layouts may not be detected accurately or at all. If a
+    page contains no detectable table, its content won't appear in the output.
+    This tool is not OCR — it reads the PDF's underlying table structure, so it
+    can't extract tables from scanned image-only pages. For plain text
+    instead, try <a href="/pdf-to-text">PDF to Text</a>.
+  </p>
+
+  <h2>Frequently Asked Questions</h2>
+
+  <h3>Will this work on scanned PDFs?</h3>
+  <p>No. This tool reads table structures from digitally-created PDFs — it doesn't perform OCR, so tables inside scanned images won't be detected.</p>
+
+  <h3>What kind of tables convert best?</h3>
+  <p>Tables with visible gridlines or clear borders convert most reliably. Loosely spaced text without borders may not be detected as a table.</p>
+
+  <h3>Will formulas or cell formatting be preserved?</h3>
+  <p>No, only the extracted text values are placed into cells — formulas, colors, and formatting from the original PDF are not recreated.</p>
+
+  <h3>What if my PDF has multiple tables across several pages?</h3>
+  <p>Each detected table is extracted and combined into the output spreadsheet, one after another.</p>
+
+  <h3>Are my files kept private?</h3>
+  <p>Yes. Uploaded files are automatically deleted from our server shortly after processing.</p>
 
   <h3>More PDF Tools</h3>
 
@@ -65,4 +94,10 @@
 
 {% endblock %}
 
-{% block jsonld %}{% from "components/jsonld.html" import webapp %}{{ webapp(self.title(), self.description(), request.path) }}{% endblock %}
+{% block jsonld %}{% from "components/jsonld.html" import webapp, faqpage %}{{ webapp(self.title(), self.description(), request.path) }}{{ faqpage([
+  {"q": "Will this work on scanned PDFs?", "a": "No. This tool reads table structures from digitally-created PDFs — it doesn't perform OCR, so tables inside scanned images won't be detected."},
+  {"q": "What kind of tables convert best?", "a": "Tables with visible gridlines or clear borders convert most reliably. Loosely spaced text without borders may not be detected as a table."},
+  {"q": "Will formulas or cell formatting be preserved?", "a": "No, only the extracted text values are placed into cells — formulas, colors, and formatting from the original PDF are not recreated."},
+  {"q": "What if my PDF has multiple tables across several pages?", "a": "Each detected table is extracted and combined into the output spreadsheet, one after another."},
+  {"q": "Are my files kept private?", "a": "Yes. Uploaded files are automatically deleted from our server shortly after processing."}
+]) }}{% endblock %}

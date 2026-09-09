@@ -1,7 +1,7 @@
-{% extends "base.html" %} {% block content %}
+{% extends "base.html" %} {% block title %}PNG to PDF Converter – Combine PNG Images into a PDF{% endblock %} {% block description %}Combine one or more PNG images into a single PDF, in the order you upload them. Free, no signup — note that PNG transparency does not carry over to PDF.{% endblock %} {% block content %}
 
 <h1>Convert PNG to PDF</h1>
-<p class="subtitle">Convert PNG images into a single PDF document.</p>
+<p class="subtitle">Combine one or more PNG images into a single PDF document.</p>
 
 <form method="POST" enctype="multipart/form-data">
   <div id="dropArea" class="upload-box">
@@ -29,28 +29,61 @@
   <h2>PNG to PDF Converter Online</h2>
 
   <p>
-    Convert multiple PNG images into a single PDF file quickly and easily.
-    Perfect for combining screenshots, scanned files, or images into one
-    document.
+    This tool combines one or more PNG images into a single PDF, with each image placed on its own
+    page in the order you select them. PNG is a common choice for screenshots, scanned documents, and
+    graphics with sharp edges or text, so this is a straightforward way to turn a batch of them into
+    one shareable file instead of a folder of loose images.
   </p>
 
-  <h3>How to convert PNG to PDF</h3>
+  <h2>How to convert PNG to PDF</h2>
 
   <ul class="steps">
-    <li><span class="step-number">1</span> Upload PNG images</li>
+    <li><span class="step-number">1</span> Upload one or more PNG images</li>
     <li><span class="step-number">2</span> Click "Convert"</li>
-    <li><span class="step-number">3</span> Download PDF file</li>
+    <li><span class="step-number">3</span> Download the PDF file</li>
   </ul>
 
-  <h3>Why use this tool?</h3>
-
+  <h2>When to use this</h2>
   <ul class="benefits">
-    <li>Combine multiple images</li>
-    <li>Create printable documents</li>
-    <li>Fast and secure processing</li>
+    <li>Combining several scanned or screenshotted pages into one document</li>
+    <li>Turning a set of PNG graphics or diagrams into a shareable, printable PDF</li>
+    <li>Archiving a batch of images in a single, universally-readable file</li>
   </ul>
 
-  <h3>More PDF Tools</h3>
+  <h2>Important considerations</h2>
+  <ul class="benefits">
+    <li><strong>Transparency doesn't carry over.</strong> PNG supports a transparent background, but PDF pages don't — any transparent areas are filled with a solid color in the output.</li>
+    <li><strong>Upload order is page order,</strong> and each page matches its source image's own dimensions — there's no cropping or resizing to a uniform page size.</li>
+    <li><strong>No compression is applied,</strong> so a batch of large PNGs will produce a correspondingly large PDF. Use <a href="/compress-pdf">Compress PDF</a> afterward if the file needs to be smaller.</li>
+  </ul>
+
+  <h2>Frequently Asked Questions</h2>
+
+  <h3>What happens to transparent areas in my PNG?</h3>
+  <p>
+    They're filled with a solid color, since PDF pages don't support transparency the way PNG does.
+    If you need the transparency preserved for further editing, keep working with the PNG directly.
+  </p>
+
+  <h3>Can I mix PNG and JPG images in the same PDF?</h3>
+  <p>
+    Yes — use <a href="/jpg-to-pdf">JPG to PDF</a>, which accepts both formats in the same upload.
+  </p>
+
+  <h3>Does this reduce my file size?</h3>
+  <p>
+    No, images are embedded at their original quality. Run the result through
+    <a href="/compress-pdf">Compress PDF</a> afterward if it needs to be smaller.
+  </p>
+
+  <h3>Does the order I upload files in matter?</h3>
+  <p>
+    Yes. The first image you select becomes page 1 of the PDF, and the rest follow in the order they
+    were uploaded — check the result and re-upload in the right order if the pages come out reversed
+    or shuffled.
+  </p>
+
+  <h2>More PDF Tools</h2>
 
   <div class="tools-mini-grid">
     <a href="/compress-pdf">Compress PDF</a>
@@ -63,4 +96,13 @@
 
 {% endblock %}
 
-{% block jsonld %}{% from "components/jsonld.html" import webapp %}{{ webapp(self.title(), self.description(), request.path) }}{% endblock %}
+{% block jsonld %}
+{% from "components/jsonld.html" import webapp, faqpage %}
+{{ webapp(self.title(), self.description(), request.path) }}
+{{ faqpage([
+  {"q": "What happens to transparent areas in my PNG?", "a": "They're filled with a solid color, since PDF pages don't support transparency the way PNG does."},
+  {"q": "Can I mix PNG and JPG images in the same PDF?", "a": "Yes, use JPG to PDF, which accepts both formats in the same upload."},
+  {"q": "Does this reduce my file size?", "a": "No, images are embedded at original quality. Use Compress PDF afterward if the file needs to be smaller."},
+  {"q": "Does the order I upload files in matter?", "a": "Yes, the first image you select becomes page 1, and the rest follow in upload order."}
+]) }}
+{% endblock %}

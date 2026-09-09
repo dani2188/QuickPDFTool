@@ -1,9 +1,10 @@
-{% extends "base.html" %} {% block title %}Unlock PDF{% endblock %} {% block
+{% extends "base.html" %} {% block title %}Unlock PDF Online – Remove a PDF Password{% endblock %}
+{% block description %}Remove password protection from a PDF you own, using the password you already know. Free, no signup — this does not crack or bypass an unknown password.{% endblock %} {% block
 content %}
 
 <h1>Unlock PDF</h1>
 
-<p class="subtitle">Remove password protection from a PDF.</p>
+<p class="subtitle">Remove password protection from a PDF, using the password you already know.</p>
 
 <form method="POST" enctype="multipart/form-data">
   {% set button_text="Select PDF File" %} {% set input_name="pdf" %} {% set
@@ -25,36 +26,71 @@ content %}
 </p>
 
 <div class="seo-content">
-  <h2>Unlock a Password Protected PDF</h2>
+  <h2>Remove a Password from a PDF</h2>
 
   <p>
-    Remove password protection from a PDF document. This allows you to open and
-    edit the file without restrictions.
+    This tool removes password protection from a PDF and produces a new copy that opens without a
+    password. It decrypts the file using the password you provide — <strong>you need to already know
+    the current password</strong>. This isn't a password-cracking or recovery tool; it doesn't guess,
+    brute-force, or bypass a password you don't have.
+  </p>
+
+  <p>
+    A common legitimate use: you password-protected a PDF yourself (or received one with a password
+    you were given) and now want a version you can open freely — for editing, archiving, or sharing
+    with people who don't need the extra step of entering a password each time.
   </p>
 
   <h2>How to unlock a PDF</h2>
 
   <ul class="steps">
     <li><span class="step-number">1</span> Upload the protected PDF</li>
-
     <li><span class="step-number">2</span> Enter the password</li>
-
     <li><span class="step-number">3</span> Download the unlocked PDF</li>
   </ul>
-</div>
-<div class="more-tools">
-  <h3>More PDF Tools</h3>
+
+  <h2>When to use this</h2>
+  <ul class="benefits">
+    <li>Removing a password you added yourself once it's no longer needed</li>
+    <li>Preparing a protected PDF you own for editing in a tool that can't open encrypted files</li>
+    <li>Sharing a document more freely with people who already have implicit access to its contents</li>
+  </ul>
+
+  <h2>Important considerations</h2>
+  <ul class="benefits">
+    <li><strong>You must know the password.</strong> If you don't, this tool can't help — it only removes protection using a password you supply, it does not recover or crack unknown passwords.</li>
+    <li><strong>Only unlock files you have the right to unlock.</strong> Removing password protection from a document you don't own or weren't authorized to access may violate the document owner's terms or applicable law.</li>
+    <li><strong>The unlocked copy has no protection at all.</strong> Anyone with the file can open it — re-share carefully.</li>
+  </ul>
+
+  <h2>Frequently Asked Questions</h2>
+
+  <h3>Can this recover a password I've forgotten?</h3>
+  <p>
+    No. This tool decrypts a PDF using a password you provide — it doesn't guess, crack, or bypass an
+    unknown password. If you've genuinely lost the password, this tool can't recover it.
+  </p>
+
+  <h3>Will my original protected file be changed?</h3>
+  <p>
+    No. Your upload generates a separate, unprotected copy for download; the original isn't modified.
+    Both files are deleted from our server automatically after processing.
+  </p>
+
+  <h3>Is it legal to unlock a PDF?</h3>
+  <p>
+    It's fine for files you own or have the right to access, such as removing a password you set
+    yourself. Removing protection from a document you don't have authorization to access is a
+    different matter — use this responsibly.
+  </p>
+
+  <h2>More PDF Tools</h2>
 
   <div class="tools-mini-grid">
+    <a href="/protect-pdf">Protect PDF</a>
     <a href="/compress-pdf">Compress PDF</a>
-
     <a href="/merge-pdf">Merge PDF</a>
-
     <a href="/split-pdf">Split PDF</a>
-
-    <a href="/pdf-to-jpg">PDF to JPG</a>
-
-    <a href="/rotate-pdf">Rotate PDF</a>
   </div>
 </div>
 <div class="browse-tools">
@@ -63,4 +99,12 @@ content %}
 
 {% endblock %}
 
-{% block jsonld %}{% from "components/jsonld.html" import webapp %}{{ webapp(self.title(), self.description(), request.path) }}{% endblock %}
+{% block jsonld %}
+{% from "components/jsonld.html" import webapp, faqpage %}
+{{ webapp(self.title(), self.description(), request.path) }}
+{{ faqpage([
+  {"q": "Can this recover a password I've forgotten?", "a": "No. This tool decrypts a PDF using a password you provide -- it doesn't guess, crack, or bypass an unknown password."},
+  {"q": "Will my original protected file be changed?", "a": "No. A separate unprotected copy is generated for download; both files are deleted automatically after processing."},
+  {"q": "Is it legal to unlock a PDF?", "a": "Fine for files you own or have the right to access. Removing protection from a document you're not authorized to access is a different matter."}
+]) }}
+{% endblock %}

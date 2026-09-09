@@ -6,8 +6,17 @@ JPG, or remove a background — free, online, no signup. {% endblock %} {% block
 <h1>All Image Tools</h1>
 
 <p class="subtitle">
-  Free tools to resize, compress and edit your photos.
+  Free tools to resize, compress and edit your photos — no signup, nothing installed.
 </p>
+
+<div class="seo-content" style="margin-bottom: var(--s4)">
+  <p>
+    Three focused tools, each solving a different, specific problem: getting a photo to the exact
+    dimensions a platform expects, shrinking a photo's file size without a visible quality hit, and
+    cutting a subject out from its background. Each processes your file on our server and gives you
+    a download — no account, no watermark, no editing suite to learn.
+  </p>
+</div>
 
 <div class="tools-grid">
   <a href="/resize-image" class="tool-card">📐 Resize Image</a>
@@ -15,8 +24,42 @@ JPG, or remove a background — free, online, no signup. {% endblock %} {% block
   <a href="/remove-background" class="tool-card">🪄 Remove Background</a>
 </div>
 
+<div class="seo-content" style="margin-top: var(--s5)">
+  <h2>Which tool do I need?</h2>
+  <ul class="benefits">
+    <li><strong><a href="/resize-image">Resize Image</a></strong> — you have a photo and need it at a specific pixel size (an Instagram post, a YouTube thumbnail, a form's upload requirement) without cropping or stretching it.</li>
+    <li><strong><a href="/compress-jpg">Compress JPG</a></strong> — the photo is the right shape already, but the file is too big to email or upload.</li>
+    <li><strong><a href="/remove-background">Remove Background</a></strong> — you need just the subject of a photo, isolated from whatever is behind it.</li>
+  </ul>
+
+  <h2>Frequently Asked Questions</h2>
+
+  <h3>Do I need an account to use these tools?</h3>
+  <p>No. Every tool here works without signing up — upload a photo, process it, download the result.</p>
+
+  <h3>Is there a file size limit?</h3>
+  <p>Yes, uploads are capped at 20MB, the same as our PDF tools.</p>
+
+  <h3>Are my photos kept after processing?</h3>
+  <p>No. Uploaded files and generated results are deleted from our server automatically within minutes.</p>
+
+  <h3>Can I use these on a PDF instead of a photo?</h3>
+  <p>These three tools work on standalone images. If you need to get images out of a PDF first, or turn images into a PDF, see the <a href="/pdf-tools">PDF Tools</a> conversion section — <a href="/pdf-to-jpg">PDF to JPG</a>, <a href="/jpg-to-pdf">JPG to PDF</a>, and related tools cover that direction.</p>
+</div>
+
 <div class="browse-tools">
   <a href="/pdf-tools" class="main-btn">Looking for PDF tools? →</a>
 </div>
 
+{% endblock %}
+
+{% block jsonld %}
+{{ super() }}
+{% from "components/jsonld.html" import faqpage %}
+{{ faqpage([
+  {"q": "Do I need an account to use these tools?", "a": "No. Every tool works without signing up -- upload a photo, process it, download the result."},
+  {"q": "Is there a file size limit?", "a": "Yes, uploads are capped at 20MB, the same as our PDF tools."},
+  {"q": "Are my photos kept after processing?", "a": "No. Uploaded files and generated results are deleted from our server automatically within minutes."},
+  {"q": "Can I use these on a PDF instead of a photo?", "a": "These tools work on standalone images. To get images out of a PDF or turn images into a PDF, see the PDF Tools conversion section instead."}
+]) }}
 {% endblock %}

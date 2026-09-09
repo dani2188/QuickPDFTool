@@ -1,4 +1,5 @@
 {% extends "base.html" %} {% block title %}Delete PDF Pages{% endblock %} {%
+block description %}Remove specific pages from a PDF file online. Free, no signup.{% endblock %} {%
 block content %}
 
 <h1>Delete PDF Pages</h1>
@@ -29,19 +30,49 @@ block content %}
   <h2>Delete Pages from a PDF</h2>
 
   <p>
-    Remove unwanted pages from your PDF file quickly and easily. This tool helps
-    you clean documents by deleting blank pages or unnecessary content.
+    Remove specific pages from a PDF — blank scans, duplicate sheets, or
+    sections you don't want to share — by typing their page numbers. The rest
+    of the document stays exactly as it was, and you download a new PDF with
+    just those pages taken out.
   </p>
 
   <h2>How to delete pages from a PDF</h2>
 
   <ul class="steps">
     <li><span class="step-number">1</span> Upload your PDF</li>
-
-    <li><span class="step-number">2</span> Enter the page numbers to remove</li>
-
-    <li><span class="step-number">3</span> Download the updated PDF</li>
+    <li><span class="step-number">2</span> Enter the page numbers to remove, separated by commas (e.g. 2,5,7)</li>
+    <li><span class="step-number">3</span> Click Delete Pages</li>
+    <li><span class="step-number">4</span> Download the updated PDF</li>
   </ul>
+
+  <h2>When to use this tool</h2>
+
+  <p><strong>Blank scanner pages:</strong> Scanners often insert a blank page between documents — delete those before sharing.</p>
+  <p><strong>Removing sensitive sections:</strong> Drop a page containing information you don't want to include before sending a document on.</p>
+  <p><strong>Trimming duplicates:</strong> Remove a page that was accidentally scanned or included twice.</p>
+
+  <h2>Important considerations</h2>
+
+  <p>
+    Page numbers must be entered individually and separated by commas (e.g.
+    <code>2,5,7</code>) — page ranges like <code>2-5</code> aren't supported,
+    so list each page number you want removed. Numbering starts at 1, matching
+    the page numbers you'd see in a PDF viewer.
+  </p>
+
+  <h2>Frequently Asked Questions</h2>
+
+  <h3>Can I enter a range of pages, like 2-5?</h3>
+  <p>Not currently — list each page number individually, separated by commas (e.g. 2,3,4,5).</p>
+
+  <h3>Does page numbering start at 0 or 1?</h3>
+  <p>Page 1 is the first page, matching what you'd see in any PDF viewer.</p>
+
+  <h3>Will deleting pages affect the quality of the remaining pages?</h3>
+  <p>No. The remaining pages are copied over unchanged — only the specified pages are removed.</p>
+
+  <h3>Is there a limit to how many pages I can delete at once?</h3>
+  <p>No, you can delete as many pages as you like in a single pass, as long as the file stays under the 20MB upload limit.</p>
 </div>
 <div class="more-tools">
   <h3>More PDF Tools</h3>
@@ -64,4 +95,9 @@ block content %}
 
 {% endblock %}
 
-{% block jsonld %}{% from "components/jsonld.html" import webapp %}{{ webapp(self.title(), self.description(), request.path) }}{% endblock %}
+{% block jsonld %}{% from "components/jsonld.html" import webapp, faqpage %}{{ webapp(self.title(), self.description(), request.path) }}{{ faqpage([
+  {"q": "Can I enter a range of pages, like 2-5?", "a": "Not currently — list each page number individually, separated by commas (e.g. 2,3,4,5)."},
+  {"q": "Does page numbering start at 0 or 1?", "a": "Page 1 is the first page, matching what you'd see in any PDF viewer."},
+  {"q": "Will deleting pages affect the quality of the remaining pages?", "a": "No. The remaining pages are copied over unchanged — only the specified pages are removed."},
+  {"q": "Is there a limit to how many pages I can delete at once?", "a": "No, you can delete as many pages as you like in a single pass, as long as the file stays under the 20MB upload limit."}
+]) }}{% endblock %}

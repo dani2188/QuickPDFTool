@@ -1,4 +1,4 @@
-{% extends "base.html" %} {% block content %}
+{% extends "base.html" %} {% block title %}Remove Watermark from PDF Online{% endblock %} {% block description %}Remove watermark text or overlays from a PDF. Free, no signup.{% endblock %} {% block content %}
 
 <h1>Remove Watermark from PDF</h1>
 <p class="subtitle">Remove watermark text or overlays from your PDF files.</p>
@@ -31,25 +31,52 @@
   <h2>Remove Watermark from PDF Online</h2>
 
   <p>
-    This tool allows you to remove watermark overlays from PDF files. It helps
-    clean up documents for reuse, sharing, or editing.
+    Clean up a PDF's page content to strip out watermark overlays and
+    redundant content streams. Useful when you need a tidier copy of a
+    document for reuse, sharing, or further editing.
   </p>
 
-  <h3>How to remove watermark</h3>
+  <h2>How it works</h2>
 
   <ul class="steps">
-    <li><span class="step-number">1</span> Upload PDF</li>
-    <li><span class="step-number">2</span> Click "Remove Watermark"</li>
-    <li><span class="step-number">3</span> Download cleaned PDF</li>
+    <li><span class="step-number">1</span> Upload your PDF</li>
+    <li><span class="step-number">2</span> Click Remove Watermark</li>
+    <li><span class="step-number">3</span> Download the cleaned PDF</li>
   </ul>
 
-  <h3>Why use this tool?</h3>
+  <h2>When to use this tool</h2>
 
-  <ul class="benefits">
-    <li>Remove unwanted text overlays</li>
-    <li>Clean documents quickly</li>
-    <li>Fast and secure processing</li>
-  </ul>
+  <p><strong>Cleaning up shared documents:</strong> Remove leftover overlay text from a document before repurposing it.</p>
+  <p><strong>Reusing content:</strong> Strip overlays so a document reads cleanly when reused elsewhere.</p>
+
+  <h2>Important considerations</h2>
+
+  <p>
+    This tool works by cleaning and normalizing the PDF's internal content
+    streams — it's most effective on watermarks that were added as simple text
+    or vector overlays (including watermarks added with our own
+    <a href="/add-watermark">Add Watermark tool</a>). It does not perform OCR
+    or image editing, so a watermark baked into a scanned image (i.e. part of
+    the image pixels themselves, not a separate overlay) won't be removed.
+    Results can vary depending on how the original watermark was applied.
+  </p>
+
+  <h2>Frequently Asked Questions</h2>
+
+  <h3>Will this remove any watermark?</h3>
+  <p>It's most effective on text or vector overlays added as separate PDF content, like those from our Add Watermark tool. A watermark burned into a scanned image's pixels can't be removed this way.</p>
+
+  <h3>Will removing a watermark affect the rest of my document?</h3>
+  <p>The tool only cleans up overlay content — the underlying text and images in your document are preserved.</p>
+
+  <h3>Can I add a watermark back afterward?</h3>
+  <p>Yes — use the <a href="/add-watermark">Add Watermark tool</a> to stamp new text onto the cleaned file.</p>
+
+  <h3>Is this legal to use on any document?</h3>
+  <p>Only remove watermarks from documents you own or have the right to modify. Removing a watermark from copyrighted or licensed material without permission may violate its terms.</p>
+
+  <h3>Are my files kept private?</h3>
+  <p>Yes. Your uploaded file is processed and automatically deleted from our server within a few minutes.</p>
 
   <h3>More PDF Tools</h3>
 
@@ -67,4 +94,10 @@
 
 {% endblock %}
 
-{% block jsonld %}{% from "components/jsonld.html" import webapp %}{{ webapp(self.title(), self.description(), request.path) }}{% endblock %}
+{% block jsonld %}{% from "components/jsonld.html" import webapp, faqpage %}{{ webapp(self.title(), self.description(), request.path) }}{{ faqpage([
+  {"q": "Will this remove any watermark?", "a": "It's most effective on text or vector overlays added as separate PDF content, like those from our Add Watermark tool. A watermark burned into a scanned image's pixels can't be removed this way."},
+  {"q": "Will removing a watermark affect the rest of my document?", "a": "The tool only cleans up overlay content — the underlying text and images in your document are preserved."},
+  {"q": "Can I add a watermark back afterward?", "a": "Yes — use the Add Watermark tool to stamp new text onto the cleaned file."},
+  {"q": "Is this legal to use on any document?", "a": "Only remove watermarks from documents you own or have the right to modify. Removing a watermark from copyrighted or licensed material without permission may violate its terms."},
+  {"q": "Are my files kept private?", "a": "Yes. Your uploaded file is processed and automatically deleted from our server within a few minutes."}
+]) }}{% endblock %}

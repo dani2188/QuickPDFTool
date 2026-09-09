@@ -1,9 +1,9 @@
-{% extends "base.html" %} {% block content %}
+{% extends "base.html" %} {% block title %}Convert PDF to PNG Online – Free PDF to PNG Converter{% endblock %} {% block description %}Convert PDF pages into high-quality PNG images. Each page becomes its own lossless PNG, bundled as a ZIP — free, no signup.{% endblock %} {% block content %}
 
 <h1>Convert PDF to PNG</h1>
 
 <p class="subtitle">
-  Convert your PDF pages into high-quality PNG images online.
+  Turn each page of a PDF into a sharp, lossless PNG image.
 </p>
 
 <form method="POST" enctype="multipart/form-data">
@@ -27,34 +27,92 @@
   <button class="main-btn">Convert to PNG</button>
 </form>
 
-<!-- SEO CONTENT -->
+<p>
+  Need help? Read our
+  <a href="/how-to-pdf-to-png">guide on converting PDF to PNG</a>.
+</p>
+
 <div class="seo-content">
   <h2>PDF to PNG Converter</h2>
 
   <p>
-    This free online tool allows you to convert PDF files into PNG images. Each
-    page of your document will be converted into a high-quality image.
+    This tool renders every page of your PDF as a separate PNG image and packages them into a single
+    ZIP file to download, along with individual download links for each page. PNG is a lossless format,
+    so text, line art, and sharp edges come out crisp — nothing is compressed away the way it would be
+    with a JPG.
   </p>
 
   <p>
-    No installation required. Upload your PDF, convert it instantly, and
-    download your images.
+    Each page is rendered at 2× the PDF's native resolution, which keeps small text and fine detail
+    readable when you zoom in, without producing an unnecessarily huge file for a typical document page.
+    To keep processing fast, only the first 20 pages of a document are converted — for longer files,
+    use <a href="/split-pdf">Split PDF</a> first to break it into smaller sections.
   </p>
-</div>
 
-<!-- MORE TOOLS -->
-<div class="more-tools">
-  <h3>More PDF Tools</h3>
+  <h2>How it works</h2>
+  <ul class="steps">
+    <li><span class="step-number">1</span> Upload your PDF</li>
+    <li><span class="step-number">2</span> Every page is rendered as a PNG image</li>
+    <li><span class="step-number">3</span> Download the ZIP, or grab individual pages</li>
+  </ul>
 
+  <h2>When to use PDF to PNG instead of PDF to JPG</h2>
+  <ul class="benefits">
+    <li><strong>Documents with text or line art:</strong> PNG's lossless compression keeps edges sharp — JPG can introduce visible blur or blocky artifacts around text and thin lines.</li>
+    <li><strong>Diagrams, charts, and screenshots</strong> embedded in a PDF: PNG preserves flat colors and sharp boundaries much better than JPG's photo-oriented compression.</li>
+    <li><strong>You need transparency later:</strong> if you plan to edit the exported image and remove its background, PNG supports transparency; JPG never does.</li>
+    <li><strong>File size matters more than quality:</strong> for ordinary photos or scanned pages where some compression is fine, <a href="/pdf-to-jpg">PDF to JPG</a> produces smaller files.</li>
+  </ul>
+
+  <h2>Frequently Asked Questions</h2>
+
+  <h3>Why is my PNG file larger than I expected?</h3>
+  <p>
+    PNG is lossless, so it doesn't discard image data the way JPG does — this keeps quality high but
+    means file sizes are naturally bigger, especially for pages with photos or complex color gradients.
+    If size matters more than pixel-perfect quality, <a href="/pdf-to-jpg">PDF to JPG</a> will produce
+    smaller files from the same document.
+  </p>
+
+  <h3>Is there a page limit?</h3>
+  <p>
+    Yes — only the first 20 pages of a document are converted, to keep processing fast for everyone.
+    For a longer document, split it into sections first with <a href="/split-pdf">Split PDF</a> and
+    convert each part.
+  </p>
+
+  <h3>Can I download just one page instead of the whole ZIP?</h3>
+  <p>
+    Yes. The results page gives you a "download all" ZIP button as well as an individual download link
+    for every page.
+  </p>
+
+  <h3>Will the PNGs have a transparent background?</h3>
+  <p>
+    No. Pages are rendered as a flat image of exactly what's on the page, including its background —
+    there's no automatic transparency added. If you need a transparent background, use
+    <a href="/remove-background">Remove Background</a> on the exported PNG afterward.
+  </p>
+
+  <h2>More PDF Tools</h2>
   <div class="tools-mini-grid">
-    <a href="/compress-pdf">Compress PDF</a>
-    <a href="/merge-pdf">Merge PDF</a>
-    <a href="/split-pdf">Split PDF</a>
     <a href="/pdf-to-jpg">PDF to JPG</a>
-    <a href="/pdf-to-webp">PDF to WEBP</a>
+    <a href="/pdf-to-webp">PDF to WebP</a>
+    <a href="/png-to-pdf">PNG to PDF</a>
+    <a href="/compress-pdf">Compress PDF</a>
+    <a href="/split-pdf">Split PDF</a>
   </div>
 </div>
 
 {% endblock %}
 
-{% block jsonld %}{% from "components/jsonld.html" import webapp %}{{ webapp(self.title(), self.description(), request.path) }}{% endblock %}
+{% block jsonld %}
+{% from "components/jsonld.html" import webapp, faqpage %}
+{{ webapp(self.title(), self.description(), request.path) }}
+{{ faqpage([
+  {"q": "Why is my PNG file larger than I expected?", "a": "PNG is lossless, so it doesn't discard image data the way JPG does -- quality stays high but file size is naturally bigger, especially for photo-heavy pages."},
+  {"q": "Is there a page limit?", "a": "Yes, only the first 20 pages of a document are converted. For a longer document, split it into sections first with Split PDF."},
+  {"q": "Can I download just one page instead of the whole ZIP?", "a": "Yes. The results page gives you a download-all ZIP button as well as an individual download link for every page."},
+  {"q": "Will the PNGs have a transparent background?", "a": "No, pages are rendered as a flat image including their existing background. Use Remove Background on the exported PNG afterward if you need transparency."}
+]) }}
+{% endblock %}

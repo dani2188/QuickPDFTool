@@ -1,9 +1,10 @@
-{% extends "base.html" %} {% block title %}JPG to PDF Converter{% endblock %} {%
-block content %}
+{% extends "base.html" %} {% block title %}JPG to PDF Converter – Combine Images into One PDF{% endblock %} {% block description %}Combine one or more JPG or PNG images into a single PDF, in the order you upload them. Free, no signup, no watermark.{% endblock %}
+
+{% block content %}
 
 <h1>JPG to PDF</h1>
 
-<p class="subtitle">Convert JPG images into a PDF document.</p>
+<p class="subtitle">Combine one or more photos into a single PDF document.</p>
 
 <form method="POST" enctype="multipart/form-data">
   {% set button_text="Select Images" %} {% set input_name="images" %} {% set
@@ -23,44 +24,85 @@ block content %}
   <h2>Convert JPG to PDF Online</h2>
 
   <p>
-    This free JPG to PDF converter allows you to combine images into a single
-    PDF document. It is useful for creating documents from scanned images,
-    photos, or screenshots.
+    This tool combines one or more images into a single PDF document, with each image placed on its own
+    page in the order you select them. Despite the name, it also accepts PNG files, so you can mix
+    photos and screenshots in the same batch — useful for turning a set of scanned pages, receipts, or
+    photographed documents into one shareable PDF instead of a folder of loose image files.
+  </p>
+
+  <p>
+    Each image becomes one PDF page at its own size — there's no cropping, stretching, or resizing to a
+    common page format, so a mix of portrait and landscape photos will produce a PDF with pages of
+    different dimensions. If you need every page the same size, resize your images first with our
+    <a href="/resize-image">Resize Image tool</a>.
   </p>
 
   <h2>How to convert JPG to PDF</h2>
 
   <ul class="steps">
-    <li><span class="step-number">1</span> Upload your JPG images</li>
-
+    <li><span class="step-number">1</span> Select the images you want to combine</li>
     <li><span class="step-number">2</span> Click Convert</li>
-
     <li><span class="step-number">3</span> Download the generated PDF</li>
   </ul>
-</div>
-<div class="more-tools">
-  <h3>More PDF Tools</h3>
 
+  <h2>Important considerations</h2>
+  <ul class="benefits">
+    <li><strong>Upload order is page order.</strong> The first image you select becomes page 1. On most browsers, selecting files in a file picker preserves the order you click them in — check the result and re-do the upload if the order comes out wrong.</li>
+    <li><strong>Transparent PNGs lose their transparency.</strong> PDF pages don't support transparency, so any transparent areas in a PNG are filled with a solid color rather than staying see-through.</li>
+    <li><strong>No compression is applied.</strong> Images are embedded at their original quality, so a batch of large, high-resolution photos will produce a correspondingly large PDF. Run the result through <a href="/compress-pdf">Compress PDF</a> afterward if the file needs to be smaller.</li>
+  </ul>
+
+  <h2>Frequently Asked Questions</h2>
+
+  <h3>Can I combine JPG and PNG files in the same PDF?</h3>
+  <p>
+    Yes. Select both formats in the same upload and each one becomes its own page, in the order you
+    selected them.
+  </p>
+
+  <h3>Will my images be resized to fit a standard page size?</h3>
+  <p>
+    No. Each page in the output PDF matches the pixel dimensions of its source image, so mixed-orientation
+    or mixed-size photos produce a PDF with different-sized pages rather than being cropped or padded to
+    match.
+  </p>
+
+  <h3>Does this reduce my images' file size?</h3>
+  <p>
+    No — images are embedded at their original quality with no compression applied. If the resulting PDF
+    is too large to send, run it through <a href="/compress-pdf">Compress PDF</a> or
+    <a href="/compress-pdf-for-email">Compress PDF for Email</a> afterward.
+  </p>
+
+  <h3>Is there a limit on how many images I can combine?</h3>
+  <p>
+    There's no fixed count, but the total upload is capped at 20MB, consistent with our other tools.
+  </p>
+
+  <h2>More PDF Tools</h2>
   <div class="tools-mini-grid">
     <a href="/compress-pdf">Compress PDF</a>
-
     <a href="/merge-pdf">Merge PDF</a>
-
     <a href="/split-pdf">Split PDF</a>
-
     <a href="/pdf-to-jpg">PDF to JPG</a>
-
-    <a href="/rotate-pdf">Rotate PDF</a>
-
     <a href="/svg-to-pdf">SVG to PDF</a>
-
     <a href="/compress-jpg">Compress JPG</a>
   </div>
 </div>
+
 <div class="browse-tools">
   <a href="/pdf-tools" class="main-btn">View All Tools</a>
 </div>
 
 {% endblock %}
 
-{% block jsonld %}{% from "components/jsonld.html" import webapp %}{{ webapp(self.title(), self.description(), request.path) }}{% endblock %}
+{% block jsonld %}
+{% from "components/jsonld.html" import webapp, faqpage %}
+{{ webapp(self.title(), self.description(), request.path) }}
+{{ faqpage([
+  {"q": "Can I combine JPG and PNG files in the same PDF?", "a": "Yes. Select both formats in the same upload and each becomes its own page, in the order selected."},
+  {"q": "Will my images be resized to fit a standard page size?", "a": "No. Each page matches the pixel dimensions of its source image, so mixed-size photos produce a PDF with different-sized pages."},
+  {"q": "Does this reduce my images' file size?", "a": "No, images are embedded at original quality. Use Compress PDF afterward if the file needs to be smaller."},
+  {"q": "Is there a limit on how many images I can combine?", "a": "No fixed count, but the total upload is capped at 20MB."}
+]) }}
+{% endblock %}

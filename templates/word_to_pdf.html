@@ -1,10 +1,10 @@
-{% extends "base.html" %} {% block title %}Word to PDF Converter{% endblock %}
-{% block description %} Convert Word documents (DOCX) to PDF online for free. {%
+{% extends "base.html" %} {% block title %}Word to PDF Converter – Convert DOC/DOCX to PDF Online{% endblock %}
+{% block description %} Convert a Word document (.doc or .docx) to PDF online, using a real document converter that preserves layout, fonts, and formatting. Free, no signup. {%
 endblock %} {% block content %}
 
 <h1>Word to PDF</h1>
 
-<p class="subtitle">Convert Word documents into high-quality PDF files.</p>
+<p class="subtitle">Convert a Word document into a PDF, preserving its layout and formatting.</p>
 
 <form method="POST" enctype="multipart/form-data">
   {% set button_text="Select Word Document" %} {% set input_name="docx" %} {%
@@ -25,43 +25,67 @@ endblock %} {% block content %}
   <h2>Convert Word to PDF Online</h2>
 
   <p>
-    Use this free Word to PDF converter to transform DOCX documents into
-    professional PDF files. PDF format ensures compatibility across devices and
-    preserves formatting.
+    This tool converts a .doc or .docx file to PDF using the same rendering engine a full office suite
+    uses, rather than a simplified text-only conversion — so fonts, images, tables, headers/footers, and
+    page layout carry over the way they would if you'd used "Save as PDF" in a desktop word processor.
+  </p>
+
+  <p>
+    Converting to PDF is usually the right move once a document is finished: unlike a .docx file, a PDF
+    displays identically on every device and every reader, regardless of which fonts or software the
+    recipient has installed — nothing reflows or shifts.
   </p>
 
   <h2>How to convert Word to PDF</h2>
 
   <ul class="steps">
-    <li>
-      <span class="step-number">1</span>
-      Upload your Word document
-    </li>
-
-    <li>
-      <span class="step-number">2</span>
-      Click Convert
-    </li>
-
-    <li>
-      <span class="step-number">3</span>
-      Download the PDF file
-    </li>
+    <li><span class="step-number">1</span> Upload your Word document (.doc or .docx)</li>
+    <li><span class="step-number">2</span> Click Convert</li>
+    <li><span class="step-number">3</span> Download the PDF file</li>
   </ul>
-</div>
-<div class="more-tools">
-  <h3>More PDF Tools</h3>
+
+  <h2>When to use this</h2>
+  <ul class="benefits">
+    <li>Sending a finished document (resume, report, contract) so it looks identical for the recipient regardless of their software</li>
+    <li>Submitting a document to a portal or form that specifically requires PDF</li>
+    <li>Archiving a document in a format that won't shift or reflow if opened years later in different software</li>
+  </ul>
+
+  <h2>Important considerations</h2>
+  <ul class="benefits">
+    <li><strong>Complex layouts convert best when kept simple.</strong> Straightforward documents (text, standard tables, images) convert cleanly. Very elaborate layouts, embedded objects, or unusual fonts not available during conversion can occasionally render slightly differently than in the original.</li>
+    <li><strong>Once it's a PDF, it's not a Word document anymore.</strong> The output isn't editable text the way the original .docx was — if you need to keep editing, keep working in Word and only convert the final version.</li>
+    <li><strong>Fonts embedded in the original document</strong> generally carry over correctly, since the conversion renders the document as it actually appears rather than re-typesetting it.</li>
+  </ul>
+
+  <h2>Frequently Asked Questions</h2>
+
+  <h3>Will my formatting and fonts be preserved?</h3>
+  <p>
+    Yes, in almost all cases — this uses a real document-rendering engine rather than a simplified
+    text extractor, so layout, fonts, tables, and images convert the way they'd look if printed from
+    Word directly. Extremely unusual layouts or rare fonts can occasionally shift slightly.
+  </p>
+
+  <h3>Can I edit the PDF afterward?</h3>
+  <p>
+    Not as text the way you could in Word. If you need to add a note or signature, use
+    <a href="/add-text-to-pdf">Add Text to PDF</a> or <a href="/sign-pdf">Sign PDF</a> afterward — for
+    substantial edits, it's easier to edit the original Word document and re-convert.
+  </p>
+
+  <h3>Does this work with both .doc and .docx?</h3>
+  <p>
+    Yes, both older .doc and modern .docx formats are accepted.
+  </p>
+
+  <h2>More PDF Tools</h2>
 
   <div class="tools-mini-grid">
+    <a href="/pdf-to-word">PDF to Word</a>
     <a href="/compress-pdf">Compress PDF</a>
-
     <a href="/merge-pdf">Merge PDF</a>
-
-    <a href="/split-pdf">Split PDF</a>
-
-    <a href="/pdf-to-jpg">PDF to JPG</a>
-
-    <a href="/rotate-pdf">Rotate PDF</a>
+    <a href="/add-text-to-pdf">Add Text to PDF</a>
   </div>
 </div>
 <div class="browse-tools">
@@ -70,4 +94,12 @@ endblock %} {% block content %}
 
 {% endblock %}
 
-{% block jsonld %}{% from "components/jsonld.html" import webapp %}{{ webapp(self.title(), self.description(), request.path) }}{% endblock %}
+{% block jsonld %}
+{% from "components/jsonld.html" import webapp, faqpage %}
+{{ webapp(self.title(), self.description(), request.path) }}
+{{ faqpage([
+  {"q": "Will my formatting and fonts be preserved?", "a": "Yes, in almost all cases -- this uses a real document-rendering engine, so layout, fonts, tables, and images convert as they'd look printed from Word directly."},
+  {"q": "Can I edit the PDF afterward?", "a": "Not as text. For substantial edits, edit the original Word document and re-convert; for small additions use Add Text to PDF or Sign PDF."},
+  {"q": "Does this work with both .doc and .docx?", "a": "Yes, both older .doc and modern .docx formats are accepted."}
+]) }}
+{% endblock %}

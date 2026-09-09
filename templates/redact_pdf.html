@@ -121,6 +121,41 @@
     permanent — the covered content is removed from the page data, not just hidden underneath a shape.
   </p>
 
+  <h3>Important considerations</h3>
+  <ul class="benefits">
+    <li><strong>Black is the most secure style.</strong> It leaves no visual trace of what was underneath. Blur and pixelate keep a hint of the original (useful for photos or signatures) while still permanently deleting the underlying data.</li>
+    <li><strong>Redaction can't be undone after download.</strong> Once you apply it and download the result, the covered content is gone from that file for good — keep your original, unredacted PDF if you might need the information again later.</li>
+    <li><strong>You draw the boxes yourself.</strong> This tool doesn't automatically detect sensitive information like names or numbers — you position each redaction box manually over what needs to be hidden, so double-check every page before applying.</li>
+  </ul>
+
+  <h3>Frequently Asked Questions</h3>
+
+  <h4>Is the hidden content really gone, or just covered up?</h4>
+  <p>
+    Really gone. The text or image data inside each redaction box is deleted from the page itself, not
+    just hidden beneath a black shape — it can't be recovered by selecting text, copying, or editing
+    the PDF.
+  </p>
+
+  <h4>Which style should I use — black, white, blur, or pixelate?</h4>
+  <p>
+    Black is the most secure and the default choice. White works better on forms with a light
+    background. Blur and pixelate are useful when you want to obscure something like a face or
+    signature while keeping a visual sense that something was there.
+  </p>
+
+  <h4>Can I redact multiple pages at once?</h4>
+  <p>
+    Yes. Navigate between pages using Previous/Next and add redaction boxes on as many pages as you
+    need — everything is applied together when you click "Apply Redaction &amp; Download."
+  </p>
+
+  <h4>Does this automatically find sensitive information for me?</h4>
+  <p>
+    No. You draw each redaction box yourself over the text or image you want removed — there's no
+    automatic detection of names, numbers, or other sensitive data.
+  </p>
+
   <h3>More PDF Tools</h3>
   <div class="tools-mini-grid">
     <a href="/sign-pdf">Sign PDF</a>
@@ -483,4 +518,13 @@
 
 {% endblock %}
 
-{% block jsonld %}{% from "components/jsonld.html" import webapp %}{{ webapp(self.title(), self.description(), request.path) }}{% endblock %}
+{% block jsonld %}
+{% from "components/jsonld.html" import webapp, faqpage %}
+{{ webapp(self.title(), self.description(), request.path) }}
+{{ faqpage([
+  {"q": "Is the hidden content really gone, or just covered up?", "a": "Really gone. The text or image data inside each redaction box is deleted from the page itself, not just hidden beneath a black shape."},
+  {"q": "Which style should I use -- black, white, blur, or pixelate?", "a": "Black is the most secure and the default. White suits light-background forms. Blur and pixelate obscure something like a face while keeping a visual hint it was there."},
+  {"q": "Can I redact multiple pages at once?", "a": "Yes. Add redaction boxes on as many pages as needed; everything applies together when you click Apply Redaction & Download."},
+  {"q": "Does this automatically find sensitive information for me?", "a": "No. You draw each redaction box yourself -- there's no automatic detection of names, numbers, or other sensitive data."}
+]) }}
+{% endblock %}

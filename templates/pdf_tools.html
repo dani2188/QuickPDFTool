@@ -6,12 +6,22 @@ online. {% endblock %} {% block content %}
 <h1>All PDF Tools</h1>
 
 <p class="subtitle">
-  Free tools to compress, convert, edit and organize PDF files.
+  Free tools to compress, convert, edit and organize PDF files — no signup, nothing installed.
 </p>
+
+<div class="seo-content" style="margin-bottom: var(--s4)">
+  <p>
+    Every tool below runs the same way: upload a file, the operation happens on our server, and you
+    download the result — the same day, no account, no watermark. They're grouped into four categories
+    below. If you're not sure which one you need, <a href="/blog">the guides</a> walk through specific
+    tasks step by step, and every tool page links to its own dedicated how-to guide and FAQ.
+  </p>
+</div>
 
 <!-- Compression -->
 
 <h2 class="tools-section">📦 PDF Compression</h2>
+<p class="subtitle" style="margin-bottom: var(--s3)">Shrink a PDF's file size for email, upload limits, or storage.</p>
 
 <div class="tools-grid">
   <a href="/compress-pdf" class="tool-card">📦 Compress PDF</a>
@@ -24,6 +34,7 @@ online. {% endblock %} {% block content %}
 <!-- Conversion -->
 
 <h2 class="tools-section">🔄 PDF Conversion</h2>
+<p class="subtitle" style="margin-bottom: var(--s3)">Turn a PDF into another format, or build one from images, Office files, or vector graphics.</p>
 
 <div class="tools-grid">
   <a href="/pdf-to-word" class="tool-card">📄 PDF to Word</a>
@@ -42,6 +53,7 @@ online. {% endblock %} {% block content %}
 <!-- Editing -->
 
 <h2 class="tools-section">✏️ PDF Editing</h2>
+<p class="subtitle" style="margin-bottom: var(--s3)">Combine, reorder, mark up, or clean up a document's pages.</p>
 
 <div class="tools-grid">
   <a href="/merge-pdf" class="tool-card">📑 Merge PDF</a>
@@ -59,6 +71,7 @@ online. {% endblock %} {% block content %}
 <!-- Security -->
 
 <h2 class="tools-section">🔒 PDF Security</h2>
+<p class="subtitle" style="margin-bottom: var(--s3)">Control who can open a document, or permanently hide part of what's in it.</p>
 
 <div class="tools-grid">
   <a href="/protect-pdf" class="tool-card">🔒 Protect PDF</a>
@@ -67,8 +80,35 @@ online. {% endblock %} {% block content %}
   <a href="/redact-pdf" class="tool-card">⬛ Redact PDF</a>
 </div>
 
+<div class="seo-content" style="margin-top: var(--s5)">
+  <h2>Frequently Asked Questions</h2>
+
+  <h3>Do I need an account to use these tools?</h3>
+  <p>No. Every tool here works without signing up — upload a file, process it, download the result.</p>
+
+  <h3>Is there a file size limit?</h3>
+  <p>Yes, uploads are capped at 20MB across every tool on this page. If your file is larger, compress it first with <a href="/compress-pdf">Compress PDF</a>.</p>
+
+  <h3>Are my files kept after processing?</h3>
+  <p>No. Uploaded files and generated results are automatically deleted from our server within minutes of processing.</p>
+
+  <h3>Which tool should I use if I'm not sure?</h3>
+  <p>Each tool's own page explains what it does and links to a full step-by-step guide with an FAQ. If you're working on a specific task rather than a specific format, <a href="/blog">the guides section</a> covers common situations like preparing a document for email or reducing file size.</p>
+</div>
+
 <div class="browse-tools">
   <a href="/image-tools" class="main-btn">Looking for image tools? →</a>
 </div>
 
+{% endblock %}
+
+{% block jsonld %}
+{{ super() }}
+{% from "components/jsonld.html" import faqpage %}
+{{ faqpage([
+  {"q": "Do I need an account to use these tools?", "a": "No. Every tool works without signing up -- upload a file, process it, download the result."},
+  {"q": "Is there a file size limit?", "a": "Yes, uploads are capped at 20MB across every tool. Compress large files first with Compress PDF."},
+  {"q": "Are my files kept after processing?", "a": "No. Uploaded files and generated results are automatically deleted from our server within minutes."},
+  {"q": "Which tool should I use if I'm not sure?", "a": "Each tool's page explains what it does and links to a step-by-step guide; the guides section covers common tasks by situation rather than by format."}
+]) }}
 {% endblock %}

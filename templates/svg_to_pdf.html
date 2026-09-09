@@ -51,6 +51,44 @@ Convert SVG vector graphics to PDF online for free. Combine multiple SVG files i
     <li><strong>Archiving designs:</strong> Icons, logos, and diagrams exported from design tools convert into a stable, self-contained document.</li>
   </ul>
 
+  <h2>Important considerations</h2>
+  <p>
+    SVG rendering support isn't 100% one-to-one with every SVG feature —
+    complex filters, gradients, or embedded fonts can occasionally render
+    slightly differently than they would in a browser. If a particular file
+    fails to convert, it's silently skipped rather than stopping the whole
+    batch, so check that every file you expected made it into the final PDF.
+  </p>
+
+  <h2>Frequently Asked Questions</h2>
+
+  <h3>Does it support complex SVG features like filters and gradients?</h3>
+  <p>
+    Most standard SVG features convert correctly, including paths, text, and
+    gradients. Very complex filter effects or unusual CSS styling can
+    occasionally render slightly differently than in a browser.
+  </p>
+
+  <h3>What happens if one of my SVG files fails to convert?</h3>
+  <p>
+    It's skipped, and the rest of your files continue to be combined into the
+    output PDF. If none of your files convert successfully, you'll get an
+    error instead of an empty PDF.
+  </p>
+
+  <h3>Does each SVG become its own page?</h3>
+  <p>
+    Yes. When you upload multiple SVG files, each one becomes a separate page
+    in the resulting PDF, in the order you uploaded them.
+  </p>
+
+  <h3>Are fonts embedded in the output PDF?</h3>
+  <p>
+    Text is converted using the fonts referenced in your SVG where available.
+    If a referenced font isn't available to the conversion engine, a
+    substitute font is used instead, which can shift text slightly.
+  </p>
+
   <h3>More PDF Tools</h3>
 
   <div class="tools-mini-grid">
@@ -67,4 +105,9 @@ Convert SVG vector graphics to PDF online for free. Combine multiple SVG files i
 
 {% endblock %}
 
-{% block jsonld %}{% from "components/jsonld.html" import webapp %}{{ webapp(self.title(), self.description(), request.path) }}{% endblock %}
+{% block jsonld %}{% from "components/jsonld.html" import webapp, faqpage %}{{ webapp(self.title(), self.description(), request.path) }}{{ faqpage([
+  {"q": "Does it support complex SVG features like filters and gradients?", "a": "Most standard SVG features convert correctly, including paths, text, and gradients. Very complex filter effects or unusual CSS styling can occasionally render slightly differently than in a browser."},
+  {"q": "What happens if one of my SVG files fails to convert?", "a": "It's skipped, and the rest of your files continue to be combined into the output PDF. If none of your files convert successfully, you'll get an error instead of an empty PDF."},
+  {"q": "Does each SVG become its own page?", "a": "Yes. When you upload multiple SVG files, each one becomes a separate page in the resulting PDF, in the order you uploaded them."},
+  {"q": "Are fonts embedded in the output PDF?", "a": "Text is converted using the fonts referenced in your SVG where available. If a referenced font isn't available, a substitute font is used instead, which can shift text slightly."}
+]) }}{% endblock %}
