@@ -1,0 +1,39 @@
+{# Breadcrumb navigation + matching BreadcrumbList JSON-LD.
+   items: list of {"label": ..., "url": ...} dicts, in order from Home to
+   the current page. The last item is rendered as the current page (no
+   link) in both the visible nav and the structured data. #}
+
+{% macro breadcrumb(items) -%}
+<nav class="breadcrumb" aria-label="Breadcrumb">
+  <ol>
+    {% for item in items %}
+    <li>
+      {% if not loop.last %}
+      <a href="{{ item.url }}">{{ item.label }}</a>
+      {% else %}
+      <span aria-current="page">{{ item.label }}</span>
+      {% endif %}
+    </li>
+    {% endfor %}
+  </ol>
+</nav>
+{%- endmacro %}
+
+{% macro breadcrumb_jsonld(items) -%}
+{% set ns = namespace(entries=[]) %}
+{% for item in items %}
+{% set _ = ns.entries.append({
+  "@type": "ListItem",
+  "position": loop.index,
+  "name": item.label,
+  "item": "https://hellobrivio.com" ~ item.url
+}) %}
+{% endfor %}
+<script type="application/ld+json">
+{{ {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": ns.entries
+} | tojson }}
+</script>
+{%- endmacro %}

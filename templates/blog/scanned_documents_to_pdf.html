@@ -1,0 +1,308 @@
+{% extends "base.html" %}
+
+{% block title %}Scanned Documents to PDF: Turning Phone Photos into One Clean File{% endblock %}
+
+{% block description %}
+A practical guide to turning photos of document pages into a single, usable PDF — preparing the photos, picking a format, combining pages in the right order, and keeping the file size reasonable.
+{% endblock %}
+
+{% block content %}
+
+{% from "components/breadcrumb.html" import breadcrumb %}
+{{ breadcrumb([
+  {"label": "Home", "url": "/"},
+  {"label": "Guides", "url": "/blog"},
+  {"label": "Scanned Documents to PDF", "url": "/blog/scanned-documents-to-pdf"}
+]) }}
+
+<article class="guide-article">
+
+<h1>Scanned Documents to PDF: Turning Phone Photos into One Clean File</h1>
+<p><em>Published September 2026</em></p>
+
+<p>
+It's a familiar situation: you need to send in a signed form, a set of receipts, or a multi-page
+contract, and all you have is a stack of paper and a phone camera. You photograph each page one by
+one, and now you've got six or seven separate image files where you need one document. Turning those
+photos into a single, presentable PDF is straightforward, but doing it carelessly produces exactly the
+kind of file that gets rejected by an upload portal or bounced by email: oversized, with pages in the
+wrong order, some sideways, some blurry.
+</p>
+
+<p>
+None of that is inevitable. A few minutes of care before you upload anything — and knowing which step
+actually matters — is the difference between a document that looks professional and one that looks
+like what it is: a pile of phone photos glued together. This guide walks through the process in order,
+explaining what each step actually does and why it matters, not just which buttons to click.
+</p>
+
+<h2>Start With Better Page Photos</h2>
+
+<p>
+Everything downstream depends on the quality of the original photos, and no conversion tool can add
+back detail that wasn't captured in the first place. A few minutes of care here saves rework later:
+</p>
+
+<ul class="benefits">
+  <li><strong>Get the page as flat as possible.</strong> A curled or folded page photographs with
+  distorted, blurry edges that stay distorted in the final PDF — flattening it first (a book laid open,
+  a binder clip, even just a firm hand) makes a bigger difference than any setting in a conversion
+  tool.</li>
+  <li><strong>Watch for glare.</strong> Glossy paper and overhead lights are a bad combination — a
+  bright reflected patch can wash out text so completely that it's unreadable in the final document,
+  and no downstream tool can recover text that glare has erased from the photo.</li>
+  <li><strong>Get close enough that the text is actually legible</strong> when you zoom in on the photo
+  itself. If you can't read a paragraph clearly in the original photo at full zoom, it won't be
+  readable in the PDF either — resizing or converting a photo never adds detail that wasn't captured.</li>
+  <li><strong>Keep the camera reasonably square to the page.</strong> A steep angle introduces
+  perspective distortion — text that's larger at one edge of the photo than the other. A photo taken
+  roughly straight-on, even if not perfectly centered, holds up far better.</li>
+  <li><strong>Photograph every page in the same orientation</strong> if you can — all portrait, or all
+  landscape. Mixing the two makes the final document awkward to read, since each page will need to be
+  turned a different way.</li>
+  <li><strong>Check each photo before you move on</strong> — zoom in, confirm the whole page is in
+  frame and the text is sharp. It's much faster to retake one photo now than to notice a blurry page
+  three pages deep in a finished PDF.</li>
+</ul>
+
+<p>
+One thing worth being clear about: none of the tools described below will straighten a crooked photo,
+sharpen a blurry one, or brighten a page that's mostly shadow. If a dedicated scanner app on your phone
+already does that kind of cleanup — many do — it's worth using it for the photo capture step itself.
+What comes next is about turning good photos into a clean, well-organized PDF, not about fixing bad
+ones.
+</p>
+
+<h2>Choose JPG or PNG</h2>
+
+<p>
+For a document you photographed with a phone camera, <strong>JPG is almost always the right choice.</strong>
+Photos are naturally full of the kind of subtle color and lighting variation JPG compresses well, and
+the file sizes stay manageable even for a dozen high-resolution pages. PNG is a lossless format built
+for flat colors and sharp edges — screenshots, logos, diagrams — and it does that job better than JPG,
+but a lossless copy of a photograph is mostly just a much larger file with no real benefit for a page
+of handwriting or printed text.
+</p>
+
+<p>
+PNG earns its place in this workflow in one specific case: if what you're photographing isn't really a
+"photo" at all — a screenshot of a document on another screen, or a diagram with flat colors and fine
+lines — PNG will keep those sharp edges cleaner than JPG's compression would. For an ordinary photographed
+page, stick with JPG and use <a href="/jpg-to-pdf">JPG to PDF</a>; if a page or two are screenshots or
+line art, <a href="/png-to-pdf">PNG to PDF</a> handles those the same way.
+</p>
+
+<h2>Convert the Photos Into PDF Pages</h2>
+
+<p>
+This is the step that actually produces your document, and it's worth understanding exactly what it
+does: <a href="/jpg-to-pdf">JPG to PDF</a> and <a href="/png-to-pdf">PNG to PDF</a> both accept multiple
+images in a single upload and combine all of them into one PDF, with each image becoming its own page
+in the order you selected them — you don't need to convert each photo separately and then stitch the
+results together. If you photographed seven pages, select all seven images at once and you'll get back
+one seven-page PDF.
+</p>
+
+<p>
+Two details matter here. First, <strong>the page order in the final PDF follows the order you select
+the files in</strong> — so if page order matters (and for a form or a contract, it does), take a moment
+to check the order your file picker selects things in before uploading, or select files one at a time
+in the order you want them to appear. Second, each photo becomes a page at its own original size —
+there's no cropping or automatic resizing to a uniform page dimension, so a portrait photo and a
+landscape photo end up as differently-shaped pages in the same document. That's exactly why keeping a
+consistent orientation while photographing (mentioned above) is worth doing.
+</p>
+
+<h2>Combine Separate PDFs When You Have Them</h2>
+
+<p>
+Because a single upload to JPG to PDF or PNG to PDF already produces one multi-page document, you often
+won't need a separate merging step at all. <a href="/merge-pdf">Merge PDF</a> becomes useful when you
+end up with more than one PDF that needs to become one — for example, you photographed some pages
+today and a few more tomorrow, or one page came from a scanner app as its own PDF while the rest came
+from your camera roll. In that situation, merge the resulting files in the order they should appear,
+and double-check afterward that every page you expect is actually present — it's an easy thing to miss
+when combining files from more than one source.
+</p>
+
+<h2>Resize Before or After?</h2>
+
+<p>
+Modern phone cameras often produce photos at 12 megapixels or more — far higher resolution than a page
+of text needs to be legible on a screen or in print. That matters here because the conversion tools
+above embed each image at its original resolution with no automatic resizing or compression, so a batch
+of full-resolution phone photos can add up to a surprisingly large PDF fast.
+</p>
+
+<p>
+<a href="/resize-image">Resize Image</a> lets you bring a photo's pixel dimensions down before you
+convert it — useful if your photos are noticeably larger than they need to be. It fits the image within
+the dimensions you choose while preserving its original proportions; it never crops or stretches the
+photo to force it into a different shape, so nothing gets cut off. It also automatically corrects the
+photo's orientation using the data most phone cameras record when the photo is taken — one small,
+genuine reason a photo can end up rotated correctly through this tool even if it looked sideways in a
+basic file browser. Note that it resizes one photo at a time, not a whole batch at once, so if you have
+several oversized pages, you'll want to run each through it individually before combining them.
+</p>
+
+<p>
+The tradeoff to understand: resizing <em>before</em> conversion tends to produce a smaller PDF from the
+start, since the conversion step itself does no compression of its own. Compressing <em>after</em> (see
+below) is the better tool for a corrective pass — shrinking a PDF that's already assembled and turned
+out larger than you need. You generally don't need to do both; pick whichever fits where you are in the
+process.
+</p>
+
+<h2>Compress the Final PDF When Needed</h2>
+
+<p>
+Once you have one assembled PDF, that's the right moment to check whether it's actually too large for
+where it's going. Email providers commonly cap attachments around 20–25MB, and plenty of upload portals
+— job applications, government forms, school systems — set limits far below that, sometimes just a
+few megabytes. A PDF built from several full-resolution photos can exceed either limit without looking
+obviously excessive.
+</p>
+
+<p>
+<a href="/compress-pdf">Compress PDF</a> reduces file size primarily by downsampling the embedded
+images — exactly the kind of content a photo-based PDF is made of, which is why this workflow tends to
+compress well. How much smaller it gets depends on the original photos, so it's worth trying a medium
+setting first and only going stronger if the result is still too large; there's no fixed number this
+guide can promise for every file.
+</p>
+
+<h2>Check the Final PDF</h2>
+
+<p>
+Before you send or submit the document, a quick pass through it catches almost every real problem in
+under a minute:
+</p>
+
+<ul class="benefits">
+  <li>Are all the pages you photographed actually present, in the right count?</li>
+  <li>Are they in the correct order, front to back?</li>
+  <li>Is every page right-side up — none sideways or upside down?</li>
+  <li>Is the text on every page actually readable when you zoom in, not just at a glance?</li>
+  <li>Is the file size reasonable for where you're sending it — under your email provider's or the
+  portal's limit?</li>
+  <li>Does the file open correctly in a PDF viewer, not just show as a broken or blank page?</li>
+</ul>
+
+<p>
+This checklist is worth keeping regardless of which tools you use to build the document — it's the same
+set of things worth confirming whether you assembled the PDF here or somewhere else entirely.
+</p>
+
+<h2>Common Mistakes</h2>
+
+<p>
+Most problems with a photo-based PDF trace back to one of a handful of avoidable mistakes:
+</p>
+
+<ul class="benefits">
+  <li><strong>Photographing a page at an angle.</strong> Perspective distortion from an angled shot
+  makes text harder to read and can't be corrected afterward by any of these tools.</li>
+  <li><strong>Uploading unnecessarily huge images.</strong> A batch of full-resolution photos produces a
+  bigger file than the document needs — resize first if this is a recurring issue for you.</li>
+  <li><strong>Mixing portrait and landscape pages</strong> in the same document without meaning to,
+  which makes the final PDF awkward to read on screen.</li>
+  <li><strong>Losing track of page order</strong> when selecting files, especially with a large batch —
+  double-check the order before uploading rather than after.</li>
+  <li><strong>Compressing too aggressively</strong> and ending up with text that's technically present
+  but hard to read — start with a moderate setting rather than the strongest one available.</li>
+  <li><strong>A sideways original photo staying sideways.</strong> If a photo looks rotated in a basic
+  file viewer, converting it to a PDF page won't straighten it out on its own — check orientation before
+  converting. If a page does come out sideways in the finished PDF, <a href="/rotate-pdf">Rotate PDF</a>
+  can fix it afterward, though it rotates every page in the file by the same amount, so it only helps
+  cleanly if every page needs the same correction.</li>
+  <li><strong>Assuming the text becomes searchable or selectable.</strong> This is the one worth
+  understanding clearly: turning a photo into a PDF page does not turn the picture of the text into
+  actual, selectable text. The page is still fundamentally an image — you can view it and print it, but
+  you can't search for a word in it or copy a sentence out of it. Making a document's text genuinely
+  searchable requires optical character recognition (OCR), a separate process that reads the letters in
+  an image and produces real text data. That's not something this workflow performs.</li>
+</ul>
+
+<h2>Frequently Asked Questions</h2>
+
+<h3>Can I turn several phone photos into one PDF?</h3>
+<p>
+Yes — upload all the photos together to <a href="/jpg-to-pdf">JPG to PDF</a> (or
+<a href="/png-to-pdf">PNG to PDF</a>) in a single batch, and they're combined into one PDF with each
+photo as its own page, in the order you selected them. You don't need to convert them one at a time.
+</p>
+
+<h3>Should I use JPG or PNG for photographed documents?</h3>
+<p>
+JPG, for almost every case — it's built for photographic detail and keeps file sizes reasonable. PNG is
+only worth using if what you're capturing is a screenshot or a flat-color graphic rather than an actual
+photograph of a page.
+</p>
+
+<h3>Does converting a photo to PDF make the text searchable?</h3>
+<p>
+No. The page is still an image of text, not real text — you can't select or search it. Making text
+genuinely searchable requires OCR, which is a separate process this workflow does not perform.
+</p>
+
+<h3>Should I resize photos before creating the PDF?</h3>
+<p>
+It's worth doing if your phone photos are noticeably high-resolution, since the conversion step embeds
+images at their original size with no resizing of its own. Resizing first tends to produce a smaller
+PDF from the start; if you'd rather deal with size after everything's assembled, compressing the
+finished PDF is the more direct fix at that stage.
+</p>
+
+<h3>Should I compress the PDF after combining the pages?</h3>
+<p>
+If the finished file is larger than your email provider or upload destination allows, yes — compression
+is usually more effective at this stage than trying to catch it earlier, since it works on the whole
+assembled document at once.
+</p>
+
+<h3>Why is my photo-based PDF so large?</h3>
+<p>
+Because each page is a full photograph rather than typed text, and phone cameras often capture far more
+resolution than a document page actually needs to be legible. A handful of high-resolution photos adds
+up quickly compared to a digitally-created, text-based PDF of the same length.
+</p>
+
+<h2>Related Tools</h2>
+<div class="tools-mini-grid">
+  <a href="/jpg-to-pdf">JPG to PDF</a>
+  <a href="/png-to-pdf">PNG to PDF</a>
+  <a href="/merge-pdf">Merge PDF</a>
+  <a href="/resize-image">Resize Image</a>
+  <a href="/compress-pdf">Compress PDF</a>
+  <a href="/rotate-pdf">Rotate PDF</a>
+</div>
+
+<h2>Related Guides</h2>
+<ul>
+  <li><a href="/blog/pdf-file-size-explained">Why Is My PDF So Large?</a> — a deeper look at what makes
+  scanned and photo-based PDFs specifically the largest kind of file, and when compression helps most.</li>
+</ul>
+
+</article>
+
+{% endblock %}
+
+{% block jsonld %}
+{{ super() }}
+{% from "components/jsonld.html" import article, faqpage %}
+{% from "components/breadcrumb.html" import breadcrumb_jsonld %}
+{{ article(self.title(), self.description(), request.path, "2026-09-10") }}
+{{ faqpage([
+  {"q": "Can I turn several phone photos into one PDF?", "a": "Yes -- upload all the photos together to JPG to PDF (or PNG to PDF) in a single batch, and they're combined into one PDF with each photo as its own page, in the order you selected them. You don't need to convert them one at a time."},
+  {"q": "Should I use JPG or PNG for photographed documents?", "a": "JPG, for almost every case -- it's built for photographic detail and keeps file sizes reasonable. PNG is only worth using if what you're capturing is a screenshot or a flat-color graphic rather than an actual photograph of a page."},
+  {"q": "Does converting a photo to PDF make the text searchable?", "a": "No. The page is still an image of text, not real text -- you can't select or search it. Making text genuinely searchable requires OCR, which is a separate process this workflow does not perform."},
+  {"q": "Should I resize photos before creating the PDF?", "a": "It's worth doing if your phone photos are noticeably high-resolution, since the conversion step embeds images at their original size with no resizing of its own. Resizing first tends to produce a smaller PDF from the start; compressing the finished PDF is the more direct fix if you'd rather deal with size after everything's assembled."},
+  {"q": "Should I compress the PDF after combining the pages?", "a": "If the finished file is larger than your email provider or upload destination allows, yes -- compression is usually more effective at this stage than trying to catch it earlier, since it works on the whole assembled document at once."},
+  {"q": "Why is my photo-based PDF so large?", "a": "Because each page is a full photograph rather than typed text, and phone cameras often capture far more resolution than a document page actually needs to be legible. A handful of high-resolution photos adds up quickly compared to a digitally-created, text-based PDF of the same length."}
+]) }}
+{{ breadcrumb_jsonld([
+  {"label": "Home", "url": "/"},
+  {"label": "Guides", "url": "/blog"},
+  {"label": "Scanned Documents to PDF", "url": "/blog/scanned-documents-to-pdf"}
+]) }}
+{% endblock %}

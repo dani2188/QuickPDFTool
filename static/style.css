@@ -575,6 +575,52 @@ input[type="radio"] {
 }
 
 /* ============================================================= */
+/* BREADCRUMB                                                    */
+/* ============================================================= */
+
+.breadcrumb {
+  max-width: var(--maxw);
+  margin: 0 auto var(--s2);
+  font-size: 14px;
+}
+
+.breadcrumb ol {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.breadcrumb li {
+  display: flex;
+  align-items: center;
+}
+
+.breadcrumb li:not(:first-child)::before {
+  content: "\203A";
+  color: var(--muted);
+  margin: 0 6px;
+}
+
+.breadcrumb a {
+  color: var(--muted);
+  min-height: var(--tap);
+  display: inline-flex;
+  align-items: center;
+}
+
+.breadcrumb a:hover {
+  color: var(--brand);
+  text-decoration: underline;
+}
+
+.breadcrumb [aria-current="page"] {
+  color: var(--text);
+}
+
+/* ============================================================= */
 /* SEO CONTENT / STEPS / BENEFITS                                */
 /* ============================================================= */
 

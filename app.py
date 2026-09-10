@@ -990,6 +990,11 @@ def blog_how_to_remove_image_background():
     return render_template("blog/how_to_remove_image_background.html")
 
 
+@app.route("/blog/scanned-documents-to-pdf")
+def blog_scanned_documents_to_pdf():
+    return render_template("blog/scanned_documents_to_pdf.html")
+
+
 @app.route("/how-to-compress-pdf")
 def compress_pdf_guide():
     return render_template("compress_pdf_guide.html")

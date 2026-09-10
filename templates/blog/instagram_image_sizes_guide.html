@@ -110,6 +110,7 @@
 {% endblock %}
 
 {% block jsonld %}
+{{ super() }}
 {% from "components/jsonld.html" import article %}
 {{ article(self.title(), self.description(), request.path, "2026-04-28") }}
 {% endblock %}

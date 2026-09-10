@@ -102,6 +102,12 @@ the PDF itself either way.
 {% endblock %}
 
 {% block jsonld %}
-{% from "components/jsonld.html" import article %}
+{{ super() }}
+{% from "components/jsonld.html" import article, faqpage %}
 {{ article(self.title(), self.description(), request.path, "2026-08-12") }}
+{{ faqpage([
+  {"q": "Why does my file still bounce after compressing it once?", "a": "If the original was extremely image-heavy (very high resolution scans, for example), one compression pass may not be enough. Try a stronger setting on the main Compress PDF tool (High or Extreme) rather than the email-optimised default."},
+  {"q": "Does splitting a PDF lose any quality?", "a": "No -- splitting just divides existing pages into separate files. Nothing on any page is re-rendered or compressed in the process."},
+  {"q": "Is sharing a cloud link less secure than attaching a file?", "a": "It depends on the link's sharing settings -- a link set to \"anyone with the link\" is more exposed than a direct attachment sent to a specific address. If the document is sensitive, set the link to require sign-in or restrict it to specific people, and consider password-protecting the PDF itself either way."}
+]) }}
 {% endblock %}
