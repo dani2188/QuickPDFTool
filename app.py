@@ -995,6 +995,11 @@ def blog_scanned_documents_to_pdf():
     return render_template("blog/scanned_documents_to_pdf.html")
 
 
+@app.route("/blog/why-pdf-to-word-conversion-looks-wrong")
+def blog_why_pdf_to_word_conversion_looks_wrong():
+    return render_template("blog/why_pdf_to_word_conversion_looks_wrong.html")
+
+
 @app.route("/how-to-compress-pdf")
 def compress_pdf_guide():
     return render_template("compress_pdf_guide.html")

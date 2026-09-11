@@ -1,0 +1,305 @@
+{% extends "base.html" %}
+
+{% block title %}Why Your PDF to Word Conversion Looks Wrong{% endblock %}
+
+{% block description %}
+Why converting a PDF to Word can shift text, break tables, or turn a page into an uneditable image — and how to tell what kind of PDF you're actually working with before you convert it.
+{% endblock %}
+
+{% block content %}
+
+{% from "components/breadcrumb.html" import breadcrumb %}
+{{ breadcrumb([
+  {"label": "Home", "url": "/"},
+  {"label": "Guides", "url": "/blog"},
+  {"label": "Why Your PDF to Word Conversion Looks Wrong", "url": "/blog/why-pdf-to-word-conversion-looks-wrong"}
+]) }}
+
+<article class="guide-article">
+
+<h1>Why Your PDF to Word Conversion Looks Wrong</h1>
+<p><em>Published September 2026</em></p>
+
+<p>
+You convert a PDF to Word expecting an editable copy of the document, and what comes back looks off:
+a paragraph merged into the title above it, a table that turned into loose lines of text, an image
+sitting in the wrong spot, or — most confusingly — a page that looks completely normal but where
+nothing can be selected, copied, or edited at all. It's easy to assume the converter is broken. Usually
+it isn't. It's running into a real, structural mismatch between what a PDF is and what a Word document
+is, and understanding that mismatch is the fastest way to know what to expect before you convert
+anything.
+</p>
+
+<h2>PDF and Word Represent Documents Differently</h2>
+
+<p>
+A PDF is built to look the same everywhere. Every letter, image, and line on the page has a fixed
+position, defined so the document renders identically on any screen or printer, regardless of what
+software opens it. That's the entire point of the format — visual fidelity, not editability.
+</p>
+
+<p>
+A Word document works on a completely different model. Instead of "this text sits at exactly this
+X/Y position," a .docx file stores content as structured, flowing elements — paragraphs, runs of
+styled text, table rows and cells, images anchored to a position in the flow. Word doesn't know or
+care where a paragraph physically lands on the page; it calculates that at display time, based on
+margins, font, and page size. That's what makes it editable: change the text and everything around it
+reflows automatically.
+</p>
+
+<p>
+Converting a PDF to Word means taking content that was only ever described as "pixels and positions on
+a page" and inferring a structure — this run of characters is a heading, this block is a paragraph,
+this grid of lines is a table — that the original PDF never explicitly stored. That inference step is
+where most conversion oddities come from. It's not that the tool made an arbitrary mistake; it's that
+it had to guess at structure from a format that was never designed to contain it.
+</p>
+
+<h2>Is Your PDF Actually Text, or Just an Image of Text?</h2>
+
+<p>
+This is the single most important thing to check before converting anything, because it determines
+whether conversion can work at all.
+</p>
+
+<p>
+<strong>A text-based PDF</strong> — one created digitally from Word, Google Docs, a design tool, or
+similar software — stores its text as actual character data. You can select it, copy it, and search
+for a word in it using any PDF viewer. This is the kind of PDF a converter has real content to work
+with.
+</p>
+
+<p>
+<strong>A scanned or image-only PDF</strong> looks identical to a text PDF at a glance, but it isn't
+one. It's a photograph or scan of a page, saved as an image and wrapped in a PDF container. There is no
+character data anywhere in the file — just pixels arranged to look like text. Try selecting a word in a
+PDF viewer: if nothing highlights, or the whole page selects as one block, you're looking at an image,
+not text.
+</p>
+
+<p>
+We tested this directly against QuickTools' own <a href="/pdf-to-word">PDF to Word</a> tool by
+converting a PDF built entirely from a page image, with no underlying text layer. The conversion
+library's own log output flagged it immediately: <em>"Words count: 0. It might be a scanned pdf, which
+is not supported yet."</em> The resulting Word document contained the original page as a picture and
+zero selectable text — not garbled text, not partial text, none at all.
+</p>
+
+<p>
+That's the honest answer for this tool, stated plainly: <strong>QuickTools' PDF to Word converter does
+not perform OCR (optical character recognition).</strong> It reconstructs Word documents from a PDF's
+existing text and layout data — it doesn't read text out of an image the way a dedicated OCR tool does.
+If your PDF is a scan, converting it here will get you a Word file with the page as a picture, not
+editable text.
+</p>
+
+<h2>Why Formatting Changes</h2>
+
+<p>
+Even with a genuine text-based PDF, formatting can shift during conversion, and it's worth understanding
+why rather than treating it as random. We tested a simple PDF containing a title and a separate body
+paragraph, converted through <a href="/pdf-to-word">PDF to Word</a>, and inspected the actual resulting
+document: the title and the paragraph below it were merged into a single block of plain "Normal" text,
+separated only by a tab character, with no distinct heading style carried over. The words were all
+correct — the structural distinction between "this is a heading" and "this is a paragraph," which a PDF
+never explicitly records, wasn't preserved.
+</p>
+
+<p>
+This is the pattern behind most formatting surprises: a PDF stores <em>where text sits</em>, not
+<em>what role it plays</em> in the document. A converter has to guess paragraph and heading boundaries
+from spacing and position, and text that looked like separate elements on the page can end up
+concatenated in the Word version, or vice versa. The same applies to line spacing, page breaks, headers
+and footers, and text that was placed in a design-tool text box rather than flowing normally — all of
+it depends on positional cues that don't map cleanly onto Word's structural model.
+</p>
+
+<h2>Why Tables Can Go Either Way</h2>
+
+<p>
+Tables deserve a more precise answer than "tables are hard," because the actual result depends heavily
+on how the table was built in the first place. We tested a standard bordered table — visible gridlines,
+a header row — and it converted cleanly into a real, structured Word table: correct rows, correct
+columns, correct cell text, fully editable as an actual table object, not just aligned text.
+</p>
+
+<p>
+The harder case is a table with no visible lines at all — just text spaced and aligned into columns to
+look tabular, which is a common way tables are built in some PDF-generating software. Without gridlines
+or cell boundaries to detect, a converter has far less to work with, and is more likely to reproduce the
+content as loosely aligned text rather than a proper table. If your source PDF has a table with visible
+borders, expect a good result. If it's a borderless, spacing-only table, expect to rebuild it by hand
+after conversion.
+</p>
+
+<h2>Why Images Can Move or Behave Unexpectedly</h2>
+
+<p>
+Our test PDF also included an image, and it came through the conversion correctly — embedded as a real,
+editable picture in the Word document, not lost or replaced with a placeholder. Where image placement
+gets less predictable is positioning: a PDF pins an image to an exact X/Y coordinate on the page, while
+Word anchors images relative to surrounding text and flow settings (inline, wrapped, floating). When a
+PDF's layout doesn't map cleanly onto one of Word's anchoring models, an image that sat precisely next
+to a caption or inside a paragraph in the PDF can land in a slightly different spot once the document
+is editable and things around it can reflow.
+</p>
+
+<h2>Fonts and Missing Fonts</h2>
+
+<p>
+A PDF can embed the exact font data it uses, which is part of why it looks identical everywhere. A Word
+document, by contrast, typically references fonts by name and relies on whatever font by that name is
+installed on the computer opening it. If the original PDF used a font that isn't available on your
+system, Word substitutes something else — which can shift line lengths, spacing, and how the page
+breaks, even when every word is correct. This is a general characteristic of PDF-to-Word conversion
+rather than something specific to any one tool, and it's most noticeable in documents that use a
+distinctive or unusual typeface rather than a common system font.
+</p>
+
+<h2>What to Do Before Converting</h2>
+
+<ul class="benefits">
+  <li><strong>Check whether the text is selectable</strong> in a PDF viewer first. If you can highlight
+  and copy a sentence, you have a text-based PDF and conversion has real content to work with. If
+  nothing selects, you have a scanned/image PDF, and no PDF-to-Word tool without OCR will produce
+  editable text from it.</li>
+  <li><strong>Don't expect pixel-perfect output from a complex, heavily designed PDF.</strong> The more
+  a document relies on precise visual positioning — magazine-style layouts, mixed columns, decorative
+  text boxes — the more reconstruction the converter has to guess at.</li>
+  <li><strong>Know what you actually need.</strong> If you just need to edit some text, you may not need
+  a pixel-perfect copy — a rough draft you clean up by hand is often faster to work with than expecting
+  a flawless one-click result.</li>
+  <li><strong>Keep the original PDF.</strong> If anything in the conversion looks wrong, the source file
+  is the fastest way to check what should actually be there.</li>
+</ul>
+
+<h2>When PDF to Word Is the Wrong Tool</h2>
+
+<p>
+Converting to Word isn't always the right move, even when the PDF itself converts fine technically:
+</p>
+
+<ul class="benefits">
+  <li><strong>You just need the words, not a formatted document.</strong> <a href="/pdf-to-text">PDF to
+  Text</a> extracts plain text directly — no headings, tables, or layout to go wrong, just the content.</li>
+  <li><strong>You need an exact visual copy, not an editable one.</strong> If nothing actually needs to
+  change, there's no reason to convert at all — keep the PDF.</li>
+  <li><strong>You need images of the pages themselves</strong> — for a presentation, a thumbnail, or
+  embedding elsewhere — <a href="/pdf-to-jpg">PDF to JPG</a> or <a href="/pdf-to-png">PDF to PNG</a>
+  renders each page as an image directly, which is more direct than converting to Word first.</li>
+  <li><strong>Your PDF is a scan and you need real editable text from it.</strong> That requires an
+  OCR-capable tool. QuickTools' PDF to Word converter doesn't perform OCR, so it isn't the right tool
+  for this case — converting a scan here will only get you the page as an embedded picture, not text
+  you can edit.</li>
+</ul>
+
+<h2>Troubleshooting Checklist</h2>
+
+<ol>
+  <li>Can I select and copy text from this PDF in a normal viewer? If not, it's a scan — no PDF-to-Word
+  tool without OCR will give you editable text.</li>
+  <li>Does the document use multiple columns, text boxes, or a magazine-style layout? Expect more manual
+  cleanup after conversion.</li>
+  <li>Do any tables have visible borders? Bordered tables convert far more reliably than borderless,
+  spacing-only ones.</li>
+  <li>Does the PDF use an unusual or decorative font? Expect the Word version to substitute a different
+  font and shift spacing accordingly.</li>
+  <li>Are there images placed precisely alongside text? Check their position after converting — it may
+  need a small manual adjustment.</li>
+  <li>Do you actually need an editable Word document, or would plain text or a page image serve the
+  same purpose with less cleanup?</li>
+</ol>
+
+<h2>Frequently Asked Questions</h2>
+
+<h3>Why does my PDF look different after converting to Word?</h3>
+<p>
+Because a PDF only records where content sits on a page, while Word needs to know what role that
+content plays — a heading, a paragraph, a table — and has to infer that structure during conversion.
+Text, spacing, and layout that depended on the PDF's fixed positioning can shift once the document
+becomes editable.
+</p>
+
+<h3>Can a scanned PDF be converted into editable Word text?</h3>
+<p>
+Not with QuickTools' PDF to Word tool. A scanned PDF is an image of a page with no underlying text
+data, and this tool doesn't perform OCR (optical character recognition). Converting a scan produces a
+Word document with the page embedded as a picture, not editable text.
+</p>
+
+<h3>Why are tables broken after PDF-to-Word conversion?</h3>
+<p>
+It depends on how the table was built. Tables with visible gridlines convert reliably into real,
+structured Word tables. Tables built only from spaced-out, aligned text with no visible borders give
+the converter much less to detect, and often come through as loose text instead of a proper table.
+</p>
+
+<h3>Why did the fonts change?</h3>
+<p>
+A PDF can embed the exact font it uses, but Word typically references fonts by name and relies on
+what's installed on the computer opening the file. If the original font isn't available, Word
+substitutes a different one, which can shift spacing and line breaks even though the text itself is
+unchanged.
+</p>
+
+<h3>Why did images move?</h3>
+<p>
+A PDF places an image at a fixed coordinate on the page. Word anchors images relative to the
+surrounding text and layout instead. When those two positioning models don't map cleanly onto each
+other, an image can land in a slightly different spot once the document becomes editable.
+</p>
+
+<h3>Will a complex PDF ever convert perfectly to Word?</h3>
+<p>
+Not reliably. The more a PDF depends on precise visual design — multiple columns, decorative text
+placement, unusual fonts — the more structure a converter has to guess at, and the more manual cleanup
+the result is likely to need. Simple, single-column, text-based PDFs convert far more cleanly than
+heavily designed ones.
+</p>
+
+<h3>Should I use PDF to Text instead?</h3>
+<p>
+If all you need is the words — not formatting, tables, or layout — yes. <a href="/pdf-to-text">PDF to
+Text</a> extracts the plain text directly using a different process entirely, with far less that can go
+visually wrong, since it isn't trying to reconstruct a formatted document at all.
+</p>
+
+<h2>Related Tools</h2>
+<div class="tools-mini-grid">
+  <a href="/pdf-to-word">PDF to Word</a>
+  <a href="/pdf-to-text">PDF to Text</a>
+  <a href="/pdf-to-jpg">PDF to JPG</a>
+  <a href="/pdf-to-png">PDF to PNG</a>
+  <a href="/word-to-pdf">Word to PDF</a>
+</div>
+
+<h2>Related Guides</h2>
+<ul>
+  <li><a href="/blog/scanned-documents-to-pdf">Scanned Documents to PDF</a> — the reverse situation:
+  turning phone photos into a PDF, and the same OCR limitation from the other direction.</li>
+</ul>
+
+</article>
+
+{% endblock %}
+
+{% block jsonld %}
+{{ super() }}
+{% from "components/jsonld.html" import article, faqpage %}
+{% from "components/breadcrumb.html" import breadcrumb_jsonld %}
+{{ article(self.title(), self.description(), request.path, "2026-09-11") }}
+{{ faqpage([
+  {"q": "Why does my PDF look different after converting to Word?", "a": "Because a PDF only records where content sits on a page, while Word needs to know what role that content plays -- a heading, a paragraph, a table -- and has to infer that structure during conversion. Text, spacing, and layout that depended on the PDF's fixed positioning can shift once the document becomes editable."},
+  {"q": "Can a scanned PDF be converted into editable Word text?", "a": "Not with QuickTools' PDF to Word tool. A scanned PDF is an image of a page with no underlying text data, and this tool doesn't perform OCR (optical character recognition). Converting a scan produces a Word document with the page embedded as a picture, not editable text."},
+  {"q": "Why are tables broken after PDF-to-Word conversion?", "a": "It depends on how the table was built. Tables with visible gridlines convert reliably into real, structured Word tables. Tables built only from spaced-out, aligned text with no visible borders give the converter much less to detect, and often come through as loose text instead of a proper table."},
+  {"q": "Why did the fonts change?", "a": "A PDF can embed the exact font it uses, but Word typically references fonts by name and relies on what's installed on the computer opening the file. If the original font isn't available, Word substitutes a different one, which can shift spacing and line breaks even though the text itself is unchanged."},
+  {"q": "Why did images move?", "a": "A PDF places an image at a fixed coordinate on the page. Word anchors images relative to the surrounding text and layout instead. When those two positioning models don't map cleanly onto each other, an image can land in a slightly different spot once the document becomes editable."},
+  {"q": "Will a complex PDF ever convert perfectly to Word?", "a": "Not reliably. The more a PDF depends on precise visual design -- multiple columns, decorative text placement, unusual fonts -- the more structure a converter has to guess at, and the more manual cleanup the result is likely to need. Simple, single-column, text-based PDFs convert far more cleanly than heavily designed ones."},
+  {"q": "Should I use PDF to Text instead?", "a": "If all you need is the words -- not formatting, tables, or layout -- yes. PDF to Text extracts the plain text directly using a different process entirely, with far less that can go visually wrong, since it isn't trying to reconstruct a formatted document at all."}
+]) }}
+{{ breadcrumb_jsonld([
+  {"label": "Home", "url": "/"},
+  {"label": "Guides", "url": "/blog"},
+  {"label": "Why Your PDF to Word Conversion Looks Wrong", "url": "/blog/why-pdf-to-word-conversion-looks-wrong"}
+]) }}
+{% endblock %}
