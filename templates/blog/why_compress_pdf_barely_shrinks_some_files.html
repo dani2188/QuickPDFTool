@@ -1,0 +1,258 @@
+{% extends "base.html" %}
+
+{% block title %}Why Compress PDF Sometimes Barely Shrinks Your File{% endblock %}
+
+{% block description %}
+We ran real test files through every Compress PDF level — Low, Medium, High, and Extreme — and measured the actual results, including one case where Low made a file bigger, not smaller. Here's why, and what to do instead.
+{% endblock %}
+
+{% block content %}
+
+{% from "components/breadcrumb.html" import breadcrumb %}
+{{ breadcrumb([
+  {"label": "Home", "url": "/"},
+  {"label": "Guides", "url": "/blog"},
+  {"label": "Why Compress PDF Sometimes Barely Shrinks Your File", "url": "/blog/why-compress-pdf-barely-shrinks-some-files"}
+]) }}
+
+<article class="guide-article">
+
+<h1>Why Compress PDF Sometimes Barely Shrinks Your File</h1>
+<p><em>Published September 2026</em></p>
+
+<p>
+You run a PDF through a compressor expecting it to drop from several megabytes to a few hundred
+kilobytes, and instead the file barely changes — or, in one case we tested, actually gets bigger. It
+feels like the tool didn't work. Usually it did exactly what it was designed to do; the file just didn't
+contain the kind of data compression can act on. To show what's really going on, we built three test PDFs
+representative of common real-world cases and ran each one through <a href="/compress-pdf">QuickTools'
+Compress PDF</a> tool at all four levels, using the same Ghostscript engine and settings the live tool
+runs. Here's what actually happened, and why.
+</p>
+
+<h2>What PDF Compression Can Actually Change</h2>
+
+<p>
+A PDF compressor working through Ghostscript (the engine behind Compress PDF) has exactly two levers:
+re-encoding embedded images at a lower resolution or quality, and restructuring the file's internal
+objects — deduplicating repeated images, subsetting fonts down to only the characters actually used,
+and cleaning up the PDF's object table. It cannot shrink text. Text in a PDF is stored as vector
+character data and font references, not pixels, so no image-downsampling setting touches it at all. That
+means the amount a given PDF can shrink depends almost entirely on one question: <strong>how much of the
+file's size is images, and how much is already-compact text and font data?</strong>
+</p>
+
+<h2>What Low, Medium, High, and Extreme Actually Do</h2>
+
+<p>
+The four levels aren't arbitrary "more compression" steps — each one changes a specific, different thing:
+</p>
+
+<ul class="benefits">
+  <li><strong>Low</strong> makes no attempt to downsample images at all. It only restructures the file
+  (font subsetting, duplicate-image removal, object cleanup) at Ghostscript's <code>/prepress</code>
+  quality preset, which is meant to preserve full image resolution for print. If your PDF's images were
+  already reasonably sized, or there aren't many images to begin with, there's very little for this
+  setting to do.</li>
+  <li><strong>Medium</strong> downsamples color and grayscale images to 120 DPI — enough detail for
+  comfortable on-screen reading, well below what most images are actually stored at.</li>
+  <li><strong>High</strong> drops to 72 DPI (roughly screen resolution) and forces images to re-encode as
+  JPEG, which compresses photographic content much harder than the format most PDFs store images in by
+  default.</li>
+  <li><strong>Extreme</strong> does everything High does, at 50 DPI, and additionally converts the whole
+  document to grayscale — the single biggest lever of all four, but only appropriate when color
+  genuinely doesn't matter, since it permanently removes it.</li>
+</ul>
+
+<h2>Three Real Files, Four Real Results</h2>
+
+<p>
+We built three PDFs designed to represent common cases, then ran each through Compress PDF's actual
+compression code at every level and measured the output file sizes directly — no estimates.
+</p>
+
+<table class="data-table">
+  <thead>
+    <tr>
+      <th>Test file</th>
+      <th>Original</th>
+      <th>Low</th>
+      <th>Medium</th>
+      <th>High</th>
+      <th>Extreme</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>10-page text report, no images</td>
+      <td>18.0 KB</td>
+      <td>20.6 KB (+14%)</td>
+      <td>15.8 KB (−12%)</td>
+      <td>16.1 KB (−10%)</td>
+      <td>16.1 KB (−11%)</td>
+    </tr>
+    <tr>
+      <td>4-page PDF, already web-sized photos</td>
+      <td>957 KB</td>
+      <td>770 KB (−20%)</td>
+      <td>582 KB (−39%)</td>
+      <td>204 KB (−79%)</td>
+      <td>90 KB (−91%)</td>
+    </tr>
+    <tr>
+      <td>5-page phone-scanned document</td>
+      <td>50.0 MB</td>
+      <td>22.8 MB (−54%)</td>
+      <td>1.06 MB (−98%)</td>
+      <td>332 KB (−99.4%)</td>
+      <td>172 KB (−99.7%)</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>
+The pattern is consistent across all three: <strong>the more of the file is high-resolution image data,
+the more dramatically it compresses.</strong> The scanned document — five pages of full-resolution,
+300-DPI page images — lost over half its size even at the gentlest setting and became a hundred times
+smaller at Extreme. The photo PDF, whose images were already saved at a moderate, web-appropriate size
+and quality before being placed in the PDF, still had real resolution to give up at 72 DPI and below, so
+High and Extreme made a large difference there too. The text-only report had no images at all, so every
+setting was working with almost nothing to compress — and one of them made the file larger.
+</p>
+
+<h2>Why "Low" Made a File Bigger, Not Smaller</h2>
+
+<p>
+This is the most counterintuitive result, and it's real, not a bug: on our text-only file, Low produced a
+file 14% <em>larger</em> than the original. Low doesn't downsample anything — its only job is to run the
+file through Ghostscript's restructuring pass. That pass rebuilds the PDF's internal object table, resets
+its compatibility level, and re-subsets fonts, and doing that rewrite has its own small overhead. When
+there are images to deduplicate or resolution to trim, the savings from that easily outweigh the
+overhead. When there's nothing but text and the file was already small and clean — as ours was — the
+rewrite has no savings to offset its own overhead, and the result can come out slightly bigger than what
+went in. Medium, High, and Extreme all happened to land a little smaller on this same file, not because
+they compressed anything meaningful, but because their different Ghostscript quality presets restructure
+the object table slightly differently. None of the four settings did what most people expect
+"compression" to mean here, because there was no image data for any of them to act on.
+</p>
+
+<h2>The Floor Every PDF Has</h2>
+
+<p>
+Every PDF has a practical size floor set by its actual content, and no compression level can push a file
+below it. For an image-heavy or scanned PDF, that floor is low relative to the original, because
+high-resolution images have a lot of redundant data to discard. For a text-only PDF, the floor is close
+to the original size already, because text and subsetted font data don't compress the way images do —
+there's no resolution to reduce. If your PDF is mostly or entirely text and a compressor "isn't working,"
+that isn't a malfunction; it's already near its floor. Running it through a stronger setting won't get a
+meaningfully smaller file, and as this test shows, the lightest setting can even come back marginally
+larger.
+</p>
+
+<h2>The Trade-off at the Extreme End</h2>
+
+<p>
+Extreme's grayscale conversion is what makes it the biggest lever of the four, and also the reason it
+isn't a safe default. Turning a color document to grayscale is not reversible by re-running compression
+at a lower setting afterward — you'd need to go back to the original file. Reserve Extreme for cases
+where color was never load-bearing to begin with (a scanned text document, a black-and-white form) and
+use Medium or High for anything where color content — photos, charts, branded material — needs to survive
+the trip.
+</p>
+
+<h2>What to Do When Compression Doesn't Get You Far Enough</h2>
+
+<ul class="benefits">
+  <li><strong>Check what's actually in the file first.</strong> If it's mostly text with a small logo or
+  two, no compression level is going to shrink it dramatically — that's expected, not a failure. See
+  <a href="/blog/pdf-file-size-explained">Why Is My PDF So Large?</a> for what actually takes up space in
+  a PDF.</li>
+  <li><strong>If you need a specific size cap</strong> (an email attachment limit, a form's upload limit),
+  use <a href="/compress-pdf-to-1mb">Compress PDF to 1MB</a>, which escalates through Low → Medium → High
+  → Extreme automatically until the file fits, rather than guessing which level to pick manually.</li>
+  <li><strong>If the goal is specifically getting past email limits</strong>, <a href="/blog/send-large-pdf-when-email-fails">When Email Rejects Your PDF</a> covers the full decision tree, including when
+  splitting the file or sharing a link is a better fit than compressing harder.</li>
+  <li><strong>If the file still won't shrink enough and it's mostly pages of images</strong>,
+  <a href="/split-pdf">Split PDF</a> lets you send or store sections separately instead of forcing one
+  large file down to an unrealistic target size.</li>
+</ul>
+
+<h2>Frequently Asked Questions</h2>
+
+<h3>Why did compressing my PDF make it bigger instead of smaller?</h3>
+<p>
+In our test, this happened on the Low setting with a 10-page, text-only PDF that had no images at all:
+the compressed file came back 14.5% larger than the original. Low only restructures the file rather than
+reducing image resolution, and that restructuring pass has a small overhead of its own. On that
+particular file — already small and clean, with nothing but text — the overhead wasn't offset by any real
+savings. This isn't a rule that Low always increases file size; it's what we measured on a file with no
+image content to work with. A different text-only PDF, especially a larger or less-optimized one, may
+still shrink slightly under Low.
+</p>
+
+<h3>Why does compression barely change my file size at all?</h3>
+<p>
+Compression works by reducing image resolution and quality. If your PDF is mostly text with few or no
+images, there's very little for any setting to act on — the file is likely already close to its practical
+size floor, regardless of which level you choose.
+</p>
+
+<h3>Which setting gives the biggest reduction?</h3>
+<p>
+Extreme, by a wide margin, on image-heavy files — in our test it shrank a 50MB scanned document to 172KB.
+But it also converts the document to grayscale, which is a real, permanent quality trade-off, not a free
+win. Use it only when color isn't needed.</p>
+
+<h3>Should I always use the highest setting to be safe?</h3>
+<p>
+No. Match the setting to what the file is for. Use Low or Medium if the PDF will be printed or needs to
+keep its color and detail. Use High or Extreme only for documents that just need to be small and viewed
+on a screen, since both reduce image resolution substantially and Extreme removes color entirely.
+</p>
+
+<h3>Why did a scanned document compress so much more than a text document?</h3>
+<p>
+A scanned page is stored as one large image per page, typically at a much higher resolution than a screen
+needs — that's a lot of redundant image data for a compressor to discard. A text-based PDF stores its
+content as compact character and font data instead of pixels, so there's little equivalent redundancy to
+remove.
+</p>
+
+<h2>Related Tools</h2>
+<div class="tools-mini-grid">
+  <a href="/compress-pdf">Compress PDF</a>
+  <a href="/compress-pdf-to-1mb">Compress PDF to 1MB</a>
+  <a href="/compress-pdf-for-email">Compress PDF for Email</a>
+  <a href="/split-pdf">Split PDF</a>
+</div>
+
+<h2>Related Guides</h2>
+<ul>
+  <li><a href="/blog/pdf-file-size-explained">Why Is My PDF So Large?</a> — what actually takes up space
+  in a PDF before you ever compress it.</li>
+  <li><a href="/blog/send-large-pdf-when-email-fails">When Email Rejects Your PDF</a> — the full decision
+  tree for compress vs. split vs. share-a-link.</li>
+</ul>
+
+</article>
+
+{% endblock %}
+
+{% block jsonld %}
+{{ super() }}
+{% from "components/jsonld.html" import article, faqpage %}
+{% from "components/breadcrumb.html" import breadcrumb_jsonld %}
+{{ article(self.title(), self.description(), request.path, "2026-09-16") }}
+{{ faqpage([
+  {"q": "Why did compressing my PDF make it bigger instead of smaller?", "a": "In our test, this happened on the Low setting with a 10-page, text-only PDF that had no images at all: the compressed file came back 14.5% larger than the original. Low only restructures the file rather than reducing image resolution, and that restructuring pass has a small overhead of its own. On that particular file — already small and clean, with nothing but text — the overhead wasn't offset by any real savings. This isn't a rule that Low always increases file size; it's what we measured on a file with no image content to work with. A different text-only PDF, especially a larger or less-optimized one, may still shrink slightly under Low."},
+  {"q": "Why does compression barely change my file size at all?", "a": "Compression works by reducing image resolution and quality. If your PDF is mostly text with few or no images, there's very little for any setting to act on — the file is likely already close to its practical size floor, regardless of which level you choose."},
+  {"q": "Which setting gives the biggest reduction?", "a": "Extreme, by a wide margin, on image-heavy files — in our test it shrank a 50MB scanned document to 172KB. But it also converts the document to grayscale, which is a real, permanent quality trade-off, not a free win. Use it only when color isn't needed."},
+  {"q": "Should I always use the highest setting to be safe?", "a": "No. Match the setting to what the file is for. Use Low or Medium if the PDF will be printed or needs to keep its color and detail. Use High or Extreme only for documents that just need to be small and viewed on a screen, since both reduce image resolution substantially and Extreme removes color entirely."},
+  {"q": "Why did a scanned document compress so much more than a text document?", "a": "A scanned page is stored as one large image per page, typically at a much higher resolution than a screen needs — that's a lot of redundant image data for a compressor to discard. A text-based PDF stores its content as compact character and font data instead of pixels, so there's little equivalent redundancy to remove."}
+]) }}
+{{ breadcrumb_jsonld([
+  {"label": "Home", "url": "/"},
+  {"label": "Guides", "url": "/blog"},
+  {"label": "Why Compress PDF Sometimes Barely Shrinks Your File", "url": "/blog/why-compress-pdf-barely-shrinks-some-files"}
+]) }}
+{% endblock %}

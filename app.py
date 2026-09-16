@@ -1000,6 +1000,11 @@ def blog_why_pdf_to_word_conversion_looks_wrong():
     return render_template("blog/why_pdf_to_word_conversion_looks_wrong.html")
 
 
+@app.route("/blog/why-compress-pdf-barely-shrinks-some-files")
+def blog_why_compress_pdf_barely_shrinks_some_files():
+    return render_template("blog/why_compress_pdf_barely_shrinks_some_files.html")
+
+
 @app.route("/how-to-compress-pdf")
 def compress_pdf_guide():
     return render_template("compress_pdf_guide.html")
