@@ -1005,6 +1005,11 @@ def blog_why_compress_pdf_barely_shrinks_some_files():
     return render_template("blog/why_compress_pdf_barely_shrinks_some_files.html")
 
 
+@app.route("/blog/why-remove-background-leaves-rough-edges")
+def blog_why_remove_background_leaves_rough_edges():
+    return render_template("blog/why_remove_background_leaves_rough_edges.html")
+
+
 @app.route("/how-to-compress-pdf")
 def compress_pdf_guide():
     return render_template("compress_pdf_guide.html")
