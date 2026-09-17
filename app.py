@@ -1010,6 +1010,11 @@ def blog_why_remove_background_leaves_rough_edges():
     return render_template("blog/why_remove_background_leaves_rough_edges.html")
 
 
+@app.route("/blog/resizing-vs-compressing-an-image")
+def blog_resizing_vs_compressing_an_image():
+    return render_template("blog/resizing_vs_compressing_an_image.html")
+
+
 @app.route("/how-to-compress-pdf")
 def compress_pdf_guide():
     return render_template("compress_pdf_guide.html")

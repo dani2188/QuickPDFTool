@@ -1,0 +1,359 @@
+{% extends "base.html" %}
+
+{% block title %}Resizing vs. Compressing an Image: What's the Difference?{% endblock %}
+
+{% block description %}
+Resizing and compressing an image solve different problems — one changes pixel dimensions, the other changes how efficiently those pixels are stored. Real tested examples show why a smaller image isn't automatically a smaller file, and how to choose the right operation.
+{% endblock %}
+
+{% block content %}
+
+{% from "components/breadcrumb.html" import breadcrumb %}
+{{ breadcrumb([
+  {"label": "Home", "url": "/"},
+  {"label": "Guides", "url": "/blog"},
+  {"label": "Resizing vs. Compressing an Image: What's the Difference?", "url": "/blog/resizing-vs-compressing-an-image"}
+]) }}
+
+<article class="guide-article">
+
+<h1>Resizing vs. Compressing an Image: What's the Difference?</h1>
+<p><em>Published September 2026</em></p>
+
+<p>
+"Make this photo smaller" means two genuinely different things, and mixing them up is the reason a
+resized image can still be too big for an email, or a compressed one still won't fit a form's exact
+dimension requirement. Resizing changes how many pixels an image is made of. Compression changes how
+efficiently those pixels are stored. They solve different problems, they can be combined, and knowing
+which one you actually need saves a round of trial and error.
+</p>
+
+<h2>What Is Image Resizing?</h2>
+
+<p>
+Resizing changes an image's pixel dimensions — its width and height, measured in pixels. A 4000×3000
+photo resized to 1080×1080 has fewer pixels than the original, full stop; some of the original detail is
+gone because there's less data left to represent it. QuickTools' <a href="/resize-image">Resize Image</a>
+tool does this by scaling the photo down to fit entirely inside the target box you choose, then padding
+any leftover space with white — it never crops content out and never stretches the image out of
+proportion. A landscape photo resized into a square target ends up with white bars above and below it,
+not a cropped or distorted version of the original framing.
+</p>
+
+<h2>What Is Image Compression?</h2>
+
+<p>
+Compression changes how efficiently the existing pixels are encoded into a file, without touching the
+pixel count at all. A 4000×3000 photo compressed at any level is still 4000×3000 pixels afterward — what
+changes is how much detail is thrown away when re-encoding it. QuickTools' <a href="/compress-jpg">Compress
+JPG</a> tool re-encodes a JPEG at a lower quality setting (four levels, from a light re-encode to
+aggressive) to shrink the file, and does nothing to its dimensions. It only accepts JPG/JPEG files — there
+is currently no dedicated PNG compression tool on the site.
+</p>
+
+<h2>Why Fewer Pixels Usually Means a Smaller File — But Not Always</h2>
+
+<p>
+Fewer pixels usually means less data to store, so resizing down typically shrinks the file as a side
+effect. But "typically" isn't "always," and the exception matters. We took a 4000×3000, high-quality
+JPEG source photo (6.16 MB) and ran it through the actual Resize Image tool down to a 1080×1080 box:
+</p>
+
+<table class="data-table">
+  <thead>
+    <tr>
+      <th>Resize output (1080×1080, same reduced pixel count)</th>
+      <th>File size</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>PNG (lossless)</td>
+      <td>1.19 MB</td>
+    </tr>
+    <tr>
+      <td>JPG, quality 90</td>
+      <td>91 KB</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>
+Same photo, same reduced dimensions, thirteen times the file size difference — purely from the output
+format. Photographic detail (the gradients and fine texture that make a photo look like a photo) doesn't
+compress well under PNG's lossless encoding, so a resized PNG can stay surprisingly large. In this same
+test, the full-resolution 4000×3000 original, compressed (not resized) at the strongest available
+setting, still came out smaller than the resized-but-uncompressed PNG — 439 KB versus 1.19 MB. Smaller
+dimensions is not the same claim as a smaller file; the encoding choice can matter more than the pixel
+count.
+</p>
+
+<h2>Why Compression Can Shrink a File Without Touching a Single Pixel</h2>
+
+<p>
+Running the same 4000×3000 photo through Compress JPG's four levels, with no resizing at all, confirms
+the dimensions never move while the file size does:
+</p>
+
+<table class="data-table">
+  <thead>
+    <tr>
+      <th>Level</th>
+      <th>Output dimensions</th>
+      <th>File size</th>
+      <th>Change from original (6.16 MB)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>Low</td><td>4000×3000 (unchanged)</td><td>3.82 MB</td><td>38.1% smaller</td></tr>
+    <tr><td>Medium</td><td>4000×3000 (unchanged)</td><td>1.38 MB</td><td>77.7% smaller</td></tr>
+    <tr><td>High</td><td>4000×3000 (unchanged)</td><td>823 KB</td><td>86.6% smaller</td></tr>
+    <tr><td>Extreme</td><td>4000×3000 (unchanged)</td><td>439 KB</td><td>92.9% smaller</td></tr>
+  </tbody>
+</table>
+
+<p>
+Every one of those files still opens at full 4000×3000 resolution. Nothing about the image's actual size
+on screen changes — only how much of the fine detail survives re-encoding.
+</p>
+
+<h2>When to Resize First</h2>
+
+<p>
+Resize when the destination cares about actual pixel dimensions, not just file size. A social media
+platform's post format, a profile picture upload, or a form that specifies "images must be exactly
+1200×630" all have a real dimension requirement that no amount of compression will satisfy — a
+6000×4000 photo compressed to a tiny file size is still 6000×4000 pixels, and still the wrong shape or
+scale for a slot that expects something else.
+</p>
+
+<h2>When to Compress Instead</h2>
+
+<p>
+Compress when the destination only cares about file size and the current dimensions are already right
+(or don't matter) — an email attachment limit, a storage quota, an upload field that rejects files over a
+certain size but doesn't care how many pixels they contain. Compressing keeps the full resolution intact,
+which matters if the image might need to be printed, cropped, or reused at a larger size later; resizing
+throws detail away permanently.
+</p>
+
+<h2>When to Do Both</h2>
+
+<p>
+Combining both gets the smallest practical result when a destination has a dimension requirement and a
+size limit. QuickTools' Resize Image tool actually applies both in a single step: choosing a target box
+and a JPG quality level resizes and compresses at once. Testing that on the same source photo:
+</p>
+
+<table class="data-table">
+  <thead>
+    <tr>
+      <th>Resize to 1080×1080 + JPG quality</th>
+      <th>File size</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>Quality 90</td><td>91 KB</td></tr>
+    <tr><td>Quality 75</td><td>30 KB</td></tr>
+    <tr><td>Quality 60</td><td>17 KB</td></tr>
+  </tbody>
+</table>
+
+<p>
+One detail worth knowing if you're combining the tools manually rather than in one step: resizing to a
+lossless PNG first and then separately running that PNG through Compress JPG at quality 75 produced a
+byte-for-byte identical result to resizing straight to JPG at quality 75 in one pass. Because PNG doesn't
+throw anything away, doing the steps in either order costs nothing — the only step that actually loses
+detail is the JPEG re-encode itself, whichever point it happens at.
+</p>
+
+<h2>The Diminishing-Returns Trap: Compressing an Already-Compressed Image</h2>
+
+<p>
+Compression works by discarding redundant detail, and an image that's already been compressed once has
+less redundant detail left to give up. We tested this directly: instead of the fresh, high-quality source
+photo above, we ran the same four levels against an 800×600 photo that had already been saved once at a
+moderate JPEG quality (the kind of file you'd get from a photo that's already been shared or re-saved a
+few times):
+</p>
+
+<table class="data-table">
+  <thead>
+    <tr>
+      <th>Level</th>
+      <th>Fresh high-quality photo</th>
+      <th>Already-compressed photo</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>Low</td><td>38.1% smaller</td><td>7.1% <strong>larger</strong></td></tr>
+    <tr><td>Medium</td><td>77.7% smaller</td><td>15.5% smaller</td></tr>
+    <tr><td>High</td><td>86.6% smaller</td><td>42.0% smaller</td></tr>
+    <tr><td>Extreme</td><td>92.9% smaller</td><td>76.7% smaller</td></tr>
+  </tbody>
+</table>
+
+<p>
+On this specific already-compressed test file, the Low setting actually made the file slightly bigger,
+not smaller — the same effect seen when compressing an already-lean file with nothing left to give up:
+the re-encoding pass has its own small overhead, and with little redundant detail left to remove, that
+overhead isn't offset by any real savings. Every other level still helped, but by noticeably less than on
+the fresh photo. This is specific to the two files tested, not a guarantee about any particular photo, but
+the underlying reason — less redundant detail left to discard — applies generally to any image that's
+already been compressed once.
+</p>
+
+<h2>Format Also Affects the Resize Decision</h2>
+
+<p>
+The same PNG-versus-JPG gap from earlier runs in reverse for graphics. We resized a simple
+flat-color/sharp-edge test graphic (a screenshot-style image, not a photo) down to 1080×1080 and compared
+formats:
+</p>
+
+<table class="data-table">
+  <thead>
+    <tr>
+      <th>Resized graphic output</th>
+      <th>File size</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>PNG (lossless)</td><td>10 KB</td></tr>
+    <tr><td>JPG, quality 90</td><td>65 KB</td></tr>
+  </tbody>
+</table>
+
+<p>
+For this graphic, PNG came out six times smaller than JPG at the identical dimensions — the exact
+opposite of the photo result earlier. JPEG's compression is tuned for photographic gradients and noise;
+flat color and sharp edges (logos, screenshots, text) tend to compress better under PNG's lossless
+encoding instead. See <a href="/blog/png-vs-jpg-guide">PNG vs JPG</a> for the fuller breakdown of when
+each format wins.
+</p>
+
+<h2>Choosing by Destination</h2>
+
+<table class="data-table">
+  <thead>
+    <tr>
+      <th>Destination</th>
+      <th>What usually matters</th>
+      <th>Operation</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>Email attachment</td><td>Total file size, not dimensions</td><td>Compress</td></tr>
+    <tr><td>Social media post/profile picture</td><td>Exact pixel dimensions</td><td>Resize (or resize + compress)</td></tr>
+    <tr><td>Upload form with a file-size cap</td><td>Total file size</td><td>Compress</td></tr>
+    <tr><td>Upload form with exact dimension requirements</td><td>Pixel dimensions and file size</td><td>Resize + compress</td></tr>
+    <tr><td>Archiving/storage</td><td>Total file size, keep detail if possible</td><td>Compress at a light level</td></tr>
+    <tr><td>Printing or future reuse at larger size</td><td>Preserve resolution</td><td>Compress, avoid resizing down</td></tr>
+  </tbody>
+</table>
+
+<h2>What QuickTools Actually Does</h2>
+
+<ul class="benefits">
+  <li><strong>Resize Image</strong> accepts a target width/height (1–4000 px each), never crops or
+  stretches, and pads any mismatched aspect ratio with white to fill the exact target box. Output is PNG
+  (lossless) or JPG with a quality slider from 50–100.</li>
+  <li><strong>Compress JPG</strong> accepts only .jpg/.jpeg files, supports batch upload (multiple files
+  compressed individually and returned in one ZIP), and offers four fixed quality levels rather than a
+  slider. It never changes pixel dimensions.</li>
+  <li>There is currently no dedicated tool for compressing a PNG's file size directly — the only paths are
+  converting it to JPG (via Resize Image's JPG output, or another converter) or resizing it to fewer
+  pixels.</li>
+</ul>
+
+<h2>Related Tools</h2>
+<div class="tools-mini-grid">
+  <a href="/resize-image">Resize Image</a>
+  <a href="/compress-jpg">Compress JPG</a>
+  <a href="/remove-background">Remove Background</a>
+</div>
+
+<h2>Related Guides</h2>
+<ul>
+  <li><a href="/blog/png-vs-jpg-guide">PNG vs JPG: Which Image Format Should You Use?</a> — the format
+  decision behind several of the results above.</li>
+  <li><a href="/blog/optimize-images-for-web">How to Optimize Images for Faster Website Loading</a> — the
+  web-performance angle on resizing and compressing together.</li>
+  <li><a href="/how-to-resize-image">How to Resize an Image</a> and
+  <a href="/how-to-compress-jpg">How to Compress a JPG</a> — step-by-step walkthroughs of each tool.</li>
+</ul>
+
+<h2>Frequently Asked Questions</h2>
+
+<h3>Is resizing an image the same as compressing it?</h3>
+<p>
+No. Resizing changes the pixel dimensions of an image. Compression changes how efficiently the existing
+pixels are stored, without changing dimensions at all. A resized image is usually also smaller in file
+size, but that is a side effect of having fewer pixels, not the same operation as compression.
+</p>
+
+<h3>Will resizing my photo always make the file smaller?</h3>
+<p>
+Not necessarily. In one tested example, resizing a photo down to a much smaller pixel size but saving it
+as a lossless PNG produced a larger file than compressing the same photo at full resolution as a JPEG.
+Fewer pixels usually means less data, but the output format and compression level can matter more than
+the pixel count.
+</p>
+
+<h3>Does compressing an image reduce its dimensions?</h3>
+<p>
+No. Compression only changes how much detail is kept when the file is re-encoded. The width and height in
+pixels stay exactly the same before and after.
+</p>
+
+<h3>Which should I use for an email attachment?</h3>
+<p>
+Compression, generally. An email limit is almost always about total file size, not pixel dimensions, so
+compressing keeps the photo at full resolution while bringing the file under the limit.
+</p>
+
+<h3>Which should I use for a social media post or profile picture?</h3>
+<p>
+Resizing, since those destinations specify exact pixel dimensions. QuickTools' Resize Image tool can
+apply a JPG quality setting at the same time, so a single step covers both the dimension requirement and
+the file size.
+</p>
+
+<h3>Why did compressing my already-small photo barely help?</h3>
+<p>
+An image that has already been compressed once has less redundant detail left to remove. In one tested
+example, a fresh high-quality photo shrank by over 90 percent at the strongest compression level, while
+an already-compressed photo of similar content shrank by less than 80 percent at the same setting, and
+barely changed at all on the lightest setting.
+</p>
+
+<h3>Can I compress a PNG file on QuickTools?</h3>
+<p>
+Not directly. The Compress JPG tool only accepts JPG/JPEG files. To shrink a PNG's file size, convert it
+to JPG first (Resize Image can do this as part of resizing) or reduce its pixel dimensions instead.
+</p>
+
+</article>
+
+{% endblock %}
+
+{% block jsonld %}
+{{ super() }}
+{% from "components/jsonld.html" import article, faqpage %}
+{% from "components/breadcrumb.html" import breadcrumb_jsonld %}
+{{ article(self.title(), self.description(), request.path, "2026-09-17") }}
+{{ faqpage([
+  {"q": "Is resizing an image the same as compressing it?", "a": "No. Resizing changes the pixel dimensions of an image. Compression changes how efficiently the existing pixels are stored, without changing dimensions at all. A resized image is usually also smaller in file size, but that is a side effect of having fewer pixels, not the same operation as compression."},
+  {"q": "Will resizing my photo always make the file smaller?", "a": "Not necessarily. In one tested example, resizing a photo down to a much smaller pixel size but saving it as a lossless PNG produced a larger file than compressing the same photo at full resolution as a JPEG. Fewer pixels usually means less data, but the output format and compression level can matter more than the pixel count."},
+  {"q": "Does compressing an image reduce its dimensions?", "a": "No. Compression only changes how much detail is kept when the file is re-encoded. The width and height in pixels stay exactly the same before and after."},
+  {"q": "Which should I use for an email attachment?", "a": "Compression, generally. An email limit is almost always about total file size, not pixel dimensions, so compressing keeps the photo at full resolution while bringing the file under the limit."},
+  {"q": "Which should I use for a social media post or profile picture?", "a": "Resizing, since those destinations specify exact pixel dimensions. QuickTools' Resize Image tool can apply a JPG quality setting at the same time, so a single step covers both the dimension requirement and the file size."},
+  {"q": "Why did compressing my already-small photo barely help?", "a": "An image that has already been compressed once has less redundant detail left to remove. In one tested example, a fresh high-quality photo shrank by over 90 percent at the strongest compression level, while an already-compressed photo of similar content shrank by less than 80 percent at the same setting, and barely changed at all on the lightest setting."},
+  {"q": "Can I compress a PNG file on QuickTools?", "a": "Not directly. The Compress JPG tool only accepts JPG/JPEG files. To shrink a PNG's file size, convert it to JPG first (Resize Image can do this as part of resizing) or reduce its pixel dimensions instead."}
+]) }}
+{{ breadcrumb_jsonld([
+  {"label": "Home", "url": "/"},
+  {"label": "Guides", "url": "/blog"},
+  {"label": "Resizing vs. Compressing an Image: What's the Difference?", "url": "/blog/resizing-vs-compressing-an-image"}
+]) }}
+{% endblock %}
