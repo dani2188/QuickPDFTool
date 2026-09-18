@@ -11,7 +11,7 @@
 <h1>How to Remove a Watermark from a PDF</h1>
 
 <p>
-Watermarks are often added to PDFs to indicate a document is a draft, confidential, or a sample. Once the document is finalised or approved, you may need to remove the watermark to produce a clean, professional version. Our free online tool attempts to clean watermark layers from PDF files quickly and without requiring any software.
+Watermarks are often added to PDFs to indicate a document is a draft, confidential, or a sample. Once the document is finalised or approved, you may need to remove the watermark to produce a clean, professional version. Our free online tool recognizes and removes the specific watermark added by our own Add Watermark tool, and cleans up the PDF's content streams generally, without requiring any software.
 </p>
 
 <h2>Step 1 – Open the Remove Watermark Tool</h2>
@@ -23,7 +23,7 @@ Go to our <a href="/remove-watermark">Remove Watermark tool</a>. You'll find a s
 <h2>Step 2 – Upload Your PDF</h2>
 
 <p>
-Select the PDF that contains the watermark and upload it. The tool processes the document and attempts to clean the page content, removing watermark layers that were added programmatically.
+Select the PDF that contains the watermark and upload it. The tool scans the page content for the exact watermark signature our own Add Watermark tool produces (its font, size, color, and position) and removes any match it finds.
 </p>
 
 <h2>Step 3 – Download the Cleaned PDF</h2>
@@ -39,13 +39,14 @@ Not all watermarks can be automatically removed, and it's important to understan
 </p>
 
 <ul>
-  <li><strong>Programmatically added watermarks</strong> (like those added by our <a href="/add-watermark">Add Watermark tool</a> or similar software) are typically added as a separate transparent layer on top of the page. These can often be removed cleanly by stripping that layer.</li>
-  <li><strong>Watermarks baked into the original content</strong> are part of the page itself — they were rendered when the PDF was created and are not a separate layer. These cannot be removed without also affecting the underlying content.</li>
+  <li><strong>Watermarks added by our own <a href="/add-watermark">Add Watermark tool</a></strong> have a consistent, recognizable appearance (font, size, color, and position), which this tool matches and removes.</li>
+  <li><strong>Watermarks added by other PDF software</strong> can look completely different from one program to the next, so there's no reliable way to recognize them automatically. This tool does not attempt to detect or remove them.</li>
+  <li><strong>Watermarks baked into the original content</strong> are part of the page itself — they were rendered when the PDF was created and aren't a separate, identifiable element. These cannot be removed without also affecting the underlying content.</li>
   <li><strong>Scanned document watermarks</strong> are part of the scanned image. Since the watermark and the underlying content are fused into the same image, they cannot be separated without image editing.</li>
 </ul>
 
 <p>
-If you added a watermark using our tool or another PDF tool, removal should work well. If the watermark was part of the original document creation, removal may be partial or impossible.
+If you added the watermark using our own Add Watermark tool, removal should work reliably. If it came from different software, or was part of the original document, this tool won't be able to remove it.
 </p>
 
 <h2>Tips for Working with Watermarked PDFs</h2>
@@ -60,7 +61,7 @@ If you added a watermark using our tool or another PDF tool, removal should work
 
 <h3>Why didn't the watermark disappear completely?</h3>
 <p>
-If the watermark is embedded in the original page content rather than added as a separate layer, it cannot be cleanly removed. In this case, the original document needs to be recreated without the watermark.
+This tool only recognizes the specific watermark added by our own Add Watermark tool. If your PDF's watermark came from different software, or was part of the original page content, it won't be detected or removed. In that case, the original document needs to be recreated without the watermark.
 </p>
 
 <h3>Is it legal to remove watermarks?</h3>
@@ -75,7 +76,7 @@ Scanned PDFs are images. The watermark is baked into the image data and cannot b
 
 <h3>What if I want to replace a watermark with a different one?</h3>
 <p>
-Remove the existing watermark first (if possible), then add the new one using our <a href="/add-watermark">Add Watermark tool</a>.
+If the existing watermark was added by our own Add Watermark tool, remove it first, then add the new one using our <a href="/add-watermark">Add Watermark tool</a>. If it came from different software, this tool won't be able to remove it first.
 </p>
 
 <h2>Related Tools</h2>
@@ -92,8 +93,8 @@ Remove the existing watermark first (if possible), then add the new one using ou
 {% endblock %}
 
 {% block jsonld %}{% from "components/jsonld.html" import howto, faqpage %}{{ howto(self.title(), self.description(), request.path, ["Open the Remove Watermark Tool", "Upload Your PDF", "Download the Cleaned PDF"]) }}{{ faqpage([
-  {"q": "Why didn't the watermark disappear completely?", "a": "If the watermark is embedded in the original page content rather than added as a separate layer, it cannot be cleanly removed. In this case, the original document needs to be recreated without the watermark."},
+  {"q": "Why didn't the watermark disappear completely?", "a": "This tool only recognizes the specific watermark added by our own Add Watermark tool. If your PDF's watermark came from different software, or was part of the original page content, it won't be detected or removed. In that case, the original document needs to be recreated without the watermark."},
   {"q": "Is it legal to remove watermarks?", "a": "This depends on the document and your rights to it. Removing a watermark from your own documents or documents you have permission to modify is fine. Removing watermarks from commercially published, copyrighted, or licensed documents without permission may be illegal. Always ensure you have the right to modify the document before removing its watermark."},
   {"q": "Can I remove watermarks from scanned PDFs?", "a": "Scanned PDFs are images. The watermark is baked into the image data and cannot be removed by this tool. Image editing software with inpainting or cloning features would be needed for this."},
-  {"q": "What if I want to replace a watermark with a different one?", "a": "Remove the existing watermark first (if possible), then add the new one using our Add Watermark tool."}
+  {"q": "What if I want to replace a watermark with a different one?", "a": "If the existing watermark was added by our own Add Watermark tool, remove it first, then add the new one using our Add Watermark tool. If it came from different software, this tool won't be able to remove it first."}
 ]) }}{% endblock %}

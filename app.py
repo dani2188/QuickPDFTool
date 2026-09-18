@@ -1370,6 +1370,31 @@ def add_watermark():
 
     return render_template("add_watermark.html")
 
+# Visual signature of the watermark add_watermark() draws: Helvetica,
+# 40pt, 50% gray at 30% opacity, positioned at x=150/y=400 -- all hardcoded
+# there. Matching every one of these together (not any single attribute
+# alone) is what keeps this from also matching ordinary document text;
+# checked against a battery of near-miss cases (same position/size but
+# opaque, same signature but a different position, etc.) before relying
+# on this as the removal signature.
+def _is_own_watermark_span(span):
+    if span.get("font") != "Helvetica":
+        return False
+    if abs(span.get("size", 0) - 40.0) > 0.5:
+        return False
+    if abs(span.get("opacity", 1.0) - 0.3) > 0.05:
+        return False
+    color = span.get("color") or (0, 0, 0)
+    if max(color) - min(color) > 0.02:  # must be neutral gray, not colored
+        return False
+    if abs(color[0] - 0.572) > 0.03:
+        return False
+    bbox = span.get("bbox")
+    if not bbox or abs(bbox[0] - 150.0) > 1.5 or abs(bbox[1] - 360.7) > 1.5:
+        return False
+    return True
+
+
 @app.route("/remove-watermark", methods=["GET", "POST"])
 def remove_watermark():
 
@@ -1392,6 +1417,10 @@ def remove_watermark():
 
         doc = fitz.open(input_path)
         for page in doc:
+            for span in page.get_texttrace():
+                if _is_own_watermark_span(span):
+                    page.add_redact_annot(fitz.Rect(span["bbox"]))
+            page.apply_redactions()
             page.clean_contents()
         doc.save(output_path)
         doc.close()
