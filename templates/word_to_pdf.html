@@ -98,8 +98,8 @@ endblock %} {% block content %}
 {% from "components/jsonld.html" import webapp, faqpage %}
 {{ webapp(self.title(), self.description(), request.path) }}
 {{ faqpage([
-  {"q": "Will my formatting and fonts be preserved?", "a": "Yes, in almost all cases -- this uses a real document-rendering engine, so layout, fonts, tables, and images convert as they'd look printed from Word directly."},
-  {"q": "Can I edit the PDF afterward?", "a": "Not as text. For substantial edits, edit the original Word document and re-convert; for small additions use Add Text to PDF or Sign PDF."},
+  {"q": "Will my formatting and fonts be preserved?", "a": "Yes, in almost all cases — this uses a real document-rendering engine rather than a simplified text extractor, so layout, fonts, tables, and images convert the way they'd look if printed from Word directly. Extremely unusual layouts or rare fonts can occasionally shift slightly."},
+  {"q": "Can I edit the PDF afterward?", "a": "Not as text the way you could in Word. If you need to add a note or signature, use Add Text to PDF or Sign PDF afterward — for substantial edits, it's easier to edit the original Word document and re-convert."},
   {"q": "Does this work with both .doc and .docx?", "a": "Yes, both older .doc and modern .docx formats are accepted."}
 ]) }}
 {% endblock %}

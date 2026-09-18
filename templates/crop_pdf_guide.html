@@ -105,4 +105,8 @@ Yes, because the original content is still in the file. However, to restore the 
 
 {% endblock %}
 
-{% block jsonld %}{% from "components/jsonld.html" import howto %}{{ howto(self.title(), self.description(), request.path, ["Open the Crop PDF Tool", "Set Your Crop Values", "Download the Cropped PDF"]) }}{% endblock %}
+{% block jsonld %}{% from "components/jsonld.html" import howto, faqpage %}{{ howto(self.title(), self.description(), request.path, ["Open the Crop PDF Tool", "Set Your Crop Values", "Download the Cropped PDF"]) }}{{ faqpage([
+  {"q": "Will cropping reduce the file size?", "a": "Cropping adjusts the visible area but does not delete the hidden content from the file. File size may decrease slightly, but a significant reduction should not be expected from cropping alone. For file size reduction, use our Compress PDF tool."},
+  {"q": "Can I crop different amounts on different pages?", "a": "The tool applies the same crop values to all pages. To crop pages differently, split the PDF first, crop each part separately, then merge the results."},
+  {"q": "Can I undo a crop?", "a": "Yes, because the original content is still in the file. However, to restore the original visible area you would need a PDF editor that can reset the crop box, or simply re-upload the original uncropped file."}
+]) }}{% endblock %}

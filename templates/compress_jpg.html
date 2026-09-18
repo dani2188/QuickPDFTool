@@ -113,8 +113,8 @@ at once. {% endblock %} {% block content %}
 {% endblock %}
 
 {% block jsonld %}{% from "components/jsonld.html" import webapp, faqpage %}{{ webapp(self.title(), self.description(), request.path) }}{{ faqpage([
-  {"q": "Will compressing lose quality?", "a": "JPG compression is lossy by nature, so yes, some detail is discarded -- but at Low or Medium settings the difference is barely visible on screen. Higher levels trade more quality for smaller files."},
+  {"q": "Will compressing lose quality?", "a": "JPG compression is \"lossy\" by nature, so yes, some detail is discarded — but at Low or Medium settings the difference is barely visible on screen. Higher levels trade more quality for smaller files."},
   {"q": "Can I compress several photos at once?", "a": "Yes. Select multiple files and each is compressed individually with the same level, then bundled into one ZIP for download."},
-  {"q": "Does this remove my photo's location/EXIF data?", "a": "Yes -- re-encoding strips EXIF metadata including GPS location, camera model, and timestamp, which also shaves off a little extra size."},
-  {"q": "Can I compress PNG or other formats here?", "a": "This tool is specifically for JPG/JPEG files. Convert a PNG to a JPG first if you need to compress a PNG."}
+  {"q": "Does this remove my photo's location/EXIF data?", "a": "Yes — re-encoding strips EXIF metadata (including GPS location, camera model, and timestamp), which also shaves off a little extra size. The photo's visual orientation is preserved either way."},
+  {"q": "Can I compress PNG or other formats here?", "a": "This tool is specifically for JPG/JPEG files. To convert a PNG to a JPG first, or to work with PDFs, see our other PDF and image tools."}
 ]) }}{% endblock %}

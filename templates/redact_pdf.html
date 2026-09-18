@@ -522,9 +522,9 @@
 {% from "components/jsonld.html" import webapp, faqpage %}
 {{ webapp(self.title(), self.description(), request.path) }}
 {{ faqpage([
-  {"q": "Is the hidden content really gone, or just covered up?", "a": "Really gone. The text or image data inside each redaction box is deleted from the page itself, not just hidden beneath a black shape."},
-  {"q": "Which style should I use -- black, white, blur, or pixelate?", "a": "Black is the most secure and the default. White suits light-background forms. Blur and pixelate obscure something like a face while keeping a visual hint it was there."},
-  {"q": "Can I redact multiple pages at once?", "a": "Yes. Add redaction boxes on as many pages as needed; everything applies together when you click Apply Redaction & Download."},
-  {"q": "Does this automatically find sensitive information for me?", "a": "No. You draw each redaction box yourself -- there's no automatic detection of names, numbers, or other sensitive data."}
+  {"q": "Is the hidden content really gone, or just covered up?", "a": "Really gone. The text or image data inside each redaction box is deleted from the page itself, not just hidden beneath a black shape — it can't be recovered by selecting text, copying, or editing the PDF."},
+  {"q": "Which style should I use — black, white, blur, or pixelate?", "a": "Black is the most secure and the default choice. White works better on forms with a light background. Blur and pixelate are useful when you want to obscure something like a face or signature while keeping a visual sense that something was there."},
+  {"q": "Can I redact multiple pages at once?", "a": "Yes. Navigate between pages using Previous/Next and add redaction boxes on as many pages as you need — everything is applied together when you click \"Apply Redaction & Download.\""},
+  {"q": "Does this automatically find sensitive information for me?", "a": "No. You draw each redaction box yourself over the text or image you want removed — there's no automatic detection of names, numbers, or other sensitive data."}
 ]) }}
 {% endblock %}

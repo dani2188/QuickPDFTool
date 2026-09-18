@@ -121,9 +121,10 @@ our <a href="/pdf-tools">full list of tools</a>.
 {% from "components/jsonld.html" import howto, faqpage %}
 {{ howto(self.title(), self.description(), request.path, ["Open the Compress JPG Tool", "Select Your Photos", "Choose a Compression Level", "Download Your Compressed Photos"]) }}
 {{ faqpage([
-  {"q": "Will compressing my photo make it blurry?", "a": "At Low or Medium settings the difference is barely visible on a normal screen. Extreme compression introduces visible quality loss in exchange for a smaller file."},
-  {"q": "Can I compress a large batch of photos at once?", "a": "Yes. Select as many JPG files as you need; each is compressed individually then bundled into one ZIP, with individual download links too."},
-  {"q": "Does this strip my photo's location data?", "a": "Yes, re-encoding removes EXIF metadata including GPS location, camera model, and timestamp."},
-  {"q": "Is my photo stored after compressing?", "a": "No. Files are processed on a secure server and deleted automatically within minutes."}
+  {"q": "Will compressing my photo make it blurry?", "a": "At Low or Medium settings, the difference is barely visible on a normal screen. Extreme compression does introduce visible quality loss — that's the tradeoff for the smaller file size."},
+  {"q": "Can I compress a large batch of photos at once?", "a": "Yes. Select as many JPG files as you need — each is compressed individually with the level you chose, then bundled into one ZIP for download, along with individual links per file."},
+  {"q": "Does this strip my photo's location data?", "a": "Yes. Re-encoding removes EXIF metadata, including GPS location, camera model, and timestamp — which also shaves off a small amount of extra size. This is often a welcome side effect before sharing photos publicly. The photo's visual orientation is preserved regardless."},
+  {"q": "Is my photo stored after compressing?", "a": "No. Files are processed on a secure server and deleted automatically within minutes — nothing is kept permanently."},
+  {"q": "Can I compress PNG images with this tool?", "a": "This tool is specifically tuned for JPG/JPEG files. For other formats or PDF-related conversions, see our full list of tools."}
 ]) }}
 {% endblock %}

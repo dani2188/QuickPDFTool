@@ -107,4 +107,10 @@ Yes. Scanned PDFs are already image-based, so they convert particularly well. Th
 
 {% endblock %}
 
-{% block jsonld %}{% from "components/jsonld.html" import howto %}{{ howto(self.title(), self.description(), request.path, ["Open the PDF to JPG Tool", "Upload Your PDF", "Download the JPG Images"]) }}{% endblock %}
+{% block jsonld %}{% from "components/jsonld.html" import howto, faqpage %}{{ howto(self.title(), self.description(), request.path, ["Open the PDF to JPG Tool", "Upload Your PDF", "Download the JPG Images"]) }}{{ faqpage([
+  {"q": "How many pages can I convert?", "a": "The tool converts up to 20 pages per upload. For longer documents, use the Split PDF tool first to break the document into smaller parts, then convert each part."},
+  {"q": "What resolution are the output images?", "a": "Pages are rendered at 2x resolution, producing high-quality images suitable for most uses. A standard A4 page renders at approximately 1654 × 2339 pixels at 2x scale."},
+  {"q": "Can I convert PDF to PNG instead?", "a": "Yes. Use our PDF to PNG converter if you need transparent backgrounds or lossless image quality."},
+  {"q": "Will the text in my PDF be readable in the JPG images?", "a": "Yes. The conversion renders the page at high resolution, so text remains sharp and legible in the resulting images, especially at 2x zoom."},
+  {"q": "Does this work for scanned PDFs?", "a": "Yes. Scanned PDFs are already image-based, so they convert particularly well. The result will look exactly like the scanned original."}
+]) }}{% endblock %}

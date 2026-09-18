@@ -105,9 +105,9 @@
 {% from "components/jsonld.html" import webapp, faqpage %}
 {{ webapp(self.title(), self.description(), request.path) }}
 {{ faqpage([
-  {"q": "Will this work on a scanned document?", "a": "Not reliably. A scanned PDF has no embedded text layer, only page images, and this tool does not perform OCR."},
-  {"q": "Does it preserve tables, columns, or formatting?", "a": "No, the output is plain text. Use PDF to Word if you need to keep formatting."},
-  {"q": "Why is my output file empty or missing some pages?", "a": "Pages with no extractable text (usually scanned pages) are skipped rather than producing garbled output."},
-  {"q": "Is the text extracted in reading order?", "a": "Text is pulled out in the order it's stored in the PDF, which usually matches reading order for simple documents, but multi-column layouts can come out in a different order than expected."}
+  {"q": "Will this work on a scanned document?", "a": "Not reliably. A scanned PDF is really a sequence of page images with no embedded text, so there's nothing for this tool to extract — it doesn't perform OCR. If you need text out of a scanned document, you'll need an OCR-specific tool."},
+  {"q": "Does it preserve tables, columns, or formatting?", "a": "No. The output is plain text with each page's content separated by a blank line — column layouts, tables, and font styling are not preserved. If you need to keep formatting, use PDF to Word instead."},
+  {"q": "Why is my output file empty or missing some pages?", "a": "Pages with no extractable text (usually scanned pages, or pages that are entirely images) are skipped rather than producing garbled output — an empty result means the source PDF had no embedded text at all."},
+  {"q": "Is the text extracted in reading order?", "a": "Text is pulled out in the order it's stored in the PDF, which usually matches reading order for simple single-column documents. Multi-column layouts, sidebars, or complex page designs can come out in a different order than you'd read them visually, since the tool doesn't try to detect columns."}
 ]) }}
 {% endblock %}

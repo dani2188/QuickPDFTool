@@ -98,4 +98,8 @@ Currently the tool supports text watermarks. For image watermarks such as a comp
 
 {% endblock %}
 
-{% block jsonld %}{% from "components/jsonld.html" import howto %}{{ howto(self.title(), self.description(), request.path, ["Open the Add Watermark Tool", "Upload Your PDF and Enter Watermark Text", "Download the Watermarked PDF"]) }}{% endblock %}
+{% block jsonld %}{% from "components/jsonld.html" import howto, faqpage %}{{ howto(self.title(), self.description(), request.path, ["Open the Add Watermark Tool", "Upload Your PDF and Enter Watermark Text", "Download the Watermarked PDF"]) }}{{ faqpage([
+  {"q": "Can I remove a watermark I've added?", "a": "You can use our Remove Watermark tool to attempt removal, or simply use the original unwatermarked file if you kept it."},
+  {"q": "Will the watermark be visible when the document is printed?", "a": "Yes. The watermark is embedded into the PDF content and will appear on screen and in print."},
+  {"q": "Can I add an image watermark instead of text?", "a": "Currently the tool supports text watermarks. For image watermarks such as a company logo, you can use our Add Text to PDF or Sign PDF tool to position an image on the page."}
+]) }}{% endblock %}

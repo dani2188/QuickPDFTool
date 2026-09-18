@@ -96,4 +96,9 @@ High-resolution PNG images embed at full quality, which can result in large PDFs
 
 {% endblock %}
 
-{% block jsonld %}{% from "components/jsonld.html" import howto %}{{ howto(self.title(), self.description(), request.path, ["Open the PNG to PDF Tool", "Upload Your PNG Images", "Download Your PDF"]) }}{% endblock %}
+{% block jsonld %}{% from "components/jsonld.html" import howto, faqpage %}{{ howto(self.title(), self.description(), request.path, ["Open the PNG to PDF Tool", "Upload Your PNG Images", "Download Your PDF"]) }}{{ faqpage([
+  {"q": "Can I mix PNG and JPG in the same PDF?", "a": "Our PNG to PDF tool is specifically for PNG files. For JPG images, use our JPG to PDF tool. If you need to mix formats, convert all files to the same format first, then combine them."},
+  {"q": "Will transparent areas in my PNG show up?", "a": "Transparent areas will be rendered as white in the PDF, since PDF pages have a white background by default."},
+  {"q": "Is there a limit on the number of images I can convert?", "a": "There is no hard limit. Processing time increases with the number and size of images. For very large collections, consider splitting into smaller batches and then merging the resulting PDFs."},
+  {"q": "Why is my PDF so large?", "a": "High-resolution PNG images embed at full quality, which can result in large PDFs. Use the Compress PDF tool after conversion to reduce the file size."}
+]) }}{% endblock %}

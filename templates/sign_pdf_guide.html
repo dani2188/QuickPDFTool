@@ -128,4 +128,10 @@ If you are not happy with the result, simply re-upload the original PDF and try 
 
 {% endblock %}
 
-{% block jsonld %}{% from "components/jsonld.html" import howto %}{{ howto(self.title(), self.description(), request.path, ["Prepare Your Signature Image", "Open the Sign PDF Tool", "Upload Your PDF and Signature", "Position and Resize Your Signature", "Apply and Download the Signed PDF"]) }}{% endblock %}
+{% block jsonld %}{% from "components/jsonld.html" import howto, faqpage %}{{ howto(self.title(), self.description(), request.path, ["Prepare Your Signature Image", "Open the Sign PDF Tool", "Upload Your PDF and Signature", "Position and Resize Your Signature", "Apply and Download the Signed PDF"]) }}{{ faqpage([
+  {"q": "Is a digitally placed signature legally valid?", "a": "The legal validity of electronic signatures varies by country and context. An image signature placed on a PDF is generally acceptable for informal agreements and many business contracts. For formal legal, financial, or government documents, check the specific requirements in your jurisdiction. For high-stakes documents, a certified electronic signature service may be required."},
+  {"q": "What image formats are supported for the signature?", "a": "The tool supports PNG, JPG, and GIF. PNG with a transparent background is strongly recommended for the cleanest results."},
+  {"q": "Can I sign multiple pages?", "a": "Currently the tool applies the signature to one page at a time. To sign multiple pages, apply the signature to each page separately by re-uploading the result each time."},
+  {"q": "Is my document safe?", "a": "Yes. Files are processed on a secure server and automatically deleted within 10 minutes. No account is required and no files are stored permanently."},
+  {"q": "What if the signature doesn't look right?", "a": "If you are not happy with the result, simply re-upload the original PDF and try again with a better signature image or a different position."}
+]) }}{% endblock %}

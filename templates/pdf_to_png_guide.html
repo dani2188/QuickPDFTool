@@ -96,4 +96,9 @@ You'll need to <a href="/unlock-pdf">remove the password</a> before converting.
 
 {% endblock %}
 
-{% block jsonld %}{% from "components/jsonld.html" import howto %}{{ howto(self.title(), self.description(), request.path, ["Open the PDF to PNG Tool", "Upload Your PDF", "Download Your PNG Images"]) }}{% endblock %}
+{% block jsonld %}{% from "components/jsonld.html" import howto, faqpage %}{{ howto(self.title(), self.description(), request.path, ["Open the PDF to PNG Tool", "Upload Your PDF", "Download Your PNG Images"]) }}{{ faqpage([
+  {"q": "How many pages can I convert at once?", "a": "The tool converts up to 20 pages per upload. For longer documents, use the Split PDF tool to break the document into smaller parts first."},
+  {"q": "What resolution are the PNG files?", "a": "Pages are rendered at 2x resolution. A standard A4 page produces an image of approximately 1654 × 2339 pixels, which is sharp enough for both screen use and most print applications."},
+  {"q": "What is the difference between PDF to PNG and PDF to JPG?", "a": "PNG is lossless — ideal for text, diagrams, and sharp graphics. JPG is lossy but produces smaller file sizes — better for photographic content where exact pixel accuracy is less critical."},
+  {"q": "Can I convert a password-protected PDF?", "a": "You'll need to remove the password before converting."}
+]) }}{% endblock %}

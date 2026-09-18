@@ -101,4 +101,9 @@ Files up to 20MB are supported. For larger documents, try compressing images in 
 
 {% endblock %}
 
-{% block jsonld %}{% from "components/jsonld.html" import howto %}{{ howto(self.title(), self.description(), request.path, ["Open the Word to PDF Tool", "Upload Your Word Document", "Download Your PDF"]) }}{% endblock %}
+{% block jsonld %}{% from "components/jsonld.html" import howto, faqpage %}{{ howto(self.title(), self.description(), request.path, ["Open the Word to PDF Tool", "Upload Your Word Document", "Download Your PDF"]) }}{{ faqpage([
+  {"q": "Will my tables and images be preserved?", "a": "Yes. The converter handles tables, images, headings, bullet lists, and most standard Word formatting. Complex layouts with heavy use of text boxes or advanced Word features may require manual checking."},
+  {"q": "Can I convert .doc files (older Word format)?", "a": "The tool works best with .docx files. If you have a .doc file, open it in Word and save it as .docx first, then convert."},
+  {"q": "Is the converted PDF editable?", "a": "The resulting PDF is a standard PDF without editing restrictions. You can add text, annotations, or signatures using our other tools. The content is not locked by default unless you add password protection."},
+  {"q": "What's the file size limit?", "a": "Files up to 20MB are supported. For larger documents, try compressing images in Word before uploading."}
+]) }}{% endblock %}

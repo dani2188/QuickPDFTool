@@ -82,7 +82,7 @@ no signup, works on product photos, portraits, and more. {% endblock %} {% block
 
 {% block jsonld %}{% from "components/jsonld.html" import webapp, faqpage %}{{ webapp(self.title(), self.description(), request.path) }}{{ faqpage([
   {"q": "What file formats are supported?", "a": "Upload JPG, PNG, or WebP. The result is always delivered as a PNG with a transparent background."},
-  {"q": "How accurate is the background removal?", "a": "It performs very well on clear subjects -- people, animals, products -- against a reasonably simple background. Complex or cluttered scenes may be less precise around fine edges."},
-  {"q": "Are my images stored or shared?", "a": "Your image is uploaded to our server, sent securely to a background-removal service purely to process the request, and deleted automatically within minutes."},
+  {"q": "How accurate is the background removal?", "a": "It performs very well on clear subjects — people, animals, products — against a reasonably simple background. Complex or cluttered scenes may be less precise around fine edges."},
+  {"q": "Are my images stored or shared?", "a": "Your image is uploaded to our server, sent securely to a background-removal service purely to process the request, and deleted automatically within minutes. See our Privacy Policy for details."},
   {"q": "Is this free?", "a": "Yes, completely free, no account required."}
 ]) }}{% endblock %}

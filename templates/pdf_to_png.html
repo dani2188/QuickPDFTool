@@ -110,9 +110,9 @@
 {% from "components/jsonld.html" import webapp, faqpage %}
 {{ webapp(self.title(), self.description(), request.path) }}
 {{ faqpage([
-  {"q": "Why is my PNG file larger than I expected?", "a": "PNG is lossless, so it doesn't discard image data the way JPG does -- quality stays high but file size is naturally bigger, especially for photo-heavy pages."},
-  {"q": "Is there a page limit?", "a": "Yes, only the first 20 pages of a document are converted. For a longer document, split it into sections first with Split PDF."},
-  {"q": "Can I download just one page instead of the whole ZIP?", "a": "Yes. The results page gives you a download-all ZIP button as well as an individual download link for every page."},
-  {"q": "Will the PNGs have a transparent background?", "a": "No, pages are rendered as a flat image including their existing background. Use Remove Background on the exported PNG afterward if you need transparency."}
+  {"q": "Why is my PNG file larger than I expected?", "a": "PNG is lossless, so it doesn't discard image data the way JPG does — this keeps quality high but means file sizes are naturally bigger, especially for pages with photos or complex color gradients. If size matters more than pixel-perfect quality, PDF to JPG will produce smaller files from the same document."},
+  {"q": "Is there a page limit?", "a": "Yes — only the first 20 pages of a document are converted, to keep processing fast for everyone. For a longer document, split it into sections first with Split PDF and convert each part."},
+  {"q": "Can I download just one page instead of the whole ZIP?", "a": "Yes. The results page gives you a \"download all\" ZIP button as well as an individual download link for every page."},
+  {"q": "Will the PNGs have a transparent background?", "a": "No. Pages are rendered as a flat image of exactly what's on the page, including its background — there's no automatic transparency added. If you need a transparent background, use Remove Background on the exported PNG afterward."}
 ]) }}
 {% endblock %}

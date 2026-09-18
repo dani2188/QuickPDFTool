@@ -115,9 +115,10 @@ preserved somewhere in the output, even if that means white bars on the sides or
 {% from "components/jsonld.html" import howto, faqpage %}
 {{ howto(self.title(), self.description(), request.path, ["Open the Resize Image Tool", "Pick a Preset", "Choose PNG or JPG", "Download Your Resized Image"]) }}
 {{ faqpage([
-  {"q": "Will resizing crop or stretch my photo?", "a": "No. Your photo is scaled to fit entirely within the target box, keeping its original proportions. Leftover space is padded with white."},
-  {"q": "Why does my resized image have white bars on the sides?", "a": "That happens when your photo's aspect ratio doesn't exactly match the preset you picked. It's the tradeoff for guaranteeing nothing gets cropped."},
-  {"q": "PNG or JPG -- which should I pick?", "a": "PNG is lossless and better for graphics or text. JPG compresses more and usually looks fine for ordinary photos."},
+  {"q": "Will resizing crop or stretch my photo?", "a": "No. Your photo is scaled to fit entirely within the target box, keeping its original proportions. Any leftover space is padded with white — nothing is ever cropped out or distorted."},
+  {"q": "Why does my resized image have white bars on the sides?", "a": "That happens when your photo's aspect ratio doesn't exactly match the preset you picked (for example, fitting a landscape photo into a square). It's the tradeoff for guaranteeing nothing gets cropped."},
+  {"q": "PNG or JPG — which should I pick?", "a": "PNG is lossless, so it's the better choice for graphics, logos, or anything with sharp edges or text. JPG compresses more and is usually the right call for ordinary photos."},
+  {"q": "Is there a size limit?", "a": "Yes, 20MB for the uploaded file, consistent with our other tools."},
   {"q": "Is my photo stored after resizing?", "a": "No. Files are processed on a secure server and deleted automatically within minutes."}
 ]) }}
 {% endblock %}

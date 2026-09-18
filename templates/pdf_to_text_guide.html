@@ -96,4 +96,9 @@ PDF to Text (.txt) gives you plain text with no formatting. PDF to Word (.docx) 
 
 {% endblock %}
 
-{% block jsonld %}{% from "components/jsonld.html" import howto %}{{ howto(self.title(), self.description(), request.path, ["Open the PDF to Text Tool", "Upload Your PDF", "Download the Text File"]) }}{% endblock %}
+{% block jsonld %}{% from "components/jsonld.html" import howto, faqpage %}{{ howto(self.title(), self.description(), request.path, ["Open the PDF to Text Tool", "Upload Your PDF", "Download the Text File"]) }}{{ faqpage([
+  {"q": "My extracted text is empty — why?", "a": "If the extracted text file is empty, your PDF is likely a scanned document (an image of text, not actual text). Scanned PDFs require OCR (optical character recognition) software to extract their content. This tool does not support OCR."},
+  {"q": "Will the text from multiple pages be combined?", "a": "Yes. Text from all pages is extracted and combined into a single .txt file, with pages separated by blank lines."},
+  {"q": "Can I extract text from a password-protected PDF?", "a": "You'll need to remove the password first, then extract the text from the unlocked file."},
+  {"q": "What's the difference between PDF to Text and PDF to Word?", "a": "PDF to Text (.txt) gives you plain text with no formatting. PDF to Word (.docx) attempts to preserve headings, bold text, tables, and other formatting. Use PDF to Word if you need an editable document that keeps the original layout."}
+]) }}{% endblock %}

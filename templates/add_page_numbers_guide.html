@@ -96,4 +96,9 @@ You'll need to <a href="/unlock-pdf">remove the password</a> first. Then add pag
 
 {% endblock %}
 
-{% block jsonld %}{% from "components/jsonld.html" import howto %}{{ howto(self.title(), self.description(), request.path, ["Open the Add Page Numbers Tool", "Upload Your PDF", "Download the Numbered PDF"]) }}{% endblock %}
+{% block jsonld %}{% from "components/jsonld.html" import howto, faqpage %}{{ howto(self.title(), self.description(), request.path, ["Open the Add Page Numbers Tool", "Upload Your PDF", "Download the Numbered PDF"]) }}{{ faqpage([
+  {"q": "Where are the page numbers placed?", "a": "The tool places page numbers at the bottom-right corner of each page. This is the most common and professional position for page numbers."},
+  {"q": "Can I start numbering from a number other than 1?", "a": "Currently the tool starts numbering from 1. If you need a different starting number, this is not supported at this time."},
+  {"q": "Will the page numbers appear when I print the PDF?", "a": "Yes. The numbers are embedded into the PDF content, so they will appear in any PDF viewer and when the document is printed."},
+  {"q": "Can I add page numbers to a password-protected PDF?", "a": "You'll need to remove the password first. Then add page numbers, and re-protect the file if needed."}
+]) }}{% endblock %}

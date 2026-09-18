@@ -115,7 +115,7 @@ underlying content.
 {{ article(self.title(), self.description(), request.path, "2026-08-12") }}
 {{ faqpage([
   {"q": "If I password-protect a PDF, do I still need to redact anything?", "a": "Only if you don't fully trust everyone you're sharing the password with to see every part of the document. A password controls access to the whole file, not to specific sections within it."},
-  {"q": "Can a watermark be removed by anyone who receives the file?", "a": "If they have access to the right tools, yes -- a watermark isn't a security control, just visible markup layered onto the page."},
+  {"q": "Can a watermark be removed by anyone who receives the file?", "a": "If they have access to the right tools, yes — a watermark isn't a security control, just visible markup layered onto the page."},
   {"q": "Is drawing a box over text in a PDF viewer the same as redacting it?", "a": "No, and this is the most common security mistake with PDFs. If the box is just a shape on top of the text, the text is still fully present underneath and can be recovered. True redaction deletes the underlying content."}
 ]) }}
 {% endblock %}

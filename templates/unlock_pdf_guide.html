@@ -106,4 +106,10 @@ No. Only the password protection layer is removed. All text, images, formatting,
 
 {% endblock %}
 
-{% block jsonld %}{% from "components/jsonld.html" import howto %}{{ howto(self.title(), self.description(), request.path, ["Open the Unlock PDF Tool", "Enter the Current Password", "Download the Unlocked PDF"]) }}{% endblock %}
+{% block jsonld %}{% from "components/jsonld.html" import howto, faqpage %}{{ howto(self.title(), self.description(), request.path, ["Open the Unlock PDF Tool", "Enter the Current Password", "Download the Unlocked PDF"]) }}{{ faqpage([
+  {"q": "Can this tool unlock a PDF without the password?", "a": "No. This tool removes password protection from PDFs where you already know the password. It requires the correct password to process the file. It is not a password recovery or cracking tool."},
+  {"q": "Is my document safe when I upload it?", "a": "Yes. Your file is uploaded over a secure connection, processed on our server, and automatically deleted after a short time. We do not store, read, or share your documents or your password."},
+  {"q": "What if I've forgotten the password?", "a": "Without the password, we cannot unlock the file. If you have forgotten the password to a document you own, you may need to contact the document's creator to get the original unprotected version."},
+  {"q": "Can I unlock a PDF that someone else sent me?", "a": "Only if you were given the password. If the document was sent to you with a password, you should have received the password separately from the sender."},
+  {"q": "Will unlocking affect the content of my PDF?", "a": "No. Only the password protection layer is removed. All text, images, formatting, and content remain exactly as they were in the original document."}
+]) }}{% endblock %}

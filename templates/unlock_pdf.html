@@ -103,8 +103,8 @@ content %}
 {% from "components/jsonld.html" import webapp, faqpage %}
 {{ webapp(self.title(), self.description(), request.path) }}
 {{ faqpage([
-  {"q": "Can this recover a password I've forgotten?", "a": "No. This tool decrypts a PDF using a password you provide -- it doesn't guess, crack, or bypass an unknown password."},
-  {"q": "Will my original protected file be changed?", "a": "No. A separate unprotected copy is generated for download; both files are deleted automatically after processing."},
-  {"q": "Is it legal to unlock a PDF?", "a": "Fine for files you own or have the right to access. Removing protection from a document you're not authorized to access is a different matter."}
+  {"q": "Can this recover a password I've forgotten?", "a": "No. This tool decrypts a PDF using a password you provide — it doesn't guess, crack, or bypass an unknown password. If you've genuinely lost the password, this tool can't recover it."},
+  {"q": "Will my original protected file be changed?", "a": "No. Your upload generates a separate, unprotected copy for download; the original isn't modified. Both files are deleted from our server automatically after processing."},
+  {"q": "Is it legal to unlock a PDF?", "a": "It's fine for files you own or have the right to access, such as removing a password you set yourself. Removing protection from a document you don't have authorization to access is a different matter — use this responsibly."}
 ]) }}
 {% endblock %}

@@ -100,9 +100,9 @@
 {% from "components/jsonld.html" import webapp, faqpage %}
 {{ webapp(self.title(), self.description(), request.path) }}
 {{ faqpage([
-  {"q": "What happens to transparent areas in my PNG?", "a": "They're filled with a solid color, since PDF pages don't support transparency the way PNG does."},
-  {"q": "Can I mix PNG and JPG images in the same PDF?", "a": "Yes, use JPG to PDF, which accepts both formats in the same upload."},
-  {"q": "Does this reduce my file size?", "a": "No, images are embedded at original quality. Use Compress PDF afterward if the file needs to be smaller."},
-  {"q": "Does the order I upload files in matter?", "a": "Yes, the first image you select becomes page 1, and the rest follow in upload order."}
+  {"q": "What happens to transparent areas in my PNG?", "a": "They're filled with a solid color, since PDF pages don't support transparency the way PNG does. If you need the transparency preserved for further editing, keep working with the PNG directly."},
+  {"q": "Can I mix PNG and JPG images in the same PDF?", "a": "Yes — use JPG to PDF, which accepts both formats in the same upload."},
+  {"q": "Does this reduce my file size?", "a": "No, images are embedded at their original quality. Run the result through Compress PDF afterward if it needs to be smaller."},
+  {"q": "Does the order I upload files in matter?", "a": "Yes. The first image you select becomes page 1 of the PDF, and the rest follow in the order they were uploaded — check the result and re-upload in the right order if the pages come out reversed or shuffled."}
 ]) }}
 {% endblock %}

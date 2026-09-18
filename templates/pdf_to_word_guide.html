@@ -106,4 +106,10 @@ Review the document carefully, make your edits, then use our <a href="/word-to-p
 
 {% endblock %}
 
-{% block jsonld %}{% from "components/jsonld.html" import howto %}{{ howto(self.title(), self.description(), request.path, ["Open the PDF to Word Tool", "Upload Your PDF", "Download and Edit the Word Document"]) }}{% endblock %}
+{% block jsonld %}{% from "components/jsonld.html" import howto, faqpage %}{{ howto(self.title(), self.description(), request.path, ["Open the PDF to Word Tool", "Upload Your PDF", "Download and Edit the Word Document"]) }}{{ faqpage([
+  {"q": "Will the formatting be exactly the same in the Word document?", "a": "For text-based PDFs, the formatting is generally very close to the original. Complex layouts with multiple columns, decorative elements, or advanced typography may require some manual adjustment in Word."},
+  {"q": "Can I convert a scanned PDF to Word?", "a": "Scanned PDFs are images of text, not actual text, and this tool does not perform OCR (optical character recognition). Converting a scanned PDF will produce a Word document with the page embedded as an image rather than editable text. Text-based PDFs convert much more reliably."},
+  {"q": "Is there a page limit for conversion?", "a": "There is no hard page limit, but very long documents may take a few extra seconds to process. File size is limited to our standard 20MB upload limit."},
+  {"q": "Can I convert a password-protected PDF to Word?", "a": "You'll need to remove the password first, then convert the unlocked PDF to Word."},
+  {"q": "What should I do after converting?", "a": "Review the document carefully, make your edits, then use our Word to PDF converter to create a clean PDF version of your updated document for sharing."}
+]) }}{% endblock %}

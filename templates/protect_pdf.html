@@ -130,9 +130,9 @@ processing.
 {% from "components/jsonld.html" import webapp, faqpage %}
 {{ webapp(self.title(), self.description(), request.path) }}
 {{ faqpage([
-  {"q": "What if I forget the password after protecting my PDF?", "a": "There's no way to recover the file's contents without the password -- that's the point of encryption."},
-  {"q": "Does this stop someone from printing or copying the content?", "a": "No. The password controls whether the file opens at all; once opened, the content can be read, copied, and printed normally."},
-  {"q": "Can I protect a PDF that's already password-protected?", "a": "Remove the existing password first with Unlock PDF, then apply a new one."},
-  {"q": "Is my original file changed?", "a": "No. A separate protected copy is generated for download; both files are deleted automatically after processing."}
+  {"q": "What if I forget the password after protecting my PDF?", "a": "There's no way to recover the file's contents without the password — that's the point of encryption. Keep it somewhere safe, like a password manager, before you close this tab."},
+  {"q": "Does this stop someone from printing or copying the content?", "a": "No. The password controls whether the file opens at all; once someone has entered it, they can read, copy, and print normally."},
+  {"q": "Can I protect a PDF that's already password-protected?", "a": "You'll need to remove the existing password first with Unlock PDF (which requires knowing that password), then apply a new one here."},
+  {"q": "Is my original file changed?", "a": "No. Your upload is used to generate a separate, protected copy for download; the original isn't modified. Both the upload and the generated file are deleted from our server automatically after processing."}
 ]) }}
 {% endblock %}

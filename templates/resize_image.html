@@ -189,8 +189,8 @@ without cropping or stretching — free, no signup. {% endblock %} {% block cont
 {% endblock %}
 
 {% block jsonld %}{% from "components/jsonld.html" import webapp, faqpage %}{{ webapp(self.title(), self.description(), request.path) }}{{ faqpage([
-  {"q": "Will resizing crop or stretch my photo?", "a": "No. The image is scaled down to fit entirely within the target dimensions, keeping its original proportions. If the shape doesn't match exactly, white padding fills the remaining space -- nothing is cropped or distorted."},
-  {"q": "Why does my resized image have white bars?", "a": "That's padding that appears when your photo's aspect ratio doesn't exactly match the preset you chose. It's the tradeoff for never cropping content out of your photo."},
-  {"q": "PNG or JPG -- which should I choose?", "a": "PNG is lossless and better for graphics, logos, or anything with sharp edges or text. JPG produces a smaller file and is usually the better choice for photos."},
+  {"q": "Will resizing crop or stretch my photo?", "a": "No. The image is scaled down to fit entirely within the target dimensions, keeping its original proportions. If the shape doesn't match exactly, white padding fills the remaining space — nothing is cropped or distorted."},
+  {"q": "Why does my resized image have white bars?", "a": "That's the padding described above — it appears when your photo's aspect ratio doesn't exactly match the preset you chose (for example, a landscape photo resized to a square). It's the tradeoff for never cropping content out of your photo."},
+  {"q": "PNG or JPG — which should I choose?", "a": "PNG is lossless and better for graphics, logos, or anything with sharp edges or text. JPG produces a smaller file and is usually the better choice for photos."},
   {"q": "Is my photo stored after resizing?", "a": "No. Files are processed on a secure server and deleted automatically within minutes."}
 ]) }}{% endblock %}

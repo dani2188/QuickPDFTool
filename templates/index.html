@@ -186,9 +186,9 @@
 {{ super() }}
 {% from "components/jsonld.html" import faqpage %}
 {{ faqpage([
-  {"q": "Do I need to create an account?", "a": "No. Every tool works without signing up -- upload a file, process it, and download the result."},
-  {"q": "Where does my file get processed?", "a": "On our server, not in your browser. Uploaded files and generated results are deleted automatically within minutes."},
-  {"q": "Is there a file size limit?", "a": "Yes, uploads are capped at 20MB across all tools."},
-  {"q": "Do you support image tools, or just PDFs?", "a": "Both -- Resize Image, Remove Background, and Compress JPG work on standalone photos alongside the PDF tools."}
+  {"q": "Do I need to create an account?", "a": "No. Every tool works without signing up — upload a file, process it, and download the result."},
+  {"q": "Where does my file get processed?", "a": "On our server, not in your browser — your file is uploaded, the requested operation runs server-side, and the result is sent back to you for download. Uploaded files and generated results are deleted automatically within minutes."},
+  {"q": "Is there a file size limit?", "a": "Yes, uploads are capped at 20MB across all tools. If a PDF is too large, Compress PDF can shrink it first."},
+  {"q": "Do you support image tools, or just PDFs?", "a": "Both. Alongside the PDF tools, Resize Image, Remove Background, and Compress JPG work on standalone photos — see all image tools."}
 ]) }}
 {% endblock %}

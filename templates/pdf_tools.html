@@ -106,9 +106,9 @@ online. {% endblock %} {% block content %}
 {{ super() }}
 {% from "components/jsonld.html" import faqpage %}
 {{ faqpage([
-  {"q": "Do I need an account to use these tools?", "a": "No. Every tool works without signing up -- upload a file, process it, download the result."},
-  {"q": "Is there a file size limit?", "a": "Yes, uploads are capped at 20MB across every tool. Compress large files first with Compress PDF."},
-  {"q": "Are my files kept after processing?", "a": "No. Uploaded files and generated results are automatically deleted from our server within minutes."},
-  {"q": "Which tool should I use if I'm not sure?", "a": "Each tool's page explains what it does and links to a step-by-step guide; the guides section covers common tasks by situation rather than by format."}
+  {"q": "Do I need an account to use these tools?", "a": "No. Every tool here works without signing up — upload a file, process it, download the result."},
+  {"q": "Is there a file size limit?", "a": "Yes, uploads are capped at 20MB across every tool on this page. If your file is larger, compress it first with Compress PDF."},
+  {"q": "Are my files kept after processing?", "a": "No. Uploaded files and generated results are automatically deleted from our server within minutes of processing."},
+  {"q": "Which tool should I use if I'm not sure?", "a": "Each tool's own page explains what it does and links to a full step-by-step guide with an FAQ. If you're working on a specific task rather than a specific format, the guides section covers common situations like preparing a document for email or reducing file size. Looking for image tools? →"}
 ]) }}
 {% endblock %}

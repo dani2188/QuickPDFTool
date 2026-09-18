@@ -101,4 +101,9 @@ There is no strict limit. However, very large numbers of high-resolution images 
 
 {% endblock %}
 
-{% block jsonld %}{% from "components/jsonld.html" import howto %}{{ howto(self.title(), self.description(), request.path, ["Open the JPG to PDF Tool", "Upload Your Images", "Download Your PDF"]) }}{% endblock %}
+{% block jsonld %}{% from "components/jsonld.html" import howto, faqpage %}{{ howto(self.title(), self.description(), request.path, ["Open the JPG to PDF Tool", "Upload Your Images", "Download Your PDF"]) }}{{ faqpage([
+  {"q": "Can I convert multiple JPG files into one PDF?", "a": "Yes. Upload all your images at once and the tool will combine them into a single multi-page PDF document."},
+  {"q": "Does the conversion change the quality of my images?", "a": "The images are embedded into the PDF as-is. The tool does not apply additional compression to your images during conversion, so quality is preserved."},
+  {"q": "What if my images are PNG or WEBP format?", "a": "For PNG images, use our PNG to PDF tool. For other formats, convert them to JPG or PNG first, then use this tool."},
+  {"q": "Is there a limit on how many images I can convert?", "a": "There is no strict limit. However, very large numbers of high-resolution images may increase processing time. If the resulting PDF is very large, use the Compress PDF tool to reduce its size."}
+]) }}{% endblock %}

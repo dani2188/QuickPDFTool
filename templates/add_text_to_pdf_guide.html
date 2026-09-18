@@ -110,4 +110,10 @@ Once the text is embedded, it cannot be easily changed. Keep the original unedit
 
 {% endblock %}
 
-{% block jsonld %}{% from "components/jsonld.html" import howto %}{{ howto(self.title(), self.description(), request.path, ["Open the Add Text Tool", "Upload Your PDF and See the Preview", "Type Your Text and Position It", "Download the Updated PDF"]) }}{% endblock %}
+{% block jsonld %}{% from "components/jsonld.html" import howto, faqpage %}{{ howto(self.title(), self.description(), request.path, ["Open the Add Text Tool", "Upload Your PDF and See the Preview", "Type Your Text and Position It", "Download the Updated PDF"]) }}{{ faqpage([
+  {"q": "Can I add text to any page, not just the first page?", "a": "Currently the tool adds text to the first page of the PDF. To add text to other pages, split the PDF using our Split PDF tool, add text to the individual page, then merge the PDF back together."},
+  {"q": "Is the text permanent once added?", "a": "Yes. The text is embedded into the PDF page content and cannot be easily removed without a full PDF editor. Make sure your text is correct before downloading."},
+  {"q": "Can I add multiple lines of text?", "a": "You can add a single text string per operation. For multiple separate text elements, re-upload the result and add text again. Each upload adds one text element at a time."},
+  {"q": "Will the added text be searchable?", "a": "Yes. Text added by this tool is real embedded text (not an image), so it will be searchable and selectable when the PDF is opened in a reader."},
+  {"q": "Can I change or remove text I've already added?", "a": "Once the text is embedded, it cannot be easily changed. Keep the original unedited version of the PDF so you can start over if needed."}
+]) }}{% endblock %}

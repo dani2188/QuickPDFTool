@@ -114,4 +114,10 @@ Basic document content including text and images is always preserved. Complex in
 
 {% endblock %}
 
-{% block jsonld %}{% from "components/jsonld.html" import howto %}{{ howto(self.title(), self.description(), request.path, ["Open the Merge PDF Tool", "Upload All Your PDF Files", "Download the Merged PDF"]) }}{% endblock %}
+{% block jsonld %}{% from "components/jsonld.html" import howto, faqpage %}{{ howto(self.title(), self.description(), request.path, ["Open the Merge PDF Tool", "Upload All Your PDF Files", "Download the Merged PDF"]) }}{{ faqpage([
+  {"q": "Does merging PDFs reduce quality?", "a": "No. The merge process combines the files without modifying their content. Text, images, and layouts are preserved exactly as they were in the original files."},
+  {"q": "Can I merge PDFs with different page sizes?", "a": "Yes. Each page retains its original dimensions when merged. A landscape page from one file and a portrait page from another will both appear correctly in the merged document."},
+  {"q": "Is there a file size limit?", "a": "Individual files are subject to our standard upload limit. For very large documents, consider compressing them before merging to speed up the process."},
+  {"q": "Can I reorder pages after merging?", "a": "If the page order is wrong after merging, you can use our Split PDF tool to extract individual pages, then re-merge them in the correct order."},
+  {"q": "Will the bookmarks and links in my PDFs be preserved?", "a": "Basic document content including text and images is always preserved. Complex interactive elements like bookmarks and hyperlinks are generally carried over, though behaviour may vary depending on the original file."}
+]) }}{% endblock %}

@@ -127,4 +127,10 @@ This happens when the PDF has already been heavily optimised, or when it contain
 
 {% endblock %}
 
-{% block jsonld %}{% from "components/jsonld.html" import howto %}{{ howto(self.title(), self.description(), request.path, ["Open the Compress PDF Tool", "Choose Your Compression Level", "Download Your Compressed PDF"]) }}{% endblock %}
+{% block jsonld %}{% from "components/jsonld.html" import howto, faqpage %}{{ howto(self.title(), self.description(), request.path, ["Open the Compress PDF Tool", "Choose Your Compression Level", "Download Your Compressed PDF"]) }}{{ faqpage([
+  {"q": "Will compressing a PDF damage or corrupt my document?", "a": "No. Compression works by removing redundant data and downsampling images. Your text, layout, and structure remain intact. The document will still open in any PDF reader."},
+  {"q": "How much can I reduce my PDF file size?", "a": "It depends on the content. Image-heavy PDFs can shrink by 50–90%. Text-only PDFs typically reduce by 10–30%. If a PDF was already optimised, the reduction will be minimal."},
+  {"q": "Is my file safe when I upload it?", "a": "Yes. Files are processed on a secure server and automatically deleted within a few minutes after processing. We do not store, read, or share your documents."},
+  {"q": "Can I compress a password-protected PDF?", "a": "You will need to remove the password first, then compress the file, and optionally re-protect it afterwards."},
+  {"q": "What if the compressed file is the same size as the original?", "a": "This happens when the PDF has already been heavily optimised, or when it contains mostly text with no images. In this case, the original file is already as small as it can be."}
+]) }}{% endblock %}

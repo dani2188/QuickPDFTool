@@ -93,4 +93,9 @@ You'll need to <a href="/unlock-pdf">remove the password</a> before extracting i
 
 {% endblock %}
 
-{% block jsonld %}{% from "components/jsonld.html" import howto %}{{ howto(self.title(), self.description(), request.path, ["Open the Extract Images Tool", "Upload Your PDF", "Download the Images"]) }}{% endblock %}
+{% block jsonld %}{% from "components/jsonld.html" import howto, faqpage %}{{ howto(self.title(), self.description(), request.path, ["Open the Extract Images Tool", "Upload Your PDF", "Download the Images"]) }}{{ faqpage([
+  {"q": "Why are the extracted images low resolution?", "a": "The extracted images are exactly as they were embedded in the PDF. If the PDF was created with compressed or downsampled images (for example, after PDF compression), the extracted images will also be at that reduced quality. The tool cannot increase image resolution beyond what was stored in the PDF."},
+  {"q": "Can I extract images from a scanned PDF?", "a": "Yes, but a scanned PDF stores each page as one large image. You'll get the full page scans as images, not the individual photos or graphics that appeared within those pages."},
+  {"q": "The tool says no images were found — why?", "a": "Your PDF may contain only text and vector graphics, with no embedded bitmap images. Text-only and vector-only PDFs have nothing for the image extractor to find."},
+  {"q": "Can I extract images from a password-protected PDF?", "a": "You'll need to remove the password before extracting images."}
+]) }}{% endblock %}

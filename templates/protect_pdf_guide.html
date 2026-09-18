@@ -105,4 +105,9 @@ You'll need to <a href="/unlock-pdf">unlock it</a> first, then apply the new pas
 
 {% endblock %}
 
-{% block jsonld %}{% from "components/jsonld.html" import howto %}{{ howto(self.title(), self.description(), request.path, ["Open the Protect PDF Tool", "Upload Your PDF and Set a Password", "Download Your Protected PDF"]) }}{% endblock %}
+{% block jsonld %}{% from "components/jsonld.html" import howto, faqpage %}{{ howto(self.title(), self.description(), request.path, ["Open the Protect PDF Tool", "Upload Your PDF and Set a Password", "Download Your Protected PDF"]) }}{{ faqpage([
+  {"q": "What happens if I forget the password?", "a": "There is no way to recover a forgotten password from the PDF file. This is by design — it means no one, including us, can read your document without the password. Always keep a secure copy of the password."},
+  {"q": "Is the protection strong enough for sensitive documents?", "a": "Our tool uses standard PDF encryption which is suitable for most personal and business use cases. For highly sensitive legal or financial documents, consider using dedicated professional tools or combining PDF protection with other security measures."},
+  {"q": "Can I remove the password later?", "a": "Yes. Use our Unlock PDF tool to remove the password when you have it. You'll need the current password to unlock the file."},
+  {"q": "Can I protect a PDF that's already been protected?", "a": "You'll need to unlock it first, then apply the new password. You cannot add a second layer of protection on top of an existing one without removing the first."}
+]) }}{% endblock %}

@@ -170,9 +170,11 @@ change something, re-upload your original (unredacted) PDF and try again.
 {% from "components/jsonld.html" import howto, faqpage %}
 {{ howto(self.title(), self.description(), request.path, ["Open the Redact PDF Tool", "Choose a Page", "Draw Redaction Boxes", "Choose a Redaction Style", "Apply and Download"]) }}
 {{ faqpage([
-  {"q": "Is the hidden information really removed, or just covered up?", "a": "It's really removed. The tool deletes the underlying text and image data inside each redaction box before filling it in, so the original content cannot be recovered."},
-  {"q": "What's the difference between blur/pixelate and black/white?", "a": "Black and white are solid fills with no trace of the original content. Blur and pixelate keep a visual hint of what was underneath while still permanently deleting the original data."},
-  {"q": "Can I redact multiple pages in one pass?", "a": "Yes. Draw boxes on as many pages as you need, then apply once to process the entire document."},
-  {"q": "Is my document safe?", "a": "Yes. Files are processed on a secure server and deleted automatically within minutes. Your original upload is never modified."}
+  {"q": "Is the hidden information really removed, or just covered up?", "a": "It's really removed. The tool deletes the underlying text and image data inside each redaction box before filling it in, so the original content cannot be recovered by copying text, editing the PDF, or adjusting a blurred image."},
+  {"q": "What's the difference between blur/pixelate and black/white?", "a": "Black and white are solid fills — the most secure option because no trace of the original content remains visible. Blur and pixelate keep a visual hint of what was underneath (useful for photos or signatures) while still permanently deleting the original data."},
+  {"q": "Can I redact multiple pages in one pass?", "a": "Yes. Draw boxes on as many pages as you need — use Previous/Next to move between pages — then click \"Apply Redaction & Download\" once to process the entire document."},
+  {"q": "Will this reduce my PDF's file size?", "a": "Redaction isn't a compression tool, so size changes are usually minor. To shrink the file afterward, run it through our Compress PDF tool."},
+  {"q": "Is my document safe?", "a": "Yes. Files are processed on a secure server and deleted automatically within minutes. Your original upload is never modified — a new, redacted file is generated for download."},
+  {"q": "Can I undo a redaction after downloading?", "a": "No. Redaction is permanent by design — that's what makes it safe to share the result. If you need to change something, re-upload your original (unredacted) PDF and try again."}
 ]) }}
 {% endblock %}

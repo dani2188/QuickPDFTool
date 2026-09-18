@@ -91,4 +91,9 @@ Remove the existing watermark first (if possible), then add the new one using ou
 
 {% endblock %}
 
-{% block jsonld %}{% from "components/jsonld.html" import howto %}{{ howto(self.title(), self.description(), request.path, ["Open the Remove Watermark Tool", "Upload Your PDF", "Download the Cleaned PDF"]) }}{% endblock %}
+{% block jsonld %}{% from "components/jsonld.html" import howto, faqpage %}{{ howto(self.title(), self.description(), request.path, ["Open the Remove Watermark Tool", "Upload Your PDF", "Download the Cleaned PDF"]) }}{{ faqpage([
+  {"q": "Why didn't the watermark disappear completely?", "a": "If the watermark is embedded in the original page content rather than added as a separate layer, it cannot be cleanly removed. In this case, the original document needs to be recreated without the watermark."},
+  {"q": "Is it legal to remove watermarks?", "a": "This depends on the document and your rights to it. Removing a watermark from your own documents or documents you have permission to modify is fine. Removing watermarks from commercially published, copyrighted, or licensed documents without permission may be illegal. Always ensure you have the right to modify the document before removing its watermark."},
+  {"q": "Can I remove watermarks from scanned PDFs?", "a": "Scanned PDFs are images. The watermark is baked into the image data and cannot be removed by this tool. Image editing software with inpainting or cloning features would be needed for this."},
+  {"q": "What if I want to replace a watermark with a different one?", "a": "Remove the existing watermark first (if possible), then add the new one using our Add Watermark tool."}
+]) }}{% endblock %}

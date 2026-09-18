@@ -106,4 +106,10 @@ There is no hard page limit. However, very large PDFs may take a moment longer t
 
 {% endblock %}
 
-{% block jsonld %}{% from "components/jsonld.html" import howto %}{{ howto(self.title(), self.description(), request.path, ["Open the Split PDF Tool", "Upload Your PDF", "Download the Extracted Pages"]) }}{% endblock %}
+{% block jsonld %}{% from "components/jsonld.html" import howto, faqpage %}{{ howto(self.title(), self.description(), request.path, ["Open the Split PDF Tool", "Upload Your PDF", "Download the Extracted Pages"]) }}{{ faqpage([
+  {"q": "Will splitting a PDF reduce its quality?", "a": "No. Each extracted page is an exact copy of the original page. No compression or re-encoding happens during splitting, so quality is fully preserved."},
+  {"q": "Can I split a password-protected PDF?", "a": "You will need to remove the password first. Once unlocked, the PDF can be split normally."},
+  {"q": "Can I choose which pages to extract rather than splitting all pages?", "a": "Our current tool splits all pages automatically. To delete specific pages instead of extracting them, use the Delete PDF Pages tool."},
+  {"q": "What happens to the rest of the document after I extract a page?", "a": "All pages are extracted as separate files. The original document is not modified — the tool creates new files from it. Nothing is permanently deleted."},
+  {"q": "Is there a page limit for splitting?", "a": "There is no hard page limit. However, very large PDFs may take a moment longer to process. For extremely large files, you may want to compress the original first."}
+]) }}{% endblock %}

@@ -91,7 +91,7 @@ pages as optimized WebP images for web use. {% endblock %} {% block content %}
 {% endblock %}
 
 {% block jsonld %}{% from "components/jsonld.html" import webapp, faqpage %}{{ webapp(self.title(), self.description(), request.path) }}{{ faqpage([
-  {"q": "How many pages can I convert at once?", "a": "Up to 20 pages per upload. For longer documents, split the file first and convert each section separately."},
+  {"q": "How many pages can I convert at once?", "a": "Up to 20 pages per upload. For longer documents, split the file first with the Split PDF tool and convert each section separately."},
   {"q": "Why choose WebP over JPG or PNG?", "a": "WebP typically produces smaller file sizes than JPG or PNG at a similar visual quality, which makes pages load faster when the images are used on a website."},
   {"q": "Will every program open a WebP file?", "a": "Most modern browsers and operating systems support WebP, but some older software may not. If you need broader compatibility, convert to JPG or PNG instead."},
   {"q": "What quality setting is used?", "a": "Pages are rendered at 2x resolution and saved at quality 80, a balance between file size and visual sharpness suitable for web use."},

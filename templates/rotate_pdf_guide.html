@@ -104,4 +104,9 @@ You'll need to <a href="/unlock-pdf">remove the password</a> first, then rotate 
 
 {% endblock %}
 
-{% block jsonld %}{% from "components/jsonld.html" import howto %}{{ howto(self.title(), self.description(), request.path, ["Open the Rotate PDF Tool", "Choose Your Rotation Angle", "Download the Rotated PDF"]) }}{% endblock %}
+{% block jsonld %}{% from "components/jsonld.html" import howto, faqpage %}{{ howto(self.title(), self.description(), request.path, ["Open the Rotate PDF Tool", "Choose Your Rotation Angle", "Download the Rotated PDF"]) }}{{ faqpage([
+  {"q": "Can I rotate only specific pages, not all pages?", "a": "The current tool rotates all pages uniformly. To rotate only selected pages, use the Split PDF tool to extract those pages, rotate them separately, then merge all pages back together in the original order."},
+  {"q": "Will rotation affect the text content of my PDF?", "a": "No. Rotation is a display operation — the text, images, and all content within the PDF remain unchanged. Only the viewing orientation is modified."},
+  {"q": "Does the rotated file look the same in all PDF viewers?", "a": "Yes. The rotation is saved into the PDF file itself, so it displays correctly in Adobe Acrobat, Chrome, Edge, Preview on Mac, and any other standard PDF viewer."},
+  {"q": "Can I rotate a password-protected PDF?", "a": "You'll need to remove the password first, then rotate the pages, and optionally re-protect the file afterwards."}
+]) }}{% endblock %}

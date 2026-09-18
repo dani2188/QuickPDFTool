@@ -100,9 +100,9 @@
 {% from "components/jsonld.html" import webapp, faqpage %}
 {{ webapp(self.title(), self.description(), request.path) }}
 {{ faqpage([
-  {"q": "Can I combine JPG and PNG files in the same PDF?", "a": "Yes. Select both formats in the same upload and each becomes its own page, in the order selected."},
-  {"q": "Will my images be resized to fit a standard page size?", "a": "No. Each page matches the pixel dimensions of its source image, so mixed-size photos produce a PDF with different-sized pages."},
-  {"q": "Does this reduce my images' file size?", "a": "No, images are embedded at original quality. Use Compress PDF afterward if the file needs to be smaller."},
-  {"q": "Is there a limit on how many images I can combine?", "a": "No fixed count, but the total upload is capped at 20MB."}
+  {"q": "Can I combine JPG and PNG files in the same PDF?", "a": "Yes. Select both formats in the same upload and each one becomes its own page, in the order you selected them."},
+  {"q": "Will my images be resized to fit a standard page size?", "a": "No. Each page in the output PDF matches the pixel dimensions of its source image, so mixed-orientation or mixed-size photos produce a PDF with different-sized pages rather than being cropped or padded to match."},
+  {"q": "Does this reduce my images' file size?", "a": "No — images are embedded at their original quality with no compression applied. If the resulting PDF is too large to send, run it through Compress PDF or Compress PDF for Email afterward."},
+  {"q": "Is there a limit on how many images I can combine?", "a": "There's no fixed count, but the total upload is capped at 20MB, consistent with our other tools."}
 ]) }}
 {% endblock %}

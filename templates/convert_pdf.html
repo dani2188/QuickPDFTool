@@ -119,9 +119,9 @@ permanently.
 {% block jsonld %}
 {% from "components/jsonld.html" import faqpage %}
 {{ faqpage([
-  {"q": "Will converting a PDF to Word keep my original formatting?", "a": "Mostly — headings, paragraphs, and basic layout carry over well. Complex layouts may need minor manual adjustment afterward."},
-  {"q": "Can I convert a password-protected PDF?", "a": "No, remove the password first with the Unlock PDF tool before converting."},
-  {"q": "Is there a file size limit?", "a": "Yes, 20MB per file across all conversion tools."},
-  {"q": "Do you keep a copy of my converted files?", "a": "No. Files are processed on our server and deleted automatically within minutes."}
+  {"q": "Will converting a PDF to Word keep my original formatting?", "a": "Mostly — headings, paragraphs, and basic layout carry over well. Complex layouts (multi-column pages, heavy design elements) may need minor manual adjustment afterward."},
+  {"q": "Can I convert a password-protected PDF?", "a": "No, you'll need to remove the password first with our Unlock PDF tool before converting."},
+  {"q": "Is there a file size limit?", "a": "Yes, 20MB per file across all conversion tools. If your PDF is larger, try compressing it first."},
+  {"q": "Do you keep a copy of my converted files?", "a": "No. Files are processed on our server and deleted automatically within minutes — nothing is stored permanently."}
 ]) }}
 {% endblock %}

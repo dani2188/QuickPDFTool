@@ -122,4 +122,10 @@ stored permanently.
 
 {% endblock %}
 
-{% block jsonld %}{% from "components/jsonld.html" import howto %}{{ howto(self.title(), self.description(), request.path, ["Open the SVG to PDF Tool", "Upload Your SVG Files", "Download Your PDF"]) }}{% endblock %}
+{% block jsonld %}{% from "components/jsonld.html" import howto, faqpage %}{{ howto(self.title(), self.description(), request.path, ["Open the SVG to PDF Tool", "Upload Your SVG Files", "Download Your PDF"]) }}{{ faqpage([
+  {"q": "Will my SVG's colours and gradients be preserved?", "a": "Yes — colours, gradients, strokes, and fills convert directly into the PDF's own vector drawing instructions along with the shapes themselves."},
+  {"q": "What happens to text in my SVG?", "a": "Text converts into real PDF text where possible, using an equivalent font. If your SVG already converted its text to paths/outlines during export (common when a design tool is used), it converts as shapes instead — either way, it stays sharp."},
+  {"q": "Can I convert multiple SVG files into one PDF?", "a": "Yes. Select multiple files when uploading and each one becomes its own page in a single PDF, in the order you selected them."},
+  {"q": "Is there a file size limit?", "a": "Yes, 20MB per file, consistent with our other conversion tools."},
+  {"q": "Is my file kept after conversion?", "a": "No. Files are processed on a secure server and deleted automatically within minutes — nothing is stored permanently."}
+]) }}{% endblock %}

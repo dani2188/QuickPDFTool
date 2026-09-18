@@ -93,8 +93,8 @@
 {% from "components/jsonld.html" import webapp, faqpage %}
 {{ webapp(self.title(), self.description(), request.path) }}
 {{ faqpage([
-  {"q": "Can I start numbering from something other than 1, or use \"Page X of Y\"?", "a": "Not currently -- every document is numbered sequentially starting at 1, with a plain number."},
-  {"q": "Can I choose where on the page the number appears?", "a": "Not currently -- numbers are placed in the bottom-right corner of every page."},
-  {"q": "Will this work correctly on non-standard page sizes?", "a": "Yes, but the number's position is calculated relative to a standard page template, so it may sit slightly differently on unusual custom page sizes."}
+  {"q": "Can I start numbering from something other than 1, or use \"Page X of Y\"?", "a": "Not currently — every document is numbered sequentially starting at 1, with a plain number and no \"of Y\" suffix."},
+  {"q": "Can I choose where on the page the number appears?", "a": "Not currently — numbers are placed in the bottom-right corner of every page."},
+  {"q": "Will this work correctly on non-standard page sizes?", "a": "It works on any page size, but the number's exact position is calculated relative to a standard page template, so on unusually small or large custom page sizes it may sit slightly differently than on standard Letter or A4 pages."}
 ]) }}
 {% endblock %}

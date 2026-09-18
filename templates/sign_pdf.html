@@ -303,8 +303,8 @@
 {% from "components/jsonld.html" import webapp, faqpage %}
 {{ webapp(self.title(), self.description(), request.path) }}
 {{ faqpage([
-  {"q": "Can I draw my signature directly instead of uploading an image?", "a": "Not currently -- you'll need a signature image (a photo, scan, or exported file) to upload."},
-  {"q": "Is this legally binding like DocuSign?", "a": "No. This visually places your signature image on the page but doesn't provide the cryptographic verification or audit trail that dedicated e-signature platforms use for legally-binding contracts."},
-  {"q": "Can I sign more than one page at once?", "a": "Each pass signs one page. Download the result and repeat to sign additional pages."}
+  {"q": "Can I draw my signature directly instead of uploading an image?", "a": "Not currently — you'll need a signature image (a photo or scan of a handwritten signature, or one exported from a signature app) to upload."},
+  {"q": "Is this legally binding like DocuSign?", "a": "No. This visually places your signature image on the page but doesn't provide the cryptographic verification, audit trail, or identity checks that dedicated e-signature platforms use for legally-binding contracts."},
+  {"q": "Can I sign more than one page at once?", "a": "Each pass signs one page. To sign additional pages, download the result and repeat the process, choosing the next page number."}
 ]) }}
 {% endblock %}

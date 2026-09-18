@@ -120,9 +120,9 @@ block content %}
 {% from "components/jsonld.html" import webapp, faqpage %}
 {{ webapp(self.title(), self.description(), request.path) }}
 {{ faqpage([
-  {"q": "Will my PDF always end up exactly at or under 1MB?", "a": "Not always. Image-heavy files usually compress under 1MB; already-minimal or text-only files may not shrink much further. The tool returns the smallest version it could produce."},
-  {"q": "Does hitting 1MB mean my text becomes blurry?", "a": "No. Text is vector data and is never downsampled by compression — only embedded images are affected."},
-  {"q": "What's the difference between this and the regular Compress PDF tool?", "a": "The regular tool lets you pick a fixed quality level or any target size. This page is a shortcut pre-set to target exactly 1MB."},
-  {"q": "Is this different from compressing for email?", "a": "Yes. Compress PDF for Email applies one fixed high-compression setting; this page keeps re-compressing until the file is at or near exactly 1MB."}
+  {"q": "Will my PDF always end up exactly at or under 1MB?", "a": "Not always — see above. The tool always returns the smallest version it could produce, even if that's slightly over 1MB, rather than degrading the document until it's unreadable."},
+  {"q": "Does hitting 1MB mean my text becomes blurry?", "a": "No. Text is vector data and is never downsampled or blurred by compression — only embedded images are affected. A text-only PDF will look identical after compression."},
+  {"q": "What's the difference between this and the regular Compress PDF tool?", "a": "The Compress PDF tool lets you pick a fixed quality level (Low/Medium/High/Extreme) or type in any target size you want. This page is a shortcut that's pre-set to target exactly 1MB, since that's the size most people searching for this tool actually need."},
+  {"q": "Is this different from compressing for email?", "a": "Yes — Compress PDF for Email applies one fixed high-compression setting tuned for typical email attachment limits (20–25MB), while this page keeps re-compressing until the file is at or near exactly 1MB, whatever that takes."}
 ]) }}
 {% endblock %}

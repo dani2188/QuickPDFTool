@@ -107,4 +107,9 @@ If you accidentally delete too many pages, simply re-upload the original file an
 
 {% endblock %}
 
-{% block jsonld %}{% from "components/jsonld.html" import howto %}{{ howto(self.title(), self.description(), request.path, ["Open the Delete Pages Tool", "Specify the Pages to Delete", "Download the Edited PDF"]) }}{% endblock %}
+{% block jsonld %}{% from "components/jsonld.html" import howto, faqpage %}{{ howto(self.title(), self.description(), request.path, ["Open the Delete Pages Tool", "Specify the Pages to Delete", "Download the Edited PDF"]) }}{{ faqpage([
+  {"q": "Can I delete a range of pages (e.g. pages 5 through 10)?", "a": "Currently the tool accepts individual page numbers separated by commas. To delete a range, list each page number: for example, enter 5, 6, 7, 8, 9, 10 to remove pages 5 through 10."},
+  {"q": "Will the remaining pages be renumbered?", "a": "The remaining pages shift up to fill the gaps. If you delete page 3 from a 10-page document, what was page 4 becomes page 3 in the resulting file, and so on."},
+  {"q": "Is the original file changed?", "a": "No. The tool creates a new PDF file with the specified pages removed. Your original file is not modified."},
+  {"q": "What if I delete all the pages by mistake?", "a": "If you accidentally delete too many pages, simply re-upload the original file and start again. The original is safe on your device."}
+]) }}{% endblock %}

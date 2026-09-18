@@ -117,9 +117,9 @@ automatically within minutes.
 {% block jsonld %}
 {% from "components/jsonld.html" import faqpage %}
 {{ faqpage([
-  {"q": "Can I use several editing tools on the same file, one after another?", "a": "Yes — download the result from one tool, then upload that file into the next tool."},
-  {"q": "Is redaction actually permanent, or just a black box drawn on top?", "a": "It's permanent. The Redact PDF tool deletes the underlying text and image data in the covered area."},
-  {"q": "Will editing a PDF reduce its file size?", "a": "Not usually. Use the Compress PDF tool afterward to shrink the file."},
-  {"q": "Do I need an account to edit a PDF?", "a": "No. Every tool works directly in your browser with no signup, and files are deleted automatically within minutes."}
+  {"q": "Can I use several editing tools on the same file, one after another?", "a": "Yes — download the result from one tool, then upload that file into the next. Each tool works on whatever PDF you give it, so you can chain edits together."},
+  {"q": "Is redaction actually permanent, or just a black box drawn on top?", "a": "It's permanent. Our Redact PDF tool deletes the underlying text and image data in the covered area — it can't be recovered by copying text or editing the file."},
+  {"q": "Will editing a PDF reduce its file size?", "a": "Not usually — these tools focus on content and layout, not compression. To shrink the file, run it through Compress PDF afterward."},
+  {"q": "Do I need an account to edit a PDF?", "a": "No. Every tool works directly in your browser with no signup, and files are deleted from our server automatically within minutes."}
 ]) }}
 {% endblock %}

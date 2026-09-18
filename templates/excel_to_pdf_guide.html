@@ -97,4 +97,9 @@ The tool works best with .xlsx format. If you have a .xls file, open it in Excel
 
 {% endblock %}
 
-{% block jsonld %}{% from "components/jsonld.html" import howto %}{{ howto(self.title(), self.description(), request.path, ["Open the Excel to PDF Tool", "Upload Your Excel File", "Download the PDF"]) }}{% endblock %}
+{% block jsonld %}{% from "components/jsonld.html" import howto, faqpage %}{{ howto(self.title(), self.description(), request.path, ["Open the Excel to PDF Tool", "Upload Your Excel File", "Download the PDF"]) }}{{ faqpage([
+  {"q": "Will formulas in my Excel file be preserved?", "a": "The PDF will show the calculated values of any formulas, not the formulas themselves. This is typically what you want when sharing data — recipients see the results, not the underlying calculations."},
+  {"q": "Can I convert multiple Excel sheets at once?", "a": "The tool processes the spreadsheet as a single unit. Each row of data from the sheet becomes a line in the PDF. Complex multi-sheet workbooks should be prepared in Excel before uploading."},
+  {"q": "My formatting looks different in the PDF — why?", "a": "The conversion renders the spreadsheet data into a simple PDF layout. For exact formatting control, use Excel's built-in PDF export, which preserves styling, colours, and layout with the highest accuracy."},
+  {"q": "Can I convert .xls (older Excel format) files?", "a": "The tool works best with .xlsx format. If you have a .xls file, open it in Excel and save it as .xlsx first."}
+]) }}{% endblock %}

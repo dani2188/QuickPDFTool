@@ -108,7 +108,7 @@ design file, images and fonts are the usual suspects.
 {% from "components/jsonld.html" import article, faqpage %}
 {{ article(self.title(), self.description(), request.path, "2026-08-12") }}
 {{ faqpage([
-  {"q": "Why didn't compressing my PDF make much difference?", "a": "If a PDF is already mostly text, there's very little image data for a compressor to reduce -- the file was likely already close to its practical minimum size."},
+  {"q": "Why didn't compressing my PDF make much difference?", "a": "If a PDF is already mostly text, there's very little image data for a compressor to reduce — the file was likely already close to its practical minimum size."},
   {"q": "Does more pages always mean a bigger file?", "a": "Not necessarily. A 100-page text-only report can be smaller than a 3-page PDF containing a couple of high-resolution photos. Page count matters far less than what's on each page."},
   {"q": "Is there a way to see what's taking up the space before compressing?", "a": "Not without technical tools, but a good rule of thumb works almost as well: if the PDF came from a scanner or a photo, assume images are the entire problem. If it was created digitally from a Word or design file, images and fonts are the usual suspects."}
 ]) }}

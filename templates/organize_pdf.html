@@ -114,9 +114,9 @@ image quality stays exactly as it was in the original file.
 {{ super() }}
 {% from "components/jsonld.html" import faqpage %}
 {{ faqpage([
-  {"q": "Can I merge PDFs of different page sizes?", "a": "Yes. Each page keeps its own original size in the merged file."},
-  {"q": "What's the difference between Split and Delete Pages?", "a": "Split PDF produces new files from sections of the original. Delete Pages removes specific pages and returns one file with the rest intact."},
-  {"q": "Is there a limit to how many files I can merge?", "a": "There's no fixed file count, but the 20MB per-file upload limit applies to each file."},
-  {"q": "Will organizing a PDF affect the quality of scanned pages?", "a": "No — merging, splitting, and deleting pages don't re-compress or re-render page content."}
+  {"q": "Can I merge PDFs of different page sizes?", "a": "Yes. Each page keeps its own original size in the merged file — pages aren't stretched or cropped to match each other."},
+  {"q": "What's the difference between Split and Delete Pages?", "a": "Split PDF produces one or more new files from sections of the original (useful when you want to keep multiple parts). Delete Pages removes specific pages and gives you back a single file with the rest intact."},
+  {"q": "Is there a limit to how many files I can merge?", "a": "There's no fixed file count, but the combined size is limited by the 20MB per-file upload limit that applies across all of our tools."},
+  {"q": "Will organizing a PDF affect the quality of scanned pages?", "a": "No — merging, splitting, and deleting pages don't re-compress or re-render page content, so scanned image quality stays exactly as it was in the original file."}
 ]) }}
 {% endblock %}

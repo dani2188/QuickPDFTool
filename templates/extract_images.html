@@ -91,7 +91,7 @@
 {% block jsonld %}{% from "components/jsonld.html" import webapp, faqpage %}{{ webapp(self.title(), self.description(), request.path) }}{{ faqpage([
   {"q": "What image formats are extracted?", "a": "Images come out in their original embedded format — usually JPG or PNG, whichever the PDF used internally. No conversion is applied."},
   {"q": "Is there a limit on how many images can be extracted?", "a": "Yes, up to 50 images per upload. Documents with more embedded images will only have the first 50 extracted."},
-  {"q": "Will this extract charts, diagrams, or vector graphics?", "a": "Only actual embedded image objects are extracted. Vector graphics, shapes, and text are not images and won't be pulled out."},
+  {"q": "Will this extract charts, diagrams, or vector graphics?", "a": "Only actual embedded image objects are extracted. Vector graphics, shapes, and text are not images and won't be pulled out — use PDF to JPG if you want a rendered snapshot of a whole page instead."},
   {"q": "Does image quality stay the same as in the PDF?", "a": "Yes. Images are extracted at their original embedded resolution and quality, with no re-compression."},
   {"q": "Are my files kept private?", "a": "Yes. Uploaded files are automatically deleted from our server after processing."}
 ]) }}{% endblock %}
