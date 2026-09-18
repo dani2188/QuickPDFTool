@@ -1015,6 +1015,11 @@ def blog_resizing_vs_compressing_an_image():
     return render_template("blog/resizing_vs_compressing_an_image.html")
 
 
+@app.route("/blog/why-jpg-to-pdf-has-a-huge-page-size")
+def blog_why_jpg_to_pdf_has_a_huge_page_size():
+    return render_template("blog/why_jpg_to_pdf_has_a_huge_page_size.html")
+
+
 @app.route("/how-to-compress-pdf")
 def compress_pdf_guide():
     return render_template("compress_pdf_guide.html")

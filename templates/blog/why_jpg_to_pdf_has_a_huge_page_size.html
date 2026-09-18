@@ -1,0 +1,297 @@
+{% extends "base.html" %}
+
+{% block title %}Why Your JPG-to-PDF File Has Such a Huge Page Size{% endblock %}
+
+{% block description %}
+We tested QuickTools' JPG-to-PDF and PNG-to-PDF tools directly: the resulting PDF page is physically enormous because each image pixel becomes one PDF point. Here's exactly why, what resizing does and doesn't fix, and what actually helps.
+{% endblock %}
+
+{% block content %}
+
+{% from "components/breadcrumb.html" import breadcrumb %}
+{{ breadcrumb([
+  {"label": "Home", "url": "/"},
+  {"label": "Guides", "url": "/blog"},
+  {"label": "Why Your JPG-to-PDF File Has Such a Huge Page Size", "url": "/blog/why-jpg-to-pdf-has-a-huge-page-size"}
+]) }}
+
+<article class="guide-article">
+
+<h1>Why Your JPG-to-PDF File Has Such a Huge Page Size</h1>
+<p><em>Published September 2026</em></p>
+
+<p>
+You convert a photo to PDF, open the result, and something's off: the page is enormous. Not a big file
+size, an enormous physical page, sometimes several feet wide when you check the print dialog. The file
+itself might only be a few hundred kilobytes. The problem isn't the amount of data in the file, it's
+the page's actual physical dimensions. We tested QuickTools' own JPG-to-PDF and PNG-to-PDF tools directly
+to find out exactly why, and the answer is a specific, checkable mechanism, not a generic quirk of PDFs
+in general.
+</p>
+
+<h2>What a PDF Page Size Actually Is</h2>
+
+<p>
+An image's size is measured in pixels: width and height, a pixel count with no inherent physical
+dimension. A PDF page's size is measured in points, and a point is a physical unit: exactly 1/72 of an
+inch, the same unit print design has used since long before PDF existed. A page that's 612 points wide
+is 8.5 inches wide, full stop, regardless of what's on it. The moment a tool has to turn a pixel count
+into a page described in points, it has to decide how many pixels correspond to one inch. That decision
+is the entire story here.
+</p>
+
+<h2>The Tested Behavior: One Pixel Becomes One Point</h2>
+
+<p>
+We built a 3000&times;2000 pixel JPEG (a typical photo resolution) and ran it through QuickTools'
+actual <a href="/jpg-to-pdf">JPG to PDF</a> tool, then inspected the resulting PDF's page dimensions
+directly.
+</p>
+
+<table class="data-table">
+  <thead>
+    <tr>
+      <th>Source image</th>
+      <th>Resulting PDF page (MediaBox)</th>
+      <th>Physical size</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>3000&times;2000 px JPEG</td>
+      <td>3000&times;2000 pt</td>
+      <td>41.67&times;27.78 in (about 1058&times;706 mm)</td>
+    </tr>
+    <tr>
+      <td>1080&times;1080 px JPEG</td>
+      <td>1080&times;1080 pt</td>
+      <td>exactly 15&times;15 in</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>
+The pattern is exact, not approximate: every pixel of width becomes one point of page width, and every
+pixel of height becomes one point of page height. A 3000-pixel-wide photo produces a page that's
+literally 3000 points wide, and since 72 points make an inch, that's 3000 &divide; 72 = 41.67 inches, a
+page nearly three and a half feet across for an entirely ordinary phone photo.
+</p>
+
+<h2>JPG and PNG Behave Identically</h2>
+
+<p>
+We ran the same 3000&times;2000 test image through <a href="/png-to-pdf">PNG to PDF</a> as a PNG instead
+of a JPEG. The result was the same MediaBox, the same 41.67&times;27.78 inch page. This isn't a
+JPEG-specific quirk; both tools build the PDF the same way, so both inherit the same behavior regardless
+of which image format you start from.
+</p>
+
+<h2>Why DPI Metadata Doesn't Change Anything</h2>
+
+<p>
+It's reasonable to assume that an image's own resolution metadata, the "72 DPI" or "300 DPI" a camera or
+editor writes into a photo, would factor into this. We tested it directly: we saved otherwise-identical
+3000&times;2000 images with 72, 150, and 300 DPI embedded, in both JPEG and PNG, and ran every one
+through the real tool.
+</p>
+
+<p>
+All of them produced the exact same 3000&times;2000 pt page. The embedded DPI value made no difference
+at all.
+</p>
+
+<p>
+This is a fact about how QuickTools' JPG-to-PDF and PNG-to-PDF are currently built, not a general rule
+about all image-to-PDF software. The underlying code saves the PDF without specifying a resolution, so
+the number of pixels is used directly as the number of points, and whatever resolution metadata the
+source image happens to carry is simply never consulted. If you've been told that adjusting your photo's
+DPI setting before converting would fix this, that won't work here: the metadata is read, technically
+still present on the object after processing, and then not used for this calculation at all.
+</p>
+
+<h2>Does Resizing First Fix It? Only Partly</h2>
+
+<p>
+Since the page size is driven directly by pixel count, shrinking the pixel count should shrink the page,
+and it does. We took the same 3000&times;2000 photo, ran it through QuickTools' actual
+<a href="/resize-image">Resize Image</a> tool down to 1080&times;1080, and then converted that resized
+result to PDF.
+</p>
+
+<table class="data-table">
+  <thead>
+    <tr>
+      <th>Step</th>
+      <th>Result</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Original photo</td>
+      <td>3000&times;2000 px</td>
+    </tr>
+    <tr>
+      <td>After Resize Image (target 1080&times;1080)</td>
+      <td>1080&times;1080 px</td>
+    </tr>
+    <tr>
+      <td>After JPG to PDF</td>
+      <td>1080&times;1080 pt page = exactly 15&times;15 in</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>
+Resizing genuinely shrank the page, from 41.67&times;27.78 inches down to 15&times;15 inches. But 15
+inches square is still not a page size anyone prints on; it's just a smaller version of the same
+mismatch. Resizing reduces the problem, it doesn't resolve it, because the tool is still doing the exact
+same pixel-to-point conversion afterward, just on fewer pixels. Getting an actual standard page size this
+way would mean resizing to precisely 612&times;792 pixels to land on a US Letter page, or 595&times;842
+for A4, which is a strange, non-obvious thing to ask anyone to calculate and remember. That's a real
+constraint of the current tools, not a tip we're recommending: there's currently no option here that maps
+an image onto a standard page size directly, only ones that control the pixel count, which then becomes
+the point count.
+</p>
+
+<h2>What Happens When You Merge It With a Normal Document</h2>
+
+<p>
+A common next step is combining a converted photo with an actual document, a report, a form, a cover
+sheet. We tested this directly: a standard US Letter PDF page (612&times;792 pt, generated the normal
+way) merged with our 1080&times;1080 pt image-PDF page, using QuickTools' actual
+<a href="/merge-pdf">Merge PDF</a> tool.
+</p>
+
+<p>
+The merged file came out as two pages with two different physical sizes: page 1 at 612&times;792 pt
+(8.5&times;11 in), page 2 at 1080&times;1080 pt (15&times;15 in), sitting in the same document.
+Merging doesn't resize or reconcile either page; each page keeps whatever size it already had. What a
+particular PDF viewer or a print dialog does when it hits a page-size change mid-document (some fit each
+page to the same on-screen zoom, printing typically scales per page to the paper size selected) is
+general PDF viewer and printer behavior, not something we rendered and inspected ourselves here; the
+part we can state as tested fact is that the two pages' underlying dimensions remain genuinely different
+inside the file.
+</p>
+
+<h2>One Related Issue: Rotated Photos</h2>
+
+<p>
+While testing, we found a second, separate issue worth a brief mention. Many phones store a portrait
+photo as landscape pixel data plus a rotation instruction in the file's EXIF metadata, rather than
+physically rotating the pixels. We built a test image exactly like that and ran it through JPG to PDF:
+the tool doesn't read that rotation instruction, so the image lands in the PDF in its raw, unrotated
+orientation. This is a different mechanism from the page-size issue above (it's about EXIF orientation
+handling, not the pixel-to-point calculation), but it's worth knowing about if a converted photo looks
+sideways: it isn't related to the page being oversized, it's a separate gap in how the tool reads the
+source file.
+</p>
+
+<h2>What QuickTools Actually Does</h2>
+
+<ul class="benefits">
+  <li><strong>JPG to PDF and PNG to PDF</strong> open each uploaded image and save it directly as a PDF
+  page with no resolution specified, so the page's point dimensions always exactly equal the image's
+  pixel dimensions.</li>
+  <li><strong>Neither tool currently offers</strong> an A4, Letter, or fit-to-page option; there's no
+  control over the resulting physical page size beyond controlling the source image's pixel dimensions
+  first.</li>
+  <li><strong>Embedded DPI metadata is not used</strong> by either tool when building the page.</li>
+</ul>
+
+<h2>Practical Guidance</h2>
+
+<ul class="benefits">
+  <li><strong>If you need a normal-looking document page,</strong> know that neither tool currently maps
+  an image onto a standard page size directly. Resizing the source image narrows the gap but won't land
+  on a standard size unless you resize to that size's exact pixel equivalent.</li>
+  <li><strong>Don't rely on changing your camera or export DPI setting.</strong> We tested this directly;
+  it has no effect on the resulting page size here.</li>
+  <li><strong>If you're merging with other documents,</strong> expect the image-derived page to keep its
+  own size rather than matching the rest of the file, since merging doesn't resize any page.</li>
+  <li><strong>If the goal is simply a smaller, easier-to-handle file</strong> rather than a
+  standard-looking page, resizing first is still useful for that, just don't expect it to produce a
+  normal page size as a side effect.</li>
+</ul>
+
+<h2>Related Tools</h2>
+<div class="tools-mini-grid">
+  <a href="/jpg-to-pdf">JPG to PDF</a>
+  <a href="/png-to-pdf">PNG to PDF</a>
+  <a href="/resize-image">Resize Image</a>
+  <a href="/merge-pdf">Merge PDF</a>
+</div>
+
+<h2>Frequently Asked Questions</h2>
+
+<h3>Why is my JPG-to-PDF file so physically large, even though the file size is small?</h3>
+<p>
+Because the file's byte size and the PDF page's physical dimensions are two separate things. The file
+itself can be small; the page can still be many inches or feet across, because the tool turns each image
+pixel directly into one PDF point, and a typical photo has thousands of pixels per side.
+</p>
+
+<h3>Will compressing the PDF afterward fix the page size?</h3>
+<p>
+No. Compression changes file size by re-encoding the image data; it doesn't touch the page's physical
+dimensions at all. A compressed version of an oversized page is still the same oversized page, just a
+smaller file.
+</p>
+
+<h3>Does resizing the image before converting fix the problem?</h3>
+<p>
+It helps, but only partly. Resizing to fewer pixels does produce a smaller physical page, tested directly
+at 1080 by 1080 pixels producing an exact 15 by 15 inch page. That's smaller than the original but still
+not a standard page size. Landing on an exact standard size like Letter or A4 would require resizing to
+that size's precise pixel equivalent, which isn't a control either tool currently offers directly.
+</p>
+
+<h3>Can I fix this by changing my photo's DPI setting?</h3>
+<p>
+No. We tested images with 72, 150, and 300 DPI metadata embedded, in both JPEG and PNG, and every one
+produced the identical page size. The current tools don't read that metadata when building the page.
+</p>
+
+<h3>Does this happen with PNG too, or only JPG?</h3>
+<p>
+Both. We tested the same image as a JPEG and as a PNG and got the same resulting page size either way,
+since both tools build the PDF page the same way.
+</p>
+
+<h3>What happens if I merge this with a normal document?</h3>
+<p>
+The pages keep their own separate sizes. We tested merging a standard Letter-sized page with an
+image-generated page, and the result was a two-page PDF where each page retained its own original
+dimensions rather than one size taking over the other.
+</p>
+
+<h3>Why does my converted photo look sideways?</h3>
+<p>
+That's a separate issue from the page-size one. If a photo was taken in portrait orientation but stored
+with a rotation instruction in its metadata rather than physically rotated pixels, the current tool
+doesn't apply that rotation, so the image can appear on its side in the resulting PDF.
+</p>
+
+</article>
+
+{% endblock %}
+
+{% block jsonld %}
+{{ super() }}
+{% from "components/jsonld.html" import article, faqpage %}
+{% from "components/breadcrumb.html" import breadcrumb_jsonld %}
+{{ article(self.title(), self.description(), request.path, "2026-09-18") }}
+{{ faqpage([
+  {"q": "Why is my JPG-to-PDF file so physically large, even though the file size is small?", "a": "Because the file's byte size and the PDF page's physical dimensions are two separate things. The file itself can be small; the page can still be many inches or feet across, because the tool turns each image pixel directly into one PDF point, and a typical photo has thousands of pixels per side."},
+  {"q": "Will compressing the PDF afterward fix the page size?", "a": "No. Compression changes file size by re-encoding the image data; it doesn't touch the page's physical dimensions at all. A compressed version of an oversized page is still the same oversized page, just a smaller file."},
+  {"q": "Does resizing the image before converting fix the problem?", "a": "It helps, but only partly. Resizing to fewer pixels does produce a smaller physical page, tested directly at 1080 by 1080 pixels producing an exact 15 by 15 inch page. That's smaller than the original but still not a standard page size. Landing on an exact standard size like Letter or A4 would require resizing to that size's precise pixel equivalent, which isn't a control either tool currently offers directly."},
+  {"q": "Can I fix this by changing my photo's DPI setting?", "a": "No. We tested images with 72, 150, and 300 DPI metadata embedded, in both JPEG and PNG, and every one produced the identical page size. The current tools don't read that metadata when building the page."},
+  {"q": "Does this happen with PNG too, or only JPG?", "a": "Both. We tested the same image as a JPEG and as a PNG and got the same resulting page size either way, since both tools build the PDF page the same way."},
+  {"q": "What happens if I merge this with a normal document?", "a": "The pages keep their own separate sizes. We tested merging a standard Letter-sized page with an image-generated page, and the result was a two-page PDF where each page retained its own original dimensions rather than one size taking over the other."},
+  {"q": "Why does my converted photo look sideways?", "a": "That's a separate issue from the page-size one. If a photo was taken in portrait orientation but stored with a rotation instruction in its metadata rather than physically rotated pixels, the current tool doesn't apply that rotation, so the image can appear on its side in the resulting PDF."}
+]) }}
+{{ breadcrumb_jsonld([
+  {"label": "Home", "url": "/"},
+  {"label": "Guides", "url": "/blog"},
+  {"label": "Why Your JPG-to-PDF File Has Such a Huge Page Size", "url": "/blog/why-jpg-to-pdf-has-a-huge-page-size"}
+]) }}
+{% endblock %}
