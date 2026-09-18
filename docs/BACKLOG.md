@@ -324,3 +324,43 @@ whether the deletion thread has actually run yet) as defense in depth.
 
 **Notes:** Low urgency given UUID-based unguessability already in place;
 this is a hardening improvement, not a known exploited vulnerability.
+
+---
+
+## QT-013 — "Remove Watermark" did not remove watermarks, contradicting its own FAQ
+
+- **Area:** Technical / Content
+- **Priority:** P0
+- **Status:** Done
+- **Discovered:** post-Article-#6 editorial audit (2026-09-18), confirmed via empirical testing
+- **Source:** `app.py` `remove_watermark()` (previously only called `page.clean_contents()`), tested against the live `/add-watermark` → `/remove-watermark` round trip
+
+**Problem:** `remove_watermark()` only ran PyMuPDF's generic content-stream
+sanitizer (`clean_contents()`), which has no concept of "watermark" and
+removed nothing. Empirical testing confirmed QuickTools' own watermark
+text, a genuine PDF annotation, and vector graphics all survived the
+"removal" unchanged. This directly contradicted claims on
+`remove_watermark.html`, `remove_watermark_guide.html`,
+`add_watermark.html`, and `blog/pdf_security_basics.html` that the tool
+removed watermarks added by QuickTools' own Add Watermark tool.
+
+**Proposed improvement:** N/A — already implemented.
+
+**Notes:** Fixed in commit `8371c7a` ("Fix QuickTools watermark
+removal"). `remove_watermark()` now matches text spans against Add
+Watermark's exact signature (font `Helvetica`, size `40`, opacity `≈0.3`,
+gray `≈0.572`, position `x≈150, y≈360.7` — all hardcoded in
+`add_watermark()`) via `page.get_texttrace()`, then removes matches with
+`add_redact_annot()`/`apply_redactions()` (the same API already used by
+`redact_pdf()` elsewhere in this codebase) before the existing
+`clean_contents()` pass runs. Verified against the real routes: removal
+confirmed on 1-page and 3-page PDFs and with varying watermark text;
+several deliberate near-miss cases (legitimate text at a different
+position, plain text containing the watermark's exact string, the
+closest near-miss at the same x but a different y) all correctly survived
+with no false positives; unrelated content on a watermarked page (title,
+body text, lines, rectangles, an embedded image) was left untouched.
+Documentation corrected on the three pages that overstated the tool's
+scope; `add_watermark.html`'s existing claim was already accurate and
+left unchanged. General/third-party watermark removal remains explicitly
+out of scope — this fix only recognizes QuickTools' own watermark format.
