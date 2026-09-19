@@ -1,0 +1,301 @@
+{% extends "base.html" %}
+
+{% block title %}What Kind of Encryption Does Protect PDF Actually Use?{% endblock %}
+
+{% block description %}
+We inspected QuickTools' Protect PDF tool directly — the code, the installed library, and the actual /Encrypt dictionary of a real protected file — to answer exactly what encryption it uses, what the password controls, and what it doesn't guarantee.
+{% endblock %}
+
+{% block content %}
+
+{% from "components/breadcrumb.html" import breadcrumb %}
+{{ breadcrumb([
+  {"label": "Home", "url": "/"},
+  {"label": "Guides", "url": "/blog"},
+  {"label": "What Kind of Encryption Does Protect PDF Actually Use?", "url": "/blog/what-encryption-does-protect-pdf-use"}
+]) }}
+
+<article class="guide-article">
+
+<h1>What Kind of Encryption Does Protect PDF Actually Use?</h1>
+<p><em>Published September 2026</em></p>
+
+<p>
+Type a password into a "Protect PDF" tool and it's natural to assume something like "bank-grade
+encryption" is happening. Nobody tells you which cipher, which key length, or what the password
+actually controls once the file is locked. We inspected QuickTools' own <a href="/protect-pdf">Protect
+PDF</a> tool directly, at every level, to answer that precisely: the application code, the installed
+encryption library's source, and the actual <code>/Encrypt</code> dictionary of a file it produced. The
+short answer is that it uses the PDF Standard Security Handler, revision 3, with RC4 encryption and a
+128-bit key, not AES. Here's exactly how we know, and what that does and doesn't mean for you.
+</p>
+
+<h2>What Protect PDF Actually Does</h2>
+
+<p>
+The tool's logic is short enough to describe in full. It reads every page of your uploaded PDF, copies
+each page into a new file, and then calls one encryption function with the password you typed:
+</p>
+
+<pre>reader = PdfReader(input_path)
+writer = PdfWriter()
+for page in reader.pages:
+    writer.add_page(page)
+writer.encrypt(password)</pre>
+
+<p>
+That's the entire encryption step — a single call, <code>writer.encrypt(password)</code>, with one
+argument: the password from the form. QuickTools runs <strong>PyPDF2 version 3.0.1</strong> to do this
+(confirmed directly from the installed package in this project's environment). Nothing else about the
+encryption is configured — no algorithm is chosen, no key length is set, no permissions are specified.
+Whatever PyPDF2 does by default when you call <code>encrypt()</code> with just a password is exactly
+what QuickTools' output contains.
+</p>
+
+<h2>What the PDF's /Encrypt Dictionary Reveals</h2>
+
+<p>
+Rather than trust a description, we generated a real protected file through the actual tool and read its
+internal encryption dictionary directly — the part of a PDF that records how it was encrypted. Every
+file we tested (a plain text page, a multi-page document, a page containing an embedded image) produced
+the identical structure:
+</p>
+
+<table class="data-table">
+  <thead>
+    <tr>
+      <th>Field</th>
+      <th>Value</th>
+      <th>What it means</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td><code>/Filter</code></td><td><code>/Standard</code></td><td>Uses the PDF Standard Security Handler (as opposed to a custom, third-party handler)</td></tr>
+    <tr><td><code>/V</code></td><td><code>2</code></td><td>Encryption algorithm version 2 — the RC4-based handler with a configurable key length</td></tr>
+    <tr><td><code>/R</code></td><td><code>3</code></td><td>Security handler revision 3</td></tr>
+    <tr><td><code>/Length</code></td><td><code>128</code></td><td>128-bit encryption key</td></tr>
+    <tr><td><code>/P</code></td><td><code>2147483644</code></td><td>Permission flags — see the permissions section below</td></tr>
+  </tbody>
+</table>
+
+<p>
+This is more informative than anything a PDF viewer's "Document Properties" panel might display,
+because it's the file's own record of exactly which handler and revision it used, not a paraphrase.
+<code>V 2 / R 3</code> is a specific, identifiable combination defined in the PDF specification, and it
+is not the combination associated with AES.
+</p>
+
+<h2>RC4 vs. AES</h2>
+
+<p>
+PDF supports more than one encryption cipher, and the version number in the <code>/Encrypt</code>
+dictionary is what distinguishes them. According to
+<a href="https://qpdf.readthedocs.io/en/stable/encryption.html">qpdf's own encryption documentation</a> —
+qpdf is a widely used, independent PDF library, and a reasonable authority on this — <code>V 2</code> is
+"an extension of the original algorithm allowing longer keys," part of the RC4 family, while AES only
+becomes available starting at <code>V 4</code> (optionally) and is the only cipher <code>V 5</code>
+supports. <strong>QuickTools' output is <code>V 2 / R 3</code>, which is RC4, not AES.</strong>
+</p>
+
+<p>
+This isn't a configuration QuickTools chose against AES — the underlying library's write path doesn't
+have an AES option available the way it's currently called. PyPDF2's own
+<a href="https://pypdf2.readthedocs.io/en/3.x/user/installation.html">installation documentation</a>
+notes that AES support requires an additional optional dependency that this project does not install; the
+plain installation PyPDF2 ships with supports the RC4-based handler shown above, and that's the code
+path <code>writer.encrypt(password)</code> actually calls. We confirmed this by reading the installed
+library's own source rather than assuming it from the documentation alone.
+</p>
+
+<p>
+It's also worth being precise about what "128-bit" means here, since it's easy to hear "128-bit
+encryption" and assume that alone signals strength. Modern PDF tooling generally recommends AES over RC4
+specifically because of the cipher, not the key length —
+<a href="https://qpdf.readthedocs.io/en/12.3/weak-crypto.html">qpdf's documentation on weak
+cryptography</a> characterizes 128-bit RC4 encryption as weak by current standards, independent of the
+key size, and recommends AES-based encryption for anything created now. QuickTools does not currently
+offer an option to use AES instead.
+</p>
+
+<h2>What Does the Password Actually Control?</h2>
+
+<p>
+PDF's Standard Security Handler distinguishes between a <strong>user password</strong> (opens the file
+under whatever restrictions are set) and an <strong>owner password</strong> (opens it with full access,
+bypassing those restrictions). PyPDF2's <code>encrypt()</code> function accepts both as separate
+arguments — but QuickTools' code only ever supplies one: the password from the form, passed as the user
+password. The owner password argument is never set.
+</p>
+
+<p>
+Per <a href="https://pypdf2.readthedocs.io/en/3.x/modules/PdfWriter.html">PyPDF2's own
+documentation</a> for this method, when no owner password is given, it defaults to the same value as
+the user password. We confirmed the practical effect of this directly: opening a QuickTools-protected
+test file with the one password you'd actually type produced <code>PasswordType.OWNER_PASSWORD</code>
+from PyPDF2's own password-checking logic — meaning that single password grants owner-level access, not
+merely restricted viewing. Entering the wrong password instead returns
+<code>PasswordType.NOT_DECRYPTED</code>, and the file's contents remain genuinely inaccessible until the
+correct password is supplied.
+</p>
+
+<h2>Does Protect PDF Restrict Copying, Printing, or Editing?</h2>
+
+<p>
+The Standard Security Handler can, in principle, allow a file to be opened while still blocking specific
+actions — printing, copying text, editing, filling forms — through the permission flags stored in the
+<code>/P</code> field. QuickTools does not set any of these. The value recorded in every file we tested,
+<code>2147483644</code>, corresponds exactly to PyPDF2's own default —
+<code>ALL_DOCUMENT_PERMISSIONS</code> — every restrictable action left switched on.
+</p>
+
+<p>
+In practice, this means Protect PDF functions purely as a password gate: it determines whether the file
+can be opened at all, and does not layer any additional restriction on top of that once the correct
+password is entered. It's also worth noting, independent of QuickTools' specific settings, that PDF
+permission flags are a cooperative signal rather than an enforced lock — qpdf's documentation notes that
+not every PDF reader necessarily honors every restriction a file requests. QuickTools' files don't
+request any restriction in the first place, so this distinction doesn't currently apply to its output,
+but it's a reason not to treat permission flags in general as a security boundary.
+</p>
+
+<h2>What Happens With the Wrong Password?</h2>
+
+<p>
+We tested both directions directly. Supplying the correct password to <a href="/unlock-pdf">Unlock
+PDF</a> decrypts the file cleanly and returns the original content. Supplying an incorrect password does
+not produce a partially-decrypted or corrupted file — PyPDF2 correctly refuses to decrypt it at all. The
+underlying rejection works as intended.
+</p>
+
+<p>
+One rough edge we found while testing: the current <code>/unlock-pdf</code> route doesn't check whether
+decryption actually succeeded before continuing, so a wrong password currently surfaces as a generic
+server error rather than a clear "incorrect password" message. That's a real, present behavior of the
+tool today, not a claim about the encryption itself — the password check underneath it is working
+correctly either way.
+</p>
+
+<h2>What This Does and Doesn't Tell You About Security</h2>
+
+<p>
+It's worth being explicit about what this investigation covers and what it doesn't, since "PDF
+encryption" gets used as a stand-in for several unrelated things:
+</p>
+
+<ul class="benefits">
+  <li><strong>What we verified:</strong> the encryption algorithm and key length written into the PDF
+  itself (RC4, 128-bit, via the Standard Security Handler), the password's role as both user and owner
+  password, and the fully permissive permission flags.</li>
+  <li><strong>What we did not verify, and this article makes no claim about:</strong> how QuickTools
+  transmits your file to and from its server, whether or how long the password itself is retained
+  anywhere, or how the underlying files are stored while being processed. Those are separate questions
+  from what algorithm ends up inside the PDF, and nothing in this investigation established an answer to
+  them one way or the other.</li>
+</ul>
+
+<p>
+One more thing worth being accurate about: <a href="/protect-pdf">Protect PDF</a>'s own tool page
+rebuilds the file page-by-page rather than copying the original document wholesale, and in testing this
+means the original file's Title/Author metadata does not survive into the protected copy at all — it's
+replaced with the library's own default. That's a separate, unrelated side effect of how the file is
+reconstructed, not a statement about whether metadata is encrypted.
+</p>
+
+<h2>Practical Takeaway</h2>
+
+<p>
+QuickTools' Protect PDF does exactly one thing: it requires a password to open the file, using the PDF
+format's older but still standards-compliant Standard Security Handler. It's a real, functioning lock
+for casual sharing — an unauthorized recipient who opens the file in a normal PDF reader without the
+password genuinely cannot read its contents. It is not currently equivalent to modern AES-based PDF
+encryption, and it does not add any restriction beyond the open-password itself.
+</p>
+
+<p>
+If you specifically need AES-based encryption, a particular key length, separate owner/user passwords
+with different permissions, or need to satisfy a specific compliance requirement, verify that against
+what's described here before relying on this tool for that purpose — this isn't a judgment that
+QuickTools is or isn't adequate for your situation, just a description of what it currently produces so
+you can decide.
+</p>
+
+<h2>Related Tools</h2>
+<div class="tools-mini-grid">
+  <a href="/protect-pdf">Protect PDF</a>
+  <a href="/unlock-pdf">Unlock PDF</a>
+  <a href="/redact-pdf">Redact PDF</a>
+</div>
+
+<h2>Related Guides</h2>
+<ul>
+  <li><a href="/blog/pdf-security-basics">Passwords, Redaction & Watermarks</a> — how password
+  protection, redaction, and watermarks differ, and which problem each one actually solves.</li>
+</ul>
+
+<h2>Frequently Asked Questions</h2>
+
+<h3>What encryption does QuickTools Protect PDF use?</h3>
+<p>
+The PDF Standard Security Handler, revision 3, with RC4 encryption and a 128-bit key. We confirmed this
+directly from the /Encrypt dictionary of an actual protected file (/V 2, /R 3, /Length 128), and from the
+installed PyPDF2 library's own source code.
+</p>
+
+<h3>Does Protect PDF use AES?</h3>
+<p>
+No. The /V 2 value in the generated file's encryption dictionary corresponds to the RC4-based handler,
+not AES. AES becomes available in PDF starting at /V 4, and PyPDF2's own documentation notes that AES
+support requires an additional dependency this project doesn't install.
+</p>
+
+<h3>Is the password used as both the user and owner password?</h3>
+<p>
+Yes. QuickTools only supplies one password, and PyPDF2 sets the owner password to the same value when
+none is given separately. Testing confirmed that entering that password is recognized as the owner
+password, meaning it grants full access rather than a restricted view.
+</p>
+
+<h3>Does Protect PDF restrict printing or copying?</h3>
+<p>
+No. The permission flags in the generated file are set to PyPDF2's fully permissive default, meaning
+every restrictable action (printing, copying, editing, and others) is left enabled once the password is
+entered. The tool only controls whether the file can be opened at all.
+</p>
+
+<h3>What happens if I enter the wrong password?</h3>
+<p>
+Decryption correctly fails and the file's contents stay inaccessible. On the Unlock PDF tool specifically,
+a wrong password currently results in a generic server error rather than a clear message, though the
+underlying password check itself is working as intended.
+</p>
+
+<h3>What happens if I forget my PDF password?</h3>
+<p>
+There is no way to recover the file's contents without it. That's an inherent property of password-based
+PDF encryption, not something specific to how QuickTools implements it. Keep the password somewhere
+safe before you close the tab.
+</p>
+
+</article>
+
+{% endblock %}
+
+{% block jsonld %}
+{{ super() }}
+{% from "components/jsonld.html" import article, faqpage %}
+{% from "components/breadcrumb.html" import breadcrumb_jsonld %}
+{{ article(self.title(), self.description(), request.path, "2026-09-19") }}
+{{ faqpage([
+  {"q": "What encryption does QuickTools Protect PDF use?", "a": "The PDF Standard Security Handler, revision 3, with RC4 encryption and a 128-bit key. We confirmed this directly from the /Encrypt dictionary of an actual protected file (/V 2, /R 3, /Length 128), and from the installed PyPDF2 library's own source code."},
+  {"q": "Does Protect PDF use AES?", "a": "No. The /V 2 value in the generated file's encryption dictionary corresponds to the RC4-based handler, not AES. AES becomes available in PDF starting at /V 4, and PyPDF2's own documentation notes that AES support requires an additional dependency this project doesn't install."},
+  {"q": "Is the password used as both the user and owner password?", "a": "Yes. QuickTools only supplies one password, and PyPDF2 sets the owner password to the same value when none is given separately. Testing confirmed that entering that password is recognized as the owner password, meaning it grants full access rather than a restricted view."},
+  {"q": "Does Protect PDF restrict printing or copying?", "a": "No. The permission flags in the generated file are set to PyPDF2's fully permissive default, meaning every restrictable action (printing, copying, editing, and others) is left enabled once the password is entered. The tool only controls whether the file can be opened at all."},
+  {"q": "What happens if I enter the wrong password?", "a": "Decryption correctly fails and the file's contents stay inaccessible. On the Unlock PDF tool specifically, a wrong password currently results in a generic server error rather than a clear message, though the underlying password check itself is working as intended."},
+  {"q": "What happens if I forget my PDF password?", "a": "There is no way to recover the file's contents without it. That's an inherent property of password-based PDF encryption, not something specific to how QuickTools implements it. Keep the password somewhere safe before you close the tab."}
+]) }}
+{{ breadcrumb_jsonld([
+  {"label": "Home", "url": "/"},
+  {"label": "Guides", "url": "/blog"},
+  {"label": "What Kind of Encryption Does Protect PDF Actually Use?", "url": "/blog/what-encryption-does-protect-pdf-use"}
+]) }}
+{% endblock %}

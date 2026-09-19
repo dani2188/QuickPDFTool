@@ -1020,6 +1020,11 @@ def blog_why_jpg_to_pdf_has_a_huge_page_size():
     return render_template("blog/why_jpg_to_pdf_has_a_huge_page_size.html")
 
 
+@app.route("/blog/what-encryption-does-protect-pdf-use")
+def blog_what_encryption_does_protect_pdf_use():
+    return render_template("blog/what_encryption_does_protect_pdf_use.html")
+
+
 @app.route("/how-to-compress-pdf")
 def compress_pdf_guide():
     return render_template("compress_pdf_guide.html")
