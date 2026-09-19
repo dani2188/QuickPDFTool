@@ -1,0 +1,302 @@
+{% extends "base.html" %}
+
+{% block title %}Electronic Signature vs. Digital Signature: What's the Actual Difference?{% endblock %}
+
+{% block description %}
+Two PDFs can both show an image of a handwritten signature, so what actually makes one a digitally signed document? We break down the cryptographic mechanism, using QuickTools' own Sign PDF tool as the concrete example of what a visual signature is and isn't.
+{% endblock %}
+
+{% block content %}
+
+{% from "components/breadcrumb.html" import breadcrumb %}
+{{ breadcrumb([
+  {"label": "Home", "url": "/"},
+  {"label": "Guides", "url": "/blog"},
+  {"label": "Electronic Signature vs. Digital Signature: What's the Actual Difference?", "url": "/blog/electronic-signature-vs-digital-signature"}
+]) }}
+
+<article class="guide-article">
+
+<h1>Electronic Signature vs. Digital Signature: What's the Actual Difference?</h1>
+<p><em>Published September 2026</em></p>
+
+<p>
+Two PDFs can look identical: both show a picture of someone's handwritten signature sitting on a
+signature line. One of them might be cryptographically signed. The other might just have an image
+pasted onto it. Visually, you cannot tell the difference. So what actually makes one a "digital
+signature" and the other just a signature-shaped image? The short answer is that a digital signature
+isn't a look, it's a mathematical operation performed on the document itself — and that operation
+leaves a specific, inspectable structure inside the PDF that a plain image never creates.
+</p>
+
+<h2>"Electronic Signature" Is a Broad Category, Not a Mechanism</h2>
+
+<p>
+It helps to separate two things that get used interchangeably: <strong>electronic signature</strong> is
+a legal and regulatory category, defined by intent, not by technique. Under
+<a href="https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX:32014R0910">EU Regulation
+910/2014</a>, known as eIDAS, Article 3(10) defines it as <em>"data in electronic form which is attached to or
+logically associated with other data in electronic form and which is used by the signatory to
+sign."</em> That definition is deliberately broad — a typed name at the bottom of an email, a scanned
+photo of a pen signature, and a cryptographic signature can all potentially qualify as an electronic
+signature in the eIDAS sense, because the definition is about purpose and intent, not about how it was
+produced.
+</p>
+
+<p>
+<strong>Digital signature</strong>, by contrast, is not itself an eIDAS legal category — it's a
+technical term for a specific cryptographic mechanism: a document digest (a hash) encrypted with a
+signer's private key, verifiable with the matching public key. A digital signature is one way to
+produce something that can also meet the legal definition of an electronic signature, and specifically
+the stricter tiers eIDAS defines — but not every electronic signature is a digital signature, and this
+article is about the technical distinction, not a legal one. Which tier a given signature legally
+qualifies for, in a given jurisdiction, for a given document, is a separate question from what we're
+explaining here.
+</p>
+
+<p>
+eIDAS Article 26 defines a stricter tier, the "advanced electronic signature," with four specific
+requirements: it must be (1) uniquely linked to the signatory, (2) capable of identifying the
+signatory, (3) created using signature-creation data the signatory can use under their sole control
+with a high level of confidence, and (4) linked to the signed data in such a way that <em>any
+subsequent change in the data is detectable</em>. These are EU regulatory requirements, not a universal
+global standard — but that fourth requirement, tamper-detection, is the exact property a cryptographic
+mechanism is built to provide and a plain image cannot.
+</p>
+
+<h2>What a Signature Image Actually Is</h2>
+
+<p>
+A signature image is exactly what it sounds like: a picture — a photo of ink on paper, a scan, a
+transparent PNG — placed at a specific position on a PDF page. Structurally, a PDF has no idea what the
+picture depicts. To the file format, a signature image and a company logo and a product photo are the
+same kind of object: an embedded image, drawn at a location, with no semantic meaning attached to what
+it shows.
+</p>
+
+<p>
+QuickTools' own <a href="/sign-pdf">Sign PDF</a> tool works exactly this way, and it's a useful concrete
+example because we can inspect precisely what it produces. It takes an uploaded signature image and
+places it on the page using PyMuPDF's image-insertion function. The result is a normal
+<code>DeviceRGB</code> image object on the page — nothing more. There's no private-key operation
+anywhere in that process, no certificate binding a public key to a signer's identity, and no
+cryptographic link between that image and the rest of the document's content. None of this means the
+image "proves nothing" in every sense — it visually communicates that someone signed, and for a great
+many everyday documents that's exactly what's needed. What it specifically does not provide is a way
+for a PDF viewer to mathematically verify <em>who</em> signed the document, or whether the document's
+signed bytes were altered afterward. Those are cryptographic properties, and nothing about placing an
+image creates them.
+</p>
+
+<h2>What a Digital Signature Adds</h2>
+
+<p>
+A cryptographic digital signature is built specifically to supply the properties an image can't. At a
+conceptual level — this is simplified, not a complete implementation spec — the flow looks like this:
+</p>
+
+<ul class="benefits">
+  <li>The document's content is reduced to a <strong>hash</strong> (a fixed-length digest that changes
+  completely if even one byte of the input changes).</li>
+  <li>That hash is <strong>encrypted with the signer's private key</strong>, producing the signature
+  value.</li>
+  <li>The signature value, packaged as a cryptographic signature object, is written into a
+  <strong>PDF signature dictionary</strong> inside the file.</li>
+  <li>The signer's <strong>certificate</strong> — which binds their identity to a public key — travels
+  with the signature so a viewer has something to check it against.</li>
+  <li>A PDF viewer can later <strong>recompute the hash and verify the signature</strong> using that
+  public key, without needing anything else from the signer.</li>
+</ul>
+
+<h2>How a PDF Actually Stores This</h2>
+
+<p>
+According to <a href="https://www.adobe.com/devnet-docs/acrobatetk/tools/DigSigDC/Acrobat_DigitalSignatures_in_PDF.pdf">Adobe's
+own developer documentation on digital signatures in PDF</a>, the signature lives in a signature
+dictionary with a specific set of entries — though not every signed PDF uses identical fields or
+encoding, since PDF supports multiple signature handlers and formats:
+</p>
+
+<table class="data-table">
+  <thead>
+    <tr>
+      <th>Field</th>
+      <th>What it holds</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td><code>/ByteRange</code></td><td>Two offset/length pairs marking exactly which byte ranges of the file the signature covers</td></tr>
+    <tr><td><code>/Contents</code></td><td>The actual encoded cryptographic signature value, sitting in the gap the ByteRange leaves open</td></tr>
+    <tr><td><code>/SubFilter</code></td><td>Which signature encoding/profile is used — for example <code>adbe.pkcs7.detached</code> or <code>ETSI.CAdES.detached</code></td></tr>
+    <tr><td><code>/Filter</code></td><td>Which signature handler is expected to process the signature</td></tr>
+    <tr><td><code>/Cert</code></td><td>May carry certificate information directly, depending on the signature structure used</td></tr>
+  </tbody>
+</table>
+
+<p>
+None of these fields exist in an image-based signature, because there's no signature dictionary at all
+— just an image object on the page, which is exactly what forensic inspection of QuickTools' own output
+confirms (more on that below).
+</p>
+
+<h2>How Verification Actually Detects a Change</h2>
+
+<p>
+Per Adobe's documentation, the signing process computes a hash over the bytes named in
+<code>/ByteRange</code>, encrypts that hash with the signer's private key, and stores the result in
+<code>/Contents</code>. Verification runs the same process in reverse: the viewer independently
+recomputes the hash over those same bytes, decrypts the stored signature value using the signer's
+public key, and compares the two. If they match, the covered content hasn't changed since signing. If
+they don't, the mismatch is what a viewer reports as an invalid signature.
+</p>
+
+<p>
+It's worth being precise here rather than oversimplifying: this doesn't mean any change anywhere in a
+PDF always destroys every signature in it. PDF supports "incremental updates," where new content
+(including additional signatures) can be appended to a file without touching the bytes an earlier
+signature already covers — Adobe's documentation describes this as the mechanism that lets multiple
+people sign the same document in sequence without invalidating each other's signatures. What actually
+breaks a signature is a change to bytes that specific signature's <code>/ByteRange</code> covers, not
+"any change to the file" in the broadest sense.
+</p>
+
+<h2>Where CMS and PAdES Fit</h2>
+
+<p>
+The cryptographic signature object itself is usually built using <strong>CMS</strong>, Cryptographic
+Message Syntax. Per <a href="https://www.rfc-editor.org/rfc/rfc5652">RFC 5652</a>, CMS is a
+general-purpose container format — it's *"used to digitally sign, digest, authenticate, or encrypt
+arbitrary message content"* and isn't specific to PDF at all; the same format underlies signed email
+and other signed data formats. Its <code>SignedData</code> structure bundles a message digest, the
+signature value, and the signer's certificate together.
+</p>
+
+<p>
+<strong>PAdES</strong> (PDF Advanced Electronic Signatures) is the PDF-specific layer on top of this.
+Per <a href="https://www.etsi.org/deliver/etsi_en/319100_319199/31914201/01.02.01_60/en_31914201v010201p.pdf">ETSI's
+official EN 319 142-1 standard</a>, PAdES signatures <em>"build on PDF signatures specified in ISO
+32000-1 with an alternative signature encoding to support digital signature formats equivalent to...
+CAdES,"</em> adding requirements aimed at things like long-term validity — so a signature can still be
+verified years later, after certificates involved may have expired. PAdES doesn't replace PDF's native
+signature dictionary; it's a stricter, more interoperable way of filling it in.
+</p>
+
+<p>
+The certificate itself follows the <strong>X.509</strong> format. Per
+<a href="https://www.rfc-editor.org/rfc/rfc5280">RFC 5280</a>, an X.509 certificate is a data structure
+that <em>"binds public key values to subjects,"</em> with that binding asserted by a trusted certificate
+authority's own signature on the certificate. Simply possessing a certificate doesn't independently
+prove someone's identity — that assurance depends on the certificate authority and the trust chain
+behind it, which is a separate question from whether the cryptographic math checks out.
+</p>
+
+<h2>What Does QuickTools Sign PDF Actually Create?</h2>
+
+<p>
+Given all of the above, it's worth being concrete about exactly what <a href="/sign-pdf">Sign PDF</a>
+produces today. Inspecting a real file it generates shows:
+</p>
+
+<ul class="benefits">
+  <li>A normal image XObject placed on the page — the signature picture itself.</li>
+  <li><strong>No</strong> <code>/Sig</code> object.</li>
+  <li><strong>No</strong> <code>/ByteRange</code>.</li>
+  <li><strong>No</strong> <code>/AcroForm</code> signature field.</li>
+  <li><strong>No</strong> cryptographic signature object of any kind.</li>
+</ul>
+
+<p>
+That makes it a visual signing tool, not a cryptographic PDF signing implementation — and that's not a
+criticism of what it does; visual and cryptographic signatures solve genuinely different problems. If
+what you need is a document that visibly shows someone signed it, for an informal agreement, a form, or
+an internal approval, a placed image accomplishes exactly that, quickly, with no certificate to manage.
+If what you need is for a recipient's PDF viewer to mathematically confirm who signed a contract and
+that not one byte has changed since, that requires the certificate-and-hash mechanism described above,
+which is a different category of tool entirely. See the <a href="/how-to-sign-pdf">Sign PDF guide</a>
+for the practical walkthrough of using the current tool.
+</p>
+
+<h2>Related Tools</h2>
+<div class="tools-mini-grid">
+  <a href="/sign-pdf">Sign PDF</a>
+  <a href="/protect-pdf">Protect PDF</a>
+</div>
+
+<h2>Related Guides</h2>
+<ul>
+  <li><a href="/how-to-sign-pdf">How to Sign a PDF Online</a> — the step-by-step walkthrough of QuickTools' current tool.</li>
+  <li><a href="/blog/pdf-security-basics">Passwords, Redaction &amp; Watermarks</a> — what each PDF security tool actually protects against.</li>
+  <li><a href="/blog/what-encryption-does-protect-pdf-use">What Kind of Encryption Does Protect PDF Actually Use?</a> — the same kind of "what's actually happening" investigation, applied to Protect PDF.</li>
+</ul>
+
+<h2>Frequently Asked Questions</h2>
+
+<h3>Is an image of my signature an electronic signature?</h3>
+<p>
+It can be, in the broad legal sense. eIDAS defines an electronic signature simply as data in electronic
+form attached to other data and used by the signatory to sign, which is a wide definition covering
+typed names and signature images as well as cryptographic signatures. Whether it meets a stricter tier,
+or is treated as valid for a specific purpose, depends on the jurisdiction and the document.
+</p>
+
+<h3>What's the difference between an electronic and a digital signature?</h3>
+<p>
+Electronic signature is a legal and regulatory category defined by intent, covering many different
+formats. Digital signature is a specific technical mechanism, a document hash encrypted with a
+signer's private key. A digital signature can satisfy the legal definition of an electronic signature,
+but plenty of things that legally count as electronic signatures are not cryptographic at all.
+</p>
+
+<h3>What does a digital signature actually verify?</h3>
+<p>
+Two things: that the signature was created using a specific private key, tied to a certificate, and
+that the exact bytes covered by the signature haven't changed since it was applied. It verifies the
+cryptographic math, not the signer's real-world identity on its own. That assurance comes from the
+certificate authority and trust chain behind the certificate.
+</p>
+
+<h3>How does a PDF detect that a signed document was changed?</h3>
+<p>
+At signing, a hash is calculated over the document bytes named in the signature's ByteRange and
+encrypted with the signer's private key. At verification, that hash is recalculated and compared
+against the decrypted signature value. A mismatch means the covered bytes changed since signing.
+Changes outside that range, such as certain PDF incremental updates, don't necessarily affect it.
+</p>
+
+<h3>What is PAdES?</h3>
+<p>
+PAdES, PDF Advanced Electronic Signatures, is a PDF-specific signature profile from ETSI. It builds on
+PDF's own native signature mechanism and CMS-based signing to add requirements that support things like
+long-term validation, rather than replacing how PDF stores signatures.
+</p>
+
+<h3>Does QuickTools Sign PDF create a digital signature?</h3>
+<p>
+No. It places an image of a signature onto the page. The resulting file contains a normal image object
+with no signature dictionary, no ByteRange, and no cryptographic signature data, so it doesn't provide
+the identity or tamper-detection properties a cryptographic digital signature does.
+</p>
+
+</article>
+
+{% endblock %}
+
+{% block jsonld %}
+{{ super() }}
+{% from "components/jsonld.html" import article, faqpage %}
+{% from "components/breadcrumb.html" import breadcrumb_jsonld %}
+{{ article(self.title(), self.description(), request.path, "2026-09-19") }}
+{{ faqpage([
+  {"q": "Is an image of my signature an electronic signature?", "a": "It can be, in the broad legal sense. eIDAS defines an electronic signature simply as data in electronic form attached to other data and used by the signatory to sign, which is a wide definition covering typed names and signature images as well as cryptographic signatures. Whether it meets a stricter tier, or is treated as valid for a specific purpose, depends on the jurisdiction and the document."},
+  {"q": "What's the difference between an electronic and a digital signature?", "a": "Electronic signature is a legal and regulatory category defined by intent, covering many different formats. Digital signature is a specific technical mechanism, a document hash encrypted with a signer's private key. A digital signature can satisfy the legal definition of an electronic signature, but plenty of things that legally count as electronic signatures are not cryptographic at all."},
+  {"q": "What does a digital signature actually verify?", "a": "Two things: that the signature was created using a specific private key, tied to a certificate, and that the exact bytes covered by the signature haven't changed since it was applied. It verifies the cryptographic math, not the signer's real-world identity on its own. That assurance comes from the certificate authority and trust chain behind the certificate."},
+  {"q": "How does a PDF detect that a signed document was changed?", "a": "At signing, a hash is calculated over the document bytes named in the signature's ByteRange and encrypted with the signer's private key. At verification, that hash is recalculated and compared against the decrypted signature value. A mismatch means the covered bytes changed since signing. Changes outside that range, such as certain PDF incremental updates, don't necessarily affect it."},
+  {"q": "What is PAdES?", "a": "PAdES, PDF Advanced Electronic Signatures, is a PDF-specific signature profile from ETSI. It builds on PDF's own native signature mechanism and CMS-based signing to add requirements that support things like long-term validation, rather than replacing how PDF stores signatures."},
+  {"q": "Does QuickTools Sign PDF create a digital signature?", "a": "No. It places an image of a signature onto the page. The resulting file contains a normal image object with no signature dictionary, no ByteRange, and no cryptographic signature data, so it doesn't provide the identity or tamper-detection properties a cryptographic digital signature does."}
+]) }}
+{{ breadcrumb_jsonld([
+  {"label": "Home", "url": "/"},
+  {"label": "Guides", "url": "/blog"},
+  {"label": "Electronic Signature vs. Digital Signature: What's the Actual Difference?", "url": "/blog/electronic-signature-vs-digital-signature"}
+]) }}
+{% endblock %}

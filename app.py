@@ -1025,6 +1025,11 @@ def blog_what_encryption_does_protect_pdf_use():
     return render_template("blog/what_encryption_does_protect_pdf_use.html")
 
 
+@app.route("/blog/electronic-signature-vs-digital-signature")
+def blog_electronic_signature_vs_digital_signature():
+    return render_template("blog/electronic_signature_vs_digital_signature.html")
+
+
 @app.route("/how-to-compress-pdf")
 def compress_pdf_guide():
     return render_template("compress_pdf_guide.html")
