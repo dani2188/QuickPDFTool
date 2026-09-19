@@ -2123,10 +2123,10 @@ def crop_pdf():
 
         for page in reader.pages:
 
-            x0 = page.mediabox.left + left
-            y0 = page.mediabox.bottom + bottom
-            x1 = page.mediabox.right - right
-            y1 = page.mediabox.top - top
+            x0 = float(page.mediabox.left) + left
+            y0 = float(page.mediabox.bottom) + bottom
+            x1 = float(page.mediabox.right) - right
+            y1 = float(page.mediabox.top) - top
 
             page.mediabox.lower_left = (x0, y0)
             page.mediabox.upper_right = (x1, y1)
