@@ -27,7 +27,7 @@ Go to our <a href="/pdf-to-excel">PDF to Excel converter</a>. You'll see a file 
 <h2>Step 2 – Upload Your PDF</h2>
 
 <p>
-Select your PDF and upload it. The tool analyses the document, detects tables on each page, and extracts the data from them. Each table found is converted into rows and columns in the Excel spreadsheet.
+Select your PDF and upload it. The tool analyses the document, detects one table per page, and extracts the data from it. Each page's table is converted into rows and columns in the Excel spreadsheet.
 </p>
 
 <p>
@@ -74,7 +74,7 @@ Scanned PDFs are images and cannot be automatically parsed for table data. You w
 
 <h3>Will all tables from multi-page PDFs be included?</h3>
 <p>
-Yes. The tool scans every page and extracts any tables it finds across the entire document.
+One table is extracted per page, so if your PDF has a single table on each page, all of them will be included, in page order. If any one page contains more than one separate table, only one of them will be extracted from that page.
 </p>
 
 <h3>What should I do if the data looks wrong after conversion?</h3>
@@ -98,6 +98,6 @@ Minor errors in column alignment are common with complex tables. Open the Excel 
 {% block jsonld %}{% from "components/jsonld.html" import howto, faqpage %}{{ howto(self.title(), self.description(), request.path, ["Open the PDF to Excel Tool", "Upload Your PDF", "Download the Excel File"]) }}{{ faqpage([
   {"q": "Why doesn't the tool find a table in my PDF?", "a": "The tool detects tables by looking for structured row-and-column layouts. If the data is presented as free-flowing text or in a complex layout without clear table structure, it may not be detected. Try our PDF to Text tool to extract the raw content instead."},
   {"q": "Can I convert a scanned PDF to Excel?", "a": "Scanned PDFs are images and cannot be automatically parsed for table data. You would need OCR (optical character recognition) software to first extract the text, then structure it as a table."},
-  {"q": "Will all tables from multi-page PDFs be included?", "a": "Yes. The tool scans every page and extracts any tables it finds across the entire document."},
+  {"q": "Will all tables from multi-page PDFs be included?", "a": "One table is extracted per page, so if your PDF has a single table on each page, all of them will be included, in page order. If any one page contains more than one separate table, only one of them will be extracted from that page."},
   {"q": "What should I do if the data looks wrong after conversion?", "a": "Minor errors in column alignment are common with complex tables. Open the Excel file, compare it to the original PDF, and manually correct any misaligned cells or missing data."}
 ]) }}{% endblock %}

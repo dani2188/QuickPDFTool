@@ -39,7 +39,7 @@
   <ul class="steps">
     <li><span class="step-number">1</span> Upload your PDF</li>
     <li><span class="step-number">2</span> Click Convert to Excel</li>
-    <li><span class="step-number">3</span> The tool detects tables on each page</li>
+    <li><span class="step-number">3</span> The tool detects one table per page</li>
     <li><span class="step-number">4</span> Download the resulting .xlsx file</li>
   </ul>
 
@@ -72,8 +72,8 @@
   <h3>Will formulas or cell formatting be preserved?</h3>
   <p>No, only the extracted text values are placed into cells — formulas, colors, and formatting from the original PDF are not recreated.</p>
 
-  <h3>What if my PDF has multiple tables across several pages?</h3>
-  <p>Each detected table is extracted and combined into the output spreadsheet, one after another.</p>
+  <h3>What if my PDF has more than one table?</h3>
+  <p>The tool extracts one table per page. If your tables are each on their own page, all of them will be included in the output, in page order. If two or more separate tables appear on the same page, only one of them is extracted.</p>
 
   <h3>Are my files kept private?</h3>
   <p>Yes. Uploaded files are automatically deleted from our server shortly after processing.</p>
@@ -98,6 +98,6 @@
   {"q": "Will this work on scanned PDFs?", "a": "No. This tool reads table structures from digitally-created PDFs — it doesn't perform OCR, so tables inside scanned images won't be detected."},
   {"q": "What kind of tables convert best?", "a": "Tables with visible gridlines or clear borders convert most reliably. Loosely spaced text without borders may not be detected as a table."},
   {"q": "Will formulas or cell formatting be preserved?", "a": "No, only the extracted text values are placed into cells — formulas, colors, and formatting from the original PDF are not recreated."},
-  {"q": "What if my PDF has multiple tables across several pages?", "a": "Each detected table is extracted and combined into the output spreadsheet, one after another."},
+  {"q": "What if my PDF has more than one table?", "a": "The tool extracts one table per page. If your tables are each on their own page, all of them will be included in the output, in page order. If two or more separate tables appear on the same page, only one of them is extracted."},
   {"q": "Are my files kept private?", "a": "Yes. Uploaded files are automatically deleted from our server shortly after processing."}
 ]) }}{% endblock %}
