@@ -1030,6 +1030,11 @@ def blog_electronic_signature_vs_digital_signature():
     return render_template("blog/electronic_signature_vs_digital_signature.html")
 
 
+@app.route("/blog/fill-pdf-with-no-form-fields")
+def blog_fill_pdf_with_no_form_fields():
+    return render_template("blog/fill_pdf_with_no_form_fields.html")
+
+
 @app.route("/how-to-compress-pdf")
 def compress_pdf_guide():
     return render_template("compress_pdf_guide.html")
