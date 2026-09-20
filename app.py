@@ -1035,6 +1035,11 @@ def blog_fill_pdf_with_no_form_fields():
     return render_template("blog/fill_pdf_with_no_form_fields.html")
 
 
+@app.route("/blog/svg-to-pdf-arrows-markers-disappear")
+def blog_svg_to_pdf_arrows_markers_disappear():
+    return render_template("blog/svg_to_pdf_arrows_markers_disappear.html")
+
+
 @app.route("/how-to-compress-pdf")
 def compress_pdf_guide():
     return render_template("compress_pdf_guide.html")
