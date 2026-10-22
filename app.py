@@ -331,6 +331,20 @@ def compress_pdf(input_path, output_path, level="medium", target_size=None, emai
     except Exception as e:
         print("Compression ERROR:", e)
 
+        # Leave a marker /status can report, so processing.html stops polling.
+        if isinstance(e, FileNotFoundError):  # Ghostscript not installed
+            message = "Compression is temporarily unavailable. Please try again later."
+        else:
+            message = "We couldn't compress this PDF. It may be damaged or password-protected."
+
+        if os.path.exists(temp_output):
+            os.remove(temp_output)
+
+        error_path = output_path + ".error"
+        with open(error_path, "w") as f:
+            f.write(message)
+        delete_file_later(error_path, delay=600)
+
 
 # -----------------------------
 # HOMEPAGE
@@ -480,6 +494,11 @@ def status(filename):
 
     if os.path.exists(path):
         return {"ready": True}
+
+    error_path = path + ".error"
+    if os.path.exists(error_path):
+        with open(error_path) as f:
+            return {"ready": False, "error": f.read()}
 
     return {"ready": False}
 

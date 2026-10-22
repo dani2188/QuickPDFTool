@@ -873,6 +873,19 @@ input[type="radio"] {
   text-align: left;
 }
 
+.process-error {
+  color: var(--danger);
+  background: #fdecea;
+  padding: var(--s2);
+  border-radius: var(--radius-sm);
+  max-width: 520px;
+  margin: var(--s3) auto;
+}
+
+.process-error[hidden] {
+  display: none;
+}
+
 .download-list {
   list-style: none;
   padding: 0;
