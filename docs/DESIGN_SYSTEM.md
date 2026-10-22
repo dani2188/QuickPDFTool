@@ -166,7 +166,7 @@ Icons are **emoji glyphs** (no icon font, no SVG sprite) for zero-cost, universa
 | Split | ✂️ |
 | PDF → image | 🖼 |
 | Rotate | 🔄 |
-| Convert | 🔄 |
+| Convert | 🔀 |
 | Sign | ✍️ |
 | Edit | ✏️ |
 | Organize | 📂 |
