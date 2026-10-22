@@ -734,6 +734,32 @@ input[type="radio"] {
   border-bottom: none;
 }
 
+.example-figures {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--s2);
+  max-width: 700px;
+  margin: var(--s3) auto;
+}
+
+.example-figure {
+  margin: 0;
+}
+
+.example-figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+}
+
+.example-figure figcaption {
+  margin-top: var(--s1);
+  font-size: 14px;
+  color: var(--muted);
+}
+
 /* ============================================================= */
 /* RELATED TOOLS (mini grid)                                     */
 /* ============================================================= */
