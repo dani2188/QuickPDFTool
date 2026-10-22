@@ -506,6 +506,7 @@ def merge_pdf():
 
         merger.write(output_path)
         merger.close()
+        delete_file_later(output_path)
 
         return send_file(output_path, as_attachment=True)
 
@@ -594,6 +595,7 @@ def jpg_to_pdf():
                 save_all=True,
                 append_images=images[1:]
             )
+            delete_file_later(output_path)
 
         return send_file(output_path, as_attachment=True, download_name="images.pdf")
 
@@ -638,6 +640,8 @@ def pdf_to_png():
             image_files.append(output_filename)
 
             delete_file_later(output_path)
+
+        doc.close()
 
         # CREATE ZIP
         zip_filename = f"{uuid.uuid4()}_png_images.zip"
@@ -1511,6 +1515,7 @@ def extract_images():
                 with open(image_path, "wb") as img_file:
                     img_file.write(image_bytes)
 
+                delete_file_later(image_path)
                 images.append(image_filename)
 
                 # ✅ LIMIT
@@ -1519,6 +1524,8 @@ def extract_images():
 
             if len(images) >= MAX_IMAGES:
                 break
+
+        doc.close()
 
         # ✅ SMART UX FLAG
         limit_reached = len(images) >= MAX_IMAGES
@@ -1574,6 +1581,8 @@ def pdf_to_jpg():
             image_files.append(output_filename)
 
             delete_file_later(output_path)
+
+        doc.close()
 
         # CREATE ZIP
         zip_filename = f"{uuid.uuid4()}_jpg_images.zip"
@@ -2094,6 +2103,7 @@ def pdf_to_webp():
             # optional cleanup
             delete_file_later(output_path)
 
+        doc.close()
 
         return render_template(
             "pdf_to_webp_result.html",
@@ -2189,14 +2199,9 @@ def sign_pdf():
             and signature_file.filename
         ):
 
-            pdf_name = f"{uuid.uuid4()}_{secure_filename(pdf_file.filename)}"
-            sig_name = f"{uuid.uuid4()}_{secure_filename(signature_file.filename)}"
-
-            pdf_path = os.path.join(UPLOAD_FOLDER, pdf_name)
-            sig_path = os.path.join(UPLOAD_FOLDER, sig_name)
-
-            pdf_file.save(pdf_path)
-            signature_file.save(sig_path)
+            # Scheduled now, not in step 2 -- an abandoned session never gets there.
+            pdf_path, pdf_name = save_upload(pdf_file, delay=600)
+            sig_path, sig_name = save_upload(signature_file, delay=600)
 
             # 🔥 GENERATE PREVIEW (FIRST PAGE ONLY)
             doc = fitz.open(pdf_path)
@@ -2207,6 +2212,7 @@ def sign_pdf():
 
             pix = page.get_pixmap(matrix=fitz.Matrix(2, 2))
             img = Image.frombytes("RGB", [pix.width, pix.height], pix.samples)
+            doc.close()
 
             preview_name = f"{uuid.uuid4()}.jpg"
             preview_path = os.path.join("static", preview_name)
@@ -2276,6 +2282,7 @@ def sign_pdf():
             output_path = os.path.join(UPLOAD_FOLDER, output_name)
 
             doc.save(output_path)
+            doc.close()
 
             # 🧹 CLEANUP
             delete_file_later(output_path)
