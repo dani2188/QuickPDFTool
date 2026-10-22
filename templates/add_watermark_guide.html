@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 {% set breadcrumb_label = "How to Add a Watermark to a PDF" %}
+{% set date_published = "2026-03-14" %}
+{% set date_modified = "2026-09-18" %}
 
 {% block title %}How to Add a Watermark to a PDF – Online Free{% endblock %}
 
@@ -10,6 +12,9 @@
 <article class="guide-article">
 
 <h1>How to Add a Watermark to a PDF</h1>
+
+{% from "components/byline.html" import byline %}
+{{ byline(date_published, date_modified) }}
 
 <p>
 A watermark is a text or image overlaid on the pages of a document, typically semi-transparent, to indicate the document's status, ownership, or confidentiality. Common watermarks include "CONFIDENTIAL", "DRAFT", "SAMPLE", or a company name. Watermarks are a quick and effective way to communicate important information about a document's intended use.

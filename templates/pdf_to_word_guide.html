@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 {% set breadcrumb_label = "How to Convert PDF to Word (DOCX)" %}
+{% set date_published = "2026-03-14" %}
+{% set date_modified = "2026-09-18" %}
 
 {% block title %}
 How to Convert PDF to Word – PDF to DOCX Online Free
@@ -14,6 +16,9 @@ Learn how to convert a PDF file to an editable Word document (DOCX) online for f
 <article class="guide-article">
 
 <h1>How to Convert PDF to Word (DOCX)</h1>
+
+{% from "components/byline.html" import byline %}
+{{ byline(date_published, date_modified) }}
 
 <p>
 PDF files are designed to be read, not edited. If you need to make changes to a PDF — update the text, reformat sections, or repurpose the content — converting it to a Word document is the most effective approach. Word documents are fully editable, and you can always convert them back to PDF when you're finished.

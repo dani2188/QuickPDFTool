@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 {% set breadcrumb_label = "How to Extract Text from a PDF" %}
+{% set date_published = "2026-03-16" %}
+{% set date_modified = "2026-09-18" %}
 
 {% block title %}How to Extract Text from a PDF Online | PDF to Text Free{% endblock %}
 
@@ -10,6 +12,9 @@
 <article class="guide-article">
 
 <h1>How to Extract Text from a PDF</h1>
+
+{% from "components/byline.html" import byline %}
+{{ byline(date_published, date_modified) }}
 
 <p>
 PDF files lock their content in a fixed format that is not directly editable. When you need the raw text from a PDF — to copy it into another document, analyse it, run it through a spell checker, or process it with software — extracting it as a plain text file (.txt) is the most efficient approach.

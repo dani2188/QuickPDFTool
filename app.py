@@ -13,6 +13,7 @@ import platform
 import uuid
 import io
 import zipfile
+import datetime
 
 from werkzeug.utils import secure_filename
 from pdf2docx import Converter
@@ -100,6 +101,13 @@ def open_upload_images(files):
     if not images:
         return [], "No images selected. Please choose at least one image."
     return images, None
+
+
+@app.template_filter("longdate")
+def longdate(iso_date):
+    """'2026-04-28' -> 'April 28, 2026' for visible bylines."""
+    d = datetime.date.fromisoformat(iso_date)
+    return f"{d:%B} {d.day}, {d.year}"
 
 
 IMAGE_TOOL_PATHS = {"/resize-image", "/compress-jpg", "/remove-background"}

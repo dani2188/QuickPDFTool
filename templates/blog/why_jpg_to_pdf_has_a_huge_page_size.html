@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 {% set breadcrumb_label = "Why Your JPG-to-PDF File Has Such a Huge Page Size" %}
+{% set date_published = "2026-09-18" %}
+{% set date_modified = "2026-09-18" %}
 
 {% block title %}Why Your JPG-to-PDF File Has Such a Huge Page Size{% endblock %}
 
@@ -12,6 +14,9 @@ We tested QuickTools' JPG-to-PDF and PNG-to-PDF tools directly: the resulting PD
 <article class="guide-article">
 
 <h1>Why Your JPG-to-PDF File Has Such a Huge Page Size</h1>
+
+{% from "components/byline.html" import byline %}
+{{ byline(date_published, date_modified) }}
 <p><em>Published September 2026</em></p>
 
 <p>
@@ -272,7 +277,7 @@ doesn't apply that rotation, so the image can appear on its side in the resultin
 {% block jsonld %}
 {{ super() }}
 {% from "components/jsonld.html" import article, faqpage %}
-{{ article(self.title(), self.description(), request.path, "2026-09-18") }}
+{{ article(self.title(), self.description(), request.path, date_published, date_modified) }}
 {{ faqpage([
   {"q": "Why is my JPG-to-PDF file so physically large, even though the file size is small?", "a": "Because the file's byte size and the PDF page's physical dimensions are two separate things. The file itself can be small; the page can still be many inches or feet across, because the tool turns each image pixel directly into one PDF point, and a typical photo has thousands of pixels per side."},
   {"q": "Will compressing the PDF afterward fix the page size?", "a": "No. Compression changes file size by re-encoding the image data; it doesn't touch the page's physical dimensions at all. A compressed version of an oversized page is still the same oversized page, just a smaller file."},

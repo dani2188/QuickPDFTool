@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 {% set breadcrumb_label = "How to Resize Images for Social Media (2026 Guide)" %}
+{% set date_published = "2026-04-28" %}
+{% set date_modified = "2026-09-10" %}
 
 {% block title %}How to Resize Images for Social Media (2026 Guide){% endblock %}
 
@@ -10,6 +12,9 @@
 <article class="guide-article">
 
 <h1>How to Resize Images for Social Media (2026 Guide)</h1>
+
+{% from "components/byline.html" import byline %}
+{{ byline(date_published, date_modified) }}
 <p><em>Published April 2026</em></p>
 
 <p>Posting an image with the wrong dimensions is one of the most common mistakes on social media. The platform will either crop your photo in unexpected places, add distracting white bars, or compress it into a blurry mess. Understanding the correct sizes for each platform is the first step to making your content look polished and professional.</p>
@@ -143,5 +148,5 @@
 {% block jsonld %}
 {{ super() }}
 {% from "components/jsonld.html" import article %}
-{{ article(self.title(), self.description(), request.path, "2026-04-28") }}
+{{ article(self.title(), self.description(), request.path, date_published, date_modified) }}
 {% endblock %}

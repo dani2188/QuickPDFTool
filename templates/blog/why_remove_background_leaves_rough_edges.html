@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 {% set breadcrumb_label = "Why Remove Background Leaves Rough Edges on Some Photos" %}
+{% set date_published = "2026-09-16" %}
+{% set date_modified = "2026-09-16" %}
 
 {% block title %}Why Remove Background Leaves Rough Edges on Some Photos{% endblock %}
 
@@ -12,6 +14,9 @@ Why automatic background removal can look flawless on one photo and leave a halo
 <article class="guide-article">
 
 <h1>Why Remove Background Leaves Rough Edges on Some Photos</h1>
+
+{% from "components/byline.html" import byline %}
+{{ byline(date_published, date_modified) }}
 <p><em>Published September 2026</em></p>
 
 <p>
@@ -266,7 +271,7 @@ touch-up in an image editor is the remaining option.
 {% block jsonld %}
 {{ super() }}
 {% from "components/jsonld.html" import article, faqpage %}
-{{ article(self.title(), self.description(), request.path, "2026-09-16") }}
+{{ article(self.title(), self.description(), request.path, date_published, date_modified) }}
 {{ faqpage([
   {"q": "Why does background removal leave a white or colored halo around my subject?", "a": "Right at the edge of the subject, some pixels are a genuine blend of foreground and background color — this happens in the original photo, especially where focus is slightly soft. If a blended pixel gets kept as part of the subject, whatever background color is mixed into it comes along too, and it shows up as a thin fringe once you place the cut-out on a different background."},
   {"q": "Why does hair look rough or clumped after background removal?", "a": "Individual hair strands are often narrower than a single pixel can cleanly capture, so the edge of a head of hair is really hundreds of tiny partial boundaries rather than one clean line. That's a harder problem than tracing a solid edge like a jacket collar, and it's the main reason hair is the area most likely to show minor artifacts."},

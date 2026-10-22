@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 {% set breadcrumb_label = "What Kind of Encryption Does Protect PDF Actually Use?" %}
+{% set date_published = "2026-09-19" %}
+{% set date_modified = "2026-09-19" %}
 
 {% block title %}What Kind of Encryption Does Protect PDF Actually Use?{% endblock %}
 
@@ -12,6 +14,9 @@ We inspected QuickTools' Protect PDF tool directly — the code, the installed l
 <article class="guide-article">
 
 <h1>What Kind of Encryption Does Protect PDF Actually Use?</h1>
+
+{% from "components/byline.html" import byline %}
+{{ byline(date_published, date_modified) }}
 <p><em>Published September 2026</em></p>
 
 <p>
@@ -277,7 +282,7 @@ safe before you close the tab.
 {% block jsonld %}
 {{ super() }}
 {% from "components/jsonld.html" import article, faqpage %}
-{{ article(self.title(), self.description(), request.path, "2026-09-19") }}
+{{ article(self.title(), self.description(), request.path, date_published, date_modified) }}
 {{ faqpage([
   {"q": "What encryption does QuickTools Protect PDF use?", "a": "The PDF Standard Security Handler, revision 3, with RC4 encryption and a 128-bit key. We confirmed this directly from the /Encrypt dictionary of an actual protected file (/V 2, /R 3, /Length 128), and from the installed PyPDF2 library's own source code."},
   {"q": "Does Protect PDF use AES?", "a": "No. The /V 2 value in the generated file's encryption dictionary corresponds to the RC4-based handler, not AES. AES becomes available in PDF starting at /V 4, and PyPDF2's own documentation notes that AES support requires an additional dependency this project doesn't install."},

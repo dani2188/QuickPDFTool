@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 {% set breadcrumb_label = "How to Extract Images from a PDF" %}
+{% set date_published = "2026-03-14" %}
+{% set date_modified = "2026-09-18" %}
 
 {% block title %}How to Extract Images from a PDF – Save PDF Images Online{% endblock %}
 
@@ -10,6 +12,9 @@
 <article class="guide-article">
 
 <h1>How to Extract Images from a PDF</h1>
+
+{% from "components/byline.html" import byline %}
+{{ byline(date_published, date_modified) }}
 
 <p>
 PDF documents often contain images — photographs, diagrams, charts, logos, and illustrations — embedded within the file. If you need those images separately as individual files, extracting them is far more efficient than taking screenshots. Our free tool pulls every image out of your PDF and lets you download them as individual files.

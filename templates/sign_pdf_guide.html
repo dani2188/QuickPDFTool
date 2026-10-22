@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 {% set breadcrumb_label = "How to Sign a PDF Online" %}
+{% set date_published = "2026-03-26" %}
+{% set date_modified = "2026-09-18" %}
 
 {% block title %}How to Sign a PDF Online – Add Your Signature to Any PDF{% endblock %}
 
@@ -10,6 +12,9 @@
 <article class="guide-article">
 
 <h1>How to Sign a PDF Online</h1>
+
+{% from "components/byline.html" import byline %}
+{{ byline(date_published, date_modified) }}
 
 <p>
 Adding a signature to a PDF used to require printing the document, signing it by hand, then scanning it back into a digital format. Today you can sign any PDF directly online without a printer, scanner, or special software. Our free tool lets you upload your signature as an image and place it precisely on any page of your document.

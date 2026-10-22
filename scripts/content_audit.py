@@ -32,7 +32,7 @@ APP_PY = os.path.join(BASE, "app.py")
 # Templates that are not standalone indexable pages -- skip them.
 SKIP_DIRS = {"components"}
 SKIP_FILES = {
-    "404.html", "413.html", "500.html",
+    "404.html", "413.html", "500.html", "error.html",
     "result.html", "processing.html",
     "extract_images_result.html", "pdf_to_jpg_result.html",
     "pdf_to_png_result.html", "compress_jpg_result.html",

@@ -1,0 +1,14 @@
+{# Author + published/updated line under an article or guide's <h1>.
+   Dates are ISO strings (YYYY-MM-DD), set per page as date_published /
+   date_modified so the visible byline and the JSON-LD use the same values.
+   Bump date_modified whenever the page's content materially changes. #}
+
+{% macro byline(published, modified=none) -%}
+<p class="byline">
+  By <a href="/about">the QuickTools team</a> at HelloBrivio ·
+  Published <time datetime="{{ published }}">{{ published | longdate }}</time>
+  {%- if modified and modified != published %} ·
+  Updated <time datetime="{{ modified }}">{{ modified | longdate }}</time>
+  {%- endif %}
+</p>
+{%- endmacro %}

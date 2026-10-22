@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 {% set breadcrumb_label = "How to Convert Excel to PDF" %}
+{% set date_published = "2026-03-16" %}
+{% set date_modified = "2026-09-18" %}
 
 {% block title %}How to Convert Excel to PDF Online | XLSX to PDF Free{% endblock %}
 
@@ -10,6 +12,9 @@
 <article class="guide-article">
 
 <h1>How to Convert Excel to PDF</h1>
+
+{% from "components/byline.html" import byline %}
+{{ byline(date_published, date_modified) }}
 
 <p>
 Excel spreadsheets are powerful tools for data management, but they're not ideal for sharing. Recipients need Microsoft Excel or a compatible app to open them correctly, and the formatting can shift between different versions or devices. Converting your Excel file to PDF solves all of this — a PDF looks the same everywhere, opens on any device, and is the standard format for sharing data with people outside your workflow.

@@ -578,6 +578,17 @@ input[type="radio"] {
 /* BREADCRUMB                                                    */
 /* ============================================================= */
 
+.byline {
+  color: var(--muted);
+  font-size: 14px;
+  margin: 0 0 var(--s3);
+}
+
+.byline a {
+  color: inherit;
+  text-decoration: underline;
+}
+
 .breadcrumb {
   max-width: var(--maxw);
   margin: 0 auto var(--s2);

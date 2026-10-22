@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 {% set breadcrumb_label = "Passwords, Redaction, and Watermarks: A Plain-English Guide to PDF Security" %}
+{% set date_published = "2026-08-12" %}
+{% set date_modified = "2026-09-18" %}
 
 {% block title %}Passwords, Redaction & Watermarks: PDF Security Explained{% endblock %}
 
@@ -12,6 +14,9 @@ Passwords, redaction, and watermarks solve different problems. A plain-English g
 <article class="guide-article">
 
 <h1>Passwords, Redaction, and Watermarks: A Plain-English Guide to PDF Security</h1>
+
+{% from "components/byline.html" import byline %}
+{{ byline(date_published, date_modified) }}
 <p><em>Published August 2026</em></p>
 
 <p>
@@ -114,7 +119,7 @@ underlying content.
 {% block jsonld %}
 {{ super() }}
 {% from "components/jsonld.html" import article, faqpage %}
-{{ article(self.title(), self.description(), request.path, "2026-08-12") }}
+{{ article(self.title(), self.description(), request.path, date_published, date_modified) }}
 {{ faqpage([
   {"q": "If I password-protect a PDF, do I still need to redact anything?", "a": "Only if you don't fully trust everyone you're sharing the password with to see every part of the document. A password controls access to the whole file, not to specific sections within it."},
   {"q": "Can a watermark be removed by anyone who receives the file?", "a": "If they have access to the right tools, yes — a watermark isn't a security control, just visible markup layered onto the page."},

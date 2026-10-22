@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 {% set breadcrumb_label = "Why Compress PDF Sometimes Barely Shrinks Your File" %}
+{% set date_published = "2026-09-16" %}
+{% set date_modified = "2026-09-16" %}
 
 {% block title %}Why Compress PDF Sometimes Barely Shrinks Your File{% endblock %}
 
@@ -12,6 +14,9 @@ We ran real test files through every Compress PDF level — Low, Medium, High, a
 <article class="guide-article">
 
 <h1>Why Compress PDF Sometimes Barely Shrinks Your File</h1>
+
+{% from "components/byline.html" import byline %}
+{{ byline(date_published, date_modified) }}
 <p><em>Published September 2026</em></p>
 
 <p>
@@ -235,7 +240,7 @@ remove.
 {% block jsonld %}
 {{ super() }}
 {% from "components/jsonld.html" import article, faqpage %}
-{{ article(self.title(), self.description(), request.path, "2026-09-16") }}
+{{ article(self.title(), self.description(), request.path, date_published, date_modified) }}
 {{ faqpage([
   {"q": "Why did compressing my PDF make it bigger instead of smaller?", "a": "In our test, this happened on the Low setting with a 10-page, text-only PDF that had no images at all: the compressed file came back 14.5% larger than the original. Low only restructures the file rather than reducing image resolution, and that restructuring pass has a small overhead of its own. On that particular file — already small and clean, with nothing but text — the overhead wasn't offset by any real savings. This isn't a rule that Low always increases file size; it's what we measured on a file with no image content to work with. A different text-only PDF, especially a larger or less-optimized one, may still shrink slightly under Low."},
   {"q": "Why does compression barely change my file size at all?", "a": "Compression works by reducing image resolution and quality. If your PDF is mostly text with few or no images, there's very little for any setting to act on — the file is likely already close to its practical size floor, regardless of which level you choose."},

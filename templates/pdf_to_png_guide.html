@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 {% set breadcrumb_label = "How to Convert PDF to PNG" %}
+{% set date_published = "2026-03-14" %}
+{% set date_modified = "2026-09-18" %}
 
 {% block title %}How to Convert PDF to PNG – Export PDF Pages as PNG Images{% endblock %}
 
@@ -10,6 +12,9 @@
 <article class="guide-article">
 
 <h1>How to Convert PDF to PNG</h1>
+
+{% from "components/byline.html" import byline %}
+{{ byline(date_published, date_modified) }}
 
 <p>
 Converting a PDF to PNG produces high-quality lossless images of each page. Unlike JPG, PNG uses lossless compression, which means there is no quality degradation — every pixel is preserved exactly. This makes PNG the preferred format when you need crisp, accurate representations of PDF pages, especially for documents with sharp text, line art, or transparent backgrounds.

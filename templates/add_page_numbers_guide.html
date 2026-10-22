@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 {% set breadcrumb_label = "How to Add Page Numbers to a PDF" %}
+{% set date_published = "2026-03-14" %}
+{% set date_modified = "2026-09-18" %}
 
 {% block title %}
 How to Add Page Numbers to a PDF – Number PDF Pages Online
@@ -14,6 +16,9 @@ Learn how to add page numbers to any PDF document quickly and for free. Step-by-
 <article class="guide-article">
 
 <h1>How to Add Page Numbers to a PDF</h1>
+
+{% from "components/byline.html" import byline %}
+{{ byline(date_published, date_modified) }}
 
 <p>
 Page numbers are essential for any document longer than a few pages. They make it easy for readers to navigate, reference specific sections, and keep printed copies in order. If you've ever tried to discuss a multi-page PDF with a colleague without page numbers, you'll know how frustrating it can be.

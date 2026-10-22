@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 {% set breadcrumb_label = "Why Arrows Disappear When You Convert an SVG Diagram to PDF" %}
+{% set date_published = "2026-09-20" %}
+{% set date_modified = "2026-09-20" %}
 
 {% block title %}Why Arrows Disappear When You Convert an SVG Diagram to PDF{% endblock %}
 
@@ -12,6 +14,9 @@ Why SVG arrowheads can disappear or move during PDF conversion, how QuickTools h
 <article class="guide-article">
 
 <h1>Why Arrows Disappear When You Convert an SVG Diagram to PDF</h1>
+
+{% from "components/byline.html" import byline %}
+{{ byline(date_published, date_modified) }}
 <p><em>Published September 2026</em></p>
 
 <p>
@@ -239,7 +244,7 @@ misplaced arrowhead is a localized symptom, not an indicator that the whole file
 {% block jsonld %}
 {{ super() }}
 {% from "components/jsonld.html" import article, faqpage %}
-{{ article(self.title(), self.description(), request.path, "2026-09-20") }}
+{{ article(self.title(), self.description(), request.path, date_published, date_modified) }}
 {{ faqpage([
   {"q": "Why did my arrowhead disappear when I converted my SVG to PDF?", "a": "It was most likely defined as an SVG marker rather than as an ordinary shape. A marker is reusable artwork referenced by name from a line or path, and resolving that reference into visible geometry is a separate step from rendering the line itself. We confirmed directly that, before any special handling, a marker-based arrowhead didn't appear in the converted output even though the line it was attached to did."},
   {"q": "Does QuickTools fix missing SVG arrows?", "a": "QuickTools' current SVG preprocessing handles the common case: straight lines, polylines, and simple absolute paths using marker-start and/or marker-end, with the arrowhead built from a path or polygon. We tested this directly and confirmed it works across horizontal, vertical, and diagonal lines, multiple arrows, and arrows alongside text and other shapes. It isn't a complete implementation of every SVG marker feature, and specific cases such as transformed lines, relative or arc-based path commands, and circle-based markers aren't handled correctly."},

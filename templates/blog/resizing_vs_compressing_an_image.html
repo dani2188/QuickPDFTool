@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 {% set breadcrumb_label = "Resizing vs. Compressing an Image: What's the Difference?" %}
+{% set date_published = "2026-09-17" %}
+{% set date_modified = "2026-09-17" %}
 
 {% block title %}Resizing vs. Compressing an Image: What's the Difference?{% endblock %}
 
@@ -12,6 +14,9 @@ Resizing and compressing an image solve different problems — one changes pixel
 <article class="guide-article">
 
 <h1>Resizing vs. Compressing an Image: What's the Difference?</h1>
+
+{% from "components/byline.html" import byline %}
+{{ byline(date_published, date_modified) }}
 <p><em>Published September 2026</em></p>
 
 <p>
@@ -334,7 +339,7 @@ to JPG first (Resize Image can do this as part of resizing) or reduce its pixel 
 {% block jsonld %}
 {{ super() }}
 {% from "components/jsonld.html" import article, faqpage %}
-{{ article(self.title(), self.description(), request.path, "2026-09-17") }}
+{{ article(self.title(), self.description(), request.path, date_published, date_modified) }}
 {{ faqpage([
   {"q": "Is resizing an image the same as compressing it?", "a": "No. Resizing changes the pixel dimensions of an image. Compression changes how efficiently the existing pixels are stored, without changing dimensions at all. A resized image is usually also smaller in file size, but that is a side effect of having fewer pixels, not the same operation as compression."},
   {"q": "Will resizing my photo always make the file smaller?", "a": "Not necessarily. In one tested example, resizing a photo down to a much smaller pixel size but saving it as a lossless PNG produced a larger file than compressing the same photo at full resolution as a JPEG. Fewer pixels usually means less data, but the output format and compression level can matter more than the pixel count."},

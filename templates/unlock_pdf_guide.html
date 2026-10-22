@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 {% set breadcrumb_label = "How to Unlock a PDF (Remove Password Protection)" %}
+{% set date_published = "2026-03-14" %}
+{% set date_modified = "2026-09-18" %}
 
 {% block title %}
 How to Unlock a PDF – Remove PDF Password Protection Online
@@ -14,6 +16,9 @@ Learn how to remove a password from a PDF file online. Unlock your protected PDF
 <article class="guide-article">
 
 <h1>How to Unlock a PDF (Remove Password Protection)</h1>
+
+{% from "components/byline.html" import byline %}
+{{ byline(date_published, date_modified) }}
 
 <p>
 A password-protected PDF requires you to enter a password every time you open it. While this is useful for security, it becomes inconvenient when you need to share the document with multiple people, edit it, or archive it in a system that doesn't support password handling. Unlocking the PDF removes the password and makes it freely accessible.

@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 {% set breadcrumb_label = "How to Convert PNG to PDF" %}
+{% set date_published = "2026-03-14" %}
+{% set date_modified = "2026-09-18" %}
 
 {% block title %}How to Convert PNG to PDF – Combine PNG Images Into a PDF{% endblock %}
 
@@ -10,6 +12,9 @@
 <article class="guide-article">
 
 <h1>How to Convert PNG to PDF</h1>
+
+{% from "components/byline.html" import byline %}
+{{ byline(date_published, date_modified) }}
 
 <p>
 PNG images are great for individual use, but when you need to compile multiple images into a single document for sharing, archiving, or submission, converting them to PDF is the best approach. PDF is universally compatible, preserves the images at full quality, and is accepted by virtually every system, portal, and email client.

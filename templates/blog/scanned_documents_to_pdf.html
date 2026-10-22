@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 {% set breadcrumb_label = "Scanned Documents to PDF" %}
+{% set date_published = "2026-09-10" %}
+{% set date_modified = "2026-09-18" %}
 
 {% block title %}Scanned Documents to PDF: Turning Phone Photos into One Clean File{% endblock %}
 
@@ -12,6 +14,9 @@ A practical guide to turning photos of document pages into a single, usable PDF 
 <article class="guide-article">
 
 <h1>Scanned Documents to PDF: Turning Phone Photos into One Clean File</h1>
+
+{% from "components/byline.html" import byline %}
+{{ byline(date_published, date_modified) }}
 <p><em>Published September 2026</em></p>
 
 <p>
@@ -284,7 +289,7 @@ up quickly compared to a digitally-created, text-based PDF of the same length.
 {% block jsonld %}
 {{ super() }}
 {% from "components/jsonld.html" import article, faqpage %}
-{{ article(self.title(), self.description(), request.path, "2026-09-10") }}
+{{ article(self.title(), self.description(), request.path, date_published, date_modified) }}
 {{ faqpage([
   {"q": "Can I turn several phone photos into one PDF?", "a": "Yes — upload all the photos together to JPG to PDF (or PNG to PDF) in a single batch, and they're combined into one PDF with each photo as its own page, in the order you selected them. You don't need to convert them one at a time."},
   {"q": "Should I use JPG or PNG for photographed documents?", "a": "JPG, for almost every case — it's built for photographic detail and keeps file sizes reasonable. PNG is only worth using if what you're capturing is a screenshot or a flat-color graphic rather than an actual photograph of a page."},

@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 {% set breadcrumb_label = "Electronic Signature vs. Digital Signature: What's the Actual Difference?" %}
+{% set date_published = "2026-09-19" %}
+{% set date_modified = "2026-09-19" %}
 
 {% block title %}Electronic Signature vs. Digital Signature: What's the Actual Difference?{% endblock %}
 
@@ -12,6 +14,9 @@ Two PDFs can both show an image of a handwritten signature, so what actually mak
 <article class="guide-article">
 
 <h1>Electronic Signature vs. Digital Signature: What's the Actual Difference?</h1>
+
+{% from "components/byline.html" import byline %}
+{{ byline(date_published, date_modified) }}
 <p><em>Published September 2026</em></p>
 
 <p>
@@ -278,7 +283,7 @@ the identity or tamper-detection properties a cryptographic digital signature do
 {% block jsonld %}
 {{ super() }}
 {% from "components/jsonld.html" import article, faqpage %}
-{{ article(self.title(), self.description(), request.path, "2026-09-19") }}
+{{ article(self.title(), self.description(), request.path, date_published, date_modified) }}
 {{ faqpage([
   {"q": "Is an image of my signature an electronic signature?", "a": "It can be, in the broad legal sense. eIDAS defines an electronic signature simply as data in electronic form attached to other data and used by the signatory to sign, which is a wide definition covering typed names and signature images as well as cryptographic signatures. Whether it meets a stricter tier, or is treated as valid for a specific purpose, depends on the jurisdiction and the document."},
   {"q": "What's the difference between an electronic and a digital signature?", "a": "Electronic signature is a legal and regulatory category defined by intent, covering many different formats. Digital signature is a specific technical mechanism, a document hash encrypted with a signer's private key. A digital signature can satisfy the legal definition of an electronic signature, but plenty of things that legally count as electronic signatures are not cryptographic at all."},

@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 {% set breadcrumb_label = "PNG vs JPG: Which Image Format Should You Use?" %}
+{% set date_published = "2026-04-28" %}
+{% set date_modified = "2026-09-10" %}
 
 {% block title %}PNG vs JPG: Which Image Format Should You Use?{% endblock %}
 
@@ -10,6 +12,9 @@
 <article class="guide-article">
 
 <h1>PNG vs JPG: Which Image Format Should You Use?</h1>
+
+{% from "components/byline.html" import byline %}
+{{ byline(date_published, date_modified) }}
 <p><em>Published April 2026</em></p>
 
 <p>Choosing between PNG and JPG (also written JPEG) is one of the most common decisions in digital image workflows — and making the wrong choice can mean bloated file sizes, unexpected quality loss, or a missing transparent background. Understanding the difference takes about five minutes and saves a lot of frustration.</p>
@@ -132,5 +137,5 @@
 {% block jsonld %}
 {{ super() }}
 {% from "components/jsonld.html" import article %}
-{{ article(self.title(), self.description(), request.path, "2026-04-28") }}
+{{ article(self.title(), self.description(), request.path, date_published, date_modified) }}
 {% endblock %}
