@@ -466,7 +466,9 @@ def download_file(filename):
     if not os.path.exists(path):
         return "File not found", 404
 
-    return send_file(path, as_attachment=True)
+    response = send_file(path, as_attachment=True)
+    response.headers["X-Robots-Tag"] = "noindex"
+    return response
 
 
 @app.route("/status/<filename>")
@@ -2479,11 +2481,19 @@ def redact_pdf_guide():
     return render_template("redact_pdf_guide.html")
 
 
-from flask import send_from_directory
+from flask import send_from_directory, abort
+
+# Only the sign-pdf signature preview loads files through this route, so it
+# serves images only -- never the PDFs/documents that share uploads/.
+PREVIEWABLE_UPLOAD_EXTENSIONS = (".png", ".jpg", ".jpeg", ".webp", ".gif")
 
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):
-    return send_from_directory(UPLOAD_FOLDER, filename)
+    if not filename.lower().endswith(PREVIEWABLE_UPLOAD_EXTENSIONS):
+        abort(404)
+    response = send_from_directory(UPLOAD_FOLDER, filename)
+    response.headers["X-Robots-Tag"] = "noindex"
+    return response
 
 
 if __name__ == "__main__":
