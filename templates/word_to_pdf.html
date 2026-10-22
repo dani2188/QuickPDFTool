@@ -77,7 +77,7 @@ endblock %} {% block content %}
 
   <h3>Does this work with both .doc and .docx?</h3>
   <p>
-    Yes, both older .doc and modern .docx formats are accepted.
+    Yes, both older .doc and modern .docx formats are accepted, as are OpenDocument .odt files.
   </p>
 
   <h2>More PDF Tools</h2>
@@ -101,6 +101,6 @@ endblock %} {% block content %}
 {{ faqpage([
   {"q": "Will my formatting and fonts be preserved?", "a": "Yes, in almost all cases — this uses a real document-rendering engine rather than a simplified text extractor, so layout, fonts, tables, and images convert the way they'd look if printed from Word directly. Extremely unusual layouts or rare fonts can occasionally shift slightly."},
   {"q": "Can I edit the PDF afterward?", "a": "Not as text the way you could in Word. If you need to add a note or signature, use Add Text to PDF or Sign PDF afterward — for substantial edits, it's easier to edit the original Word document and re-convert."},
-  {"q": "Does this work with both .doc and .docx?", "a": "Yes, both older .doc and modern .docx formats are accepted."}
+  {"q": "Does this work with both .doc and .docx?", "a": "Yes, both older .doc and modern .docx formats are accepted, as are OpenDocument .odt files."}
 ]) }}
 {% endblock %}
