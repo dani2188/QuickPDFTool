@@ -37,15 +37,20 @@ There is no `routes/`, `services/`, or `models/` split — every tool (compress,
 
 ## 4. Request lifecycle (typical tool)
 
-Every tool follows the same manual pattern, repeated per-route rather than shared via a helper:
+Every tool follows the same pattern. Saving an upload is shared via `save_upload()`; the processing itself is still written per-route:
 
 1. **GET** `/tool-name` → renders the upload form template.
-2. **POST** `/tool-name` → Flask receives the file via `request.files`, filename is sanitized with `secure_filename()` and prefixed with `uuid.uuid4()` to avoid collisions, saved into `uploads/`.
-3. The file is processed **synchronously, in the request thread** — either with a Python library (PyMuPDF/PyPDF2/Pillow) or by shelling out to `gs`/`libreoffice` via `subprocess.run(...)`.
-4. Result is returned via `send_file(..., as_attachment=True)`, or for some tools (compress, pdf-to-jpg/png/webp) via a polling flow: an async thread does the work, `/status/<filename>` is polled from the browser, then `/download/<filename>` streams the result.
+2. **POST** `/tool-name` → Flask receives the file via `request.files`; `save_upload()` sanitizes the name with `secure_filename()`, prefixes it with `uuid.uuid4()` so concurrent users with the same filename never collide, saves it into `uploads/`, and schedules its deletion. Outputs also get UUID-prefixed internal names.
+3. The file is processed **synchronously, in the request thread** — either with a Python library (PyMuPDF/PyPDF2/Pillow) or by shelling out to `gs`/`libreoffice` (`soffice` on Windows) via `subprocess.run(...)`.
+4. The result is returned one of three ways:
+   - **Single file** → `send_file(..., as_attachment=True, download_name=...)`, so the user gets a friendly name (`invoice.docx`, `protected_invoice.pdf`) rather than the internal UUID name.
+   - **Multiple files** (split-pdf, pdf-to-jpg, pdf-to-png, pdf-to-webp, extract-images, compress-jpg) → a result page rendered **synchronously** in the same request, linking each output (and a ZIP where offered) through `/download-file/<filename>`.
+   - **compress-pdf only** → the polling flow: a background thread runs Ghostscript, `processing.html` polls `/status/<filename>`, then `/download/<filename>` renders `result.html`. If Ghostscript fails, `compress_pdf()` writes `<output>.error`, `/status` returns `{"ready": false, "error": ...}`, and the processing page stops polling and shows the message (it also gives up client-side after ~3 minutes, matching `--timeout 180`).
 5. **Cleanup**: `delete_file_later(path, delay)` spawns a **daemon `threading.Thread`** that sleeps for `delay` seconds (default 300s) then deletes the file. There is no job queue, no cron, and no guarantee cleanup runs if the process restarts before the timer fires.
 
-Some multi-step tools (`add-text-to-pdf`, `sign-pdf`) render a preview image first, then apply the edit in a second POST referencing the previously uploaded file by its generated `uploads/` filename.
+Invalid input returns a styled 4xx page via `error_page(message, status)` (`templates/error.html`), not a bare string.
+
+Some multi-step tools (`add-text-to-pdf`, `sign-pdf`, `redact-pdf`) render a preview image first, then apply the edit in a second POST referencing the previously uploaded file by its generated `uploads/` filename. That client-supplied name is always passed through `resolve_upload()`, which rejects anything that isn't a plain filename inside `uploads/`.
 
 ## 5. Tool inventory (by category)
 
@@ -65,7 +70,7 @@ Two tool families depend on binaries **not installed via pip** — they must exi
 - **Ghostscript** (`gswin64c` on Windows, `gs` on Linux/Render) — required for all `compress-pdf*` routes.
 - **LibreOffice** (`soffice`/`libreoffice --headless`) — required for `word-to-pdf`.
 
-`render.yaml` installs both (plus `poppler-utils`) via `apt-get` in the Render build step. **Locally there is no equivalent setup script** — these must be installed manually on the dev machine, or the compress/word-to-pdf routes will fail (the compress function currently swallows the error and just prints it, returning no output file rather than raising).
+`render.yaml` installs both (plus `poppler-utils`) via `apt-get` in the Render build step. **Locally there is no equivalent setup script** — these must be installed manually on the dev machine, or the compress/word-to-pdf routes will fail (a missing Ghostscript makes compress-pdf show "temporarily unavailable" on the processing page; a missing LibreOffice makes word-to-pdf return a 503 page).
 
 ## 7. Deployment
 
