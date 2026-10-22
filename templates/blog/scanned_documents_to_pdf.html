@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% set breadcrumb_label = "Scanned Documents to PDF" %}
 {% set date_published = "2026-09-10" %}
-{% set date_modified = "2026-09-18" %}
+{% set date_modified = "2026-10-22" %}
 
 {% block title %}Scanned Documents to PDF: Turning Phone Photos into One Clean File{% endblock %}
 
@@ -146,7 +146,7 @@ several oversized pages, you'll want to run each through it individually before 
 
 <p>
 The tradeoff to understand: resizing <em>before</em> conversion tends to produce a smaller PDF from the
-start, since the conversion step itself does no compression of its own. Compressing <em>after</em> (see
+start, since the conversion step keeps every photo at its full pixel size. Compressing <em>after</em> (see
 below) is the better tool for a corrective pass — shrinking a PDF that's already assembled and turned
 out larger than you need. You generally don't need to do both; pick whichever fits where you are in the
 process.

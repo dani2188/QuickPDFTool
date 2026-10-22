@@ -55,7 +55,7 @@
   <ul class="benefits">
     <li><strong>Transparency doesn't carry over.</strong> PNG supports a transparent background, but PDF pages don't — any transparent areas are filled with a solid color in the output.</li>
     <li><strong>Upload order is page order,</strong> and each page matches its source image's own dimensions — there's no cropping or resizing to a uniform page size.</li>
-    <li><strong>No compression is applied,</strong> so a batch of large PNGs will produce a correspondingly large PDF. Use <a href="/compress-pdf">Compress PDF</a> afterward if the file needs to be smaller.</li>
+    <li><strong>Images are stored as JPEG inside the PDF.</strong> That keeps the file far smaller than the original PNGs, but JPEG is lossy: screenshots and diagrams can pick up faint artifacts around sharp text and lines. Use <a href="/compress-pdf">Compress PDF</a> afterward if the file needs to be smaller still.</li>
   </ul>
 
   <h2>Frequently Asked Questions</h2>
@@ -73,8 +73,9 @@
 
   <h3>Does this reduce my file size?</h3>
   <p>
-    No, images are embedded at their original quality. Run the result through
-    <a href="/compress-pdf">Compress PDF</a> afterward if it needs to be smaller.
+    Usually, yes. Each PNG is re-encoded as JPEG inside the PDF, which is much smaller than lossless PNG
+    but can add faint artifacts around sharp text and lines. Run the result through
+    <a href="/compress-pdf">Compress PDF</a> afterward if it needs to be smaller still.
   </p>
 
   <h3>Does the order I upload files in matter?</h3>
@@ -103,7 +104,7 @@
 {{ faqpage([
   {"q": "What happens to transparent areas in my PNG?", "a": "They're filled with a solid color, since PDF pages don't support transparency the way PNG does. If you need the transparency preserved for further editing, keep working with the PNG directly."},
   {"q": "Can I mix PNG and JPG images in the same PDF?", "a": "Yes — use JPG to PDF, which accepts both formats in the same upload."},
-  {"q": "Does this reduce my file size?", "a": "No, images are embedded at their original quality. Run the result through Compress PDF afterward if it needs to be smaller."},
+  {"q": "Does this reduce my file size?", "a": "Usually, yes. Each PNG is re-encoded as JPEG inside the PDF, which is much smaller than lossless PNG but can add faint artifacts around sharp text and lines. Run the result through Compress PDF afterward if it needs to be smaller still."},
   {"q": "Does the order I upload files in matter?", "a": "Yes. The first image you select becomes page 1 of the PDF, and the rest follow in the order they were uploaded — check the result and re-upload in the right order if the pages come out reversed or shuffled."}
 ]) }}
 {% endblock %}
