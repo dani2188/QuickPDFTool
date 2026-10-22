@@ -82,6 +82,26 @@ def resolve_upload(name):
     return path
 
 
+def open_upload_images(files):
+    """Save each uploaded image and open it as RGB.
+
+    Returns (images, error_message); error_message is set when a file isn't
+    a readable image or nothing was uploaded.
+    """
+    images = []
+    for file in files:
+        if not file.filename:
+            continue
+        path, _ = save_upload(file)
+        try:
+            images.append(Image.open(path).convert("RGB"))
+        except (OSError, ValueError):
+            return [], f"\"{secure_filename(file.filename)}\" isn't an image we can read. Please upload JPG or PNG files."
+    if not images:
+        return [], "No images selected. Please choose at least one image."
+    return images, None
+
+
 def error_page(message, status=400):
     """Styled error response, instead of a bare string on a blank page."""
     return render_template("error.html", message=message, status=status), status
@@ -523,6 +543,8 @@ def merge_pdf():
         output_filename = f"{unique_id}_merged.pdf"
         output_path = os.path.join(UPLOAD_FOLDER, output_filename)
 
+        appended = 0
+
         for file in files:
 
             if file.filename != "":
@@ -533,6 +555,11 @@ def merge_pdf():
 
 
                 merger.append(path)
+                appended += 1
+
+        if not appended:
+            merger.close()
+            return error_page("No PDFs selected. Please choose the files you want to merge.")
 
         merger.write(output_path)
         merger.close()
@@ -613,31 +640,21 @@ def jpg_to_pdf():
 
     if request.method == "POST":
 
-        files = request.files.getlist("images")
+        images, error = open_upload_images(request.files.getlist("images"))
 
-        images = []
-
-        for file in files:
-
-            if file.filename != "":
-
-                path, _ = save_upload(file)
-
-                image = Image.open(path).convert("RGB")
-                images.append(image)
+        if error:
+            return error_page(error)
 
         unique_id = str(uuid.uuid4())
         output_filename = f"{unique_id}_images.pdf"
         output_path = os.path.join(UPLOAD_FOLDER, output_filename)
 
-        if images:
-
-            images[0].save(
-                output_path,
-                save_all=True,
-                append_images=images[1:]
-            )
-            delete_file_later(output_path)
+        images[0].save(
+            output_path,
+            save_all=True,
+            append_images=images[1:]
+        )
+        delete_file_later(output_path)
 
         return send_file(output_path, as_attachment=True, download_name="images.pdf")
 
@@ -713,10 +730,17 @@ def rotate_pdf():
     if request.method == "POST":
 
         file = request.files["pdf"]
-        rotation = int(request.form.get("rotation", 0)) % 360
 
         if not file or file.filename == "":
             return error_page("No file selected. Please choose a file and try again.")
+
+        try:
+            rotation = int(request.form.get("rotation", 0)) % 360
+        except (ValueError, TypeError):
+            return error_page("Please choose a rotation of 90, 180 or 270 degrees.")
+
+        if rotation % 90:
+            return error_page("Please choose a rotation of 90, 180 or 270 degrees.")
 
         filename = f"{uuid.uuid4()}_{secure_filename(file.filename)}"
         input_path = os.path.join(UPLOAD_FOLDER, filename)
@@ -871,6 +895,9 @@ def protect_pdf():
         if file.filename == "":
             return error_page("No file selected. Please choose a file and try again.")
 
+        if not password:
+            return error_page("Please enter a password.")
+
         input_path, _ = save_upload(file)
         stem = upload_stem(file)
 
@@ -910,7 +937,12 @@ def unlock_pdf():
         reader = PdfReader(input_path)
 
         if reader.is_encrypted:
-            reader.decrypt(password)
+            try:
+                decrypted = reader.decrypt(password or "")
+            except Exception:
+                decrypted = 0
+            if not decrypted:
+                return error_page("Incorrect password.")
 
         writer = PdfWriter()
 
@@ -1652,37 +1684,23 @@ def png_to_pdf():
 
     if request.method == "POST":
 
-        files = request.files.getlist("images")
+        images, error = open_upload_images(request.files.getlist("images"))
 
-        images = []
+        if error:
+            return error_page(error)
 
-        for file in files:
+        output_filename = f"{uuid.uuid4()}_converted.pdf"
+        output_path = os.path.join(UPLOAD_FOLDER, output_filename)
 
-            if file.filename != "":
+        images[0].save(
+            output_path,
+            save_all=True,
+            append_images=images[1:]
+        )
 
-                filename = f"{uuid.uuid4()}_{secure_filename(file.filename)}"
-                path = os.path.join(UPLOAD_FOLDER, filename)
+        delete_file_later(output_path)
 
-                file.save(path)
-                delete_file_later(path)
-
-                image = Image.open(path).convert("RGB")
-                images.append(image)
-
-        if images:
-
-            output_filename = f"{uuid.uuid4()}_converted.pdf"
-            output_path = os.path.join(UPLOAD_FOLDER, output_filename)
-
-            images[0].save(
-                output_path,
-                save_all=True,
-                append_images=images[1:]
-            )
-
-            delete_file_later(output_path)
-
-            return send_file(output_path, as_attachment=True)
+        return send_file(output_path, as_attachment=True)
 
     return render_template("png_to_pdf.html")
 
@@ -2180,10 +2198,15 @@ def crop_pdf():
         file.save(input_path)
         delete_file_later(input_path)
 
-        left = max(0, float(request.form.get("left", 0)))
-        right = max(0, float(request.form.get("right", 0)))
-        top = max(0, float(request.form.get("top", 0)))
-        bottom = max(0, float(request.form.get("bottom", 0)))
+        try:
+            margins = [float(request.form.get(side, 0)) for side in ("left", "right", "top", "bottom")]
+        except (ValueError, TypeError):
+            return error_page("Crop margins must be numbers (in points).")
+
+        if not all(map(math.isfinite, margins)):
+            return error_page("Crop margins must be numbers (in points).")
+
+        left, right, top, bottom = (max(0, m) for m in margins)
 
         reader = PdfReader(input_path)
         writer = PdfWriter()
@@ -2194,6 +2217,9 @@ def crop_pdf():
             y0 = float(page.mediabox.bottom) + bottom
             x1 = float(page.mediabox.right) - right
             y1 = float(page.mediabox.top) - top
+
+            if x1 <= x0 or y1 <= y0:
+                return error_page("Those crop margins are larger than the page. Please use smaller values.")
 
             page.mediabox.lower_left = (x0, y0)
             page.mediabox.upper_right = (x1, y1)
@@ -2245,9 +2271,19 @@ def sign_pdf():
             pdf_path, pdf_name = save_upload(pdf_file, delay=600)
             sig_path, sig_name = save_upload(signature_file, delay=600)
 
+            try:
+                with Image.open(sig_path) as sig_img:
+                    sig_img.verify()
+            except Exception:
+                return error_page("Your signature must be an image file (PNG or JPG).")
+
+            try:
+                page_num = int(request.form.get("page", 1)) - 1
+            except (ValueError, TypeError):
+                page_num = 0
+
             # 🔥 GENERATE PREVIEW (FIRST PAGE ONLY)
             doc = fitz.open(pdf_path)
-            page_num = int(request.form.get("page", 1)) - 1
             if page_num < 0 or page_num >= len(doc):
                 page_num = 0
             page = doc[page_num]
@@ -2285,15 +2321,22 @@ def sign_pdf():
                 return error_page("File missing or expired. Please upload again.")
 
             # 📍 POSITION FROM FRONTEND
-            x = float(request.form.get("x", 0))
-            y = float(request.form.get("y", 0))
-            img_width = float(request.form.get("img_width", 1))
-            img_height = float(request.form.get("img_height", 1))
+            try:
+                x = float(request.form.get("x", 0))
+                y = float(request.form.get("y", 0))
+                img_width = float(request.form.get("img_width", 1))
+                img_height = float(request.form.get("img_height", 1))
 
-            box_width = float(request.form.get("box_width", 100))
-            box_height = float(request.form.get("box_height", 50))
+                box_width = float(request.form.get("box_width", 100))
+                box_height = float(request.form.get("box_height", 50))
 
-            page_num = int(request.form.get("page", 1)) - 1
+                page_num = int(request.form.get("page", 1)) - 1
+            except (ValueError, TypeError):
+                return error_page("The signature position was invalid. Please place your signature again.")
+
+            values = (x, y, img_width, img_height, box_width, box_height)
+            if not all(map(math.isfinite, values)) or min(img_width, img_height, box_width, box_height) <= 0:
+                return error_page("The signature position was invalid. Please place your signature again.")
 
             doc = fitz.open(pdf_path)
             if page_num < 0 or page_num >= len(doc):
@@ -2380,13 +2423,24 @@ def add_text_to_pdf():
             if not pdf_path:
                 return error_page("File missing or expired. Please upload again.")
 
-            x = float(request.form.get("x", 0))
-            y = float(request.form.get("y", 0))
+            try:
+                x = float(request.form.get("x", 0))
+                y = float(request.form.get("y", 0))
+                font_size = float(request.form.get("font_size", 12))
+                img_width = float(request.form.get("img_width", 1) or 1)
+                img_height = float(request.form.get("img_height", 1) or 1)
+            except (ValueError, TypeError):
+                return error_page("The text position or size was invalid. Please place your text again.")
+
+            if (not all(map(math.isfinite, (x, y, font_size, img_width, img_height)))
+                    or img_width <= 0 or img_height <= 0 or not 1 <= font_size <= 200):
+                return error_page("The text position or size was invalid. Please place your text again.")
+
             text = request.form.get("text", "")
-            font_size = float(request.form.get("font_size", 12))
-            color_hex = request.form.get("color", "#000000").lstrip("#")
-            img_width = float(request.form.get("img_width", 1) or 1)
-            img_height = float(request.form.get("img_height", 1) or 1)
+            color = request.form.get("color", "#000000")
+            if not re.fullmatch(r"#[0-9a-fA-F]{6}", color or ""):
+                color = "#000000"
+            color_hex = color.lstrip("#")
 
             r = int(color_hex[0:2], 16) / 255
             g = int(color_hex[2:4], 16) / 255
@@ -2492,7 +2546,10 @@ def redact_pdf():
 
                 return send_file(output_path, as_attachment=True)
 
-            current_page = int(request.form.get("current_page", 1) or 1)
+            try:
+                current_page = int(request.form.get("current_page", 1) or 1)
+            except (ValueError, TypeError):
+                current_page = 1
             if action == "prev":
                 target_page = current_page - 1
             elif action == "next":
