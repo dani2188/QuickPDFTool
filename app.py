@@ -2229,14 +2229,12 @@ def sign_pdf():
         # =========================
         elif existing_file:
 
-            pdf_path = os.path.join(UPLOAD_FOLDER, existing_file)
-
-            sig_filename = request.form.get("signature_file")
-            sig_path = os.path.join(UPLOAD_FOLDER, sig_filename)
+            pdf_path = resolve_upload(existing_file)
+            sig_path = resolve_upload(request.form.get("signature_file"))
 
             # 🔒 SECURITY CHECK
-            if not os.path.exists(pdf_path) or not os.path.exists(sig_path):
-                return "File missing", 400
+            if not pdf_path or not sig_path:
+                return "File missing or expired. Please upload again.", 400
 
             # 📍 POSITION FROM FRONTEND
             x = float(request.form.get("x", 0))
@@ -2328,9 +2326,9 @@ def add_text_to_pdf():
         # Step 2: Apply text to PDF
         elif existing_file:
 
-            pdf_path = os.path.join(UPLOAD_FOLDER, existing_file)
+            pdf_path = resolve_upload(existing_file)
 
-            if not os.path.exists(pdf_path):
+            if not pdf_path:
                 return "File missing or expired. Please upload again.", 400
 
             x = float(request.form.get("x", 0))
@@ -2414,9 +2412,9 @@ def redact_pdf():
         # =========================
         elif existing_file:
 
-            pdf_path = os.path.join(UPLOAD_FOLDER, existing_file)
+            pdf_path = resolve_upload(existing_file)
 
-            if not os.path.exists(pdf_path):
+            if not pdf_path:
                 return "File missing or expired. Please upload again.", 400
 
             action = request.form.get("action", "apply")
