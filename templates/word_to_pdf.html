@@ -8,7 +8,7 @@ endblock %} {% block content %}
 
 <form method="POST" enctype="multipart/form-data">
   {% set button_text="Select Word Document" %} {% set input_name="docx" %} {%
-  set accept_types=".doc,.docx" %} {% set multiple=false %} {% include
+  set accept_types=".doc,.docx,.odt" %} {% set multiple=false %} {% include
   "components/upload.html" %}
 
   <button class="main-btn">Convert to PDF</button>

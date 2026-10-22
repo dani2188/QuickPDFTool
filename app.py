@@ -55,6 +55,11 @@ def save_upload(file_storage, delay=300):
     return path, name
 
 
+# Accepted extensions, compared against filename.lower().
+WORD_EXTENSIONS = (".doc", ".docx", ".odt")
+EXCEL_EXTENSIONS = (".xlsx", ".xlsm", ".xls")
+
+
 def upload_stem(file_storage):
     """User-facing base name (no extension) of an upload, for download names."""
     safe = secure_filename(file_storage.filename) or "file"
@@ -747,15 +752,13 @@ def pdf_to_word():
         if file.filename == "":
             return "No file selected"
 
-        filename = secure_filename(file.filename)
+        if not file.filename.lower().endswith(".pdf"):
+            return "Please upload a PDF file.", 400
 
-        input_path = os.path.join(UPLOAD_FOLDER, filename)
+        input_path, _ = save_upload(file)
+        stem = upload_stem(file)
 
-        file.save(input_path)
-        delete_file_later(input_path)
-        
-
-        output_filename = filename.replace(".pdf", ".docx")
+        output_filename = f"{uuid.uuid4()}_{stem}.docx"
         output_path = os.path.join(UPLOAD_FOLDER, output_filename)
         delete_file_later(output_path)
 
@@ -763,7 +766,7 @@ def pdf_to_word():
         cv.convert(output_path, start=0, end=None)
         cv.close()
 
-        return send_file(output_path, as_attachment=True)
+        return send_file(output_path, as_attachment=True, download_name=f"{stem}.docx")
 
     return render_template("pdf_to_word.html")
 
@@ -778,31 +781,36 @@ def word_to_pdf():
         if file.filename == "":
             return "No file selected"
 
-        filename = secure_filename(file.filename)
+        if not file.filename.lower().endswith(WORD_EXTENSIONS):
+            return "Please upload a Word document (.doc, .docx or .odt).", 400
 
-        input_path = os.path.join(UPLOAD_FOLDER, filename)
-        file.save(input_path)
-        delete_file_later(input_path)
-        
+        input_path, input_name = save_upload(file)
+        stem = upload_stem(file)
 
-        output_filename = filename.replace(".docx", ".pdf")
+        # LibreOffice names its output after the input, with the extension swapped.
+        output_filename = os.path.splitext(input_name)[0] + ".pdf"
         output_path = os.path.join(UPLOAD_FOLDER, output_filename)
         delete_file_later(output_path)
 
-        result = subprocess.run([
-            "libreoffice",
-            "--headless",
-            "--convert-to",
-            "pdf",
-            input_path,
-            "--outdir",
-            UPLOAD_FOLDER
-        ])
+        office_command = "soffice" if platform.system() == "Windows" else "libreoffice"
+
+        try:
+            result = subprocess.run([
+                office_command,
+                "--headless",
+                "--convert-to",
+                "pdf",
+                input_path,
+                "--outdir",
+                UPLOAD_FOLDER
+            ])
+        except OSError:
+            return "Word conversion is temporarily unavailable. Please try again later.", 503
 
         if result.returncode != 0 or not os.path.exists(output_path):
-            return "Conversion failed. Make sure your file is a valid .docx document.", 500
+            return "Conversion failed. Make sure your file is a valid Word document.", 400
 
-        return send_file(output_path, as_attachment=True)
+        return send_file(output_path, as_attachment=True, download_name=f"{stem}.pdf")
 
     return render_template("word_to_pdf.html")
 
@@ -1909,14 +1917,13 @@ def pdf_to_excel():
         if file.filename == "":
             return "No file selected"
 
-        filename = secure_filename(file.filename)
+        if not file.filename.lower().endswith(".pdf"):
+            return "Please upload a PDF file.", 400
 
-        input_path = os.path.join(UPLOAD_FOLDER, filename)
+        input_path, _ = save_upload(file)
+        stem = upload_stem(file)
 
-        file.save(input_path)
-        delete_file_later(input_path)
-
-        output_filename = filename.replace(".pdf",".xlsx")
+        output_filename = f"{uuid.uuid4()}_{stem}.xlsx"
         output_path = os.path.join(UPLOAD_FOLDER, output_filename)
 
         tables = []
@@ -1936,7 +1943,7 @@ def pdf_to_excel():
 
         delete_file_later(output_path)
 
-        return send_file(output_path, as_attachment=True)
+        return send_file(output_path, as_attachment=True, download_name=f"{stem}.xlsx")
 
     return render_template("pdf_to_excel.html")
 
@@ -1954,16 +1961,18 @@ def excel_to_pdf():
         if file.filename == "":
             return "No file selected"
 
-        filename = secure_filename(file.filename)
+        if not file.filename.lower().endswith(EXCEL_EXTENSIONS):
+            return "Please upload an Excel file (.xlsx).", 400
 
-        input_path = os.path.join(UPLOAD_FOLDER, filename)
+        input_path, _ = save_upload(file)
+        stem = upload_stem(file)
 
-        file.save(input_path)
-        delete_file_later(input_path)
+        try:
+            df = pd.read_excel(input_path)
+        except Exception:
+            return "Could not read that spreadsheet. Please save it as .xlsx and try again.", 400
 
-        df = pd.read_excel(input_path)
-
-        output_filename = filename.replace(".xlsx",".pdf")
+        output_filename = f"{uuid.uuid4()}_{stem}.pdf"
         output_path = os.path.join(UPLOAD_FOLDER, output_filename)
 
         c = canvas.Canvas(output_path, pagesize=letter)
@@ -1986,7 +1995,7 @@ def excel_to_pdf():
 
         delete_file_later(output_path)
 
-        return send_file(output_path, as_attachment=True)
+        return send_file(output_path, as_attachment=True, download_name=f"{stem}.pdf")
 
     return render_template("excel_to_pdf.html")
 
@@ -2011,14 +2020,13 @@ def pdf_to_text():
         if file.filename == "":
             return "No file selected"
 
-        filename = secure_filename(file.filename)
+        if not file.filename.lower().endswith(".pdf"):
+            return "Please upload a PDF file.", 400
 
-        input_path = os.path.join(UPLOAD_FOLDER, filename)
+        input_path, _ = save_upload(file)
+        stem = upload_stem(file)
 
-        file.save(input_path)
-        delete_file_later(input_path)
-
-        output_filename = filename.replace(".pdf", ".txt")
+        output_filename = f"{uuid.uuid4()}_{stem}.txt"
         output_path = os.path.join(UPLOAD_FOLDER, output_filename)
 
         text_content = ""
@@ -2034,7 +2042,7 @@ def pdf_to_text():
 
         delete_file_later(output_path)
 
-        return send_file(output_path, as_attachment=True)
+        return send_file(output_path, as_attachment=True, download_name=f"{stem}.txt")
 
     return render_template("pdf_to_text.html")
 
