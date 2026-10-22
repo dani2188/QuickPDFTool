@@ -228,7 +228,7 @@ def measure_compress():
                 if not os.path.exists(out):
                     raise SystemExit(f"compress {level} {name} produced no output (is Ghostscript installed?)")
                 size = os.path.getsize(out)
-                cells.append(f"{human(size)} ({pct(size, original)})")
+                cells.append(f"{human(size)}<br>({pct(size, original)})")
             rows.append((link(name, label), human(original), *cells))
     return rows
 

@@ -421,7 +421,7 @@ out of scope — this fix only recognizes QuickTools' own watermark format.
 
 **Proposed improvement:** N/A — already implemented.
 
-**Notes:** Fixed on branch `fix/security-and-adsense-2026-10` (A4): `resolve_upload()` accepts only a plain filename that exists inside `uploads/`; anything else returns a 400 "File missing or expired" page. Verified with `../app.py` and `..\\app.py` on all three routes.
+**Notes:** Fixed on branch `fix/security-and-adsense-2026-10` (A4): `resolve_upload()` accepts only a plain filename that exists inside `uploads/`; anything else returns a 400 "File missing or expired" page. Verified with `../app.py` and `..\app.py` on all three routes.
 
 ---
 
