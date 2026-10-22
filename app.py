@@ -1,6 +1,8 @@
 import fitz
 from PIL import Image, ImageFilter, ImageOps
 from PyPDF2 import PdfMerger, PdfReader, PdfWriter
+from PyPDF2.errors import PdfReadError
+from pdfminer.pdfparser import PDFSyntaxError
 
 from flask import Flask, request, render_template, send_file, jsonify
 import subprocess
@@ -78,6 +80,11 @@ def resolve_upload(name):
     if not path.startswith(root + os.sep) or not os.path.isfile(path):
         return None
     return path
+
+
+def error_page(message, status=400):
+    """Styled error response, instead of a bare string on a blank page."""
+    return render_template("error.html", message=message, status=status), status
 
 
 # -----------------------------
@@ -365,12 +372,12 @@ def compress_pdf_page():
     if request.method == "POST":
 
         if "pdf" not in request.files:
-            return "No file uploaded", 400
+            return error_page("No file uploaded")
 
         file = request.files["pdf"]
 
         if file.filename == "":
-            return "No file selected", 400
+            return error_page("No file selected. Please choose a file and try again.")
 
         # 🔐 SAFE NAME
         filename = secure_filename(file.filename)
@@ -424,7 +431,7 @@ def download(filename):
     compressed_path = os.path.join(UPLOAD_FOLDER, filename)
 
     if not os.path.exists(compressed_path):
-        return "File not ready", 404
+        return error_page("File not ready", 404)
 
     original_name = filename.replace("_compressed_", "_")
     original_path = os.path.join(UPLOAD_FOLDER, original_name)
@@ -479,7 +486,7 @@ def download_file(filename):
     path = os.path.join(UPLOAD_FOLDER, safe_filename)
 
     if not os.path.exists(path):
-        return "File not found", 404
+        return error_page("File not found", 404)
 
     response = send_file(path, as_attachment=True)
     response.headers["X-Robots-Tag"] = "noindex"
@@ -548,6 +555,18 @@ def not_found(e):
 def server_error(e):
     return render_template("500.html"), 500
 
+@app.errorhandler(400)
+def bad_request(e):
+    return error_page("Something was missing from that request. Please choose your file and try again.")
+
+# Corrupt / non-PDF uploads raise from the PDF libraries deep inside a route.
+@app.errorhandler(fitz.FileDataError)
+@app.errorhandler(fitz.EmptyFileError)
+@app.errorhandler(PdfReadError)
+@app.errorhandler(PDFSyntaxError)
+def invalid_pdf(e):
+    return error_page("That file doesn't look like a valid PDF. It may be damaged — please try a different file.")
+
 
 @app.route("/split-pdf", methods=["GET", "POST"])
 def split_pdf():
@@ -557,7 +576,7 @@ def split_pdf():
         file = request.files["pdf"]
 
         if not file or file.filename == "":
-            return "No file selected", 400
+            return error_page("No file selected. Please choose a file and try again.")
 
         filename = f"{uuid.uuid4()}_{secure_filename(file.filename)}"
         input_path = os.path.join(UPLOAD_FOLDER, filename)
@@ -635,7 +654,7 @@ def pdf_to_png():
         file = request.files.get("pdf")
 
         if not file or file.filename == "":
-            return "No file selected"
+            return error_page("No file selected. Please choose a file and try again.")
 
         input_path, _ = save_upload(file)
 
@@ -697,7 +716,7 @@ def rotate_pdf():
         rotation = int(request.form.get("rotation", 0)) % 360
 
         if not file or file.filename == "":
-            return "No file selected"
+            return error_page("No file selected. Please choose a file and try again.")
 
         filename = f"{uuid.uuid4()}_{secure_filename(file.filename)}"
         input_path = os.path.join(UPLOAD_FOLDER, filename)
@@ -733,10 +752,10 @@ def delete_pdf_pages():
         pages_to_delete = request.form.get("pages", "").strip()
 
         if file.filename == "":
-            return "No file selected"
+            return error_page("No file selected. Please choose a file and try again.")
 
         if not pages_to_delete:
-            return "Please enter page numbers to delete (e.g. 2,5,7)", 400
+            return error_page("Please enter page numbers to delete (e.g. 2,5,7)")
 
         filename = f"{uuid.uuid4()}_{secure_filename(file.filename)}"
         input_path = os.path.join(UPLOAD_FOLDER, filename)
@@ -750,7 +769,7 @@ def delete_pdf_pages():
         try:
             delete_pages = [int(p.strip()) - 1 for p in pages_to_delete.split(",") if p.strip()]
         except ValueError:
-            return "Invalid page numbers. Use format: 2,5,7", 400
+            return error_page("Invalid page numbers. Use format: 2,5,7")
 
         for i, page in enumerate(reader.pages):
 
@@ -777,10 +796,10 @@ def pdf_to_word():
         file = request.files["pdf"]
 
         if file.filename == "":
-            return "No file selected"
+            return error_page("No file selected. Please choose a file and try again.")
 
         if not file.filename.lower().endswith(".pdf"):
-            return "Please upload a PDF file.", 400
+            return error_page("Please upload a PDF file.")
 
         input_path, _ = save_upload(file)
         stem = upload_stem(file)
@@ -806,10 +825,10 @@ def word_to_pdf():
         file = request.files["docx"]
 
         if file.filename == "":
-            return "No file selected"
+            return error_page("No file selected. Please choose a file and try again.")
 
         if not file.filename.lower().endswith(WORD_EXTENSIONS):
-            return "Please upload a Word document (.doc, .docx or .odt).", 400
+            return error_page("Please upload a Word document (.doc, .docx or .odt).")
 
         input_path, input_name = save_upload(file)
         stem = upload_stem(file)
@@ -832,10 +851,10 @@ def word_to_pdf():
                 UPLOAD_FOLDER
             ])
         except OSError:
-            return "Word conversion is temporarily unavailable. Please try again later.", 503
+            return error_page("Word conversion is temporarily unavailable. Please try again later.", 503)
 
         if result.returncode != 0 or not os.path.exists(output_path):
-            return "Conversion failed. Make sure your file is a valid Word document.", 400
+            return error_page("Conversion failed. Make sure your file is a valid Word document.")
 
         return send_file(output_path, as_attachment=True, download_name=f"{stem}.pdf")
 
@@ -850,7 +869,7 @@ def protect_pdf():
         password = request.form.get("password")
 
         if file.filename == "":
-            return "No file selected"
+            return error_page("No file selected. Please choose a file and try again.")
 
         input_path, _ = save_upload(file)
         stem = upload_stem(file)
@@ -883,7 +902,7 @@ def unlock_pdf():
         password = request.form.get("password")
 
         if file.filename == "":
-            return "No file selected"
+            return error_page("No file selected. Please choose a file and try again.")
 
         input_path, _ = save_upload(file)
         stem = upload_stem(file)
@@ -919,7 +938,7 @@ def add_page_numbers():
         file = request.files["pdf"]
 
         if file.filename == "":
-            return "No file selected"
+            return error_page("No file selected. Please choose a file and try again.")
 
         input_path, _ = save_upload(file)
         stem = upload_stem(file)
@@ -1168,7 +1187,7 @@ def compress_jpg():
             compressed_paths.append(output_path)
 
         if not results:
-            return "No valid JPG files were uploaded.", 400
+            return error_page("No valid JPG files were uploaded.")
 
         zip_filename = f"{uuid.uuid4()}_compressed_jpgs.zip"
         zip_path = os.path.join(UPLOAD_FOLDER, zip_filename)
@@ -1237,7 +1256,7 @@ def resize_image():
         file = request.files.get("image")
 
         if not file or not file.filename:
-            return "No file selected", 400
+            return error_page("No file selected. Please choose a file and try again.")
 
         try:
             width = max(1, min(int(request.form.get("width", 1080)), 4000))
@@ -1261,7 +1280,7 @@ def resize_image():
             img = Image.open(input_path)
             img.load()
         except Exception:
-            return "Could not read that image file.", 400
+            return error_page("Could not read that image file.")
 
         result = _letterbox_resize(img, width, height)
 
@@ -1293,11 +1312,11 @@ def remove_background():
         file = request.files.get("image")
 
         if not file or not file.filename:
-            return "No file selected", 400
+            return error_page("No file selected. Please choose a file and try again.")
 
         api_key = os.environ.get("REMOVE_BG_API_KEY")
         if not api_key:
-            return (
+            return error_page(
                 "Background removal isn't configured on this server yet "
                 "(missing REMOVE_BG_API_KEY).",
                 503,
@@ -1318,10 +1337,10 @@ def remove_background():
                     timeout=60,
                 )
         except requests.RequestException:
-            return "Could not reach the background removal service. Please try again.", 502
+            return error_page("Could not reach the background removal service. Please try again.", 502)
 
         if response.status_code != 200:
-            return "Could not remove the background from that image. Please try a different file.", 400
+            return error_page("Could not remove the background from that image. Please try a different file.")
 
         output_name = f"{uuid.uuid4()}_no_bg.png"
         output_path = os.path.join(UPLOAD_FOLDER, output_name)
@@ -1392,7 +1411,7 @@ def add_watermark():
         watermark_text = request.form.get("text")
 
         if file.filename == "":
-            return "No file selected"
+            return error_page("No file selected. Please choose a file and try again.")
 
         input_path, _ = save_upload(file)
         stem = upload_stem(file)
@@ -1465,7 +1484,7 @@ def remove_watermark():
         file = request.files["pdf"]
 
         if file.filename == "":
-            return "No file selected"
+            return error_page("No file selected. Please choose a file and try again.")
 
         filename = f"{uuid.uuid4()}_{secure_filename(file.filename)}"
         input_path = os.path.join(UPLOAD_FOLDER, filename)
@@ -1510,7 +1529,7 @@ def extract_images():
         file = request.files["pdf"]
 
         if file.filename == "":
-            return "No file selected"
+            return error_page("No file selected. Please choose a file and try again.")
 
         input_path, _ = save_upload(file)
 
@@ -1576,7 +1595,7 @@ def pdf_to_jpg():
         file = request.files.get("pdf")
 
         if not file or file.filename == "":
-            return "No file selected"
+            return error_page("No file selected. Please choose a file and try again.")
 
         input_path, _ = save_upload(file)
 
@@ -1894,7 +1913,7 @@ def svg_to_pdf():
 
         if len(output_doc) == 0:
             output_doc.close()
-            return "No valid SVG files were uploaded.", 400
+            return error_page("No valid SVG files were uploaded.")
 
         output_filename = f"{uuid.uuid4()}_converted.pdf"
         output_path = os.path.join(UPLOAD_FOLDER, output_filename)
@@ -1947,10 +1966,10 @@ def pdf_to_excel():
         file = request.files["pdf"]
 
         if file.filename == "":
-            return "No file selected"
+            return error_page("No file selected. Please choose a file and try again.")
 
         if not file.filename.lower().endswith(".pdf"):
-            return "Please upload a PDF file.", 400
+            return error_page("Please upload a PDF file.")
 
         input_path, _ = save_upload(file)
         stem = upload_stem(file)
@@ -1971,7 +1990,7 @@ def pdf_to_excel():
             final_df = pd.concat(tables)
             final_df.to_excel(output_path, index=False)
         else:
-            return "No table found in PDF"
+            return error_page("We couldn't find a table in this PDF. PDF to Excel needs tables with selectable text — scanned pages won't work.")
 
         delete_file_later(output_path)
 
@@ -1991,10 +2010,10 @@ def excel_to_pdf():
         file = request.files["excel"]
 
         if file.filename == "":
-            return "No file selected"
+            return error_page("No file selected. Please choose a file and try again.")
 
         if not file.filename.lower().endswith(EXCEL_EXTENSIONS):
-            return "Please upload an Excel file (.xlsx).", 400
+            return error_page("Please upload an Excel file (.xlsx).")
 
         input_path, _ = save_upload(file)
         stem = upload_stem(file)
@@ -2002,7 +2021,7 @@ def excel_to_pdf():
         try:
             df = pd.read_excel(input_path)
         except Exception:
-            return "Could not read that spreadsheet. Please save it as .xlsx and try again.", 400
+            return error_page("Could not read that spreadsheet. Please save it as .xlsx and try again.")
 
         output_filename = f"{uuid.uuid4()}_{stem}.pdf"
         output_path = os.path.join(UPLOAD_FOLDER, output_filename)
@@ -2050,10 +2069,10 @@ def pdf_to_text():
         file = request.files["pdf"]
 
         if file.filename == "":
-            return "No file selected"
+            return error_page("No file selected. Please choose a file and try again.")
 
         if not file.filename.lower().endswith(".pdf"):
-            return "Please upload a PDF file.", 400
+            return error_page("Please upload a PDF file.")
 
         input_path, _ = save_upload(file)
         stem = upload_stem(file)
@@ -2093,7 +2112,7 @@ def pdf_to_webp():
         file = request.files.get("pdf")
 
         if not file or file.filename == "":
-            return "No file selected"
+            return error_page("No file selected. Please choose a file and try again.")
 
         input_path, _ = save_upload(file)
 
@@ -2153,7 +2172,7 @@ def crop_pdf():
         file = request.files["pdf"]
 
         if file.filename == "":
-            return "No file selected"
+            return error_page("No file selected. Please choose a file and try again.")
 
         filename = f"{uuid.uuid4()}_{secure_filename(file.filename)}"
         input_path = os.path.join(UPLOAD_FOLDER, filename)
@@ -2263,7 +2282,7 @@ def sign_pdf():
 
             # 🔒 SECURITY CHECK
             if not pdf_path or not sig_path:
-                return "File missing or expired. Please upload again.", 400
+                return error_page("File missing or expired. Please upload again.")
 
             # 📍 POSITION FROM FRONTEND
             x = float(request.form.get("x", 0))
@@ -2359,7 +2378,7 @@ def add_text_to_pdf():
             pdf_path = resolve_upload(existing_file)
 
             if not pdf_path:
-                return "File missing or expired. Please upload again.", 400
+                return error_page("File missing or expired. Please upload again.")
 
             x = float(request.form.get("x", 0))
             y = float(request.form.get("y", 0))
@@ -2445,7 +2464,7 @@ def redact_pdf():
             pdf_path = resolve_upload(existing_file)
 
             if not pdf_path:
-                return "File missing or expired. Please upload again.", 400
+                return error_page("File missing or expired. Please upload again.")
 
             action = request.form.get("action", "apply")
             areas_json = request.form.get("areas", "[]")

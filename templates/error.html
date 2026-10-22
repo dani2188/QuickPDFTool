@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}Something Went Wrong – QuickTools{% endblock %}
+{% block description %}We couldn't process that request. Please check your file and try again.{% endblock %}
+
+{% block content %}
+
+<h1>{% if status >= 500 %}Temporarily Unavailable{% else %}We Couldn't Process That{% endif %}</h1>
+<p class="subtitle">{{ message }}</p>
+
+<a href="javascript:history.back()" class="main-btn">Go back and try again</a>
+
+<div class="more-tools" style="margin-top: 40px;">
+  <h3>Try Another Tool</h3>
+  <div class="tools-mini-grid">
+    <a href="/compress-pdf">Compress PDF</a>
+    <a href="/merge-pdf">Merge PDF</a>
+    <a href="/split-pdf">Split PDF</a>
+    <a href="/pdf-to-jpg">PDF to JPG</a>
+    <a href="/pdf-to-word">PDF to Word</a>
+  </div>
+</div>
+
+{% endblock %}
