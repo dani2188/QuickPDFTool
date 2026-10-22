@@ -406,6 +406,7 @@ def compress_pdf_page():
 @app.route("/download/<filename>")
 def download(filename):
 
+    filename = secure_filename(filename)
     compressed_path = os.path.join(UPLOAD_FOLDER, filename)
 
     if not os.path.exists(compressed_path):
@@ -474,6 +475,7 @@ def download_file(filename):
 @app.route("/status/<filename>")
 def status(filename):
 
+    filename = secure_filename(filename)
     path = os.path.join(UPLOAD_FOLDER, filename)
 
     if os.path.exists(path):
