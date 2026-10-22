@@ -45,6 +45,30 @@ def delete_file_later(file_path, delay=300):
     threading.Thread(target=delete, daemon=True).start()
 
 
+def save_upload(file_storage, delay=300):
+    """Save an upload under a UUID-prefixed safe name. Returns (path, name)."""
+    safe = secure_filename(file_storage.filename) or "file"
+    name = f"{uuid.uuid4()}_{safe}"
+    path = os.path.join(UPLOAD_FOLDER, name)
+    file_storage.save(path)
+    delete_file_later(path, delay=delay)
+    return path, name
+
+
+def resolve_upload(name):
+    """Map a client-supplied upload name to a path inside UPLOAD_FOLDER, or None."""
+    if not name:
+        return None
+    safe = secure_filename(name)
+    if not safe or safe != name:
+        return None
+    path = os.path.realpath(os.path.join(UPLOAD_FOLDER, safe))
+    root = os.path.realpath(UPLOAD_FOLDER)
+    if not path.startswith(root + os.sep) or not os.path.isfile(path):
+        return None
+    return path
+
+
 # -----------------------------
 # REDACT PDF HELPERS
 # -----------------------------
