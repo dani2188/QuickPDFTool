@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% set breadcrumb_label = "How to Fill Out a PDF That Has No Fillable Form Fields" %}
 
 {% block title %}How to Fill Out a PDF That Has No Fillable Form Fields{% endblock %}
 
@@ -7,13 +8,6 @@ Why some PDFs let you click a box and type while others don't respond at all —
 {% endblock %}
 
 {% block content %}
-
-{% from "components/breadcrumb.html" import breadcrumb %}
-{{ breadcrumb([
-  {"label": "Home", "url": "/"},
-  {"label": "Guides", "url": "/blog"},
-  {"label": "How to Fill Out a PDF That Has No Fillable Form Fields", "url": "/blog/fill-pdf-with-no-form-fields"}
-]) }}
 
 <article class="guide-article">
 
@@ -291,7 +285,6 @@ original content, and their added text all came through correctly in order.
 {% block jsonld %}
 {{ super() }}
 {% from "components/jsonld.html" import article, faqpage %}
-{% from "components/breadcrumb.html" import breadcrumb_jsonld %}
 {{ article(self.title(), self.description(), request.path, "2026-09-20") }}
 {{ faqpage([
   {"q": "Why can I type into some PDFs but not others?", "a": "Because they're built differently. A fillable PDF contains real interactive form fields that a PDF viewer renders as clickable boxes. A flat PDF, including most scanned or printed-to-PDF documents, has no such fields; any labels or lines you see are just fixed page content, so there's nothing for a viewer to let you click into."},
@@ -300,10 +293,5 @@ original content, and their added text all came through correctly in order.
   {"q": "Can I add text to a scanned PDF, and does that perform OCR?", "a": "Yes, you can add text to a scanned PDF, and we confirmed the added text is real and selectable. But this isn't OCR, QuickTools doesn't read or recognize the text already present in the scanned image. Adding text only places new content you type yourself; the original scan remains an image with no text data of its own."},
   {"q": "Will the text I add be selectable and searchable?", "a": "Yes. We confirmed this directly, including on a scanned page, the newly added text is real PDF text and can be selected and searched, even though the underlying scanned image around it isn't."},
   {"q": "How do I add text to more than one page?", "a": "Add Text to PDF only places text on the first page of whatever you upload. For a multi-page document, split the PDF into individual pages first, add text to each page separately, then merge the edited pages back together in order. We tested this exact sequence on a three-page document and confirmed all pages, their original content, and their added text all came through correctly in order."}
-]) }}
-{{ breadcrumb_jsonld([
-  {"label": "Home", "url": "/"},
-  {"label": "Guides", "url": "/blog"},
-  {"label": "How to Fill Out a PDF That Has No Fillable Form Fields", "url": "/blog/fill-pdf-with-no-form-fields"}
 ]) }}
 {% endblock %}

@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% set breadcrumb_label = "Resizing vs. Compressing an Image: What's the Difference?" %}
 
 {% block title %}Resizing vs. Compressing an Image: What's the Difference?{% endblock %}
 
@@ -7,13 +8,6 @@ Resizing and compressing an image solve different problems — one changes pixel
 {% endblock %}
 
 {% block content %}
-
-{% from "components/breadcrumb.html" import breadcrumb %}
-{{ breadcrumb([
-  {"label": "Home", "url": "/"},
-  {"label": "Guides", "url": "/blog"},
-  {"label": "Resizing vs. Compressing an Image: What's the Difference?", "url": "/blog/resizing-vs-compressing-an-image"}
-]) }}
 
 <article class="guide-article">
 
@@ -340,7 +334,6 @@ to JPG first (Resize Image can do this as part of resizing) or reduce its pixel 
 {% block jsonld %}
 {{ super() }}
 {% from "components/jsonld.html" import article, faqpage %}
-{% from "components/breadcrumb.html" import breadcrumb_jsonld %}
 {{ article(self.title(), self.description(), request.path, "2026-09-17") }}
 {{ faqpage([
   {"q": "Is resizing an image the same as compressing it?", "a": "No. Resizing changes the pixel dimensions of an image. Compression changes how efficiently the existing pixels are stored, without changing dimensions at all. A resized image is usually also smaller in file size, but that is a side effect of having fewer pixels, not the same operation as compression."},
@@ -350,10 +343,5 @@ to JPG first (Resize Image can do this as part of resizing) or reduce its pixel 
   {"q": "Which should I use for a social media post or profile picture?", "a": "Resizing, since those destinations specify exact pixel dimensions. QuickTools' Resize Image tool can apply a JPG quality setting at the same time, so a single step covers both the dimension requirement and the file size."},
   {"q": "Why did compressing my already-small photo barely help?", "a": "An image that has already been compressed once has less redundant detail left to remove. In one tested example, a fresh high-quality photo shrank by over 90 percent at the strongest compression level, while an already-compressed photo of similar content shrank by less than 80 percent at the same setting, and barely changed at all on the lightest setting."},
   {"q": "Can I compress a PNG file on QuickTools?", "a": "Not directly. The Compress JPG tool only accepts JPG/JPEG files. To shrink a PNG's file size, convert it to JPG first (Resize Image can do this as part of resizing) or reduce its pixel dimensions instead."}
-]) }}
-{{ breadcrumb_jsonld([
-  {"label": "Home", "url": "/"},
-  {"label": "Guides", "url": "/blog"},
-  {"label": "Resizing vs. Compressing an Image: What's the Difference?", "url": "/blog/resizing-vs-compressing-an-image"}
 ]) }}
 {% endblock %}

@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% set breadcrumb_label = "What Kind of Encryption Does Protect PDF Actually Use?" %}
 
 {% block title %}What Kind of Encryption Does Protect PDF Actually Use?{% endblock %}
 
@@ -7,13 +8,6 @@ We inspected QuickTools' Protect PDF tool directly — the code, the installed l
 {% endblock %}
 
 {% block content %}
-
-{% from "components/breadcrumb.html" import breadcrumb %}
-{{ breadcrumb([
-  {"label": "Home", "url": "/"},
-  {"label": "Guides", "url": "/blog"},
-  {"label": "What Kind of Encryption Does Protect PDF Actually Use?", "url": "/blog/what-encryption-does-protect-pdf-use"}
-]) }}
 
 <article class="guide-article">
 
@@ -283,7 +277,6 @@ safe before you close the tab.
 {% block jsonld %}
 {{ super() }}
 {% from "components/jsonld.html" import article, faqpage %}
-{% from "components/breadcrumb.html" import breadcrumb_jsonld %}
 {{ article(self.title(), self.description(), request.path, "2026-09-19") }}
 {{ faqpage([
   {"q": "What encryption does QuickTools Protect PDF use?", "a": "The PDF Standard Security Handler, revision 3, with RC4 encryption and a 128-bit key. We confirmed this directly from the /Encrypt dictionary of an actual protected file (/V 2, /R 3, /Length 128), and from the installed PyPDF2 library's own source code."},
@@ -292,10 +285,5 @@ safe before you close the tab.
   {"q": "Does Protect PDF restrict printing or copying?", "a": "No. The permission flags in the generated file are set to PyPDF2's fully permissive default, meaning every restrictable action (printing, copying, editing, and others) is left enabled once the password is entered. The tool only controls whether the file can be opened at all."},
   {"q": "What happens if I enter the wrong password?", "a": "Decryption correctly fails and the file's contents stay inaccessible. On the Unlock PDF tool specifically, a wrong password currently results in a generic server error rather than a clear message, though the underlying password check itself is working as intended."},
   {"q": "What happens if I forget my PDF password?", "a": "There is no way to recover the file's contents without it. That's an inherent property of password-based PDF encryption, not something specific to how QuickTools implements it. Keep the password somewhere safe before you close the tab."}
-]) }}
-{{ breadcrumb_jsonld([
-  {"label": "Home", "url": "/"},
-  {"label": "Guides", "url": "/blog"},
-  {"label": "What Kind of Encryption Does Protect PDF Actually Use?", "url": "/blog/what-encryption-does-protect-pdf-use"}
 ]) }}
 {% endblock %}

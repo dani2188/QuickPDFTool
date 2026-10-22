@@ -1,4 +1,5 @@
-{% extends "base.html" %} {% block title %}Rotate PDF Pages Online – Fix Page Orientation{% endblock %} {% block description %}Rotate all pages of a PDF by 90, 180, or 270 degrees. Free, no signup.{% endblock %} {% block content %}
+{% extends "base.html" %}
+{% set breadcrumb_label = "Rotate PDF Pages" %} {% block title %}Rotate PDF Pages Online – Fix Page Orientation{% endblock %} {% block description %}Rotate all pages of a PDF by 90, 180, or 270 degrees. Free, no signup.{% endblock %} {% block content %}
 
 <h1>Rotate PDF Pages</h1>
 <p class="subtitle">Rotate PDF pages easily.</p>
@@ -85,4 +86,10 @@
 
 {% endblock %}
 
-{% block jsonld %}{% from "components/jsonld.html" import webapp %}{{ webapp(self.title(), self.description(), request.path) }}{% endblock %}
+{% block jsonld %}{% from "components/jsonld.html" import webapp, faqpage %}{{ webapp(self.title(), self.description(), request.path) }}{{ faqpage([
+  {"q": "Will rotating a PDF affect the text or images?", "a": "No. Rotation only changes the viewing orientation of the pages. All content — text, images, and layout — remains completely intact."},
+  {"q": "Can I rotate only specific pages?", "a": "This tool rotates all pages by the selected angle. If you need to rotate individual pages, split the document first using the Split PDF tool, rotate each page separately, then merge them back together."},
+  {"q": "What angles are available?", "a": "You can rotate by 90° (quarter turn clockwise), 180° (upside down), or 270° (quarter turn counter-clockwise, equivalent to 90° anti-clockwise)."},
+  {"q": "Is the rotation permanent?", "a": "Yes. The rotation is saved into the PDF file itself, so it will display correctly in any PDF viewer without needing to be manually adjusted."},
+  {"q": "Are my files kept private?", "a": "Yes. Your uploaded file is processed securely and automatically deleted from our server within a few minutes."}
+]) }}{% endblock %}

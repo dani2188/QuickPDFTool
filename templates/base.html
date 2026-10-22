@@ -1,3 +1,5 @@
+{%- from "components/breadcrumb.html" import breadcrumb, breadcrumb_jsonld -%}
+{%- set breadcrumbs = breadcrumb_trail(breadcrumb_label) if breadcrumb_label is defined else none -%}
 <!doctype html>
 <html lang="en">
   <head>
@@ -62,6 +64,8 @@
       }
     </script>
     {% endblock %}
+
+    {% if breadcrumbs %}{{ breadcrumb_jsonld(breadcrumbs) }}{% endif %}
   </head>
 
   <body>
@@ -108,7 +112,10 @@
       <a href="/about">About</a>
     </nav>
 
-    <main class="main-container" id="main">{% block content %}{% endblock %}</main>
+    <main class="main-container" id="main">
+      {% if breadcrumbs %}{{ breadcrumb(breadcrumbs) }}{% endif %}
+      {% block content %}{% endblock %}
+    </main>
 
     <footer class="footer">
       <div class="footer-grid">

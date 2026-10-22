@@ -75,7 +75,7 @@ message.
 
 - **Area:** SEO / Technical
 - **Priority:** P2
-- **Status:** Open
+- **Status:** Done
 - **Discovered:** Article #2/#3/#4 editorial QA (2026-09-11 through 2026-09-16)
 - **Source:** Automated FAQ visible-content vs. JSON-LD comparison
 
@@ -98,6 +98,8 @@ completed article milestones. A short script that extracts visible
 `<h3>`/`<p>` FAQ pairs and diffs them against the rendered `FAQPage`
 JSON-LD (the same method used ad hoc during Article #3/#4 QA) would cover
 the whole site in one pass.
+
+**Resolved (2026-10-22):** `scripts/faq_schema_audit.py` renders every GET page through Flask and diffs visible FAQ pairs against the `FAQPage` JSON-LD; it reports 0 mismatches across all 80 pages that have an FAQ.
 
 ---
 
@@ -126,7 +128,7 @@ Retained here only for historical traceability; not open work.
 
 - **Area:** SEO
 - **Priority:** P2
-- **Status:** Open
+- **Status:** Done
 - **Discovered:** Backlog creation pass (2026-09-17)
 - **Source:** `grep -rl "components/breadcrumb" templates/` (4 matches out of 96 page templates); `docs/SEO_GUIDELINES.md` §1 ("BreadcrumbList **to add**"); `docs/COMPONENT_LIBRARY.md` Breadcrumb entry ("Status: not yet implemented")
 
@@ -147,6 +149,8 @@ describing it as entirely unimplemented.
 **Notes:** The component itself needs no new work — this is purely about
 applying it more broadly (or explicitly deciding not to) and correcting
 two now-stale doc statements.
+
+**Resolved (2026-10-22, branch `fix/security-and-adsense-2026-10`):** rolled out sitewide. `base.html` now renders the visible trail and `BreadcrumbList` JSON-LD for any page that sets `breadcrumb_label` (85 tool, guide, blog and hub pages); `breadcrumb_trail()` in `app.py` derives the parent section from the URL. The 11 hand-written breadcrumb calls were migrated so no page emits two trails. `SEO_GUIDELINES.md` and `COMPONENT_LIBRARY.md` updated.
 
 ---
 
@@ -178,7 +182,7 @@ required.
 
 - **Area:** SEO
 - **Priority:** P2
-- **Status:** Open
+- **Status:** Done
 - **Discovered:** `docs/EDITORIAL_AUDIT.md` §3 (2026-09-09), confirmed still true 2026-09-17
 - **Source:** `grep -l "faqpage(" templates/*_guide.html` (4 of 29 matches)
 
@@ -197,6 +201,8 @@ JSON-LD match exactly from the start (see QT-002 for why that matters).
 **Notes:** Mechanical, low-risk, high-volume task — the FAQ content
 already exists on every page; this is only about also emitting it as
 structured data.
+
+**Resolved (2026-10-22):** every guide now emits `FAQPage`; the last gap found by `scripts/faq_schema_audit.py` was the `/rotate-pdf` tool page, fixed on the same branch. The audit reports 0 pages with a visible FAQ and no schema.
 
 ---
 

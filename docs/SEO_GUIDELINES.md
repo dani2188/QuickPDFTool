@@ -19,7 +19,7 @@ Every indexable page must have:
 | Twitter Card | `twitter:card=summary`, `twitter:title`, `twitter:description` | ✅ in `base.html` |
 | One `<h1>` | exactly one per page | ✅ |
 | Structured headings | `h1 → h2 → h3`, no skips | ✅ |
-| JSON-LD | `WebApplication` / `HowTo` / `FAQPage` / `BreadcrumbList` | ✅ `WebSite` (site-wide default) · `WebApplication` (26 tool pages) · `HowTo` (24 guides) via `components/jsonld.html` macros. `FAQPage` macro available; `BreadcrumbList` **to add** |
+| JSON-LD | `WebApplication` / `HowTo` / `FAQPage` / `BlogPosting` / `BreadcrumbList` | ✅ `WebSite` (site-wide default) · `WebApplication` (tool pages) · `HowTo` (guides) · `FAQPage` (every page with a visible FAQ — checked by `scripts/faq_schema_audit.py`) · `BlogPosting` (blog articles) via `components/jsonld.html` macros · `BreadcrumbList` (every tool, guide, blog and hub page, emitted by `base.html`) |
 
 > **Keyword rule:** when adding the brand suffix, keep the keywords first — `Compress PDF – QuickTools`, never `QuickTools – Home`.
 
@@ -58,8 +58,8 @@ Implemented via reusable macros in [`templates/components/jsonld.html`](../templ
    ["Open the tool", "Upload your PDF", "Download the result"]) }}{% endblock %}
 ```
 
-**FAQ blocks → `FAQPage`** via `faqpage([{ "q": …, "a": … }])` (macro ready; not yet applied).
-**All pages → `BreadcrumbList`** once breadcrumbs ship.
+**FAQ blocks → `FAQPage`** via `faqpage([{ "q": …, "a": … }])` — required on every page with a visible FAQ, with question/answer text matching the visible FAQ character for character. Run `scripts/faq_schema_audit.py` after editing an FAQ.
+**Breadcrumbs → `BreadcrumbList`** are rendered centrally by `base.html`: a page opts in with `{% set breadcrumb_label = "Compress PDF" %}` right after `{% extends "base.html" %}`, and `breadcrumb_trail()` in `app.py` derives the parent (Guides for `/how-to-*` and `/blog/*`, Image Tools for image tools, PDF Tools otherwise). Never call the `breadcrumb` macros by hand in a page — that would emit a second trail.
 
 ---
 

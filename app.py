@@ -102,6 +102,31 @@ def open_upload_images(files):
     return images, None
 
 
+IMAGE_TOOL_PATHS = {"/resize-image", "/compress-jpg", "/remove-background"}
+
+
+@app.context_processor
+def breadcrumb_context():
+    """Expose breadcrumb_trail(label) to templates: Home > section > page.
+
+    A page opts in with {% set breadcrumb_label = "..." %}; base.html renders
+    the visible trail and the matching BreadcrumbList JSON-LD.
+    """
+    def breadcrumb_trail(label):
+        path = request.path
+        trail = [{"label": "Home", "url": "/"}]
+        if path.startswith(("/how-to-", "/blog/")):
+            trail.append({"label": "Guides", "url": "/blog"})
+        elif path in IMAGE_TOOL_PATHS:
+            trail.append({"label": "Image Tools", "url": "/image-tools"})
+        elif path not in ("/pdf-tools", "/image-tools", "/blog"):
+            trail.append({"label": "PDF Tools", "url": "/pdf-tools"})
+        trail.append({"label": label, "url": path})
+        return trail
+
+    return {"breadcrumb_trail": breadcrumb_trail}
+
+
 def error_page(message, status=400):
     """Styled error response, instead of a bare string on a blank page."""
     return render_template("error.html", message=message, status=status), status

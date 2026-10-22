@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% set breadcrumb_label = "Why Arrows Disappear When You Convert an SVG Diagram to PDF" %}
 
 {% block title %}Why Arrows Disappear When You Convert an SVG Diagram to PDF{% endblock %}
 
@@ -7,13 +8,6 @@ Why SVG arrowheads can disappear or move during PDF conversion, how QuickTools h
 {% endblock %}
 
 {% block content %}
-
-{% from "components/breadcrumb.html" import breadcrumb %}
-{{ breadcrumb([
-  {"label": "Home", "url": "/"},
-  {"label": "Guides", "url": "/blog"},
-  {"label": "Why Arrows Disappear When You Convert an SVG Diagram to PDF", "url": "/blog/svg-to-pdf-arrows-markers-disappear"}
-]) }}
 
 <article class="guide-article">
 
@@ -245,7 +239,6 @@ misplaced arrowhead is a localized symptom, not an indicator that the whole file
 {% block jsonld %}
 {{ super() }}
 {% from "components/jsonld.html" import article, faqpage %}
-{% from "components/breadcrumb.html" import breadcrumb_jsonld %}
 {{ article(self.title(), self.description(), request.path, "2026-09-20") }}
 {{ faqpage([
   {"q": "Why did my arrowhead disappear when I converted my SVG to PDF?", "a": "It was most likely defined as an SVG marker rather than as an ordinary shape. A marker is reusable artwork referenced by name from a line or path, and resolving that reference into visible geometry is a separate step from rendering the line itself. We confirmed directly that, before any special handling, a marker-based arrowhead didn't appear in the converted output even though the line it was attached to did."},
@@ -253,10 +246,5 @@ misplaced arrowhead is a localized symptom, not an indicator that the whole file
   {"q": "Why is my arrowhead in the wrong place after conversion?", "a": "This points to a different, more specific limitation than a missing arrow: if the line or a parent group has its own transform (a translate, rotate, or scale), the generated arrowhead can be positioned using the line's untransformed coordinates rather than its final, transformed position, so the two no longer line up."},
   {"q": "Are curved SVG arrows supported?", "a": "We can't make a general claim either way. In our testing, one specific curved-path case happened to produce a correctly positioned and rotated arrowhead, but that result came from a coincidence in how the underlying calculation works for that particular kind of curve, not from deliberate curve support, so it shouldn't be read as \"curved arrows work.\" Straight lines, polylines, and simple absolute paths are what this preprocessing is verified to handle reliably."},
   {"q": "Does this problem affect the rest of my SVG diagram?", "a": "Not based on what we tested. In every case we tried, the rest of the diagram, other shapes, text, and lines without a problematic marker, converted normally alongside an arrow that had an issue. A missing or misplaced arrowhead is a localized symptom, not an indicator that the whole file failed to convert."}
-]) }}
-{{ breadcrumb_jsonld([
-  {"label": "Home", "url": "/"},
-  {"label": "Guides", "url": "/blog"},
-  {"label": "Why Arrows Disappear When You Convert an SVG Diagram to PDF", "url": "/blog/svg-to-pdf-arrows-markers-disappear"}
 ]) }}
 {% endblock %}

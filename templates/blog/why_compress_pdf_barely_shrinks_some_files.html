@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% set breadcrumb_label = "Why Compress PDF Sometimes Barely Shrinks Your File" %}
 
 {% block title %}Why Compress PDF Sometimes Barely Shrinks Your File{% endblock %}
 
@@ -7,13 +8,6 @@ We ran real test files through every Compress PDF level — Low, Medium, High, a
 {% endblock %}
 
 {% block content %}
-
-{% from "components/breadcrumb.html" import breadcrumb %}
-{{ breadcrumb([
-  {"label": "Home", "url": "/"},
-  {"label": "Guides", "url": "/blog"},
-  {"label": "Why Compress PDF Sometimes Barely Shrinks Your File", "url": "/blog/why-compress-pdf-barely-shrinks-some-files"}
-]) }}
 
 <article class="guide-article">
 
@@ -241,7 +235,6 @@ remove.
 {% block jsonld %}
 {{ super() }}
 {% from "components/jsonld.html" import article, faqpage %}
-{% from "components/breadcrumb.html" import breadcrumb_jsonld %}
 {{ article(self.title(), self.description(), request.path, "2026-09-16") }}
 {{ faqpage([
   {"q": "Why did compressing my PDF make it bigger instead of smaller?", "a": "In our test, this happened on the Low setting with a 10-page, text-only PDF that had no images at all: the compressed file came back 14.5% larger than the original. Low only restructures the file rather than reducing image resolution, and that restructuring pass has a small overhead of its own. On that particular file — already small and clean, with nothing but text — the overhead wasn't offset by any real savings. This isn't a rule that Low always increases file size; it's what we measured on a file with no image content to work with. A different text-only PDF, especially a larger or less-optimized one, may still shrink slightly under Low."},
@@ -249,10 +242,5 @@ remove.
   {"q": "Which setting gives the biggest reduction?", "a": "Extreme, by a wide margin, on image-heavy files — in our test it shrank a 50MB scanned document to 172KB. But it also converts the document to grayscale, which is a real, permanent quality trade-off, not a free win. Use it only when color isn't needed."},
   {"q": "Should I always use the highest setting to be safe?", "a": "No. Match the setting to what the file is for. Use Low or Medium if the PDF will be printed or needs to keep its color and detail. Use High or Extreme only for documents that just need to be small and viewed on a screen, since both reduce image resolution substantially and Extreme removes color entirely."},
   {"q": "Why did a scanned document compress so much more than a text document?", "a": "A scanned page is stored as one large image per page, typically at a much higher resolution than a screen needs — that's a lot of redundant image data for a compressor to discard. A text-based PDF stores its content as compact character and font data instead of pixels, so there's little equivalent redundancy to remove."}
-]) }}
-{{ breadcrumb_jsonld([
-  {"label": "Home", "url": "/"},
-  {"label": "Guides", "url": "/blog"},
-  {"label": "Why Compress PDF Sometimes Barely Shrinks Your File", "url": "/blog/why-compress-pdf-barely-shrinks-some-files"}
 ]) }}
 {% endblock %}
