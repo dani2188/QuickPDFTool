@@ -43,6 +43,17 @@
     />
 
     {% block adsense %}
+    <!-- Until the visitor accepts cookies in the banner below, ask Google
+         for non-personalised ads only. Must run before the loader. -->
+    <script>
+      try {
+        if (localStorage.getItem("cookie_consent") !== "accepted") {
+          (window.adsbygoogle = window.adsbygoogle || []).requestNonPersonalizedAds = 1;
+        }
+      } catch (e) {
+        (window.adsbygoogle = window.adsbygoogle || []).requestNonPersonalizedAds = 1;
+      }
+    </script>
     <!-- Google AdSense -->
     <script
       async
@@ -170,8 +181,8 @@
     <!-- Cookie Consent Banner -->
     <div id="cookie-banner" style="display:none; position:fixed; bottom:0; left:0; right:0; background:#222; color:#fff; padding:16px 24px; z-index:9999; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; font-size:14px;">
       <p style="margin:0; flex:1; min-width:200px;">
-        We use cookies to improve your experience and to show relevant ads via Google AdSense.
-        By clicking "Accept", you consent to our use of cookies.
+        We use cookies to show ads via Google AdSense. Click "Accept" to allow personalised ads,
+        or "Decline" and we'll ask Google for non-personalised ads only.
         <a href="/privacy-policy" style="color:#aad4f5;">Learn more</a>.
       </p>
       <div style="display:flex; gap:10px;">
