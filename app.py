@@ -55,6 +55,12 @@ def save_upload(file_storage, delay=300):
     return path, name
 
 
+def upload_stem(file_storage):
+    """User-facing base name (no extension) of an upload, for download names."""
+    safe = secure_filename(file_storage.filename) or "file"
+    return os.path.splitext(safe)[0] or "file"
+
+
 def resolve_upload(name):
     """Map a client-supplied upload name to a path inside UPLOAD_FOLDER, or None."""
     if not name:
@@ -567,12 +573,7 @@ def jpg_to_pdf():
 
             if file.filename != "":
 
-                filename = secure_filename(file.filename)
-                path = os.path.join(UPLOAD_FOLDER, filename)
-
-                file.save(path)
-                delete_file_later(path)
-
+                path, _ = save_upload(file)
 
                 image = Image.open(path).convert("RGB")
                 images.append(image)
@@ -589,7 +590,7 @@ def jpg_to_pdf():
                 append_images=images[1:]
             )
 
-        return send_file(output_path, as_attachment=True)
+        return send_file(output_path, as_attachment=True, download_name="images.pdf")
 
     return render_template("jpg_to_pdf.html")
 
@@ -606,9 +607,7 @@ def pdf_to_png():
         if not file or file.filename == "":
             return "No file selected"
 
-        filename = secure_filename(file.filename)
-        input_path = os.path.join(UPLOAD_FOLDER, filename)
-        file.save(input_path)
+        input_path, _ = save_upload(file)
 
         doc = fitz.open(input_path)
 
@@ -635,8 +634,6 @@ def pdf_to_png():
 
             delete_file_later(output_path)
 
-        delete_file_later(input_path)
-        
         # CREATE ZIP
         zip_filename = f"{uuid.uuid4()}_png_images.zip"
         zip_path = os.path.join(UPLOAD_FOLDER, zip_filename)
@@ -644,7 +641,7 @@ def pdf_to_png():
         with zipfile.ZipFile(zip_path, 'w') as zipf:
             for image in image_files:
                 image_path = os.path.join(UPLOAD_FOLDER, image)
-                zipf.write(image_path, arcname=image)
+                zipf.write(image_path, arcname=image.split("_", 1)[1])
 
         delete_file_later(zip_path)
 
@@ -820,12 +817,9 @@ def protect_pdf():
         if file.filename == "":
             return "No file selected"
 
-        filename = secure_filename(file.filename)
-        input_path = os.path.join(UPLOAD_FOLDER, filename)
+        input_path, _ = save_upload(file)
+        stem = upload_stem(file)
 
-        file.save(input_path)
-        delete_file_later(input_path)
-        
         reader = PdfReader(input_path)
         writer = PdfWriter()
 
@@ -834,14 +828,14 @@ def protect_pdf():
 
         writer.encrypt(password)
 
-        output_filename = f"protected_{filename}"
+        output_filename = f"{uuid.uuid4()}_protected.pdf"
         output_path = os.path.join(UPLOAD_FOLDER, output_filename)
         delete_file_later(output_path)
 
         with open(output_path, "wb") as f:
             writer.write(f)
 
-        return send_file(output_path, as_attachment=True)
+        return send_file(output_path, as_attachment=True, download_name=f"protected_{stem}.pdf")
 
     return render_template("protect_pdf.html")
 
@@ -856,11 +850,8 @@ def unlock_pdf():
         if file.filename == "":
             return "No file selected"
 
-        filename = secure_filename(file.filename)
-        input_path = os.path.join(UPLOAD_FOLDER, filename)
-
-        file.save(input_path)
-        delete_file_later(input_path)
+        input_path, _ = save_upload(file)
+        stem = upload_stem(file)
 
         reader = PdfReader(input_path)
 
@@ -872,14 +863,14 @@ def unlock_pdf():
         for page in reader.pages:
             writer.add_page(page)
 
-        output_filename = f"unlocked_{filename}"
+        output_filename = f"{uuid.uuid4()}_unlocked.pdf"
         output_path = os.path.join(UPLOAD_FOLDER, output_filename)
         delete_file_later(output_path)
 
         with open(output_path, "wb") as f:
             writer.write(f)
 
-        return send_file(output_path, as_attachment=True)
+        return send_file(output_path, as_attachment=True, download_name=f"unlocked_{stem}.pdf")
 
     return render_template("unlock_pdf.html")
 
@@ -895,12 +886,9 @@ def add_page_numbers():
         if file.filename == "":
             return "No file selected"
 
-        filename = secure_filename(file.filename)
-        input_path = os.path.join(UPLOAD_FOLDER, filename)
+        input_path, _ = save_upload(file)
+        stem = upload_stem(file)
 
-        file.save(input_path)
-        delete_file_later(input_path)
-        
         reader = PdfReader(input_path)
         writer = PdfWriter()
 
@@ -923,14 +911,14 @@ def add_page_numbers():
 
             writer.add_page(page)
 
-        output_filename = f"numbered_{filename}"
+        output_filename = f"{uuid.uuid4()}_numbered.pdf"
         output_path = os.path.join(UPLOAD_FOLDER, output_filename)
         delete_file_later(output_path)
 
         with open(output_path, "wb") as f:
             writer.write(f)
 
-        return send_file(output_path, as_attachment=True)
+        return send_file(output_path, as_attachment=True, download_name=f"numbered_{stem}.pdf")
 
     return render_template("add_page_numbers.html")
 
@@ -1371,13 +1359,8 @@ def add_watermark():
         if file.filename == "":
             return "No file selected"
 
-        filename = secure_filename(file.filename)
-        input_path = os.path.join(UPLOAD_FOLDER, filename)
-
-        file.save(input_path)
-        delete_file_later(input_path)
-        
-
+        input_path, _ = save_upload(file)
+        stem = upload_stem(file)
 
         reader = PdfReader(input_path)
         writer = PdfWriter()
@@ -1403,14 +1386,14 @@ def add_watermark():
 
             writer.add_page(page)
 
-        output_filename = f"watermarked_{filename}"
+        output_filename = f"{uuid.uuid4()}_watermarked.pdf"
         output_path = os.path.join(UPLOAD_FOLDER, output_filename)
         delete_file_later(output_path)
 
         with open(output_path, "wb") as f:
             writer.write(f)
 
-        return send_file(output_path, as_attachment=True)
+        return send_file(output_path, as_attachment=True, download_name=f"watermarked_{stem}.pdf")
 
     return render_template("add_watermark.html")
 
@@ -1494,9 +1477,7 @@ def extract_images():
         if file.filename == "":
             return "No file selected"
 
-        filename = secure_filename(file.filename)
-        input_path = os.path.join(UPLOAD_FOLDER, filename)
-        file.save(input_path)
+        input_path, _ = save_upload(file)
 
         doc = fitz.open(input_path)
 
@@ -1559,9 +1540,7 @@ def pdf_to_jpg():
         if not file or file.filename == "":
             return "No file selected"
 
-        filename = secure_filename(file.filename)
-        input_path = os.path.join(UPLOAD_FOLDER, filename)
-        file.save(input_path)
+        input_path, _ = save_upload(file)
 
         doc = fitz.open(input_path)
 
@@ -1588,8 +1567,6 @@ def pdf_to_jpg():
 
             delete_file_later(output_path)
 
-        delete_file_later(input_path)
-
         # CREATE ZIP
         zip_filename = f"{uuid.uuid4()}_jpg_images.zip"
         zip_path = os.path.join(UPLOAD_FOLDER, zip_filename)
@@ -1597,7 +1574,7 @@ def pdf_to_jpg():
         with zipfile.ZipFile(zip_path, 'w') as zipf:
             for image in image_files:
                 image_path = os.path.join(UPLOAD_FOLDER, image)
-                zipf.write(image_path, arcname=image)
+                zipf.write(image_path, arcname=image.split("_", 1)[1])
 
         delete_file_later(zip_path)
 
@@ -2078,9 +2055,7 @@ def pdf_to_webp():
         if not file or file.filename == "":
             return "No file selected"
 
-        filename = secure_filename(file.filename)
-        input_path = os.path.join(UPLOAD_FOLDER, filename)
-        file.save(input_path)
+        input_path, _ = save_upload(file)
 
         doc = fitz.open(input_path)
 
@@ -2111,8 +2086,6 @@ def pdf_to_webp():
             # optional cleanup
             delete_file_later(output_path)
 
-        # optional cleanup input
-        delete_file_later(input_path)
 
         return render_template(
             "pdf_to_webp_result.html",
