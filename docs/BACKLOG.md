@@ -557,7 +557,7 @@ out of scope — this fix only recognizes QuickTools' own watermark format.
 
 - **Area:** Monetization
 - **Priority:** P1
-- **Status:** Open
+- **Status:** Done
 - **Discovered:** C4 privacy review (2026-10-22)
 - **Source:** `templates/base.html` cookie banner
 
@@ -566,6 +566,8 @@ out of scope — this fix only recognizes QuickTools' own watermark format.
 **Proposed improvement:** In AdSense → Privacy & messaging, enable Google's own consent message (or another certified CMP) for EEA/UK/CH, then remove or reduce the custom banner so visitors aren't asked twice, and update the privacy policy's banner section.
 
 **Notes:** Owner/account task, not a code change.
+
+**Resolved (2026-10-23):** Google's certified consent message is active in AdSense. The custom banner, its `cookie_consent` localStorage logic and the `requestNonPersonalizedAds` snippet were removed from `base.html`; `<meta name="referrer" content="strict-origin-when-cross-origin">` was added because Google's message needs it. Google Analytics (homepage only) now sets Consent Mode `analytics_storage: denied` by default before gtag.js loads. Privacy policy updated.
 
 ---
 

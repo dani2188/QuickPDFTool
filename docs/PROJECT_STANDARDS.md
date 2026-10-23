@@ -40,7 +40,7 @@ render.yaml · Procfile     # deployment
 - One file, organized into the commented sections already in `style.css`: **Tokens → Base → Utilities → Layout → Navigation → Typography → Buttons → Cards → Upload → Forms → SEO content → Preview → Feedback → Result → Footer → Responsive → Reduced-motion.**
 - **Mobile-first:** base rules target the smallest screen; scale up with `min-width` queries only.
 - Use design tokens (`var(--…)`) instead of literals for color, spacing, radius, shadow.
-- No inline styles for anything reusable. (Legacy inline styles — cookie banner, some result markup — are being migrated to classes.)
+- No inline styles for anything reusable. (Legacy inline styles in some result markup are being migrated to classes.) There is no custom cookie banner: consent is handled by Google's certified message (AdSense → Privacy & messaging), which needs the `referrer` meta in `base.html`.
 - Keep specificity low; prefer a single class selector.
 
 ## 5. JavaScript structure
