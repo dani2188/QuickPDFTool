@@ -83,24 +83,56 @@ def resolve_upload(name):
     return path
 
 
-def open_upload_images(files):
-    """Save each uploaded image and open it as RGB.
+def flatten_on_white(img):
+    """RGB copy of img with any transparency composited onto white.
 
-    Returns (images, error_message); error_message is set when a file isn't
-    a readable image or nothing was uploaded.
+    Image.convert("RGB") alone drops alpha without compositing, so
+    transparent pixels keep whatever colour is stored under them (usually
+    black).
     """
-    images = []
-    for file in files:
-        if not file.filename:
-            continue
-        path, _ = save_upload(file)
-        try:
-            images.append(Image.open(path).convert("RGB"))
-        except (OSError, ValueError):
-            return [], f"\"{secure_filename(file.filename)}\" isn't an image we can read. Please upload JPG or PNG files."
-    if not images:
-        return [], "No images selected. Please choose at least one image."
-    return images, None
+    if img.mode in ("RGBA", "LA") or (img.mode == "P" and "transparency" in img.info):
+        rgba = img.convert("RGBA")
+        flat = Image.new("RGB", rgba.size, (255, 255, 255))
+        flat.paste(rgba, mask=rgba.getchannel("A"))
+        return flat
+    return img.convert("RGB")
+
+
+def images_to_pdf(files, output_path):
+    """Build a PDF with one page per uploaded image, sized to the image's pixels.
+
+    JPEGs are embedded byte-for-byte, so they are not re-compressed. Every
+    other format is flattened onto white and embedded losslessly (PNG/Flate).
+    Returns an error message, or None on success.
+    """
+    doc = fitz.open()
+    try:
+        for file in files:
+            if not file.filename:
+                continue
+            path, _ = save_upload(file)
+            try:
+                with Image.open(path) as img:
+                    img.load()
+                    width, height = img.size
+                    if img.format == "JPEG" and img.mode in ("RGB", "L"):
+                        with open(path, "rb") as f:
+                            data = f.read()
+                    else:
+                        buf = io.BytesIO()
+                        flatten_on_white(img).save(buf, "PNG")
+                        data = buf.getvalue()
+            except (OSError, ValueError):
+                return f"\"{secure_filename(file.filename)}\" isn't an image we can read. Please upload JPG or PNG files."
+            page = doc.new_page(width=width, height=height)
+            page.insert_image(page.rect, stream=data)
+
+        if len(doc) == 0:
+            return "No images selected. Please choose at least one image."
+        doc.save(output_path, deflate=True)
+    finally:
+        doc.close()
+    return None
 
 
 @app.template_filter("longdate")
@@ -673,20 +705,15 @@ def jpg_to_pdf():
 
     if request.method == "POST":
 
-        images, error = open_upload_images(request.files.getlist("images"))
-
-        if error:
-            return error_page(error)
-
         unique_id = str(uuid.uuid4())
         output_filename = f"{unique_id}_images.pdf"
         output_path = os.path.join(UPLOAD_FOLDER, output_filename)
 
-        images[0].save(
-            output_path,
-            save_all=True,
-            append_images=images[1:]
-        )
+        error = images_to_pdf(request.files.getlist("images"), output_path)
+
+        if error:
+            return error_page(error)
+
         delete_file_later(output_path)
 
         return send_file(output_path, as_attachment=True, download_name="images.pdf")
@@ -1717,19 +1744,13 @@ def png_to_pdf():
 
     if request.method == "POST":
 
-        images, error = open_upload_images(request.files.getlist("images"))
-
-        if error:
-            return error_page(error)
-
         output_filename = f"{uuid.uuid4()}_converted.pdf"
         output_path = os.path.join(UPLOAD_FOLDER, output_filename)
 
-        images[0].save(
-            output_path,
-            save_all=True,
-            append_images=images[1:]
-        )
+        error = images_to_pdf(request.files.getlist("images"), output_path)
+
+        if error:
+            return error_page(error)
 
         delete_file_later(output_path)
 
