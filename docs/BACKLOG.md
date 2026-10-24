@@ -509,7 +509,7 @@ out of scope — this fix only recognizes QuickTools' own watermark format.
 
 - **Area:** Technical
 - **Priority:** P2
-- **Status:** Open
+- **Status:** Done
 - **Discovered:** Real-results measurements (C3, 2026-10-22)
 - **Source:** `app.py` `jpg_to_pdf()` / `png_to_pdf()` → Pillow `Image.save(..., save_all=True)` on RGB images
 
@@ -519,13 +519,15 @@ out of scope — this fix only recognizes QuickTools' own watermark format.
 
 **Notes:** Copy corrected on the fix branch so the pages describe current behaviour; the conversion code is unchanged.
 
+**Resolved (2026-10-24, branch `fix/image-to-pdf-quality`):** `images_to_pdf()` builds the PDF with PyMuPDF. JPEGs (RGB/greyscale) are embedded byte-for-byte; every other format is embedded losslessly (Flate). Page size is unchanged (pixel dimensions as points). `scripts/measure_examples.py` now verifies this by comparing the embedded image with the uploaded file, and the page copy quotes those measurements.
+
 ---
 
 ## QT-023 — Transparent PNG areas turn black in PNG/JPG to PDF
 
 - **Area:** Technical
 - **Priority:** P2
-- **Status:** Open
+- **Status:** Done
 - **Discovered:** Real-results measurements (C3, 2026-10-22)
 - **Source:** `app.py` `open_upload_images()` → `Image.convert("RGB")`
 
@@ -534,6 +536,8 @@ out of scope — this fix only recognizes QuickTools' own watermark format.
 **Proposed improvement:** Composite RGBA/LA/P-with-transparency images onto white before converting (the same approach `_letterbox_resize()` already uses).
 
 **Notes:** Copy corrected on the fix branch; conversion code unchanged.
+
+**Resolved (2026-10-24, branch `fix/image-to-pdf-quality`):** `flatten_on_white()` composites RGBA/LA/palette-transparency images onto white before embedding, in both PNG to PDF and JPG to PDF. Verified on RGBA PNG, LA PNG and transparent GIF.
 
 ---
 

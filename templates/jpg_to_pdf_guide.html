@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% set breadcrumb_label = "How to Convert JPG to PDF" %}
 {% set date_published = "2026-03-14" %}
-{% set date_modified = "2026-10-22" %}
+{% set date_modified = "2026-10-24" %}
 
 {% block title %}
 How to Convert JPG to PDF – Create a PDF from Images Online
@@ -53,7 +53,7 @@ The tool processes your images immediately and creates a PDF with one image per 
 <h2>Tips for Converting JPG Images to PDF</h2>
 
 <ul>
-  <li><strong>Image quality matters:</strong> The PDF keeps each image's pixel size but re-encodes it as JPEG, so it can't be sharper than what you upload. If your JPGs are blurry or low-resolution, the PDF will reflect that. For best results, use images of at least 150 DPI.</li>
+  <li><strong>Image quality matters:</strong> The PDF uses your original images as-is, so it can't be sharper than what you upload. If your JPGs are blurry or low-resolution, the PDF will reflect that. For best results, use images of at least 150 DPI.</li>
   <li><strong>Page order:</strong> Upload images in the order they should appear in the final PDF. If you need to change the order afterwards, use the <a href="/merge-pdf">Merge PDF tool</a> to rearrange.</li>
   <li><strong>Reduce the final PDF size:</strong> If your images are high-resolution, the resulting PDF may be large. Use our <a href="/compress-pdf">Compress PDF tool</a> afterwards to reduce the file size.</li>
   <li><strong>Multiple pages:</strong> You can upload as many images as you need in one session. Each image becomes one page in the final PDF.</li>
@@ -79,7 +79,7 @@ Yes. Upload all your images at once and the tool will combine them into a single
 
 <h3>Does the conversion change the quality of my images?</h3>
 <p>
-Slightly. Each image keeps its full pixel size, but it is re-encoded as JPEG as it's placed in the PDF, so very fine detail can soften a little and the PDF is often smaller than the original photos. For most photos the difference isn't visible on screen.
+No. A JPG is placed in the PDF exactly as you uploaded it, byte for byte, so there is no re-compression and no quality loss. The PDF page takes its size from the photo's pixel dimensions.
 </p>
 
 <h3>What if my images are PNG or WEBP format?</h3>
@@ -109,7 +109,7 @@ There is no strict limit. However, very large numbers of high-resolution images 
 
 {% block jsonld %}{% from "components/jsonld.html" import howto, faqpage %}{{ howto(self.title(), self.description(), request.path, ["Open the JPG to PDF Tool", "Upload Your Images", "Download Your PDF"]) }}{{ faqpage([
   {"q": "Can I convert multiple JPG files into one PDF?", "a": "Yes. Upload all your images at once and the tool will combine them into a single multi-page PDF document."},
-  {"q": "Does the conversion change the quality of my images?", "a": "Slightly. Each image keeps its full pixel size, but it is re-encoded as JPEG as it's placed in the PDF, so very fine detail can soften a little and the PDF is often smaller than the original photos. For most photos the difference isn't visible on screen."},
+  {"q": "Does the conversion change the quality of my images?", "a": "No. A JPG is placed in the PDF exactly as you uploaded it, byte for byte, so there is no re-compression and no quality loss. The PDF page takes its size from the photo's pixel dimensions."},
   {"q": "What if my images are PNG or WEBP format?", "a": "For PNG images, use our PNG to PDF tool. For other formats, convert them to JPG or PNG first, then use this tool."},
   {"q": "Is there a limit on how many images I can convert?", "a": "There is no strict limit. However, very large numbers of high-resolution images may increase processing time. If the resulting PDF is very large, use the Compress PDF tool to reduce its size."}
 ]) }}{% endblock %}
