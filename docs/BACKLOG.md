@@ -575,7 +575,7 @@ out of scope — this fix only recognizes QuickTools' own watermark format.
 
 - **Area:** Content
 - **Priority:** P2
-- **Status:** Open
+- **Status:** Done
 - **Discovered:** C4 trust review (2026-10-22)
 - **Source:** `templates/about.html`
 
@@ -584,3 +584,5 @@ out of scope — this fix only recognizes QuickTools' own watermark format.
 **Proposed improvement:** Add the owner's name (and registered business details if HelloBrivio is a registered company) to the "Who Runs QuickTools" section, and consider a matching `Person` author in the BlogPosting JSON-LD.
 
 **Notes:** Needs the owner's input; nothing was invented.
+
+**Resolved (2026-10-24, branch `fix/about-hellobrivio-owner`):** by decision of the owner, no personal name is used. The About page names HelloBrivio, the parent brand of QuickTools, as the owner; the visible byline reads "By HelloBrivio"; and the BlogPosting JSON-LD already names `Organization` HelloBrivio as author and publisher (with `url` set to `/about`). Unverifiable wording ("small team", "small independent maker") was removed from About and Contact.
