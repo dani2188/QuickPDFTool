@@ -190,6 +190,15 @@
 
 {% block jsonld %}
 {{ super() }}
+<script type="application/ld+json">
+{{ {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "HelloBrivio",
+  "url": "https://hellobrivio.com/",
+  "logo": "https://hellobrivio.com/static/img/icon-512.png"
+} | tojson }}
+</script>
 {% from "components/jsonld.html" import faqpage %}
 {{ faqpage([
   {"q": "Do I need to create an account?", "a": "No. Every tool works without signing up — upload a file, process it, and download the result."},

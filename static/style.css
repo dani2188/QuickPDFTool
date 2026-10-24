@@ -148,10 +148,19 @@ textarea:focus-visible,
 }
 
 .logo a {
-  font-size: 22px;
-  font-weight: 700;
-  color: var(--brand);
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap);
   text-decoration: none;
+}
+
+/* Explicit width/height attributes on the <img> reserve the space (no layout
+   shift); max-width + auto height keep it inside very narrow screens. */
+.logo img,
+.footer-logo img {
+  display: block;
+  max-width: 100%;
+  height: auto;
 }
 
 /* Desktop nav — hidden on mobile (mobile-first) */
@@ -1165,10 +1174,13 @@ input[type="radio"] {
 }
 
 .footer-logo {
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--brand);
   margin-bottom: var(--s1);
+}
+
+.footer-logo a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap);
 }
 
 .footer-brand p {

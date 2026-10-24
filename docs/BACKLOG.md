@@ -584,3 +584,21 @@ out of scope — this fix only recognizes QuickTools' own watermark format.
 **Proposed improvement:** Add the owner's name (and registered business details if HelloBrivio is a registered company) to the "Who Runs QuickTools" section, and consider a matching `Person` author in the BlogPosting JSON-LD.
 
 **Notes:** Needs the owner's input; nothing was invented.
+
+---
+
+## QT-027 — Replace the placeholder `icon-512.png` with the official 512px mark
+
+- **Area:** Content
+- **Priority:** P2
+- **Status:** Done
+- **Discovered:** Logo rollout (2026-10-24)
+- **Source:** `static/img/icon-512.png`
+
+**Problem:** Only the 192px square icon (`favicon-192.png`) was supplied, not `hellobrivio-mark-512.png`. `icon-512.png` is therefore a 192px image upscaled to 512px, so it is slightly soft. It is used as the Organization `logo` in JSON-LD and as the default `og:image` / `twitter:image`, where it can show at large sizes in link previews.
+
+**Proposed improvement:** Drop the official `hellobrivio-mark-512.png` into `static/img/` under the name `icon-512.png`, replacing the placeholder. Nothing else needs to change: every reference already points at that filename. Optionally derive `favicon-32.png`, `favicon-192.png` and `apple-touch-icon.png` from the 512px file for maximum sharpness.
+
+**Notes:** Check the result with a link-preview debugger after deploying, since platforms cache `og:image`.
+
+**Resolved (2026-10-24, branch `feat/hellobrivio-logo`):** the official 512px mark replaces the placeholder in `static/img/icon-512.png`. `favicon-32.png` and `apple-touch-icon.png` were regenerated from it; `favicon-192.png` is the supplied file. The link-preview cache check after deploy is still worth doing.
