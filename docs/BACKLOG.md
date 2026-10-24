@@ -493,7 +493,7 @@ out of scope — this fix only recognizes QuickTools' own watermark format.
 
 - **Area:** Technical
 - **Priority:** P1
-- **Status:** Open
+- **Status:** Done
 - **Discovered:** End-to-end verification of the fix spec (2026-10-22)
 - **Source:** `app.py` `add_watermark()` / `_is_own_watermark_span()`
 
@@ -502,6 +502,8 @@ out of scope — this fix only recognizes QuickTools' own watermark format.
 **Proposed improvement:** Match the watermark position relative to the page height (or record the y used when adding it), then re-run the near-miss checks from QT-013 on Letter, A4 and a landscape page.
 
 **Notes:** Not fixed on this branch: it changes file-processing logic, which the fix spec didn't cover.
+
+**Resolved (2026-10-24, branch `fix/remove-watermark-page-size`):** `_is_own_watermark_span()` now compares the text origin with the watermark's intended origin `(150, 400)` mapped through the page's own `transformation_matrix`, instead of a hardcoded Letter-page y. `scripts/test_remove_watermark_pages.py` verifies removal on Letter, A4, A5, A3, Legal, two landscape sizes, 90/180/270 rotations, a crop box and a mixed-size file, and that opaque / bigger / coloured / moved near-misses survive.
 
 ---
 
