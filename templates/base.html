@@ -1,9 +1,12 @@
+{%- from "components/breadcrumb.html" import breadcrumb, breadcrumb_jsonld -%}
+{%- set breadcrumbs = breadcrumb_trail(breadcrumb_label) if breadcrumb_label is defined else none -%}
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#e5322d" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
 
     <title>{% block title %}QuickTools{% endblock %}</title>
 
@@ -11,6 +14,8 @@
       name="description"
       content="{% block description %}Free online PDF tools to compress, convert and edit PDF files{% endblock %}"
     />
+
+    {% block robots %}{% endblock %}
 
     <!-- Canonical (single primary host: hellobrivio.com) -->
     <link rel="canonical" href="https://hellobrivio.com{{ request.path }}" />
@@ -39,7 +44,9 @@
     />
 
     {% block adsense %}
-    <!-- Google AdSense -->
+    <!-- Google AdSense. Consent is collected by Google's certified consent
+         message (AdSense > Privacy & messaging), which needs the referrer
+         policy above to be no stricter than strict-origin-when-cross-origin. -->
     <script
       async
       src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1115814677653739"
@@ -60,6 +67,8 @@
       }
     </script>
     {% endblock %}
+
+    {% if breadcrumbs %}{{ breadcrumb_jsonld(breadcrumbs) }}{% endif %}
   </head>
 
   <body>
@@ -106,7 +115,10 @@
       <a href="/about">About</a>
     </nav>
 
-    <main class="main-container" id="main">{% block content %}{% endblock %}</main>
+    <main class="main-container" id="main">
+      {% if breadcrumbs %}{{ breadcrumb(breadcrumbs) }}{% endif %}
+      {% block content %}{% endblock %}
+    </main>
 
     <footer class="footer">
       <div class="footer-grid">
@@ -122,15 +134,13 @@
           <a href="/merge-pdf">Merge PDF</a>
           <a href="/split-pdf">Split PDF</a>
           <a href="/pdf-to-word">PDF to Word</a>
+          <a href="/pdf-to-jpg">PDF to JPG</a>
+          <a href="/jpg-to-pdf">JPG to PDF</a>
           <a href="/pdf-tools">All PDF Tools</a>
         </div>
 
         <div class="footer-col">
           <h4>Image Tools</h4>
-          <a href="/pdf-to-jpg">PDF to JPG</a>
-          <a href="/jpg-to-pdf">JPG to PDF</a>
-          <a href="/pdf-to-png">PDF to PNG</a>
-          <a href="/svg-to-pdf">SVG to PDF</a>
           <a href="/compress-jpg">Compress JPG</a>
           <a href="/resize-image">Resize Image</a>
           <a href="/remove-background">Remove Background</a>
@@ -157,39 +167,6 @@
         <p>Free online tools to compress, merge, convert and edit your PDF files.</p>
       </div>
     </footer>
-
-    <!-- Cookie Consent Banner -->
-    <div id="cookie-banner" style="display:none; position:fixed; bottom:0; left:0; right:0; background:#222; color:#fff; padding:16px 24px; z-index:9999; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; font-size:14px;">
-      <p style="margin:0; flex:1; min-width:200px;">
-        We use cookies to improve your experience and to show relevant ads via Google AdSense.
-        By clicking "Accept", you consent to our use of cookies.
-        <a href="/privacy-policy" style="color:#aad4f5;">Learn more</a>.
-      </p>
-      <div style="display:flex; gap:10px;">
-        <button onclick="acceptCookies()" style="background:#e5322d; color:#fff; border:none; padding:8px 20px; border-radius:4px; cursor:pointer; font-size:14px;">Accept</button>
-        <button onclick="declineCookies()" style="background:#555; color:#fff; border:none; padding:8px 20px; border-radius:4px; cursor:pointer; font-size:14px;">Decline</button>
-      </div>
-    </div>
-
-    <script>
-      (function() {
-        var consent = localStorage.getItem('cookie_consent');
-        var banner = document.getElementById('cookie-banner');
-        if (!consent && banner) {
-          banner.style.display = 'flex';
-        }
-      })();
-
-      function acceptCookies() {
-        localStorage.setItem('cookie_consent', 'accepted');
-        document.getElementById('cookie-banner').style.display = 'none';
-      }
-
-      function declineCookies() {
-        localStorage.setItem('cookie_consent', 'declined');
-        document.getElementById('cookie-banner').style.display = 'none';
-      }
-    </script>
 
     <!-- ✅ RESPONSIVE NAVIGATION (hamburger + slide-in drawer) -->
     <script>

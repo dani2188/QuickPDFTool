@@ -1,4 +1,7 @@
 {% extends "base.html" %}
+{% set breadcrumb_label = "Why Your JPG-to-PDF File Has Such a Huge Page Size" %}
+{% set date_published = "2026-09-18" %}
+{% set date_modified = "2026-09-18" %}
 
 {% block title %}Why Your JPG-to-PDF File Has Such a Huge Page Size{% endblock %}
 
@@ -8,16 +11,12 @@ We tested QuickTools' JPG-to-PDF and PNG-to-PDF tools directly: the resulting PD
 
 {% block content %}
 
-{% from "components/breadcrumb.html" import breadcrumb %}
-{{ breadcrumb([
-  {"label": "Home", "url": "/"},
-  {"label": "Guides", "url": "/blog"},
-  {"label": "Why Your JPG-to-PDF File Has Such a Huge Page Size", "url": "/blog/why-jpg-to-pdf-has-a-huge-page-size"}
-]) }}
-
 <article class="guide-article">
 
 <h1>Why Your JPG-to-PDF File Has Such a Huge Page Size</h1>
+
+{% from "components/byline.html" import byline %}
+{{ byline(date_published, date_modified) }}
 <p><em>Published September 2026</em></p>
 
 <p>
@@ -278,8 +277,7 @@ doesn't apply that rotation, so the image can appear on its side in the resultin
 {% block jsonld %}
 {{ super() }}
 {% from "components/jsonld.html" import article, faqpage %}
-{% from "components/breadcrumb.html" import breadcrumb_jsonld %}
-{{ article(self.title(), self.description(), request.path, "2026-09-18") }}
+{{ article(self.title(), self.description(), request.path, date_published, date_modified) }}
 {{ faqpage([
   {"q": "Why is my JPG-to-PDF file so physically large, even though the file size is small?", "a": "Because the file's byte size and the PDF page's physical dimensions are two separate things. The file itself can be small; the page can still be many inches or feet across, because the tool turns each image pixel directly into one PDF point, and a typical photo has thousands of pixels per side."},
   {"q": "Will compressing the PDF afterward fix the page size?", "a": "No. Compression changes file size by re-encoding the image data; it doesn't touch the page's physical dimensions at all. A compressed version of an oversized page is still the same oversized page, just a smaller file."},
@@ -288,10 +286,5 @@ doesn't apply that rotation, so the image can appear on its side in the resultin
   {"q": "Does this happen with PNG too, or only JPG?", "a": "Both. We tested the same image as a JPEG and as a PNG and got the same resulting page size either way, since both tools build the PDF page the same way."},
   {"q": "What happens if I merge this with a normal document?", "a": "The pages keep their own separate sizes. We tested merging a standard Letter-sized page with an image-generated page, and the result was a two-page PDF where each page retained its own original dimensions rather than one size taking over the other."},
   {"q": "Why does my converted photo look sideways?", "a": "That's a separate issue from the page-size one. If a photo was taken in portrait orientation but stored with a rotation instruction in its metadata rather than physically rotated pixels, the current tool doesn't apply that rotation, so the image can appear on its side in the resulting PDF."}
-]) }}
-{{ breadcrumb_jsonld([
-  {"label": "Home", "url": "/"},
-  {"label": "Guides", "url": "/blog"},
-  {"label": "Why Your JPG-to-PDF File Has Such a Huge Page Size", "url": "/blog/why-jpg-to-pdf-has-a-huge-page-size"}
 ]) }}
 {% endblock %}

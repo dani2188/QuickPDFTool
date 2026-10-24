@@ -1,4 +1,5 @@
-{% extends "base.html" %} {% block title %} Compress PDF Online – Reduce PDF
+{% extends "base.html" %}
+{% set breadcrumb_label = "Compress PDF" %} {% block title %} Compress PDF Online – Reduce PDF
 File Size {% endblock %} {% block description %} Compress PDF files online to
 reduce file size while maintaining quality. {% endblock %} {% block content %}
 
@@ -118,6 +119,8 @@ reduce file size while maintaining quality. {% endblock %} {% block content %}
   <p><strong>Online form uploads:</strong> Government portals, HR systems, and application forms often have strict file size limits. Compression helps you stay within them.</p>
   <p><strong>Cloud storage:</strong> If you archive hundreds of PDFs, compression can free up gigabytes of storage space over time.</p>
   <p><strong>Faster sharing:</strong> Smaller files upload and download faster, making sharing via links or messaging apps much quicker.</p>
+
+  {% include "components/examples/compress_pdf.html" %}
 
   <h2>Frequently Asked Questions</h2>
 

@@ -1,4 +1,7 @@
 {% extends "base.html" %}
+{% set breadcrumb_label = "How to Convert PNG to PDF" %}
+{% set date_published = "2026-03-14" %}
+{% set date_modified = "2026-10-22" %}
 
 {% block title %}How to Convert PNG to PDF – Combine PNG Images Into a PDF{% endblock %}
 
@@ -9,6 +12,9 @@
 <article class="guide-article">
 
 <h1>How to Convert PNG to PDF</h1>
+
+{% from "components/byline.html" import byline %}
+{{ byline(date_published, date_modified) }}
 
 <p>
 PNG images are great for individual use, but when you need to compile multiple images into a single document for sharing, archiving, or submission, converting them to PDF is the best approach. PDF is universally compatible, preserves the images at full quality, and is accepted by virtually every system, portal, and email client.
@@ -43,11 +49,11 @@ The tool converts your PNG images into a multi-page PDF, with each image on its 
 <h2>Tips for PNG to PDF Conversion</h2>
 
 <ul>
-  <li><strong>Image quality:</strong> PNG is a lossless format, so your images will be embedded in the PDF at full quality. The PDF will faithfully reproduce every pixel.</li>
+  <li><strong>Image quality:</strong> PNG is lossless, but this tool stores each image as JPEG inside the PDF. Photos look essentially the same; sharp text and thin lines in screenshots can show faint JPEG artifacts, so zoom in and check before sending.</li>
   <li><strong>Page order:</strong> Upload images in the intended reading order. If you need to change the order after conversion, use the <a href="/merge-pdf">Merge PDF tool</a> to reassemble pages as needed.</li>
   <li><strong>Reduce file size after conversion:</strong> High-resolution PNG images can produce very large PDFs. After converting, use our <a href="/compress-pdf">Compress PDF tool</a> to reduce the file size while maintaining acceptable quality.</li>
-  <li><strong>Transparent backgrounds:</strong> PNG supports transparency, but PDF pages have a white background by default. Transparent areas in your PNG will appear white in the PDF.</li>
-  <li><strong>Screenshots and diagrams:</strong> PNG is ideal for converting screenshots, diagrams, and charts to PDF. The sharp edges and text in these images are perfectly preserved.</li>
+  <li><strong>Transparent backgrounds:</strong> transparency isn't kept, and transparent areas usually come out black, not white. Flatten the image onto a white background in an image editor before converting.</li>
+  <li><strong>Screenshots and diagrams:</strong> these convert well, but because they're re-encoded as JPEG, very small text can look slightly less crisp than in the original PNG.</li>
 </ul>
 
 <h2>Common Uses for PNG to PDF Conversion</h2>
@@ -69,7 +75,7 @@ Our PNG to PDF tool is specifically for PNG files. For JPG images, use our <a hr
 
 <h3>Will transparent areas in my PNG show up?</h3>
 <p>
-Transparent areas will be rendered as white in the PDF, since PDF pages have a white background by default.
+No. Transparency is dropped during conversion, and transparent areas usually come out black rather than white, because most PNGs store black behind their transparent pixels. If your image has a transparent background, flatten it onto white in an image editor before converting.
 </p>
 
 <h3>Is there a limit on the number of images I can convert?</h3>
@@ -79,7 +85,7 @@ There is no hard limit. Processing time increases with the number and size of im
 
 <h3>Why is my PDF so large?</h3>
 <p>
-High-resolution PNG images embed at full quality, which can result in large PDFs. Use the <a href="/compress-pdf">Compress PDF tool</a> after conversion to reduce the file size.
+Each image keeps its full pixel size, so very high-resolution PNGs still make large PDFs even though they're stored as JPEG inside it. Use the <a href="/compress-pdf">Compress PDF tool</a> after conversion to reduce the file size.
 </p>
 
 <h2>Related Tools</h2>
@@ -98,7 +104,7 @@ High-resolution PNG images embed at full quality, which can result in large PDFs
 
 {% block jsonld %}{% from "components/jsonld.html" import howto, faqpage %}{{ howto(self.title(), self.description(), request.path, ["Open the PNG to PDF Tool", "Upload Your PNG Images", "Download Your PDF"]) }}{{ faqpage([
   {"q": "Can I mix PNG and JPG in the same PDF?", "a": "Our PNG to PDF tool is specifically for PNG files. For JPG images, use our JPG to PDF tool. If you need to mix formats, convert all files to the same format first, then combine them."},
-  {"q": "Will transparent areas in my PNG show up?", "a": "Transparent areas will be rendered as white in the PDF, since PDF pages have a white background by default."},
+  {"q": "Will transparent areas in my PNG show up?", "a": "No. Transparency is dropped during conversion, and transparent areas usually come out black rather than white, because most PNGs store black behind their transparent pixels. If your image has a transparent background, flatten it onto white in an image editor before converting."},
   {"q": "Is there a limit on the number of images I can convert?", "a": "There is no hard limit. Processing time increases with the number and size of images. For very large collections, consider splitting into smaller batches and then merging the resulting PDFs."},
-  {"q": "Why is my PDF so large?", "a": "High-resolution PNG images embed at full quality, which can result in large PDFs. Use the Compress PDF tool after conversion to reduce the file size."}
+  {"q": "Why is my PDF so large?", "a": "Each image keeps its full pixel size, so very high-resolution PNGs still make large PDFs even though they're stored as JPEG inside it. Use the Compress PDF tool after conversion to reduce the file size."}
 ]) }}{% endblock %}

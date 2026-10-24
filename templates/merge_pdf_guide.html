@@ -1,4 +1,7 @@
 {% extends "base.html" %}
+{% set breadcrumb_label = "How to Merge PDF Files" %}
+{% set date_published = "2026-03-13" %}
+{% set date_modified = "2026-09-18" %}
 
 {% block title %}
 How to Merge PDF Files Online – Combine Multiple PDFs Into One
@@ -13,6 +16,9 @@ Learn how to merge multiple PDF files into one document quickly and easily. Step
 <article class="guide-article">
 
 <h1>How to Merge PDF Files</h1>
+
+{% from "components/byline.html" import byline %}
+{{ byline(date_published, date_modified) }}
 
 <p>
 Merging PDFs means combining two or more separate PDF files into a single document. This is one of the most common document tasks in both personal and professional settings — whether you're combining pages from different scans, assembling a report from multiple sections, or packaging several invoices into one file for accounting.

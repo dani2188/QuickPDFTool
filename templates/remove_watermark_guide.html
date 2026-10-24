@@ -1,4 +1,7 @@
 {% extends "base.html" %}
+{% set breadcrumb_label = "How to Remove a Watermark from a PDF" %}
+{% set date_published = "2026-03-14" %}
+{% set date_modified = "2026-09-18" %}
 
 {% block title %}How to Remove a Watermark from a PDF – Online Free{% endblock %}
 
@@ -9,6 +12,9 @@
 <article class="guide-article">
 
 <h1>How to Remove a Watermark from a PDF</h1>
+
+{% from "components/byline.html" import byline %}
+{{ byline(date_published, date_modified) }}
 
 <p>
 Watermarks are often added to PDFs to indicate a document is a draft, confidential, or a sample. Once the document is finalised or approved, you may need to remove the watermark to produce a clean, professional version. Our free online tool recognizes and removes the specific watermark added by our own Add Watermark tool, and cleans up the PDF's content streams generally, without requiring any software.

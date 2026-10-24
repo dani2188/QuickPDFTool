@@ -1,4 +1,5 @@
-{% extends "base.html" %} {% block title %}JPG to PDF Converter – Combine Images into One PDF{% endblock %} {% block description %}Combine one or more JPG or PNG images into a single PDF, in the order you upload them. Free, no signup, no watermark.{% endblock %}
+{% extends "base.html" %}
+{% set breadcrumb_label = "JPG to PDF" %} {% block title %}JPG to PDF Converter – Combine Images into One PDF{% endblock %} {% block description %}Combine one or more JPG or PNG images into a single PDF, in the order you upload them. Free, no signup, no watermark.{% endblock %}
 
 {% block content %}
 
@@ -49,8 +50,10 @@
   <ul class="benefits">
     <li><strong>Upload order is page order.</strong> The first image you select becomes page 1. On most browsers, selecting files in a file picker preserves the order you click them in — check the result and re-do the upload if the order comes out wrong.</li>
     <li><strong>Transparent PNGs lose their transparency.</strong> PDF pages don't support transparency, so any transparent areas in a PNG are filled with a solid color rather than staying see-through.</li>
-    <li><strong>No compression is applied.</strong> Images are embedded at their original quality, so a batch of large, high-resolution photos will produce a correspondingly large PDF. Run the result through <a href="/compress-pdf">Compress PDF</a> afterward if the file needs to be smaller.</li>
+    <li><strong>Photos are re-saved as JPEG inside the PDF.</strong> Each image keeps its full pixel size but is re-encoded as it's placed on its page, so the PDF is usually a bit smaller than your photos and very fine detail can soften slightly. A batch of large photos still makes a large PDF — run it through <a href="/compress-pdf">Compress PDF</a> afterward if it needs to be smaller.</li>
   </ul>
+
+  {% include "components/examples/jpg_to_pdf.html" %}
 
   <h2>Frequently Asked Questions</h2>
 
@@ -69,8 +72,9 @@
 
   <h3>Does this reduce my images' file size?</h3>
   <p>
-    No — images are embedded at their original quality with no compression applied. If the resulting PDF
-    is too large to send, run it through <a href="/compress-pdf">Compress PDF</a> or
+    Often a little. Each image is re-encoded as JPEG as it's placed in the PDF, so the PDF usually comes
+    out somewhat smaller than the photos you uploaded, with a slight loss of very fine detail. If the PDF
+    is still too large to send, run it through <a href="/compress-pdf">Compress PDF</a> or
     <a href="/compress-pdf-for-email">Compress PDF for Email</a> afterward.
   </p>
 
@@ -102,7 +106,7 @@
 {{ faqpage([
   {"q": "Can I combine JPG and PNG files in the same PDF?", "a": "Yes. Select both formats in the same upload and each one becomes its own page, in the order you selected them."},
   {"q": "Will my images be resized to fit a standard page size?", "a": "No. Each page in the output PDF matches the pixel dimensions of its source image, so mixed-orientation or mixed-size photos produce a PDF with different-sized pages rather than being cropped or padded to match."},
-  {"q": "Does this reduce my images' file size?", "a": "No — images are embedded at their original quality with no compression applied. If the resulting PDF is too large to send, run it through Compress PDF or Compress PDF for Email afterward."},
+  {"q": "Does this reduce my images' file size?", "a": "Often a little. Each image is re-encoded as JPEG as it's placed in the PDF, so the PDF usually comes out somewhat smaller than the photos you uploaded, with a slight loss of very fine detail. If the PDF is still too large to send, run it through Compress PDF or Compress PDF for Email afterward."},
   {"q": "Is there a limit on how many images I can combine?", "a": "There's no fixed count, but the total upload is capped at 20MB, consistent with our other tools."}
 ]) }}
 {% endblock %}

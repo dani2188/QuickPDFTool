@@ -1,4 +1,7 @@
 {% extends "base.html" %}
+{% set breadcrumb_label = "How to Convert PDF to JPG" %}
+{% set date_published = "2026-03-14" %}
+{% set date_modified = "2026-09-18" %}
 
 {% block title %}
 How to Convert PDF to JPG – Extract PDF Pages as Images
@@ -13,6 +16,9 @@ Learn how to convert PDF pages into JPG images online. Extract high-quality imag
 <article class="guide-article">
 
 <h1>How to Convert PDF to JPG</h1>
+
+{% from "components/byline.html" import byline %}
+{{ byline(date_published, date_modified) }}
 
 <p>
 Converting a PDF to JPG turns each page of your document into a separate image file. This is useful when you need to use PDF content in a presentation, post it online, embed pages in a website, or share specific pages as pictures rather than documents.

@@ -1,4 +1,7 @@
 {% extends "base.html" %}
+{% set breadcrumb_label = "How to Resize an Image for Social Media" %}
+{% set date_published = "2026-08-26" %}
+{% set date_modified = "2026-09-18" %}
 
 {% block title %}How to Resize an Image for Social Media{% endblock %}
 
@@ -9,6 +12,9 @@
 <article class="guide-article">
 
 <h1>How to Resize an Image for Social Media</h1>
+
+{% from "components/byline.html" import byline %}
+{{ byline(date_published, date_modified) }}
 
 <p>
 Upload a photo with the "wrong" dimensions to most platforms and it gets auto-cropped — sometimes

@@ -6,12 +6,18 @@
 
 {% block head %}
 <!-- Google tag -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-XL3SFKPQS3"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag() {
     dataLayer.push(arguments);
   }
+  // Google Consent Mode: analytics storage stays denied until Google's
+  // consent message reports the visitor's choice; no analytics cookies are
+  // set before then.
+  gtag("consent", "default", { analytics_storage: "denied", wait_for_update: 500 });
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XL3SFKPQS3"></script>
+<script>
   gtag("js", new Date());
   gtag("config", "G-XL3SFKPQS3");
 </script>
@@ -63,7 +69,7 @@
     <span class="tool-card-desc">Add your signature</span>
   </a>
   <a href="/convert-pdf" class="tool-card">
-    <span class="tool-card-icon">🔄</span>
+    <span class="tool-card-icon">🔀</span>
     <span class="tool-card-title">Convert PDF</span>
     <span class="tool-card-desc">Change formats</span>
   </a>

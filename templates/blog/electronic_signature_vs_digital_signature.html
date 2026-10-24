@@ -1,4 +1,7 @@
 {% extends "base.html" %}
+{% set breadcrumb_label = "Electronic Signature vs. Digital Signature: What's the Actual Difference?" %}
+{% set date_published = "2026-09-19" %}
+{% set date_modified = "2026-09-19" %}
 
 {% block title %}Electronic Signature vs. Digital Signature: What's the Actual Difference?{% endblock %}
 
@@ -8,16 +11,12 @@ Two PDFs can both show an image of a handwritten signature, so what actually mak
 
 {% block content %}
 
-{% from "components/breadcrumb.html" import breadcrumb %}
-{{ breadcrumb([
-  {"label": "Home", "url": "/"},
-  {"label": "Guides", "url": "/blog"},
-  {"label": "Electronic Signature vs. Digital Signature: What's the Actual Difference?", "url": "/blog/electronic-signature-vs-digital-signature"}
-]) }}
-
 <article class="guide-article">
 
 <h1>Electronic Signature vs. Digital Signature: What's the Actual Difference?</h1>
+
+{% from "components/byline.html" import byline %}
+{{ byline(date_published, date_modified) }}
 <p><em>Published September 2026</em></p>
 
 <p>
@@ -284,8 +283,7 @@ the identity or tamper-detection properties a cryptographic digital signature do
 {% block jsonld %}
 {{ super() }}
 {% from "components/jsonld.html" import article, faqpage %}
-{% from "components/breadcrumb.html" import breadcrumb_jsonld %}
-{{ article(self.title(), self.description(), request.path, "2026-09-19") }}
+{{ article(self.title(), self.description(), request.path, date_published, date_modified) }}
 {{ faqpage([
   {"q": "Is an image of my signature an electronic signature?", "a": "It can be, in the broad legal sense. eIDAS defines an electronic signature simply as data in electronic form attached to other data and used by the signatory to sign, which is a wide definition covering typed names and signature images as well as cryptographic signatures. Whether it meets a stricter tier, or is treated as valid for a specific purpose, depends on the jurisdiction and the document."},
   {"q": "What's the difference between an electronic and a digital signature?", "a": "Electronic signature is a legal and regulatory category defined by intent, covering many different formats. Digital signature is a specific technical mechanism, a document hash encrypted with a signer's private key. A digital signature can satisfy the legal definition of an electronic signature, but plenty of things that legally count as electronic signatures are not cryptographic at all."},
@@ -293,10 +291,5 @@ the identity or tamper-detection properties a cryptographic digital signature do
   {"q": "How does a PDF detect that a signed document was changed?", "a": "At signing, a hash is calculated over the document bytes named in the signature's ByteRange and encrypted with the signer's private key. At verification, that hash is recalculated and compared against the decrypted signature value. A mismatch means the covered bytes changed since signing. Changes outside that range, such as certain PDF incremental updates, don't necessarily affect it."},
   {"q": "What is PAdES?", "a": "PAdES, PDF Advanced Electronic Signatures, is a PDF-specific signature profile from ETSI. It builds on PDF's own native signature mechanism and CMS-based signing to add requirements that support things like long-term validation, rather than replacing how PDF stores signatures."},
   {"q": "Does QuickTools Sign PDF create a digital signature?", "a": "No. It places an image of a signature onto the page. The resulting file contains a normal image object with no signature dictionary, no ByteRange, and no cryptographic signature data, so it doesn't provide the identity or tamper-detection properties a cryptographic digital signature does."}
-]) }}
-{{ breadcrumb_jsonld([
-  {"label": "Home", "url": "/"},
-  {"label": "Guides", "url": "/blog"},
-  {"label": "Electronic Signature vs. Digital Signature: What's the Actual Difference?", "url": "/blog/electronic-signature-vs-digital-signature"}
 ]) }}
 {% endblock %}

@@ -36,7 +36,7 @@
 </script>
 {%- endmacro %}
 
-{% macro article(name, description, path, datePublished) -%}
+{% macro article(name, description, path, datePublished, dateModified=none) -%}
 <script type="application/ld+json">
 {{ {
   "@context": "https://schema.org",
@@ -45,7 +45,8 @@
   "description": description.split() | join(" "),
   "url": "https://hellobrivio.com" ~ path,
   "datePublished": datePublished,
-  "author": {"@type": "Organization", "name": "HelloBrivio"},
+  "dateModified": dateModified or datePublished,
+  "author": {"@type": "Organization", "name": "HelloBrivio", "url": "https://hellobrivio.com/about"},
   "publisher": {"@type": "Organization", "name": "HelloBrivio"}
 } | tojson }}
 </script>

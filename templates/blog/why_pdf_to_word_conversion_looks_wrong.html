@@ -1,4 +1,7 @@
 {% extends "base.html" %}
+{% set breadcrumb_label = "Why Your PDF to Word Conversion Looks Wrong" %}
+{% set date_published = "2026-09-11" %}
+{% set date_modified = "2026-09-18" %}
 
 {% block title %}Why Your PDF to Word Conversion Looks Wrong{% endblock %}
 
@@ -8,16 +11,12 @@ Why converting a PDF to Word can shift text, break tables, or turn a page into a
 
 {% block content %}
 
-{% from "components/breadcrumb.html" import breadcrumb %}
-{{ breadcrumb([
-  {"label": "Home", "url": "/"},
-  {"label": "Guides", "url": "/blog"},
-  {"label": "Why Your PDF to Word Conversion Looks Wrong", "url": "/blog/why-pdf-to-word-conversion-looks-wrong"}
-]) }}
-
 <article class="guide-article">
 
 <h1>Why Your PDF to Word Conversion Looks Wrong</h1>
+
+{% from "components/byline.html" import byline %}
+{{ byline(date_published, date_modified) }}
 <p><em>Published September 2026</em></p>
 
 <p>
@@ -286,8 +285,7 @@ visually wrong, since it isn't trying to reconstruct a formatted document at all
 {% block jsonld %}
 {{ super() }}
 {% from "components/jsonld.html" import article, faqpage %}
-{% from "components/breadcrumb.html" import breadcrumb_jsonld %}
-{{ article(self.title(), self.description(), request.path, "2026-09-11") }}
+{{ article(self.title(), self.description(), request.path, date_published, date_modified) }}
 {{ faqpage([
   {"q": "Why does my PDF look different after converting to Word?", "a": "Because a PDF only records where content sits on a page, while Word needs to know what role that content plays — a heading, a paragraph, a table — and has to infer that structure during conversion. Text, spacing, and layout that depended on the PDF's fixed positioning can shift once the document becomes editable."},
   {"q": "Can a scanned PDF be converted into editable Word text?", "a": "Not with QuickTools' PDF to Word tool. A scanned PDF is an image of a page with no underlying text data, and this tool doesn't perform OCR (optical character recognition). Converting a scan produces a Word document with the page embedded as a picture, not editable text."},
@@ -296,10 +294,5 @@ visually wrong, since it isn't trying to reconstruct a formatted document at all
   {"q": "Why did images move?", "a": "A PDF places an image at a fixed coordinate on the page. Word anchors images relative to the surrounding text and layout instead. When those two positioning models don't map cleanly onto each other, an image can land in a slightly different spot once the document becomes editable."},
   {"q": "Will a complex PDF ever convert perfectly to Word?", "a": "Not reliably. The more a PDF depends on precise visual design — multiple columns, decorative text placement, unusual fonts — the more structure a converter has to guess at, and the more manual cleanup the result is likely to need. Simple, single-column, text-based PDFs convert far more cleanly than heavily designed ones."},
   {"q": "Should I use PDF to Text instead?", "a": "If all you need is the words — not formatting, tables, or layout — yes. PDF to Text extracts the plain text directly using a different process entirely, with far less that can go visually wrong, since it isn't trying to reconstruct a formatted document at all."}
-]) }}
-{{ breadcrumb_jsonld([
-  {"label": "Home", "url": "/"},
-  {"label": "Guides", "url": "/blog"},
-  {"label": "Why Your PDF to Word Conversion Looks Wrong", "url": "/blog/why-pdf-to-word-conversion-looks-wrong"}
 ]) }}
 {% endblock %}

@@ -1,4 +1,7 @@
 {% extends "base.html" %}
+{% set breadcrumb_label = "How to Hide Sensitive Information in a PDF" %}
+{% set date_published = "2026-08-07" %}
+{% set date_modified = "2026-09-18" %}
 
 {% block title %}How to Hide Sensitive Information in a PDF (Redact PDF) Free{% endblock %}
 
@@ -9,6 +12,9 @@
 <article class="guide-article">
 
 <h1>How to Hide Sensitive Information in a PDF</h1>
+
+{% from "components/byline.html" import byline %}
+{{ byline(date_published, date_modified) }}
 
 <p>
 Before sharing a contract, medical record, invoice, or ID scan, you often need to hide certain

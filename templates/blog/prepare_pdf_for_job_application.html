@@ -1,4 +1,7 @@
 {% extends "base.html" %}
+{% set breadcrumb_label = "How to Prepare Your Resume PDF for Online Job Applications" %}
+{% set date_published = "2026-08-12" %}
+{% set date_modified = "2026-09-18" %}
 
 {% block title %}How to Prepare Your Resume PDF for Online Job Applications{% endblock %}
 
@@ -11,6 +14,9 @@ A practical checklist for turning your resume into a PDF that opens cleanly, fit
 <article class="guide-article">
 
 <h1>How to Prepare Your Resume PDF for Online Job Applications</h1>
+
+{% from "components/byline.html" import byline %}
+{{ byline(date_published, date_modified) }}
 <p><em>Published August 2026</em></p>
 
 <p>
@@ -102,7 +108,7 @@ software and installed fonts.
 {% block jsonld %}
 {{ super() }}
 {% from "components/jsonld.html" import article, faqpage %}
-{{ article(self.title(), self.description(), request.path, "2026-08-12") }}
+{{ article(self.title(), self.description(), request.path, date_published, date_modified) }}
 {{ faqpage([
   {"q": "Will an ATS actually read text correctly from a PDF resume?", "a": "Yes, as long as the PDF was created from a real text document (like Word) rather than scanned or exported as flattened images. Text created digitally remains selectable and machine-readable inside the PDF."},
   {"q": "Should I compress my resume even if it's already small?", "a": "No need — compression only matters if you're bumping against an upload limit. A well-formatted text-based resume is typically well under 1MB already."},

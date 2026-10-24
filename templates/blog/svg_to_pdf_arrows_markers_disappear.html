@@ -1,4 +1,7 @@
 {% extends "base.html" %}
+{% set breadcrumb_label = "Why Arrows Disappear When You Convert an SVG Diagram to PDF" %}
+{% set date_published = "2026-09-20" %}
+{% set date_modified = "2026-09-20" %}
 
 {% block title %}Why Arrows Disappear When You Convert an SVG Diagram to PDF{% endblock %}
 
@@ -8,16 +11,12 @@ Why SVG arrowheads can disappear or move during PDF conversion, how QuickTools h
 
 {% block content %}
 
-{% from "components/breadcrumb.html" import breadcrumb %}
-{{ breadcrumb([
-  {"label": "Home", "url": "/"},
-  {"label": "Guides", "url": "/blog"},
-  {"label": "Why Arrows Disappear When You Convert an SVG Diagram to PDF", "url": "/blog/svg-to-pdf-arrows-markers-disappear"}
-]) }}
-
 <article class="guide-article">
 
 <h1>Why Arrows Disappear When You Convert an SVG Diagram to PDF</h1>
+
+{% from "components/byline.html" import byline %}
+{{ byline(date_published, date_modified) }}
 <p><em>Published September 2026</em></p>
 
 <p>
@@ -245,18 +244,12 @@ misplaced arrowhead is a localized symptom, not an indicator that the whole file
 {% block jsonld %}
 {{ super() }}
 {% from "components/jsonld.html" import article, faqpage %}
-{% from "components/breadcrumb.html" import breadcrumb_jsonld %}
-{{ article(self.title(), self.description(), request.path, "2026-09-20") }}
+{{ article(self.title(), self.description(), request.path, date_published, date_modified) }}
 {{ faqpage([
   {"q": "Why did my arrowhead disappear when I converted my SVG to PDF?", "a": "It was most likely defined as an SVG marker rather than as an ordinary shape. A marker is reusable artwork referenced by name from a line or path, and resolving that reference into visible geometry is a separate step from rendering the line itself. We confirmed directly that, before any special handling, a marker-based arrowhead didn't appear in the converted output even though the line it was attached to did."},
   {"q": "Does QuickTools fix missing SVG arrows?", "a": "QuickTools' current SVG preprocessing handles the common case: straight lines, polylines, and simple absolute paths using marker-start and/or marker-end, with the arrowhead built from a path or polygon. We tested this directly and confirmed it works across horizontal, vertical, and diagonal lines, multiple arrows, and arrows alongside text and other shapes. It isn't a complete implementation of every SVG marker feature, and specific cases such as transformed lines, relative or arc-based path commands, and circle-based markers aren't handled correctly."},
   {"q": "Why is my arrowhead in the wrong place after conversion?", "a": "This points to a different, more specific limitation than a missing arrow: if the line or a parent group has its own transform (a translate, rotate, or scale), the generated arrowhead can be positioned using the line's untransformed coordinates rather than its final, transformed position, so the two no longer line up."},
   {"q": "Are curved SVG arrows supported?", "a": "We can't make a general claim either way. In our testing, one specific curved-path case happened to produce a correctly positioned and rotated arrowhead, but that result came from a coincidence in how the underlying calculation works for that particular kind of curve, not from deliberate curve support, so it shouldn't be read as \"curved arrows work.\" Straight lines, polylines, and simple absolute paths are what this preprocessing is verified to handle reliably."},
   {"q": "Does this problem affect the rest of my SVG diagram?", "a": "Not based on what we tested. In every case we tried, the rest of the diagram, other shapes, text, and lines without a problematic marker, converted normally alongside an arrow that had an issue. A missing or misplaced arrowhead is a localized symptom, not an indicator that the whole file failed to convert."}
-]) }}
-{{ breadcrumb_jsonld([
-  {"label": "Home", "url": "/"},
-  {"label": "Guides", "url": "/blog"},
-  {"label": "Why Arrows Disappear When You Convert an SVG Diagram to PDF", "url": "/blog/svg-to-pdf-arrows-markers-disappear"}
 ]) }}
 {% endblock %}

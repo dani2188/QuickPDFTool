@@ -1,4 +1,7 @@
 {% extends "base.html" %}
+{% set breadcrumb_label = "How to Convert PDF to Excel" %}
+{% set date_published = "2026-03-16" %}
+{% set date_modified = "2026-09-20" %}
 
 {% block title %}How to Convert PDF to Excel Online | Extract Tables from PDF{% endblock %}
 
@@ -9,6 +12,9 @@
 <article class="guide-article">
 
 <h1>How to Convert PDF to Excel</h1>
+
+{% from "components/byline.html" import byline %}
+{{ byline(date_published, date_modified) }}
 
 <p>
 Many reports, invoices, financial statements, and data exports are distributed as PDF files. While PDFs are great for viewing, they're not designed for data analysis. Converting a PDF to Excel extracts the tabular data into a spreadsheet where you can sort, filter, calculate, and analyse it freely.

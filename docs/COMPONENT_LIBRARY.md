@@ -104,8 +104,9 @@ For each component: **Purpose · Structure · CSS classes · Responsive · Acces
 
 ## Breadcrumb
 - **Purpose:** show page hierarchy (Home › PDF Tools › Compress).
-- **Recommended structure:** `<nav aria-label="Breadcrumb"><ol>…</ol></nav>` with a JSON-LD `BreadcrumbList`.
-- **Status:** not yet implemented — see [SEO_GUIDELINES.md](./SEO_GUIDELINES.md).
+- **Structure:** `<nav class="breadcrumb" aria-label="Breadcrumb"><ol>…</ol></nav>` plus a matching JSON-LD `BreadcrumbList`, both from the macros in `templates/components/breadcrumb.html`.
+- **Usage:** rendered by `base.html`, never by hand. A page opts in with `{% set breadcrumb_label = "Compress PDF" %}` right after `{% extends "base.html" %}`; `breadcrumb_trail()` in `app.py` adds Home and the section (Guides / Image Tools / PDF Tools) from the URL.
+- **Status:** live on every tool, guide, blog and hub page — see [SEO_GUIDELINES.md](./SEO_GUIDELINES.md).
 
 ## Section Heading
 - **Purpose:** consistent section titles inside content.

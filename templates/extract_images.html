@@ -1,4 +1,5 @@
-{% extends "base.html" %} {% block title %}Extract Images from PDF Online{% endblock %} {% block description %}Save every embedded image in a PDF as a separate file. Free, no signup.{% endblock %} {% block content %} {% if limit %}
+{% extends "base.html" %}
+{% set breadcrumb_label = "Extract Images from PDF" %} {% block title %}Extract Images from PDF Online{% endblock %} {% block description %}Save every embedded image in a PDF as a separate file. Free, no signup.{% endblock %} {% block content %} {% if limit %}
 <p class="warning">
   ⚠️ Only first 50 images extracted to keep processing fast.
 </p>

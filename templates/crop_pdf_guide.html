@@ -1,4 +1,7 @@
 {% extends "base.html" %}
+{% set breadcrumb_label = "How to Crop PDF Pages" %}
+{% set date_published = "2026-03-16" %}
+{% set date_modified = "2026-09-18" %}
 
 {% block title %}How to Crop PDF Pages Online | Trim PDF Margins Free{% endblock %}
 
@@ -9,6 +12,9 @@
 <article class="guide-article">
 
 <h1>How to Crop PDF Pages</h1>
+
+{% from "components/byline.html" import byline %}
+{{ byline(date_published, date_modified) }}
 
 <p>
 Cropping a PDF adjusts the visible area of its pages — effectively trimming margins or removing unwanted white space, headers, footers, or borders. This is useful for removing oversized margins from scanned documents, cutting away page borders added by printing software, or focusing on a specific region of a page.

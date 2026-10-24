@@ -1,4 +1,7 @@
 {% extends "base.html" %}
+{% set breadcrumb_label = "How to Convert SVG to PDF" %}
+{% set date_published = "2026-08-12" %}
+{% set date_modified = "2026-09-18" %}
 
 {% block title %}How to Convert SVG to PDF – Keep Vector Graphics Sharp{% endblock %}
 
@@ -9,6 +12,9 @@
 <article class="guide-article">
 
 <h1>How to Convert SVG to PDF</h1>
+
+{% from "components/byline.html" import byline %}
+{{ byline(date_published, date_modified) }}
 
 <p>
 SVG (Scalable Vector Graphics) is the format most design tools export logos, icons, and diagrams in,

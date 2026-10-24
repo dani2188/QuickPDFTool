@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% block robots %}<meta name="robots" content="noindex" />{% endblock %}
 
 {% block title %}Processing PDF – Please Wait{% endblock %}
 {% block description %}We are processing your PDF file. Please wait while the process completes.{% endblock %}
@@ -15,6 +16,11 @@
 </div>
 
 <p class="file-info">This may take 5–20 seconds depending on file size</p>
+
+<div class="process-error" id="processError" role="alert" hidden>
+  <p id="processErrorMessage"></p>
+  <a href="/compress-pdf" class="main-btn">Try again</a>
+</div>
 
 <p class="file-info">
   🔒 Your files are secure and automatically deleted after processing
@@ -37,26 +43,49 @@
 
 <script>
   // Poll for the finished file, then go to the download/result page.
+  // Gives up after ~3 minutes, matching Gunicorn's --timeout 180.
+  const POLL_TIMEOUT_MS = 180000;
+  let pollTimer = null;
+  let pollStarted = 0;
+  let failed = false;
+
+  function showError(message) {
+    failed = true;
+    clearInterval(pollTimer);
+    document.querySelector(".spinner").style.display = "none";
+    document.querySelector(".progress-bar").style.display = "none";
+    document.getElementById("processErrorMessage").textContent = message;
+    document.getElementById("processError").hidden = false;
+  }
+
   function checkFile() {
+    if (Date.now() - pollStarted > POLL_TIMEOUT_MS) {
+      showError("This is taking longer than expected, so we stopped waiting. Please try again, or try a smaller file.");
+      return;
+    }
+
     fetch("/status/{{ file_name }}")
       .then((response) => response.json())
       .then((data) => {
         if (data.ready) {
           window.location.href = "/download/{{ file_name }}";
+        } else if (data.error) {
+          showError(data.error);
         }
       })
       .catch(() => console.log("Status check failed"));
   }
 
   document.addEventListener("DOMContentLoaded", function () {
-    setInterval(checkFile, 2000);
+    pollStarted = Date.now();
+    pollTimer = setInterval(checkFile, 2000);
   });
 
   // Progress animation (visual only)
   let width = 0;
   function animateProgress() {
     const bar = document.getElementById("progressFill");
-    if (!bar) return;
+    if (!bar || failed) return;
     if (width < 90) {
       width += Math.random() * 5;
       bar.style.width = width + "%";

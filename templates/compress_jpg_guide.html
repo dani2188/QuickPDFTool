@@ -1,4 +1,7 @@
 {% extends "base.html" %}
+{% set breadcrumb_label = "How to Compress a JPG File" %}
+{% set date_published = "2026-08-23" %}
+{% set date_modified = "2026-09-18" %}
 
 {% block title %}How to Compress a JPG – Reduce Photo File Size{% endblock %}
 
@@ -9,6 +12,9 @@
 <article class="guide-article">
 
 <h1>How to Compress a JPG File</h1>
+
+{% from "components/byline.html" import byline %}
+{{ byline(date_published, date_modified) }}
 
 <p>
 Modern phone cameras produce photos that are several megabytes each — great for print, often too

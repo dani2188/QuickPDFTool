@@ -1,4 +1,7 @@
 {% extends "base.html" %}
+{% set breadcrumb_label = "How to Remove the Background from a Photo" %}
+{% set date_published = "2026-08-26" %}
+{% set date_modified = "2026-09-18" %}
 
 {% block title %}How to Remove the Background from a Photo Online{% endblock %}
 
@@ -9,6 +12,9 @@
 <article class="guide-article">
 
 <h1>How to Remove the Background from a Photo</h1>
+
+{% from "components/byline.html" import byline %}
+{{ byline(date_published, date_modified) }}
 
 <p>
 Cutting a subject out from its background used to mean a fiddly manual selection in an image editor.

@@ -1,4 +1,7 @@
 {% extends "base.html" %}
+{% set breadcrumb_label = "How to Convert Word to PDF" %}
+{% set date_published = "2026-03-14" %}
+{% set date_modified = "2026-10-22" %}
 
 {% block title %}
 How to Convert Word to PDF – DOCX to PDF Online Free
@@ -14,6 +17,9 @@ Learn how to convert a Word document (DOCX) to PDF format quickly and for free. 
 
 <h1>How to Convert Word to PDF</h1>
 
+{% from "components/byline.html" import byline %}
+{{ byline(date_published, date_modified) }}
+
 <p>
 PDF is the universal standard for sharing documents. Unlike a Word file (.docx), a PDF looks identical on every device and operating system — fonts, layout, and formatting are all locked in place. Converting your Word document to PDF before sharing ensures your recipient sees exactly what you intended, regardless of what software they use.
 </p>
@@ -25,17 +31,17 @@ Our free online Word to PDF converter handles DOCX files and produces a clean, p
 <h2>Step 1 – Open the Word to PDF Tool</h2>
 
 <p>
-Go to our <a href="/word-to-pdf">Word to PDF converter</a>. You'll see a file upload area where you can select your .docx file by clicking or dragging and dropping it onto the page.
+Go to our <a href="/word-to-pdf">Word to PDF converter</a>. You'll see a file upload area where you can select your .docx, .doc or .odt file by clicking or dragging and dropping it onto the page.
 </p>
 
 <h2>Step 2 – Upload Your Word Document</h2>
 
 <p>
-Select your .docx file and upload it. The tool accepts standard Microsoft Word documents. The conversion process preserves the document's content, text formatting, headings, tables, and layout as faithfully as possible.
+Select your file and upload it. The tool accepts Microsoft Word documents (.docx and the older .doc) as well as OpenDocument text files (.odt). The conversion process preserves the document's content, text formatting, headings, tables, and layout as faithfully as possible.
 </p>
 
 <p>
-Make sure your document is saved in .docx format (not .doc, the older format). If you have an older .doc file, open it in Microsoft Word or Google Docs and save it as .docx before uploading.
+Older .doc files convert directly — there's no need to re-save them as .docx first. If a very old .doc file comes out with shifted layout, opening it in Word or Google Docs and saving it as .docx usually fixes it.
 </p>
 
 <h2>Step 3 – Download Your PDF</h2>
@@ -75,7 +81,7 @@ Yes. The converter handles tables, images, headings, bullet lists, and most stan
 
 <h3>Can I convert .doc files (older Word format)?</h3>
 <p>
-The tool works best with .docx files. If you have a .doc file, open it in Word and save it as .docx first, then convert.
+Yes. The converter accepts older .doc files as well as .docx and OpenDocument .odt files, and the file extension can be upper- or lower-case. Very old or unusual .doc files occasionally lay out slightly differently than they do in Word; if yours does, re-save it as .docx and convert again.
 </p>
 
 <h3>Is the converted PDF editable?</h3>
@@ -103,7 +109,7 @@ Files up to 20MB are supported. For larger documents, try compressing images in 
 
 {% block jsonld %}{% from "components/jsonld.html" import howto, faqpage %}{{ howto(self.title(), self.description(), request.path, ["Open the Word to PDF Tool", "Upload Your Word Document", "Download Your PDF"]) }}{{ faqpage([
   {"q": "Will my tables and images be preserved?", "a": "Yes. The converter handles tables, images, headings, bullet lists, and most standard Word formatting. Complex layouts with heavy use of text boxes or advanced Word features may require manual checking."},
-  {"q": "Can I convert .doc files (older Word format)?", "a": "The tool works best with .docx files. If you have a .doc file, open it in Word and save it as .docx first, then convert."},
+  {"q": "Can I convert .doc files (older Word format)?", "a": "Yes. The converter accepts older .doc files as well as .docx and OpenDocument .odt files, and the file extension can be upper- or lower-case. Very old or unusual .doc files occasionally lay out slightly differently than they do in Word; if yours does, re-save it as .docx and convert again."},
   {"q": "Is the converted PDF editable?", "a": "The resulting PDF is a standard PDF without editing restrictions. You can add text, annotations, or signatures using our other tools. The content is not locked by default unless you add password protection."},
   {"q": "What's the file size limit?", "a": "Files up to 20MB are supported. For larger documents, try compressing images in Word before uploading."}
 ]) }}{% endblock %}

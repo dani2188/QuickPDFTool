@@ -1,4 +1,7 @@
 {% extends "base.html" %}
+{% set breadcrumb_label = "How to Rotate PDF Pages" %}
+{% set date_published = "2026-03-14" %}
+{% set date_modified = "2026-09-18" %}
 
 {% block title %}
 How to Rotate PDF Pages – Fix Page Orientation Online
@@ -13,6 +16,9 @@ Learn how to rotate PDF pages online. Fix upside-down or sideways pages in any P
 <article class="guide-article">
 
 <h1>How to Rotate PDF Pages</h1>
+
+{% from "components/byline.html" import byline %}
+{{ byline(date_published, date_modified) }}
 
 <p>
 Scanned documents often come out sideways or upside down. Pages saved from mobile apps or emails can have the wrong orientation. Rotating a PDF fixes these issues and makes the document easy to read and share.

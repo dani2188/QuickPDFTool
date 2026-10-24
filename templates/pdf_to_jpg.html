@@ -1,4 +1,5 @@
-{% extends "base.html" %} {% block title %}Convert PDF to JPG Online – Free PDF to Image Converter{% endblock %} {% block description %}Convert every page of a PDF into a JPG image. Free, no signup.{% endblock %} {% block content %}
+{% extends "base.html" %}
+{% set breadcrumb_label = "Convert PDF to JPG" %} {% block title %}Convert PDF to JPG Online – Free PDF to Image Converter{% endblock %} {% block description %}Convert every page of a PDF into a JPG image. Free, no signup.{% endblock %} {% block content %}
 
 <h1>Convert PDF to JPG</h1>
 
@@ -49,6 +50,8 @@
   <p><strong>Embedding in documents:</strong> Insert individual PDF pages as images into Word documents, PowerPoint presentations, or websites.</p>
   <p><strong>Previewing content:</strong> Generate image thumbnails of PDF pages for use in galleries or document management systems.</p>
   <p><strong>Editing pages:</strong> Open the JPG in any image editor to annotate, crop, or modify content that was locked inside a PDF.</p>
+
+  {% include "components/examples/pdf_to_jpg.html" %}
 
   <h2>Frequently Asked Questions</h2>
 

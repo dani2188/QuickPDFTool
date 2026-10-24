@@ -1,4 +1,7 @@
 {% extends "base.html" %}
+{% set breadcrumb_label = "How to Convert PDF to WebP" %}
+{% set date_published = "2026-03-16" %}
+{% set date_modified = "2026-09-18" %}
 
 {% block title %}How to Convert PDF to WebP Online | PDF to WebP Free{% endblock %}
 
@@ -9,6 +12,9 @@
 <article class="guide-article">
 
 <h1>How to Convert PDF to WebP</h1>
+
+{% from "components/byline.html" import byline %}
+{{ byline(date_published, date_modified) }}
 
 <p>
 WebP is a modern image format developed by Google that provides excellent compression while maintaining high visual quality. WebP images are significantly smaller than equivalent JPG or PNG files, making them ideal for websites where page load speed matters. Converting PDF pages to WebP produces lightweight, high-quality images that are perfect for web use.

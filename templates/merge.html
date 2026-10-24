@@ -1,4 +1,5 @@
-{% extends "base.html" %} {% block title %}Merge PDF Files Online{% endblock %}
+{% extends "base.html" %}
+{% set breadcrumb_label = "Merge PDF Files" %} {% block title %}Merge PDF Files Online{% endblock %}
 {% block description %}Combine multiple PDF files into a single document online. Free, no signup.{% endblock %}
 {% block content %}
 
@@ -48,6 +49,8 @@
   <h2>Tips for Best Results</h2>
 
   <p>Upload files in the correct order before merging — the final document follows the upload sequence. If you need to fix page orientation before merging, use the <a href="/rotate-pdf">Rotate PDF tool</a> first. After merging, you can reduce the combined file size with our <a href="/compress-pdf">PDF compressor</a>.</p>
+
+  {% include "components/examples/merge.html" %}
 
   <h2>Frequently Asked Questions</h2>
 

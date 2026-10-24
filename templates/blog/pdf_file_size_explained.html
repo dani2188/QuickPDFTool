@@ -1,4 +1,7 @@
 {% extends "base.html" %}
+{% set breadcrumb_label = "Why Is My PDF So Large? What Actually Takes Up Space in a PDF" %}
+{% set date_published = "2026-08-12" %}
+{% set date_modified = "2026-09-18" %}
 
 {% block title %}Why Is My PDF So Large? What Actually Takes Up Space{% endblock %}
 
@@ -11,6 +14,9 @@ A plain-English look at what makes PDF files large — embedded fonts, image res
 <article class="guide-article">
 
 <h1>Why Is My PDF So Large? What Actually Takes Up Space in a PDF</h1>
+
+{% from "components/byline.html" import byline %}
+{{ byline(date_published, date_modified) }}
 <p><em>Published August 2026</em></p>
 
 <p>
@@ -106,7 +112,7 @@ design file, images and fonts are the usual suspects.
 {% block jsonld %}
 {{ super() }}
 {% from "components/jsonld.html" import article, faqpage %}
-{{ article(self.title(), self.description(), request.path, "2026-08-12") }}
+{{ article(self.title(), self.description(), request.path, date_published, date_modified) }}
 {{ faqpage([
   {"q": "Why didn't compressing my PDF make much difference?", "a": "If a PDF is already mostly text, there's very little image data for a compressor to reduce — the file was likely already close to its practical minimum size."},
   {"q": "Does more pages always mean a bigger file?", "a": "Not necessarily. A 100-page text-only report can be smaller than a 3-page PDF containing a couple of high-resolution photos. Page count matters far less than what's on each page."},

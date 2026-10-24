@@ -1,4 +1,5 @@
-{% extends "base.html" %} {% block title %}Split PDF Online{% endblock %} {%
+{% extends "base.html" %}
+{% set breadcrumb_label = "Split PDF" %} {% block title %}Split PDF Online{% endblock %} {%
 block description %}Split a PDF into separate pages or extract a page range. Free, no signup.{% endblock %} {%
 block content %}
 
@@ -42,6 +43,8 @@ block content %}
   <p><strong>Separating a combined scan:</strong> When multiple documents were scanned into one PDF, splitting them lets you reorganise the pages properly.</p>
   <p><strong>Re-merging in a different order:</strong> Split your document into pages, discard the ones you don't need, and use the <a href="/merge-pdf">Merge PDF tool</a> to recombine them in a new order.</p>
   <p><strong>Sharing specific sections:</strong> Share only the relevant pages of a report or contract without exposing the entire document.</p>
+
+  {% include "components/examples/split.html" %}
 
   <h2>Frequently Asked Questions</h2>
 

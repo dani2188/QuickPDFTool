@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% block robots %}<meta name="robots" content="noindex" />{% endblock %}
 
 {% block title %}Download WebP Images{% endblock %}
 
@@ -12,9 +13,9 @@ Download the converted WebP images below.
 
 <div class="tools-mini-grid">
 
-{% for file in files %}
+{% for image in images %}
 
-<a href="/download-file/{{ file }}">{{ file }}</a>
+<a href="/download-file/{{ image }}">Download page {{ loop.index }}</a>
 
 {% endfor %}
 

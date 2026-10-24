@@ -1,4 +1,7 @@
 {% extends "base.html" %}
+{% set breadcrumb_label = "How to Send a Large PDF When Email Rejects It" %}
+{% set date_published = "2026-08-12" %}
+{% set date_modified = "2026-09-18" %}
 
 {% block title %}How to Send a Large PDF When Email Rejects It{% endblock %}
 
@@ -11,6 +14,9 @@ A decision tree for getting a large PDF to its recipient when email keeps bounci
 <article class="guide-article">
 
 <h1>How to Send a Large PDF When Email Rejects It</h1>
+
+{% from "components/byline.html" import byline %}
+{{ byline(date_published, date_modified) }}
 <p><em>Published August 2026</em></p>
 
 <p>
@@ -111,7 +117,7 @@ the PDF itself either way.
 {% block jsonld %}
 {{ super() }}
 {% from "components/jsonld.html" import article, faqpage %}
-{{ article(self.title(), self.description(), request.path, "2026-08-12") }}
+{{ article(self.title(), self.description(), request.path, date_published, date_modified) }}
 {{ faqpage([
   {"q": "Why does my file still bounce after compressing it once?", "a": "If the original was extremely image-heavy (very high resolution scans, for example), one compression pass may not be enough. Try a stronger setting on the main Compress PDF tool (High or Extreme) rather than the email-optimised default."},
   {"q": "Does splitting a PDF lose any quality?", "a": "No — splitting just divides existing pages into separate files. Nothing on any page is re-rendered or compressed in the process."},

@@ -1,4 +1,7 @@
 {% extends "base.html" %}
+{% set breadcrumb_label = "Instagram Image Sizes: The Complete 2026 Guide" %}
+{% set date_published = "2026-04-28" %}
+{% set date_modified = "2026-09-10" %}
 
 {% block title %}Instagram Image Sizes: The Complete 2026 Guide{% endblock %}
 
@@ -9,6 +12,9 @@
 <article class="guide-article">
 
 <h1>Instagram Image Sizes: The Complete 2026 Guide</h1>
+
+{% from "components/byline.html" import byline %}
+{{ byline(date_published, date_modified) }}
 <p><em>Published April 2026</em></p>
 
 <p>Instagram compresses every image you upload. If your image isn't the right size to begin with, the platform will resize and re-compress it — which can reduce sharpness and introduce blocky artifacts. Understanding the correct dimensions for each content type is the most important step in keeping your Instagram content looking crisp and professional.</p>
@@ -112,5 +118,5 @@
 {% block jsonld %}
 {{ super() }}
 {% from "components/jsonld.html" import article %}
-{{ article(self.title(), self.description(), request.path, "2026-04-28") }}
+{{ article(self.title(), self.description(), request.path, date_published, date_modified) }}
 {% endblock %}
