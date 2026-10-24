@@ -591,7 +591,7 @@ out of scope — this fix only recognizes QuickTools' own watermark format.
 
 - **Area:** Content
 - **Priority:** P2
-- **Status:** Open
+- **Status:** Done
 - **Discovered:** Logo rollout (2026-10-24)
 - **Source:** `static/img/icon-512.png`
 
@@ -600,3 +600,5 @@ out of scope — this fix only recognizes QuickTools' own watermark format.
 **Proposed improvement:** Drop the official `hellobrivio-mark-512.png` into `static/img/` under the name `icon-512.png`, replacing the placeholder. Nothing else needs to change: every reference already points at that filename. Optionally derive `favicon-32.png`, `favicon-192.png` and `apple-touch-icon.png` from the 512px file for maximum sharpness.
 
 **Notes:** Check the result with a link-preview debugger after deploying, since platforms cache `og:image`.
+
+**Resolved (2026-10-24, branch `feat/hellobrivio-logo`):** the official 512px mark replaces the placeholder in `static/img/icon-512.png`. `favicon-32.png` and `apple-touch-icon.png` were regenerated from it; `favicon-192.png` is the supplied file. The link-preview cache check after deploy is still worth doing.
