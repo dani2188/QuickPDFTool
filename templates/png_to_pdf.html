@@ -53,16 +53,18 @@
 
   <h2>Important considerations</h2>
   <ul class="benefits">
-    <li><strong>Transparency doesn't carry over.</strong> PNG supports a transparent background, but PDF pages don't — any transparent areas are filled with a solid color in the output.</li>
+    <li><strong>Transparency becomes white.</strong> PNG supports a transparent background, but a PDF page can't be see-through — transparent areas are placed on white.</li>
     <li><strong>Upload order is page order,</strong> and each page matches its source image's own dimensions — there's no cropping or resizing to a uniform page size.</li>
-    <li><strong>Images are stored as JPEG inside the PDF.</strong> That keeps the file far smaller than the original PNGs, but JPEG is lossy: screenshots and diagrams can pick up faint artifacts around sharp text and lines. Use <a href="/compress-pdf">Compress PDF</a> afterward if the file needs to be smaller still.</li>
+    <li><strong>Images are stored losslessly.</strong> Every pixel of your PNG is kept exactly as it was — no JPEG artifacts around text or lines — so a batch of large PNGs makes a correspondingly large PDF. Use <a href="/compress-pdf">Compress PDF</a> afterward if the file needs to be smaller.</li>
   </ul>
+
+  {% include "components/examples/png_to_pdf.html" %}
 
   <h2>Frequently Asked Questions</h2>
 
   <h3>What happens to transparent areas in my PNG?</h3>
   <p>
-    They're filled with a solid color, since PDF pages don't support transparency the way PNG does.
+    They're placed on a white background, since a PDF page can't be see-through.
     If you need the transparency preserved for further editing, keep working with the PNG directly.
   </p>
 
@@ -73,9 +75,9 @@
 
   <h3>Does this reduce my file size?</h3>
   <p>
-    Usually, yes. Each PNG is re-encoded as JPEG inside the PDF, which is much smaller than lossless PNG
-    but can add faint artifacts around sharp text and lines. Run the result through
-    <a href="/compress-pdf">Compress PDF</a> afterward if it needs to be smaller still.
+    Not by itself. PNGs are stored losslessly, so the PDF is about the same size as the PNGs you upload —
+    a little smaller or a little larger depending on the image. Run the result through
+    <a href="/compress-pdf">Compress PDF</a> afterward if it needs to be smaller.
   </p>
 
   <h3>Does the order I upload files in matter?</h3>
@@ -102,9 +104,9 @@
 {% from "components/jsonld.html" import webapp, faqpage %}
 {{ webapp(self.title(), self.description(), request.path) }}
 {{ faqpage([
-  {"q": "What happens to transparent areas in my PNG?", "a": "They're filled with a solid color, since PDF pages don't support transparency the way PNG does. If you need the transparency preserved for further editing, keep working with the PNG directly."},
+  {"q": "What happens to transparent areas in my PNG?", "a": "They're placed on a white background, since a PDF page can't be see-through. If you need the transparency preserved for further editing, keep working with the PNG directly."},
   {"q": "Can I mix PNG and JPG images in the same PDF?", "a": "Yes — use JPG to PDF, which accepts both formats in the same upload."},
-  {"q": "Does this reduce my file size?", "a": "Usually, yes. Each PNG is re-encoded as JPEG inside the PDF, which is much smaller than lossless PNG but can add faint artifacts around sharp text and lines. Run the result through Compress PDF afterward if it needs to be smaller still."},
+  {"q": "Does this reduce my file size?", "a": "Not by itself. PNGs are stored losslessly, so the PDF is about the same size as the PNGs you upload — a little smaller or a little larger depending on the image. Run the result through Compress PDF afterward if it needs to be smaller."},
   {"q": "Does the order I upload files in matter?", "a": "Yes. The first image you select becomes page 1 of the PDF, and the rest follow in the order they were uploaded — check the result and re-upload in the right order if the pages come out reversed or shuffled."}
 ]) }}
 {% endblock %}

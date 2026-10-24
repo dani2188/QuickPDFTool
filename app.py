@@ -83,24 +83,56 @@ def resolve_upload(name):
     return path
 
 
-def open_upload_images(files):
-    """Save each uploaded image and open it as RGB.
+def flatten_on_white(img):
+    """RGB copy of img with any transparency composited onto white.
 
-    Returns (images, error_message); error_message is set when a file isn't
-    a readable image or nothing was uploaded.
+    Image.convert("RGB") alone drops alpha without compositing, so
+    transparent pixels keep whatever colour is stored under them (usually
+    black).
     """
-    images = []
-    for file in files:
-        if not file.filename:
-            continue
-        path, _ = save_upload(file)
-        try:
-            images.append(Image.open(path).convert("RGB"))
-        except (OSError, ValueError):
-            return [], f"\"{secure_filename(file.filename)}\" isn't an image we can read. Please upload JPG or PNG files."
-    if not images:
-        return [], "No images selected. Please choose at least one image."
-    return images, None
+    if img.mode in ("RGBA", "LA") or (img.mode == "P" and "transparency" in img.info):
+        rgba = img.convert("RGBA")
+        flat = Image.new("RGB", rgba.size, (255, 255, 255))
+        flat.paste(rgba, mask=rgba.getchannel("A"))
+        return flat
+    return img.convert("RGB")
+
+
+def images_to_pdf(files, output_path):
+    """Build a PDF with one page per uploaded image, sized to the image's pixels.
+
+    JPEGs are embedded byte-for-byte, so they are not re-compressed. Every
+    other format is flattened onto white and embedded losslessly (PNG/Flate).
+    Returns an error message, or None on success.
+    """
+    doc = fitz.open()
+    try:
+        for file in files:
+            if not file.filename:
+                continue
+            path, _ = save_upload(file)
+            try:
+                with Image.open(path) as img:
+                    img.load()
+                    width, height = img.size
+                    if img.format == "JPEG" and img.mode in ("RGB", "L"):
+                        with open(path, "rb") as f:
+                            data = f.read()
+                    else:
+                        buf = io.BytesIO()
+                        flatten_on_white(img).save(buf, "PNG")
+                        data = buf.getvalue()
+            except (OSError, ValueError):
+                return f"\"{secure_filename(file.filename)}\" isn't an image we can read. Please upload JPG or PNG files."
+            page = doc.new_page(width=width, height=height)
+            page.insert_image(page.rect, stream=data)
+
+        if len(doc) == 0:
+            return "No images selected. Please choose at least one image."
+        doc.save(output_path, deflate=True)
+    finally:
+        doc.close()
+    return None
 
 
 @app.template_filter("longdate")
@@ -673,20 +705,15 @@ def jpg_to_pdf():
 
     if request.method == "POST":
 
-        images, error = open_upload_images(request.files.getlist("images"))
-
-        if error:
-            return error_page(error)
-
         unique_id = str(uuid.uuid4())
         output_filename = f"{unique_id}_images.pdf"
         output_path = os.path.join(UPLOAD_FOLDER, output_filename)
 
-        images[0].save(
-            output_path,
-            save_all=True,
-            append_images=images[1:]
-        )
+        error = images_to_pdf(request.files.getlist("images"), output_path)
+
+        if error:
+            return error_page(error)
+
         delete_file_later(output_path)
 
         return send_file(output_path, as_attachment=True, download_name="images.pdf")
@@ -1517,13 +1544,29 @@ def add_watermark():
     return render_template("add_watermark.html")
 
 # Visual signature of the watermark add_watermark() draws: Helvetica,
-# 40pt, 50% gray at 30% opacity, positioned at x=150/y=400 -- all hardcoded
-# there. Matching every one of these together (not any single attribute
-# alone) is what keeps this from also matching ordinary document text;
-# checked against a battery of near-miss cases (same position/size but
-# opaque, same signature but a different position, etc.) before relying
-# on this as the removal signature.
-def _is_own_watermark_span(span):
+# 40pt, 50% gray at 30% opacity, with its text origin at PDF user-space
+# (150, 400) -- all hardcoded there. Matching every one of these together
+# (not any single attribute alone) is what keeps this from also matching
+# ordinary document text; checked against a battery of near-miss cases
+# (same position/size but opaque, same signature but a different position,
+# etc.) before relying on this as the removal signature.
+#
+# The overlay is drawn on a Letter canvas but merged into pages of any
+# size without scaling, so on a taller or shorter page it sits at a
+# different distance from the top. The expected position is therefore
+# mapped through each page's own transformation matrix, so it follows the
+# page's height, crop box and rotation instead of assuming Letter.
+WATERMARK_ORIGIN = (150.0, 400.0)
+
+
+def _is_own_watermark_span(span, page):
+    chars = span.get("chars")
+    if not chars:
+        return False
+    expected = fitz.Point(*WATERMARK_ORIGIN) * page.transformation_matrix
+    origin = chars[0][2]
+    if abs(origin[0] - expected.x) > 1.5 or abs(origin[1] - expected.y) > 1.5:
+        return False
     if span.get("font") != "Helvetica":
         return False
     if abs(span.get("size", 0) - 40.0) > 0.5:
@@ -1534,9 +1577,6 @@ def _is_own_watermark_span(span):
     if max(color) - min(color) > 0.02:  # must be neutral gray, not colored
         return False
     if abs(color[0] - 0.572) > 0.03:
-        return False
-    bbox = span.get("bbox")
-    if not bbox or abs(bbox[0] - 150.0) > 1.5 or abs(bbox[1] - 360.7) > 1.5:
         return False
     return True
 
@@ -1564,7 +1604,7 @@ def remove_watermark():
         doc = fitz.open(input_path)
         for page in doc:
             for span in page.get_texttrace():
-                if _is_own_watermark_span(span):
+                if _is_own_watermark_span(span, page):
                     page.add_redact_annot(fitz.Rect(span["bbox"]))
             page.apply_redactions()
             page.clean_contents()
@@ -1717,19 +1757,13 @@ def png_to_pdf():
 
     if request.method == "POST":
 
-        images, error = open_upload_images(request.files.getlist("images"))
-
-        if error:
-            return error_page(error)
-
         output_filename = f"{uuid.uuid4()}_converted.pdf"
         output_path = os.path.join(UPLOAD_FOLDER, output_filename)
 
-        images[0].save(
-            output_path,
-            save_all=True,
-            append_images=images[1:]
-        )
+        error = images_to_pdf(request.files.getlist("images"), output_path)
+
+        if error:
+            return error_page(error)
 
         delete_file_later(output_path)
 
