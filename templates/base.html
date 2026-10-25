@@ -8,7 +8,7 @@
     <meta name="theme-color" content="#e5322d" />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
 
-    <title>{% block title %}QuickTools{% endblock %}</title>
+    <title>{% block title %}hellobrivio{% endblock %}</title>
 
     <meta
       name="description"
@@ -21,13 +21,13 @@
     <link rel="canonical" href="https://hellobrivio.com{{ request.path }}" />
 
     <!-- Open Graph -->
-    <meta property="og:site_name" content="QuickTools" />
+    <meta property="og:site_name" content="hellobrivio" />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://hellobrivio.com{{ request.path }}" />
     <meta property="og:title" content="{% block og_title %}{{ self.title() }}{% endblock %}" />
     <meta property="og:description" content="{% block og_description %}{{ self.description() }}{% endblock %}" />
     <meta property="og:image" content="{% block og_image %}https://hellobrivio.com/static/img/icon-512.png{% endblock %}" />
-    <meta property="og:image:alt" content="HelloBrivio logo" />
+    <meta property="og:image:alt" content="hellobrivio logo" />
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary" />
@@ -63,9 +63,9 @@
       {
         "@context": "https://schema.org",
         "@type": "WebSite",
-        "name": "QuickTools",
+        "name": "hellobrivio",
         "url": "https://hellobrivio.com/",
-        "publisher": { "@type": "Organization", "name": "HelloBrivio", "logo": "https://hellobrivio.com/static/img/icon-512.png" }
+        "publisher": { "@type": "Organization", "name": "hellobrivio", "logo": "https://hellobrivio.com/static/img/icon-512.png" }
       }
     </script>
     {% endblock %}
@@ -79,7 +79,7 @@
     <header class="topbar">
       <div class="header-wrapper">
         <div class="logo">
-          <a href="/"><img src="{{ url_for('static', filename='img/logo.png') }}" alt="HelloBrivio" width="153" height="40" /></a>
+          <a href="/"><img src="{{ url_for('static', filename='img/logo.png') }}" alt="hellobrivio" width="153" height="40" /></a>
         </div>
 
         <!-- Desktop navigation -->
@@ -125,9 +125,8 @@
     <footer class="footer">
       <div class="footer-grid">
         <div class="footer-col footer-brand">
-          <div class="footer-logo"><a href="/"><img src="{{ url_for('static', filename='img/logo.png') }}" alt="HelloBrivio" width="122" height="32" loading="lazy" /></a></div>
+          <div class="footer-logo"><a href="/"><img src="{{ url_for('static', filename='img/logo.png') }}" alt="hellobrivio" width="122" height="32" loading="lazy" /></a></div>
           <p>Free online PDF tools to compress, merge, convert and edit your documents — fast, secure, and installation-free.</p>
-          <p class="footer-ecosystem">Part of the <strong>HelloBrivio</strong> ecosystem.</p>
         </div>
 
         <div class="footer-col">
@@ -165,8 +164,7 @@
       </div>
 
       <div class="footer-bottom">
-        <p>© 2026 QuickTools — part of the HelloBrivio ecosystem.</p>
-        <p>Free online tools to compress, merge, convert and edit your PDF files.</p>
+        <p>© 2026 hellobrivio · Free online tools to compress, merge, convert and edit your PDF files.</p>
       </div>
     </footer>
 

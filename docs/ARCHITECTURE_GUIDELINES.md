@@ -1,6 +1,6 @@
-# Architecture Guidelines — QuickTools
+# Architecture Guidelines — hellobrivio
 
-The architecture every HelloBrivio product follows. QuickTools (renamed from QuickPDFTools on 2026-08-26) is the reference. For the concrete, current-state description of this app see [`../ARCHITECTURE.md`](../ARCHITECTURE.md); this document is the **prescriptive standard** for the family.
+The architecture hellobrivio follows (previously QuickPDFTools, then QuickTools; renamed on 2026-10-25). For the concrete, current-state description of this app see [`../ARCHITECTURE.md`](../ARCHITECTURE.md); this document is the **prescriptive standard**.
 
 ---
 
@@ -73,11 +73,10 @@ There is none — that's the point. Deploy = push to the default branch; Render 
 
 ## 11. Future migration strategy
 - If a product outgrows the monolith, split `app.py` by blueprint **without changing URLs** (routes are the public contract).
-- Extract shared chrome/CSS into a small internal package or git submodule so all HelloBrivio products consume one design system.
+- Extract shared chrome/CSS into a small internal package or git submodule so shared chrome lives in one place.
 - Introduce a job queue (RQ/Celery) only when synchronous processing becomes the bottleneck; keep the poll-based UX so templates don't change.
 
-## 12. Cross-product integration
-- All products share this design system, component library, and standards.
-- Cross-link in the nav/footer with the ` ↗` marker (QuickTools ↔ future QuickVideoTools ↔ …). QuickImageTools was merged into QuickTools as native routes (2026-08-25), not cross-linked externally.
-- Present a unified identity: each product shows its own name in the header and "Part of the HelloBrivio ecosystem" in the footer.
-- When these standards evolve, update the reference implementation (QuickTools) first, then propagate.
+## 12. One brand
+- There is one brand and one name, `hellobrivio` (always lowercase). The header and footer show the logo; there is no "part of an ecosystem" line.
+- QuickImageTools was merged in as native routes (2026-08-25), not cross-linked externally. Don't re-add external product links to the nav/footer.
+- If another product is ever added, decide its naming and cross-linking deliberately at that point; don't reuse the old sibling-product conventions.

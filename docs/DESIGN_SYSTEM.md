@@ -1,6 +1,6 @@
-# Design System — QuickTools
+# Design System — hellobrivio
 
-The visual language for **QuickTools** (renamed from QuickPDFTools on 2026-08-26), a product in the **HelloBrivio** ecosystem. Every HelloBrivio product (future QuickVideoTools, QuickAITools) should adopt these tokens so the family looks like one brand. QuickImageTools (Resize Image, Remove Background, Compress JPG) was merged into QuickTools as native tools on 2026-08-25 rather than remaining a separate sibling site.
+The visual language for **hellobrivio** (always lowercase, matching the logo; previously QuickPDFTools, then QuickTools; renamed on 2026-10-25). hellobrivio is both the brand and the product. QuickImageTools (Resize Image, Remove Background, Compress JPG) was merged in as native tools on 2026-08-25 rather than remaining a separate site.
 
 The single source of truth is [`static/style.css`](../static/style.css) — this document describes what lives there. When a value here and in the stylesheet disagree, the stylesheet wins and this doc should be updated.
 
@@ -10,18 +10,16 @@ The single source of truth is [`static/style.css`](../static/style.css) — this
 
 | | |
 |---|---|
-| **Product name** | QuickTools |
-| **Ecosystem / family** | HelloBrivio |
-| **Sibling products** | QuickVideoTools · QuickAITools (planned) |
-| **Header shows** | the HelloBrivio image logo (`static/img/logo.png`) |
-| **Footer shows** | "Part of the HelloBrivio ecosystem" + sibling cross-links |
-| **Accent color** | `#e5322d` (brand red) — shared across the family |
+| **Brand and product name** | `hellobrivio` — always lowercase, even at the start of a sentence or heading |
+| **Header shows** | the hellobrivio image logo (`static/img/logo.png`) |
+| **Footer shows** | the logo, a short description, and "© 2026 hellobrivio · Free online tools to compress, merge, convert and edit your PDF files." — no "ecosystem" line |
+| **Accent color** | `#e5322d` (brand red) |
 
-**Logo usage:** the official HelloBrivio logo is an image, never typed text.
+**Logo usage:** the official hellobrivio logo is an image, never typed text.
 
 | File (`static/img/`) | Use |
 |---|---|
-| `logo.png` (612 × 160, transparent) | Header (displayed 153 × 40) and footer (122 × 32). `alt="HelloBrivio"`, explicit `width`/`height` to prevent layout shift, links to `/`. |
+| `logo.png` (612 × 160, transparent) | Header (displayed 153 × 40) and footer (122 × 32). `alt="hellobrivio"`, explicit `width`/`height` to prevent layout shift, links to `/`. |
 | `icon-512.png` (512 × 512) | Organization `logo` in JSON-LD and the default `og:image` / `twitter:image`. |
 | `favicon-32.png`, `favicon-192.png` | `<link rel="icon">` in `base.html`. |
 | `apple-touch-icon.png` (180 × 180, opaque) | `<link rel="apple-touch-icon">`; corners are filled with brand red because iOS paints transparency black. |

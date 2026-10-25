@@ -6,7 +6,7 @@
 {% block title %}What Kind of Encryption Does Protect PDF Actually Use?{% endblock %}
 
 {% block description %}
-We inspected QuickTools' Protect PDF tool directly — the code, the installed library, and the actual /Encrypt dictionary of a real protected file — to answer exactly what encryption it uses, what the password controls, and what it doesn't guarantee.
+We inspected hellobrivio's Protect PDF tool directly — the code, the installed library, and the actual /Encrypt dictionary of a real protected file — to answer exactly what encryption it uses, what the password controls, and what it doesn't guarantee.
 {% endblock %}
 
 {% block content %}
@@ -22,7 +22,7 @@ We inspected QuickTools' Protect PDF tool directly — the code, the installed l
 <p>
 Type a password into a "Protect PDF" tool and it's natural to assume something like "bank-grade
 encryption" is happening. Nobody tells you which cipher, which key length, or what the password
-actually controls once the file is locked. We inspected QuickTools' own <a href="/protect-pdf">Protect
+actually controls once the file is locked. We inspected hellobrivio's own <a href="/protect-pdf">Protect
 PDF</a> tool directly, at every level, to answer that precisely: the application code, the installed
 encryption library's source, and the actual <code>/Encrypt</code> dictionary of a file it produced. The
 short answer is that it uses the PDF Standard Security Handler, revision 3, with RC4 encryption and a
@@ -44,11 +44,11 @@ writer.encrypt(password)</pre>
 
 <p>
 That's the entire encryption step — a single call, <code>writer.encrypt(password)</code>, with one
-argument: the password from the form. QuickTools runs <strong>PyPDF2 version 3.0.1</strong> to do this
+argument: the password from the form. hellobrivio runs <strong>PyPDF2 version 3.0.1</strong> to do this
 (confirmed directly from the installed package in this project's environment). Nothing else about the
 encryption is configured — no algorithm is chosen, no key length is set, no permissions are specified.
 Whatever PyPDF2 does by default when you call <code>encrypt()</code> with just a password is exactly
-what QuickTools' output contains.
+what hellobrivio's output contains.
 </p>
 
 <h2>What the PDF's /Encrypt Dictionary Reveals</h2>
@@ -93,11 +93,11 @@ dictionary is what distinguishes them. According to
 qpdf is a widely used, independent PDF library, and a reasonable authority on this — <code>V 2</code> is
 "an extension of the original algorithm allowing longer keys," part of the RC4 family, while AES only
 becomes available starting at <code>V 4</code> (optionally) and is the only cipher <code>V 5</code>
-supports. <strong>QuickTools' output is <code>V 2 / R 3</code>, which is RC4, not AES.</strong>
+supports. <strong>hellobrivio's output is <code>V 2 / R 3</code>, which is RC4, not AES.</strong>
 </p>
 
 <p>
-This isn't a configuration QuickTools chose against AES — the underlying library's write path doesn't
+This isn't a configuration hellobrivio chose against AES — the underlying library's write path doesn't
 have an AES option available the way it's currently called. PyPDF2's own
 <a href="https://pypdf2.readthedocs.io/en/3.x/user/installation.html">installation documentation</a>
 notes that AES support requires an additional optional dependency that this project does not install; the
@@ -112,7 +112,7 @@ encryption" and assume that alone signals strength. Modern PDF tooling generally
 specifically because of the cipher, not the key length —
 <a href="https://qpdf.readthedocs.io/en/12.3/weak-crypto.html">qpdf's documentation on weak
 cryptography</a> characterizes 128-bit RC4 encryption as weak by current standards, independent of the
-key size, and recommends AES-based encryption for anything created now. QuickTools does not currently
+key size, and recommends AES-based encryption for anything created now. hellobrivio does not currently
 offer an option to use AES instead.
 </p>
 
@@ -122,14 +122,14 @@ offer an option to use AES instead.
 PDF's Standard Security Handler distinguishes between a <strong>user password</strong> (opens the file
 under whatever restrictions are set) and an <strong>owner password</strong> (opens it with full access,
 bypassing those restrictions). PyPDF2's <code>encrypt()</code> function accepts both as separate
-arguments — but QuickTools' code only ever supplies one: the password from the form, passed as the user
+arguments — but hellobrivio's code only ever supplies one: the password from the form, passed as the user
 password. The owner password argument is never set.
 </p>
 
 <p>
 Per <a href="https://pypdf2.readthedocs.io/en/3.x/modules/PdfWriter.html">PyPDF2's own
 documentation</a> for this method, when no owner password is given, it defaults to the same value as
-the user password. We confirmed the practical effect of this directly: opening a QuickTools-protected
+the user password. We confirmed the practical effect of this directly: opening a hellobrivio-protected
 test file with the one password you'd actually type produced <code>PasswordType.OWNER_PASSWORD</code>
 from PyPDF2's own password-checking logic — meaning that single password grants owner-level access, not
 merely restricted viewing. Entering the wrong password instead returns
@@ -142,7 +142,7 @@ correct password is supplied.
 <p>
 The Standard Security Handler can, in principle, allow a file to be opened while still blocking specific
 actions — printing, copying text, editing, filling forms — through the permission flags stored in the
-<code>/P</code> field. QuickTools does not set any of these. The value recorded in every file we tested,
+<code>/P</code> field. hellobrivio does not set any of these. The value recorded in every file we tested,
 <code>2147483644</code>, corresponds exactly to PyPDF2's own default —
 <code>ALL_DOCUMENT_PERMISSIONS</code> — every restrictable action left switched on.
 </p>
@@ -150,9 +150,9 @@ actions — printing, copying text, editing, filling forms — through the permi
 <p>
 In practice, this means Protect PDF functions purely as a password gate: it determines whether the file
 can be opened at all, and does not layer any additional restriction on top of that once the correct
-password is entered. It's also worth noting, independent of QuickTools' specific settings, that PDF
+password is entered. It's also worth noting, independent of hellobrivio's specific settings, that PDF
 permission flags are a cooperative signal rather than an enforced lock — qpdf's documentation notes that
-not every PDF reader necessarily honors every restriction a file requests. QuickTools' files don't
+not every PDF reader necessarily honors every restriction a file requests. hellobrivio's files don't
 request any restriction in the first place, so this distinction doesn't currently apply to its output,
 but it's a reason not to treat permission flags in general as a security boundary.
 </p>
@@ -185,7 +185,7 @@ encryption" gets used as a stand-in for several unrelated things:
   <li><strong>What we verified:</strong> the encryption algorithm and key length written into the PDF
   itself (RC4, 128-bit, via the Standard Security Handler), the password's role as both user and owner
   password, and the fully permissive permission flags.</li>
-  <li><strong>What we did not verify, and this article makes no claim about:</strong> how QuickTools
+  <li><strong>What we did not verify, and this article makes no claim about:</strong> how hellobrivio
   transmits your file to and from its server, whether or how long the password itself is retained
   anywhere, or how the underlying files are stored while being processed. Those are separate questions
   from what algorithm ends up inside the PDF, and nothing in this investigation established an answer to
@@ -203,7 +203,7 @@ reconstructed, not a statement about whether metadata is encrypted.
 <h2>Practical Takeaway</h2>
 
 <p>
-QuickTools' Protect PDF does exactly one thing: it requires a password to open the file, using the PDF
+hellobrivio's Protect PDF does exactly one thing: it requires a password to open the file, using the PDF
 format's older but still standards-compliant Standard Security Handler. It's a real, functioning lock
 for casual sharing — an unauthorized recipient who opens the file in a normal PDF reader without the
 password genuinely cannot read its contents. It is not currently equivalent to modern AES-based PDF
@@ -214,7 +214,7 @@ encryption, and it does not add any restriction beyond the open-password itself.
 If you specifically need AES-based encryption, a particular key length, separate owner/user passwords
 with different permissions, or need to satisfy a specific compliance requirement, verify that against
 what's described here before relying on this tool for that purpose — this isn't a judgment that
-QuickTools is or isn't adequate for your situation, just a description of what it currently produces so
+hellobrivio is or isn't adequate for your situation, just a description of what it currently produces so
 you can decide.
 </p>
 
@@ -233,7 +233,7 @@ you can decide.
 
 <h2>Frequently Asked Questions</h2>
 
-<h3>What encryption does QuickTools Protect PDF use?</h3>
+<h3>What encryption does hellobrivio Protect PDF use?</h3>
 <p>
 The PDF Standard Security Handler, revision 3, with RC4 encryption and a 128-bit key. We confirmed this
 directly from the /Encrypt dictionary of an actual protected file (/V 2, /R 3, /Length 128), and from the
@@ -249,7 +249,7 @@ support requires an additional dependency this project doesn't install.
 
 <h3>Is the password used as both the user and owner password?</h3>
 <p>
-Yes. QuickTools only supplies one password, and PyPDF2 sets the owner password to the same value when
+Yes. hellobrivio only supplies one password, and PyPDF2 sets the owner password to the same value when
 none is given separately. Testing confirmed that entering that password is recognized as the owner
 password, meaning it grants full access rather than a restricted view.
 </p>
@@ -271,7 +271,7 @@ underlying password check itself is working as intended.
 <h3>What happens if I forget my PDF password?</h3>
 <p>
 There is no way to recover the file's contents without it. That's an inherent property of password-based
-PDF encryption, not something specific to how QuickTools implements it. Keep the password somewhere
+PDF encryption, not something specific to how hellobrivio implements it. Keep the password somewhere
 safe before you close the tab.
 </p>
 
@@ -284,11 +284,11 @@ safe before you close the tab.
 {% from "components/jsonld.html" import article, faqpage %}
 {{ article(self.title(), self.description(), request.path, date_published, date_modified) }}
 {{ faqpage([
-  {"q": "What encryption does QuickTools Protect PDF use?", "a": "The PDF Standard Security Handler, revision 3, with RC4 encryption and a 128-bit key. We confirmed this directly from the /Encrypt dictionary of an actual protected file (/V 2, /R 3, /Length 128), and from the installed PyPDF2 library's own source code."},
+  {"q": "What encryption does hellobrivio Protect PDF use?", "a": "The PDF Standard Security Handler, revision 3, with RC4 encryption and a 128-bit key. We confirmed this directly from the /Encrypt dictionary of an actual protected file (/V 2, /R 3, /Length 128), and from the installed PyPDF2 library's own source code."},
   {"q": "Does Protect PDF use AES?", "a": "No. The /V 2 value in the generated file's encryption dictionary corresponds to the RC4-based handler, not AES. AES becomes available in PDF starting at /V 4, and PyPDF2's own documentation notes that AES support requires an additional dependency this project doesn't install."},
-  {"q": "Is the password used as both the user and owner password?", "a": "Yes. QuickTools only supplies one password, and PyPDF2 sets the owner password to the same value when none is given separately. Testing confirmed that entering that password is recognized as the owner password, meaning it grants full access rather than a restricted view."},
+  {"q": "Is the password used as both the user and owner password?", "a": "Yes. hellobrivio only supplies one password, and PyPDF2 sets the owner password to the same value when none is given separately. Testing confirmed that entering that password is recognized as the owner password, meaning it grants full access rather than a restricted view."},
   {"q": "Does Protect PDF restrict printing or copying?", "a": "No. The permission flags in the generated file are set to PyPDF2's fully permissive default, meaning every restrictable action (printing, copying, editing, and others) is left enabled once the password is entered. The tool only controls whether the file can be opened at all."},
   {"q": "What happens if I enter the wrong password?", "a": "Decryption correctly fails and the file's contents stay inaccessible. On the Unlock PDF tool specifically, a wrong password currently results in a generic server error rather than a clear message, though the underlying password check itself is working as intended."},
-  {"q": "What happens if I forget my PDF password?", "a": "There is no way to recover the file's contents without it. That's an inherent property of password-based PDF encryption, not something specific to how QuickTools implements it. Keep the password somewhere safe before you close the tab."}
+  {"q": "What happens if I forget my PDF password?", "a": "There is no way to recover the file's contents without it. That's an inherent property of password-based PDF encryption, not something specific to how hellobrivio implements it. Keep the password somewhere safe before you close the tab."}
 ]) }}
 {% endblock %}

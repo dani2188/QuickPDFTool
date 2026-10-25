@@ -1,4 +1,4 @@
-# Component Library — QuickTools
+# Component Library — hellobrivio
 
 Reusable UI building blocks. Everything here is plain server-rendered HTML + classes from [`static/style.css`](../static/style.css) — **no framework, no build step**. Most components live in [`templates/base.html`](../templates/base.html) (shared chrome) or are inlined into page templates; the upload card is a Jinja partial in [`templates/components/`](../templates/components/).
 
@@ -7,7 +7,7 @@ For each component: **Purpose · Structure · CSS classes · Responsive · Acces
 ---
 
 ## Navbar
-- **Purpose:** primary site navigation; shows the HelloBrivio logo and top-level links.
+- **Purpose:** primary site navigation; shows the hellobrivio logo and top-level links.
 - **Structure:** `<header class="topbar">` → `.header-wrapper` → `.logo` + `.nav-desktop` + `.nav-toggle`.
 - **CSS:** `.topbar` (sticky, white, shadow), `.nav-desktop` (flex, hidden `<768px`), `.logo a` (flex link, ≥44px tall) wrapping `.logo img` (`static/img/logo.png`, explicit `width`/`height`).
 - **Responsive:** desktop links appear `≥768px`; below that they are hidden and the hamburger takes over.
@@ -83,9 +83,9 @@ For each component: **Purpose · Structure · CSS classes · Responsive · Acces
 - **A11y:** descriptive link text (not "read more").
 
 ## Footer
-- **Purpose:** ecosystem branding, sitemap of tools, legal.
+- **Purpose:** branding, sitemap of tools, legal.
 - **Structure:** `.footer` → `.footer-grid` (columns: Brand, PDF Tools, Image Tools, Resources, Legal) → `.footer-bottom`.
-- **CSS:** `.footer-grid` (1/2/3/5 columns), `.footer-col`, `.footer-logo` (same image logo, smaller), `.footer-ecosystem`, `.footer-social`.
+- **CSS:** `.footer-grid` (1/2/3/5 columns), `.footer-col`, `.footer-logo` (same image logo, smaller), `.footer-social` (the old `.footer-ecosystem` rule is unused and kept only so no CSS class is removed).
 - **Responsive:** single column on mobile, up to 5 on desktop.
 - **A11y:** grouped links; social icons carry `aria-label`.
 

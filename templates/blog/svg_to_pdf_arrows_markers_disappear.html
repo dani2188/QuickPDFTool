@@ -6,7 +6,7 @@
 {% block title %}Why Arrows Disappear When You Convert an SVG Diagram to PDF{% endblock %}
 
 {% block description %}
-Why SVG arrowheads can disappear or move during PDF conversion, how QuickTools handles common SVG markers, and what to try when an arrow still looks wrong.
+Why SVG arrowheads can disappear or move during PDF conversion, how hellobrivio handles common SVG markers, and what to try when an arrow still looks wrong.
 {% endblock %}
 
 {% block content %}
@@ -50,7 +50,7 @@ it's pointing, and drawing the marker's artwork at that spot, rotated to match.
 <h2>Why the Arrowhead Can Disappear During SVG → PDF Conversion</h2>
 
 <p>
-QuickTools' <a href="/svg-to-pdf">SVG to PDF</a> tool converts each uploaded file using PyMuPDF, which does
+hellobrivio's <a href="/svg-to-pdf">SVG to PDF</a> tool converts each uploaded file using PyMuPDF, which does
 the actual work of turning SVG drawing instructions into PDF page content. We tested what our conversion
 path does with a marker-based arrow before any special handling is applied, using the simplest possible
 case: a single straight line with a triangular <code>marker-end</code>. The result was consistent — the
@@ -66,10 +66,10 @@ somewhere else in the file, and referenced by name; if that reference doesn't ge
 geometry during conversion, there's nothing left to draw at the line's end.
 </p>
 
-<h2>What QuickTools Does About It</h2>
+<h2>What hellobrivio Does About It</h2>
 
 <p>
-Because of that, QuickTools' current SVG preprocessing looks at every uploaded SVG before handing it to
+Because of that, hellobrivio's current SVG preprocessing looks at every uploaded SVG before handing it to
 PyMuPDF, and for lines, polylines, and paths that reference a marker, it works out where that marker's
 artwork should end up — the position at the relevant end of the line, rotated to match the line's direction
 — and rewrites it as ordinary, explicit path geometry placed directly at that spot. From that point on,
@@ -85,7 +85,7 @@ feature can do. It's worth being upfront about that distinction before looking a
 <h2>What Usually Works</h2>
 
 <p>
-We tested this conversion path directly, through QuickTools' own <code>/svg-to-pdf</code> route, across a
+We tested this conversion path directly, through hellobrivio's own <code>/svg-to-pdf</code> route, across a
 range of configurations. Arrowheads came through correctly positioned and correctly rotated for:
 </p>
 
@@ -179,7 +179,7 @@ PDF and checking specifically for arrowheads rather than assuming the whole file
 </p>
 
 <p>
-It's also worth being precise about what QuickTools' preprocessing is: a fix for the common, specific case
+It's also worth being precise about what hellobrivio's preprocessing is: a fix for the common, specific case
 of straight and simply-drawn connectors using standard triangle or polygon arrowheads, not a complete
 implementation of everything the SVG marker feature can express.
 </p>
@@ -194,9 +194,9 @@ step from rendering the line itself. We confirmed directly that, before any spec
 marker-based arrowhead didn't appear in the converted output even though the line it was attached to did.
 </p>
 
-<h3>Does QuickTools fix missing SVG arrows?</h3>
+<h3>Does hellobrivio fix missing SVG arrows?</h3>
 <p>
-QuickTools' current SVG preprocessing handles the common case: straight lines, polylines, and simple
+hellobrivio's current SVG preprocessing handles the common case: straight lines, polylines, and simple
 absolute paths using marker-start and/or marker-end, with the arrowhead built from a path or polygon. We
 tested this directly and confirmed it works across horizontal, vertical, and diagonal lines, multiple
 arrows, and arrows alongside text and other shapes. It isn't a complete implementation of every SVG marker
@@ -247,7 +247,7 @@ misplaced arrowhead is a localized symptom, not an indicator that the whole file
 {{ article(self.title(), self.description(), request.path, date_published, date_modified) }}
 {{ faqpage([
   {"q": "Why did my arrowhead disappear when I converted my SVG to PDF?", "a": "It was most likely defined as an SVG marker rather than as an ordinary shape. A marker is reusable artwork referenced by name from a line or path, and resolving that reference into visible geometry is a separate step from rendering the line itself. We confirmed directly that, before any special handling, a marker-based arrowhead didn't appear in the converted output even though the line it was attached to did."},
-  {"q": "Does QuickTools fix missing SVG arrows?", "a": "QuickTools' current SVG preprocessing handles the common case: straight lines, polylines, and simple absolute paths using marker-start and/or marker-end, with the arrowhead built from a path or polygon. We tested this directly and confirmed it works across horizontal, vertical, and diagonal lines, multiple arrows, and arrows alongside text and other shapes. It isn't a complete implementation of every SVG marker feature, and specific cases such as transformed lines, relative or arc-based path commands, and circle-based markers aren't handled correctly."},
+  {"q": "Does hellobrivio fix missing SVG arrows?", "a": "hellobrivio's current SVG preprocessing handles the common case: straight lines, polylines, and simple absolute paths using marker-start and/or marker-end, with the arrowhead built from a path or polygon. We tested this directly and confirmed it works across horizontal, vertical, and diagonal lines, multiple arrows, and arrows alongside text and other shapes. It isn't a complete implementation of every SVG marker feature, and specific cases such as transformed lines, relative or arc-based path commands, and circle-based markers aren't handled correctly."},
   {"q": "Why is my arrowhead in the wrong place after conversion?", "a": "This points to a different, more specific limitation than a missing arrow: if the line or a parent group has its own transform (a translate, rotate, or scale), the generated arrowhead can be positioned using the line's untransformed coordinates rather than its final, transformed position, so the two no longer line up."},
   {"q": "Are curved SVG arrows supported?", "a": "We can't make a general claim either way. In our testing, one specific curved-path case happened to produce a correctly positioned and rotated arrowhead, but that result came from a coincidence in how the underlying calculation works for that particular kind of curve, not from deliberate curve support, so it shouldn't be read as \"curved arrows work.\" Straight lines, polylines, and simple absolute paths are what this preprocessing is verified to handle reliably."},
   {"q": "Does this problem affect the rest of my SVG diagram?", "a": "Not based on what we tested. In every case we tried, the rest of the diagram, other shapes, text, and lines without a problematic marker, converted normally alongside an arrow that had an issue. A missing or misplaced arrowhead is a localized symptom, not an indicator that the whole file failed to convert."}

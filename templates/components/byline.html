@@ -5,7 +5,7 @@
 
 {% macro byline(published, modified=none) -%}
 <p class="byline">
-  By <a href="/about">HelloBrivio</a> ·
+  By <a href="/about">hellobrivio</a> ·
   Published <time datetime="{{ published }}">{{ published | longdate }}</time>
   {%- if modified and modified != published %} ·
   Updated <time datetime="{{ modified }}">{{ modified | longdate }}</time>

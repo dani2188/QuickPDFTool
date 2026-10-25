@@ -37,7 +37,7 @@ except AttributeError:
 BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, BASE)
 
-import app as qt_app  # noqa: E402  (the actual QuickTools Flask app)
+import app as qt_app  # noqa: E402  (the actual hellobrivio Flask app)
 
 SITE = "https://hellobrivio.com"
 SITEMAP = os.path.join(BASE, "sitemap.xml")
