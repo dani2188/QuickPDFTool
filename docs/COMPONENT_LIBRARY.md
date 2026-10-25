@@ -7,9 +7,9 @@ For each component: **Purpose · Structure · CSS classes · Responsive · Acces
 ---
 
 ## Navbar
-- **Purpose:** primary site navigation; shows the product name and top-level links.
+- **Purpose:** primary site navigation; shows the HelloBrivio logo and top-level links.
 - **Structure:** `<header class="topbar">` → `.header-wrapper` → `.logo` + `.nav-desktop` + `.nav-toggle`.
-- **CSS:** `.topbar` (sticky, white, shadow), `.nav-desktop` (flex, hidden `<768px`), `.logo a` (brand red).
+- **CSS:** `.topbar` (sticky, white, shadow), `.nav-desktop` (flex, hidden `<768px`), `.logo a` (flex link, ≥44px tall) wrapping `.logo img` (`static/img/logo.png`, explicit `width`/`height`).
 - **Responsive:** desktop links appear `≥768px`; below that they are hidden and the hamburger takes over.
 - **A11y:** `<nav aria-label="Primary">`; links are real `<a href>`; focus-visible outline.
 
@@ -85,7 +85,7 @@ For each component: **Purpose · Structure · CSS classes · Responsive · Acces
 ## Footer
 - **Purpose:** ecosystem branding, sitemap of tools, legal.
 - **Structure:** `.footer` → `.footer-grid` (columns: Brand, PDF Tools, Image Tools, Resources, Legal) → `.footer-bottom`.
-- **CSS:** `.footer-grid` (1/2/3/5 columns), `.footer-col`, `.footer-logo`, `.footer-ecosystem`, `.footer-social`.
+- **CSS:** `.footer-grid` (1/2/3/5 columns), `.footer-col`, `.footer-logo` (same image logo, smaller), `.footer-ecosystem`, `.footer-social`.
 - **Responsive:** single column on mobile, up to 5 on desktop.
 - **A11y:** grouped links; social icons carry `aria-label`.
 

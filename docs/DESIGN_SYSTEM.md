@@ -13,11 +13,20 @@ The single source of truth is [`static/style.css`](../static/style.css) — this
 | **Product name** | QuickTools |
 | **Ecosystem / family** | HelloBrivio |
 | **Sibling products** | QuickVideoTools · QuickAITools (planned) |
-| **Header shows** | the product name (`QuickTools`) |
+| **Header shows** | the HelloBrivio image logo (`static/img/logo.png`) |
 | **Footer shows** | "Part of the HelloBrivio ecosystem" + sibling cross-links |
 | **Accent color** | `#e5322d` (brand red) — shared across the family |
 
-**Logo usage:** text logo in brand red, weight 700, 22px. In the header it links to `/`. The favicon is an inline SVG rounded square (`#e5322d`) with a white letter — no external asset. Never place the logo on a busy background or recolor it outside the brand red / white pair.
+**Logo usage:** the official HelloBrivio logo is an image, never typed text.
+
+| File (`static/img/`) | Use |
+|---|---|
+| `logo.png` (612 × 160, transparent) | Header (displayed 153 × 40) and footer (122 × 32). `alt="HelloBrivio"`, explicit `width`/`height` to prevent layout shift, links to `/`. |
+| `icon-512.png` (512 × 512) | Organization `logo` in JSON-LD and the default `og:image` / `twitter:image`. |
+| `favicon-32.png`, `favicon-192.png` | `<link rel="icon">` in `base.html`. |
+| `apple-touch-icon.png` (180 × 180, opaque) | `<link rel="apple-touch-icon">`; corners are filled with brand red because iOS paints transparency black. |
+
+Keep the proportions (scale with `width`/`height` only, never stretch or crop), keep the link area at least 44px tall, and don't recolor it or put it on a busy background. The logo's reds match the brand red `#e5322d` below; the palette is unchanged.
 
 ---
 
