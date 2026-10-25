@@ -37,7 +37,7 @@ Every page extends `base.html`. There are **no standalone `<html>` pages** — e
 
 ## 4. Static assets
 - One stylesheet: `static/style.css`. No CSS splitting, no preprocessor.
-- Icons are emoji; favicon is an inline SVG data-URI (no file).
+- UI icons are emoji. The logo and favicons are PNG files in `static/img/` (see DESIGN_SYSTEM.md §1).
 - No web fonts. Images: `max-width:100%`, `loading="lazy"` below the fold.
 - Anything served to users from `uploads/` is UUID-named and time-deleted.
 
