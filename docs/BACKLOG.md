@@ -493,7 +493,7 @@ out of scope — this fix only recognizes QuickTools' own watermark format.
 
 - **Area:** Technical
 - **Priority:** P1
-- **Status:** Open
+- **Status:** Done
 - **Discovered:** End-to-end verification of the fix spec (2026-10-22)
 - **Source:** `app.py` `add_watermark()` / `_is_own_watermark_span()`
 
@@ -503,13 +503,15 @@ out of scope — this fix only recognizes QuickTools' own watermark format.
 
 **Notes:** Not fixed on this branch: it changes file-processing logic, which the fix spec didn't cover.
 
+**Resolved (2026-10-24, branch `fix/remove-watermark-page-size`):** `_is_own_watermark_span()` now compares the text origin with the watermark's intended origin `(150, 400)` mapped through the page's own `transformation_matrix`, instead of a hardcoded Letter-page y. `scripts/test_remove_watermark_pages.py` verifies removal on Letter, A4, A5, A3, Legal, two landscape sizes, 90/180/270 rotations, a crop box and a mixed-size file, and that opaque / bigger / coloured / moved near-misses survive.
+
 ---
 
 ## QT-022 — JPG/PNG to PDF re-encode every image as lossy JPEG
 
 - **Area:** Technical
 - **Priority:** P2
-- **Status:** Open
+- **Status:** Done
 - **Discovered:** Real-results measurements (C3, 2026-10-22)
 - **Source:** `app.py` `jpg_to_pdf()` / `png_to_pdf()` → Pillow `Image.save(..., save_all=True)` on RGB images
 
@@ -519,13 +521,15 @@ out of scope — this fix only recognizes QuickTools' own watermark format.
 
 **Notes:** Copy corrected on the fix branch so the pages describe current behaviour; the conversion code is unchanged.
 
+**Resolved (2026-10-24, branch `fix/image-to-pdf-quality`):** `images_to_pdf()` builds the PDF with PyMuPDF. JPEGs (RGB/greyscale) are embedded byte-for-byte; every other format is embedded losslessly (Flate). Page size is unchanged (pixel dimensions as points). `scripts/measure_examples.py` now verifies this by comparing the embedded image with the uploaded file, and the page copy quotes those measurements.
+
 ---
 
 ## QT-023 — Transparent PNG areas turn black in PNG/JPG to PDF
 
 - **Area:** Technical
 - **Priority:** P2
-- **Status:** Open
+- **Status:** Done
 - **Discovered:** Real-results measurements (C3, 2026-10-22)
 - **Source:** `app.py` `open_upload_images()` → `Image.convert("RGB")`
 
@@ -534,6 +538,8 @@ out of scope — this fix only recognizes QuickTools' own watermark format.
 **Proposed improvement:** Composite RGBA/LA/P-with-transparency images onto white before converting (the same approach `_letterbox_resize()` already uses).
 
 **Notes:** Copy corrected on the fix branch; conversion code unchanged.
+
+**Resolved (2026-10-24, branch `fix/image-to-pdf-quality`):** `flatten_on_white()` composites RGBA/LA/palette-transparency images onto white before embedding, in both PNG to PDF and JPG to PDF. Verified on RGBA PNG, LA PNG and transparent GIF.
 
 ---
 
@@ -575,7 +581,7 @@ out of scope — this fix only recognizes QuickTools' own watermark format.
 
 - **Area:** Content
 - **Priority:** P2
-- **Status:** Open
+- **Status:** Done
 - **Discovered:** C4 trust review (2026-10-22)
 - **Source:** `templates/about.html`
 
@@ -584,6 +590,8 @@ out of scope — this fix only recognizes QuickTools' own watermark format.
 **Proposed improvement:** Add the owner's name (and registered business details if HelloBrivio is a registered company) to the "Who Runs QuickTools" section, and consider a matching `Person` author in the BlogPosting JSON-LD.
 
 **Notes:** Needs the owner's input; nothing was invented.
+
+**Resolved (2026-10-24, branch `fix/about-hellobrivio-owner`):** by decision of the owner, no personal name is used. The About page names HelloBrivio, the parent brand of QuickTools, as the owner; the visible byline reads "By HelloBrivio"; and the BlogPosting JSON-LD already names `Organization` HelloBrivio as author and publisher (with `url` set to `/about`). Unverifiable wording ("small team", "small independent maker") was removed from About and Contact.
 
 ---
 

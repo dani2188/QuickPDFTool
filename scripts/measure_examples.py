@@ -160,6 +160,29 @@ def make_scanned_letter(path, text_pdf):
     src.close()
 
 
+def make_transparent_badge(path):
+    """A red disc with a soft edge on a fully transparent background."""
+    size = 400
+    y, x = np.mgrid[0:size, 0:size]
+    dist = np.hypot(x - size / 2, y - size / 2)
+    alpha = (np.clip((170 - dist) / 6, 0, 1) * 255).astype("uint8")
+    rgba = np.zeros((size, size, 4), dtype="uint8")
+    rgba[..., 0], rgba[..., 1], rgba[..., 2], rgba[..., 3] = 200, 40, 40, alpha
+    Image.fromarray(rgba, "RGBA").save(path, "PNG")
+
+
+def make_sharp_diagram(path):
+    """Thin black lines and small text on white: the worst case for JPEG artifacts."""
+    from PIL import ImageDraw
+    img = Image.new("RGB", (1200, 800), "white")
+    draw = ImageDraw.Draw(img)
+    for i in range(0, 1200, 40):
+        draw.line([(i, 0), (1199 - i, 799)], fill="black", width=1)
+    for row in range(8):
+        draw.text((40, 40 + row * 90), "Quarterly totals: 1,204  3,877  9,015  2,260", fill="black")
+    img.save(path, "PNG")
+
+
 def make_photo_brochure(path):
     doc = fitz.open()
     for i in range(3):
@@ -188,6 +211,10 @@ def ensure_samples(regenerate):
         synthetic_photo(3000, 2000, seed=1).save(f("landscape-photo.jpg"), "JPEG", quality=88)
     if not os.path.exists(f("portrait-photo.jpg")):
         synthetic_photo(1200, 1800, seed=2).save(f("portrait-photo.jpg"), "JPEG", quality=88)
+    if not os.path.exists(f("transparent-badge.png")):
+        make_transparent_badge(f("transparent-badge.png"))
+    if not os.path.exists(f("sharp-diagram.png")):
+        make_sharp_diagram(f("sharp-diagram.png"))
 
 
 # ------------------------------------------------------------- measuring
@@ -275,9 +302,34 @@ def measure_jpg_to_pdf(client):
         r = post(client, "/jpg-to-pdf", {"images": [sample(name)]})
         with Image.open(sample(name)) as im:
             px = im.size
-        page = fitz.open(stream=r.data, filetype="pdf")[0].rect
+        pdf = fitz.open(stream=r.data, filetype="pdf")
+        page = pdf[0].rect
+        embedded = pdf.extract_image(pdf[0].get_images()[0][0])["image"]
+        with open(sample(name), "rb") as f:
+            identical = embedded == f.read()
         rows.append((link(name), f"{px[0]} × {px[1]} px", human(os.path.getsize(sample(name))),
+                     "Yes" if identical else "No",
                      f"{page.width / 72:.1f} × {page.height / 72:.1f} in", human(len(r.data))))
+    return rows
+
+
+def measure_png_to_pdf(client):
+    rows = []
+    for name, label in (("sharp-diagram.png", "Sharp diagram"), ("transparent-badge.png", "Transparent badge")):
+        r = post(client, "/png-to-pdf", {"images": [sample(name)]})
+        pdf = fitz.open(stream=r.data, filetype="pdf")
+        embedded = Image.open(io.BytesIO(pdf.extract_image(pdf[0].get_images()[0][0])["image"])).convert("RGB")
+        with Image.open(sample(name)) as src:
+            px = src.size
+            rgba = src.convert("RGBA")
+            expected = Image.new("RGB", rgba.size, (255, 255, 255))
+            expected.paste(rgba, mask=rgba.getchannel("A"))
+            has_alpha = src.mode in ("RGBA", "LA", "P")
+        exact = ImageChops.difference(embedded, expected).getbbox() is None
+        corner = pdf[0].get_pixmap().pixel(2, 2)
+        rows.append((link(name, label), f"{px[0]} × {px[1]} px", human(os.path.getsize(sample(name))),
+                     human(len(r.data)), "Yes" if exact else "No",
+                     ("transparent" if has_alpha else "opaque") + f" → rendered {'white' if corner == (255, 255, 255) else corner}"))
     return rows
 
 
@@ -396,11 +448,20 @@ def publish(results):
                  "Word file size"], word_rows)))
 
     write_partial("jpg_to_pdf", (
-        "<p>We converted two sample photos. Each image becomes one page whose size comes from the "
-        "photo's pixel dimensions, so a large photo makes a very large page — fine on screen, but "
-        "scale to fit when you print. The photo is re-encoded as it's placed in the PDF, which is why "
-        "each PDF came out smaller than its JPG.</p>\n"
-        + table(["Sample photo", "Pixels", "JPG size", "PDF page size", "PDF size"], results["jpg_to_pdf"])))
+        "<p>We converted two sample photos. A JPG is placed in the PDF exactly as it is — we compared "
+        "the image stored in the PDF with the file you uploaded, byte for byte — so there is no "
+        "re-compression and no quality loss, and the PDF is about the size of the photo. Each image "
+        "becomes one page whose size comes from the photo's pixel dimensions, so a large photo makes a "
+        "very large page — fine on screen, but scale to fit when you print.</p>\n"
+        + table(["Sample photo", "Pixels", "JPG size", "Stored unchanged in PDF?", "PDF page size", "PDF size"],
+                results["jpg_to_pdf"])))
+
+    write_partial("png_to_pdf", (
+        "<p>We converted two sample PNGs. PNGs are stored losslessly: we decoded the image stored in each "
+        "PDF and compared it with the original, pixel by pixel. Transparent areas are placed on a white "
+        "background, because a PDF page can't be see-through.</p>\n"
+        + table(["Sample PNG", "Pixels", "PNG size", "PDF size", "Pixel-for-pixel identical?", "Background"],
+                results["png_to_pdf"])))
 
     write_partial("pdf_to_jpg", (
         "<p>We converted two sample A4 PDFs. Every page is rendered at 144 DPI (twice the PDF's own "
@@ -435,6 +496,7 @@ def main():
             "split": measure_split(client),
             "pdf_to_word": measure_pdf_to_word(client),
             "jpg_to_pdf": measure_jpg_to_pdf(client),
+            "png_to_pdf": measure_png_to_pdf(client),
             "pdf_to_jpg": measure_pdf_to_jpg(client),
             "resize": measure_resize(client),
         }
