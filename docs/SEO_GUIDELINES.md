@@ -1,6 +1,6 @@
-# SEO Guidelines — QuickTools
+# SEO Guidelines — hellobrivio
 
-SEO standards for every HelloBrivio product. QuickTools (renamed from QuickPDFTools on 2026-08-26) is heavily long-tail (one tool page + one "how-to" guide per feature); protecting that structure is the priority.
+SEO standards for hellobrivio (previously QuickPDFTools, then QuickTools; renamed on 2026-10-25). The site is heavily long-tail (one tool page + one "how-to" guide per feature); protecting that structure is the priority.
 
 Legend: ✅ implemented · ◑ partial · ⬜ standard to adopt.
 
@@ -12,7 +12,7 @@ Every indexable page must have:
 
 | Element | How | Status |
 |---|---|---|
-| Unique `<title>` | `{% block title %}` — keyword-first, brand suffix ` – QuickTools` | ✅ per-page titles; ◑ brand suffix not uniform |
+| Unique `<title>` | `{% block title %}` — keyword-first; no brand suffix required, and where one exists it is ` – hellobrivio` (never hellobrivio) | ✅ per-page titles; ◑ brand suffix not uniform |
 | Unique meta description | `{% block description %}` | ✅ |
 | Canonical URL | `<link rel="canonical" href="https://hellobrivio.com{{ request.path }}">` in `base.html` head | ✅ |
 | Open Graph | `og:site_name`, `og:type`, `og:url`, `og:title`, `og:description` | ✅ in `base.html` |
@@ -21,7 +21,7 @@ Every indexable page must have:
 | Structured headings | `h1 → h2 → h3`, no skips | ✅ |
 | JSON-LD | `WebApplication` / `HowTo` / `FAQPage` / `BlogPosting` / `BreadcrumbList` | ✅ `WebSite` (site-wide default) · `WebApplication` (tool pages) · `HowTo` (guides) · `FAQPage` (every page with a visible FAQ — checked by `scripts/faq_schema_audit.py`) · `BlogPosting` (blog articles) via `components/jsonld.html` macros · `BreadcrumbList` (every tool, guide, blog and hub page, emitted by `base.html`) |
 
-> **Keyword rule:** when adding the brand suffix, keep the keywords first — `Compress PDF – QuickTools`, never `QuickTools – Home`.
+> **Keyword rule:** when adding the brand suffix, keep the keywords first — `Compress PDF – hellobrivio`, never `hellobrivio – Home`.
 
 ---
 
@@ -92,9 +92,9 @@ Implemented via reusable macros in [`templates/components/jsonld.html`](../templ
 - Curate `.tools-mini-grid` links by relevance (rotate → crop → organize), not randomly.
 - 4–6 links per cluster; keep them stable so link equity accumulates.
 
-## 8. Cross-product (ecosystem) linking
-- Link to sibling products with the ` ↗` external marker and `rel="noopener"` (e.g. future QuickVideoTools). QuickImageTools is no longer external — it was merged in as native routes (2026-08-25); link to it internally like any other tool.
-- Footer names the ecosystem: "Part of the HelloBrivio ecosystem."
+## 8. Linking
+- QuickImageTools is no longer external — it was merged in as native routes (2026-08-25); link to its tools internally like any other tool. If an external product is ever linked, use the ` ↗` marker and `rel="noopener"`.
+- The footer carries one line: "© 2026 hellobrivio · Free online tools …". There is no ecosystem line.
 
 ## 9. Known issue — "Page with redirect"
 Google may report `http://` URLs as *Page with redirect* because `http` 301-redirects to `https` (correct HTTPS enforcement). This is usually **benign**: Google indexes the `https` destination. To keep it clean:

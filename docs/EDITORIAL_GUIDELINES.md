@@ -1,4 +1,4 @@
-# Editorial Guidelines — QuickTools
+# Editorial Guidelines — hellobrivio
 
 Quality bar for new guides/articles under the `/blog` editorial layer.
 Companion to [`docs/CONTENT_QUALITY_CHECKLIST.md`](./CONTENT_QUALITY_CHECKLIST.md)
@@ -67,10 +67,10 @@ disguised ad, and it doesn't belong in this layer.
 
 - Publishing an article whose only purpose is increasing page count or
   total site word count.
-- Describing a QuickTools capability that doesn't exist (check against
+- Describing a hellobrivio capability that doesn't exist (check against
   `ARCHITECTURE.md` §5 and the actual route in `app.py` before writing a
   single claim about what a tool does).
-- Claiming a workflow QuickTools doesn't support end-to-end (e.g. don't
+- Claiming a workflow hellobrivio doesn't support end-to-end (e.g. don't
   write an article implying the site can composite a subject onto a new
   background after `remove-background` — it can't; stop the workflow
   explanation honestly at the point where the product's capability ends).
@@ -91,7 +91,7 @@ disguised ad, and it doesn't belong in this layer.
 
 ## 4. Verify before writing
 
-Every technical claim about what QuickTools does must be checked against
+Every technical claim about what hellobrivio does must be checked against
 the actual backend, the same discipline used for the tool-page remediation:
 
 1. Read the real route in `app.py` for any tool the article references.
@@ -134,7 +134,7 @@ This editorial layer is the site's answer to Google's specific "Low value
 content" rejection reason: a directory of 31 near-identical utility pages,
 however well each one is now written, still reads as a tools directory
 first. Genuine, independently-useful articles — pieces a reader would bookmark
-or share even if they never touch a QuickTools upload box — are evidence the
+or share even if they never touch a hellobrivio upload box — are evidence the
 site is more than a wrapper around a handful of Python libraries. That's
 the entire point of this milestone, and it's a real, structural gap the
 prior tool-page remediation (commit `7baf1a6`) could not close on its own,

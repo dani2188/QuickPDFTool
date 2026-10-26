@@ -77,7 +77,7 @@ not text.
 </p>
 
 <p>
-We tested this directly against QuickTools' own <a href="/pdf-to-word">PDF to Word</a> tool by
+We tested this directly against hellobrivio's own <a href="/pdf-to-word">PDF to Word</a> tool by
 converting a PDF built entirely from a page image, with no underlying text layer. The conversion
 library's own log output flagged it immediately: <em>"Words count: 0. It might be a scanned pdf, which
 is not supported yet."</em> The resulting Word document contained the original page as a picture and
@@ -85,7 +85,7 @@ zero selectable text — not garbled text, not partial text, none at all.
 </p>
 
 <p>
-That's the honest answer for this tool, stated plainly: <strong>QuickTools' PDF to Word converter does
+That's the honest answer for this tool, stated plainly: <strong>hellobrivio's PDF to Word converter does
 not perform OCR (optical character recognition).</strong> It reconstructs Word documents from a PDF's
 existing text and layout data — it doesn't read text out of an image the way a dedicated OCR tool does.
 If your PDF is a scan, converting it here will get you a Word file with the page as a picture, not
@@ -187,7 +187,7 @@ Converting to Word isn't always the right move, even when the PDF itself convert
   embedding elsewhere — <a href="/pdf-to-jpg">PDF to JPG</a> or <a href="/pdf-to-png">PDF to PNG</a>
   renders each page as an image directly, which is more direct than converting to Word first.</li>
   <li><strong>Your PDF is a scan and you need real editable text from it.</strong> That requires an
-  OCR-capable tool. QuickTools' PDF to Word converter doesn't perform OCR, so it isn't the right tool
+  OCR-capable tool. hellobrivio's PDF to Word converter doesn't perform OCR, so it isn't the right tool
   for this case — converting a scan here will only get you the page as an embedded picture, not text
   you can edit.</li>
 </ul>
@@ -221,7 +221,7 @@ becomes editable.
 
 <h3>Can a scanned PDF be converted into editable Word text?</h3>
 <p>
-Not with QuickTools' PDF to Word tool. A scanned PDF is an image of a page with no underlying text
+Not with hellobrivio's PDF to Word tool. A scanned PDF is an image of a page with no underlying text
 data, and this tool doesn't perform OCR (optical character recognition). Converting a scan produces a
 Word document with the page embedded as a picture, not editable text.
 </p>
@@ -288,7 +288,7 @@ visually wrong, since it isn't trying to reconstruct a formatted document at all
 {{ article(self.title(), self.description(), request.path, date_published, date_modified) }}
 {{ faqpage([
   {"q": "Why does my PDF look different after converting to Word?", "a": "Because a PDF only records where content sits on a page, while Word needs to know what role that content plays — a heading, a paragraph, a table — and has to infer that structure during conversion. Text, spacing, and layout that depended on the PDF's fixed positioning can shift once the document becomes editable."},
-  {"q": "Can a scanned PDF be converted into editable Word text?", "a": "Not with QuickTools' PDF to Word tool. A scanned PDF is an image of a page with no underlying text data, and this tool doesn't perform OCR (optical character recognition). Converting a scan produces a Word document with the page embedded as a picture, not editable text."},
+  {"q": "Can a scanned PDF be converted into editable Word text?", "a": "Not with hellobrivio's PDF to Word tool. A scanned PDF is an image of a page with no underlying text data, and this tool doesn't perform OCR (optical character recognition). Converting a scan produces a Word document with the page embedded as a picture, not editable text."},
   {"q": "Why are tables broken after PDF-to-Word conversion?", "a": "It depends on how the table was built. Tables with visible gridlines convert reliably into real, structured Word tables. Tables built only from spaced-out, aligned text with no visible borders give the converter much less to detect, and often come through as loose text instead of a proper table."},
   {"q": "Why did the fonts change?", "a": "A PDF can embed the exact font it uses, but Word typically references fonts by name and relies on what's installed on the computer opening the file. If the original font isn't available, Word substitutes a different one, which can shift spacing and line breaks even though the text itself is unchanged."},
   {"q": "Why did images move?", "a": "A PDF places an image at a fixed coordinate on the page. Word anchors images relative to the surrounding text and layout instead. When those two positioning models don't map cleanly onto each other, an image can land in a slightly different spot once the document becomes editable."},

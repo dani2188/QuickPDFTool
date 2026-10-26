@@ -32,7 +32,7 @@ which one you actually need saves a round of trial and error.
 <p>
 Resizing changes an image's pixel dimensions — its width and height, measured in pixels. A 4000×3000
 photo resized to 1080×1080 has fewer pixels than the original, full stop; some of the original detail is
-gone because there's less data left to represent it. QuickTools' <a href="/resize-image">Resize Image</a>
+gone because there's less data left to represent it. hellobrivio's <a href="/resize-image">Resize Image</a>
 tool does this by scaling the photo down to fit entirely inside the target box you choose, then padding
 any leftover space with white — it never crops content out and never stretches the image out of
 proportion. A landscape photo resized into a square target ends up with white bars above and below it,
@@ -44,7 +44,7 @@ not a cropped or distorted version of the original framing.
 <p>
 Compression changes how efficiently the existing pixels are encoded into a file, without touching the
 pixel count at all. A 4000×3000 photo compressed at any level is still 4000×3000 pixels afterward — what
-changes is how much detail is thrown away when re-encoding it. QuickTools' <a href="/compress-jpg">Compress
+changes is how much detail is thrown away when re-encoding it. hellobrivio's <a href="/compress-jpg">Compress
 JPG</a> tool re-encodes a JPEG at a lower quality setting (four levels, from a light re-encode to
 aggressive) to shrink the file, and does nothing to its dimensions. It only accepts JPG/JPEG files — there
 is currently no dedicated PNG compression tool on the site.
@@ -140,7 +140,7 @@ throws detail away permanently.
 
 <p>
 Combining both gets the smallest practical result when a destination has a dimension requirement and a
-size limit. QuickTools' Resize Image tool actually applies both in a single step: choosing a target box
+size limit. hellobrivio's Resize Image tool actually applies both in a single step: choosing a target box
 and a JPG quality level resizes and compresses at once. Testing that on the same source photo:
 </p>
 
@@ -251,7 +251,7 @@ each format wins.
   </tbody>
 </table>
 
-<h2>What QuickTools Actually Does</h2>
+<h2>What hellobrivio Actually Does</h2>
 
 <ul class="benefits">
   <li><strong>Resize Image</strong> accepts a target width/height (1–4000 px each), never crops or
@@ -313,7 +313,7 @@ compressing keeps the photo at full resolution while bringing the file under the
 
 <h3>Which should I use for a social media post or profile picture?</h3>
 <p>
-Resizing, since those destinations specify exact pixel dimensions. QuickTools' Resize Image tool can
+Resizing, since those destinations specify exact pixel dimensions. hellobrivio's Resize Image tool can
 apply a JPG quality setting at the same time, so a single step covers both the dimension requirement and
 the file size.
 </p>
@@ -326,7 +326,7 @@ an already-compressed photo of similar content shrank by less than 80 percent at
 barely changed at all on the lightest setting.
 </p>
 
-<h3>Can I compress a PNG file on QuickTools?</h3>
+<h3>Can I compress a PNG file on hellobrivio?</h3>
 <p>
 Not directly. The Compress JPG tool only accepts JPG/JPEG files. To shrink a PNG's file size, convert it
 to JPG first (Resize Image can do this as part of resizing) or reduce its pixel dimensions instead.
@@ -345,8 +345,8 @@ to JPG first (Resize Image can do this as part of resizing) or reduce its pixel 
   {"q": "Will resizing my photo always make the file smaller?", "a": "Not necessarily. In one tested example, resizing a photo down to a much smaller pixel size but saving it as a lossless PNG produced a larger file than compressing the same photo at full resolution as a JPEG. Fewer pixels usually means less data, but the output format and compression level can matter more than the pixel count."},
   {"q": "Does compressing an image reduce its dimensions?", "a": "No. Compression only changes how much detail is kept when the file is re-encoded. The width and height in pixels stay exactly the same before and after."},
   {"q": "Which should I use for an email attachment?", "a": "Compression, generally. An email limit is almost always about total file size, not pixel dimensions, so compressing keeps the photo at full resolution while bringing the file under the limit."},
-  {"q": "Which should I use for a social media post or profile picture?", "a": "Resizing, since those destinations specify exact pixel dimensions. QuickTools' Resize Image tool can apply a JPG quality setting at the same time, so a single step covers both the dimension requirement and the file size."},
+  {"q": "Which should I use for a social media post or profile picture?", "a": "Resizing, since those destinations specify exact pixel dimensions. hellobrivio's Resize Image tool can apply a JPG quality setting at the same time, so a single step covers both the dimension requirement and the file size."},
   {"q": "Why did compressing my already-small photo barely help?", "a": "An image that has already been compressed once has less redundant detail left to remove. In one tested example, a fresh high-quality photo shrank by over 90 percent at the strongest compression level, while an already-compressed photo of similar content shrank by less than 80 percent at the same setting, and barely changed at all on the lightest setting."},
-  {"q": "Can I compress a PNG file on QuickTools?", "a": "Not directly. The Compress JPG tool only accepts JPG/JPEG files. To shrink a PNG's file size, convert it to JPG first (Resize Image can do this as part of resizing) or reduce its pixel dimensions instead."}
+  {"q": "Can I compress a PNG file on hellobrivio?", "a": "Not directly. The Compress JPG tool only accepts JPG/JPEG files. To shrink a PNG's file size, convert it to JPG first (Resize Image can do this as part of resizing) or reduce its pixel dimensions instead."}
 ]) }}
 {% endblock %}

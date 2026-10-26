@@ -1,4 +1,4 @@
-"""Remove Watermark must find QuickTools' own watermark on any page shape.
+"""Remove Watermark must find hellobrivio's own watermark on any page shape.
 
 Run from the repo root:
 

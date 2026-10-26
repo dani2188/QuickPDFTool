@@ -6,7 +6,7 @@
 {% block title %}Why Your JPG-to-PDF File Has Such a Huge Page Size{% endblock %}
 
 {% block description %}
-We tested QuickTools' JPG-to-PDF and PNG-to-PDF tools directly: the resulting PDF page is physically enormous because each image pixel becomes one PDF point. Here's exactly why, what resizing does and doesn't fix, and what actually helps.
+We tested hellobrivio's JPG-to-PDF and PNG-to-PDF tools directly: the resulting PDF page is physically enormous because each image pixel becomes one PDF point. Here's exactly why, what resizing does and doesn't fix, and what actually helps.
 {% endblock %}
 
 {% block content %}
@@ -23,7 +23,7 @@ We tested QuickTools' JPG-to-PDF and PNG-to-PDF tools directly: the resulting PD
 You convert a photo to PDF, open the result, and something's off: the page is enormous. Not a big file
 size, an enormous physical page, sometimes several feet wide when you check the print dialog. The file
 itself might only be a few hundred kilobytes. The problem isn't the amount of data in the file, it's
-the page's actual physical dimensions. We tested QuickTools' own JPG-to-PDF and PNG-to-PDF tools directly
+the page's actual physical dimensions. We tested hellobrivio's own JPG-to-PDF and PNG-to-PDF tools directly
 to find out exactly why, and the answer is a specific, checkable mechanism, not a generic quirk of PDFs
 in general.
 </p>
@@ -42,7 +42,7 @@ is the entire story here.
 <h2>The Tested Behavior: One Pixel Becomes One Point</h2>
 
 <p>
-We built a 3000&times;2000 pixel JPEG (a typical photo resolution) and ran it through QuickTools'
+We built a 3000&times;2000 pixel JPEG (a typical photo resolution) and ran it through hellobrivio's
 actual <a href="/jpg-to-pdf">JPG to PDF</a> tool, then inspected the resulting PDF's page dimensions
 directly.
 </p>
@@ -100,7 +100,7 @@ at all.
 </p>
 
 <p>
-This is a fact about how QuickTools' JPG-to-PDF and PNG-to-PDF are currently built, not a general rule
+This is a fact about how hellobrivio's JPG-to-PDF and PNG-to-PDF are currently built, not a general rule
 about all image-to-PDF software. The underlying code saves the PDF without specifying a resolution, so
 the number of pixels is used directly as the number of points, and whatever resolution metadata the
 source image happens to carry is simply never consulted. If you've been told that adjusting your photo's
@@ -112,7 +112,7 @@ still present on the object after processing, and then not used for this calcula
 
 <p>
 Since the page size is driven directly by pixel count, shrinking the pixel count should shrink the page,
-and it does. We took the same 3000&times;2000 photo, ran it through QuickTools' actual
+and it does. We took the same 3000&times;2000 photo, ran it through hellobrivio's actual
 <a href="/resize-image">Resize Image</a> tool down to 1080&times;1080, and then converted that resized
 result to PDF.
 </p>
@@ -157,7 +157,7 @@ the point count.
 <p>
 A common next step is combining a converted photo with an actual document, a report, a form, a cover
 sheet. We tested this directly: a standard US Letter PDF page (612&times;792 pt, generated the normal
-way) merged with our 1080&times;1080 pt image-PDF page, using QuickTools' actual
+way) merged with our 1080&times;1080 pt image-PDF page, using hellobrivio's actual
 <a href="/merge-pdf">Merge PDF</a> tool.
 </p>
 
@@ -185,7 +185,7 @@ sideways: it isn't related to the page being oversized, it's a separate gap in h
 source file.
 </p>
 
-<h2>What QuickTools Actually Does</h2>
+<h2>What hellobrivio Actually Does</h2>
 
 <ul class="benefits">
   <li><strong>JPG to PDF and PNG to PDF</strong> open each uploaded image and save it directly as a PDF

@@ -1,6 +1,6 @@
 # CLAUDE.md — Rules to check FIRST, before any action
 
-This is **QuickTools**, a product in the **HelloBrivio** ecosystem: a Flask monolith of ~38 browser-based PDF/image tools (server-rendered Jinja templates + one hand-written stylesheet). Read this before making changes.
+This is **hellobrivio**, a Flask monolith of ~38 browser-based PDF/image tools (server-rendered Jinja templates + one hand-written stylesheet). Read this before making changes.
 
 ---
 
@@ -37,10 +37,10 @@ The standing rule for UI/docs/architecture work: **preserve all existing tool fu
 
 ## 3. Branding model (get names right)
 
-- **HelloBrivio** = the ecosystem/company. **QuickTools** = this product (renamed from QuickPDFTools on 2026-08-26, since it now covers image tools too, not just PDFs).
-- **Logo:** the header and footer show the official **HelloBrivio image logo** (`static/img/logo.png`, `alt="HelloBrivio"`, explicit `width`/`height`, links to `/`), not text. This replaces the old rule that the header shows the product name; the owner approved the change on 2026-10-24. Do not swap it back to a text logo or recolor/stretch the image. Favicons and the home-screen icon are PNGs in `static/img/` (`favicon-32.png`, `favicon-192.png`, `apple-touch-icon.png`); `icon-512.png` is the Organization `logo` in JSON-LD and the default `og:image`. Footer says **"Part of the HelloBrivio ecosystem"** with sibling cross-links (future QuickVideoTools / QuickAITools). Page titles, meta and body copy still use the product name **QuickTools**.
-- **Image tools are first-party, not a sibling product.** The former standalone QuickImageTools site was merged in (2026-08-25): Resize Image, Remove Background, and Compress JPG are native routes here, not external links. Its content (blog guides) was ported into `/blog`. Do not re-add an external `quickimagetools.onrender.com` link to the nav/footer.
-- The 2026-08-26 rename was propagated everywhere in one pass — page titles, meta descriptions, JSON-LD, and body copy across every page — unlike the previous QuickPDFTool → QuickPDFTools rename, which was chrome-only. There should be no live "QuickPDFTools" text left; if you find one, fix it.
+- **One brand, one name: `hellobrivio`, always lowercase** — matching the logo — even at the start of a sentence or heading. It is both the company and this product. The site was previously called QuickPDFTool(s), then QuickTools (2026-08-26), and was renamed to hellobrivio on 2026-10-25, with the site name changing everywhere in one pass: page text, meta descriptions, `og:site_name`, JSON-LD, alt texts, the byline ("By hellobrivio"), legal pages and docs. **Do not reintroduce "QuickTools", "QuickPDFTools" or a capitalised "HelloBrivio"**, and don't write "part of the hellobrivio ecosystem" or invent a second name for the company — `scripts/content_audit.py` fails on any of them. URLs, routes, the domain, email addresses, file names, CSS classes (e.g. `.footer-ecosystem`, now unused) and JSON keys are unchanged. Page `<title>`s don't need a brand suffix; where one exists it is ` – hellobrivio`.
+- **Logo:** the header and footer show the official **hellobrivio image logo** (`static/img/logo.png`, `alt="hellobrivio"`, explicit `width`/`height`, links to `/`), not text. This replaces the old rule that the header shows the product name; the owner approved the change on 2026-10-24. Do not swap it back to a text logo or recolor/stretch the image. Favicons and the home-screen icon are PNGs in `static/img/` (`favicon-32.png`, `favicon-192.png`, `apple-touch-icon.png`); `icon-512.png` is the Organization `logo` in JSON-LD and the default `og:image`. The footer ends with one line: "© 2026 hellobrivio · Free online tools to compress, merge, convert and edit your PDF files."
+- **Image tools are first-party.** The former standalone QuickImageTools site was merged in (2026-08-25): Resize Image, Remove Background, and Compress JPG are native routes here, not external links. Its content (blog guides) was ported into `/blog`. Do not re-add an external `quickimagetools.onrender.com` link to the nav/footer.
+- Earlier renames are history only (the 2026-08-26 one was also propagated everywhere in one pass, unlike the chrome-only QuickPDFTool → QuickPDFTools rename before it). There should be no live "QuickPDFTools" or "QuickTools" text left; if you find one, fix it.
 
 ---
 

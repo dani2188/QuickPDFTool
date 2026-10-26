@@ -132,7 +132,7 @@ to find is genuinely less clear in that photo, so there's more room for a small 
   <li><strong>Re-shoot or re-select against a plainer, higher-contrast background</strong> if that's an
   option — it's the single change most likely to produce a cleaner result.</li>
   <li><strong>Do manual touch-up in an image editor for the remaining edge</strong> if the use case demands
-  precision. QuickTools' <a href="/remove-background">Remove Background</a> tool returns the processed
+  precision. hellobrivio's <a href="/remove-background">Remove Background</a> tool returns the processed
   cut-out directly — it doesn't include a manual edge-refinement or brush-based correction step, so
   fixing a stubborn fringe or a clipped hair strand means opening the PNG in a separate editor.</li>
 </ul>
@@ -148,20 +148,20 @@ inherently harder to resolve, so the result is more likely to need a manual touc
 especially for a high-stakes final image.
 </p>
 
-<h2>What QuickTools Actually Does</h2>
+<h2>What hellobrivio Actually Does</h2>
 
 <p>
-QuickTools' <a href="/remove-background">Remove Background</a> tool doesn't run its own segmentation —
+hellobrivio's <a href="/remove-background">Remove Background</a> tool doesn't run its own segmentation —
 the uploaded image is sent as-is to <a href="https://www.remove.bg/api">remove.bg's public API</a>
-(<code>POST /v1.0/removebg</code>), which does the actual foreground/background detection. QuickTools
+(<code>POST /v1.0/removebg</code>), which does the actual foreground/background detection. hellobrivio
 sends only one parameter beyond the image itself — <code>size=auto</code> — and performs no cropping,
 resizing, or re-encoding before the upload. Whatever comes back is written to disk unmodified and handed
-back as a PNG with transparency; QuickTools doesn't composite it onto a background, adjust the edges, or
+back as a PNG with transparency; hellobrivio doesn't composite it onto a background, adjust the edges, or
 otherwise touch the result.
 </p>
 
 <p>
-A few constraints come directly from remove.bg's own public API documentation, not from QuickTools:
+A few constraints come directly from remove.bg's own public API documentation, not from hellobrivio:
 </p>
 
 <table class="data-table">
@@ -174,10 +174,10 @@ A few constraints come directly from remove.bg's own public API documentation, n
   <tbody>
     <tr>
       <td>Request size limit</td>
-      <td>12 MB per image — tighter than QuickTools' own 20 MB upload cap</td>
+      <td>12 MB per image — tighter than hellobrivio's own 20 MB upload cap</td>
     </tr>
     <tr>
-      <td><code>size=auto</code> (what QuickTools requests)</td>
+      <td><code>size=auto</code> (what hellobrivio requests)</td>
       <td>Capped at 25 megapixels, kept for backwards compatibility</td>
     </tr>
     <tr>
@@ -188,7 +188,7 @@ A few constraints come directly from remove.bg's own public API documentation, n
 </table>
 
 <p>
-The practical takeaway is the first row: a file between 12MB and QuickTools' 20MB limit will upload
+The practical takeaway is the first row: a file between 12MB and hellobrivio's 20MB limit will upload
 successfully but then fail at the remove.bg step, coming back as the tool's generic "could not remove the
 background" error — not because the image content was a problem, but because of this specific size
 mismatch between the two limits.
@@ -260,7 +260,7 @@ a use case where precision matters.
 <p>
 Zoom in to confirm where the issue actually is — it's usually localized, not the whole image. If you have
 a sharper or higher-contrast source photo, try that first. For a result that needs to be pixel-perfect,
-QuickTools' tool returns the processed image directly without a manual edge-correction step, so a final
+hellobrivio's tool returns the processed image directly without a manual edge-correction step, so a final
 touch-up in an image editor is the remaining option.
 </p>
 
@@ -279,6 +279,6 @@ touch-up in an image editor is the remaining option.
   {"q": "Does the resolution or quality of my photo affect the result?", "a": "Yes. A sharp, reasonably high-resolution photo gives the system more real detail to work with right at the boundary. A blurry or heavily compressed photo has already lost some of that fine edge information before processing even begins, which tends to produce softer, less precise edges."},
   {"q": "Why does a plain background work better than a busy one?", "a": "A plain background leaves exactly one real edge to find — the subject's actual outline. A busy or patterned background adds extra high-contrast edges nearby that have nothing to do with the subject, which gives the system more chances to follow the wrong one for a few pixels."},
   {"q": "Can background removal handle glass, smoke, or other transparent material?", "a": "These are genuinely harder cases, because the \"subject\" isn't fully opaque to begin with — there's no single clean boundary to find, since the background is partly visible through the subject itself. Automatic removal can still run on these images, but the result is more likely to need manual touch-up for a use case where precision matters."},
-  {"q": "What should I do if the result still has rough edges?", "a": "Zoom in to confirm where the issue actually is — it's usually localized, not the whole image. If you have a sharper or higher-contrast source photo, try that first. For a result that needs to be pixel-perfect, QuickTools' tool returns the processed image directly without a manual edge-correction step, so a final touch-up in an image editor is the remaining option."}
+  {"q": "What should I do if the result still has rough edges?", "a": "Zoom in to confirm where the issue actually is — it's usually localized, not the whole image. If you have a sharper or higher-contrast source photo, try that first. For a result that needs to be pixel-perfect, hellobrivio's tool returns the processed image directly without a manual edge-correction step, so a final touch-up in an image editor is the remaining option."}
 ]) }}
 {% endblock %}

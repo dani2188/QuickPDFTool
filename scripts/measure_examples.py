@@ -42,7 +42,7 @@ BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 os.chdir(BASE)  # app.py uses relative paths (uploads/, static/)
 sys.path.insert(0, BASE)
 
-import app as qt_app  # noqa: E402  (the actual QuickTools Flask app)
+import app as qt_app  # noqa: E402  (the actual hellobrivio Flask app)
 
 EXAMPLES = os.path.join(BASE, "static", "examples")
 PARTIALS = os.path.join(BASE, "templates", "components", "examples")

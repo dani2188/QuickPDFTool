@@ -6,7 +6,7 @@
 {% block title %}How to Fill Out a PDF That Has No Fillable Form Fields{% endblock %}
 
 {% block description %}
-Why some PDFs let you click a box and type while others don't respond at all — and how to add text to a flat or scanned PDF that has no real form fields, tested directly against QuickTools' own tool.
+Why some PDFs let you click a box and type while others don't respond at all — and how to add text to a flat or scanned PDF that has no real form fields, tested directly against hellobrivio's own tool.
 {% endblock %}
 
 {% block content %}
@@ -92,7 +92,7 @@ the practical question "can I just type into this," it's the check that matters:
 cursor, type there directly; if it doesn't, the rest of this article is for you.
 </p>
 
-<h2>How QuickTools Handles a PDF With No Fillable Fields</h2>
+<h2>How hellobrivio Handles a PDF With No Fillable Fields</h2>
 
 <p>
 This is exactly the situation <a href="/add-text-to-pdf">Add Text to PDF</a> is built for. We tested its
@@ -128,7 +128,7 @@ depends on the PDF having any special structure to begin with.
 This case is worth testing directly rather than guessing, so we built a real fillable PDF — one with actual
 AcroForm text fields — and ran it through Add Text to PDF. The result: the original form fields were still
 there afterward, completely unchanged, and their values were still empty. The text we added through
-QuickTools appeared on the page independently, in the position we clicked, with no connection to the existing
+hellobrivio appeared on the page independently, in the position we clicked, with no connection to the existing
 fields at all.
 </p>
 
@@ -139,7 +139,7 @@ a capable PDF viewer is the more precise way to complete it, since the text will
 field's defined box rather than at a manually clicked position.
 </p>
 
-<h2>How to Fill a Multi-Page Flat PDF With QuickTools</h2>
+<h2>How to Fill a Multi-Page Flat PDF With hellobrivio</h2>
 
 <p>
 Add Text to PDF works on the first page of whatever you upload — a limitation worth stating plainly rather
@@ -176,7 +176,7 @@ is still just an image, with no text data of its own, before or after.
 
 <p>
 This is not OCR. Optical character recognition would read the letters already present in the scanned image
-and convert them into real text — QuickTools doesn't do that anywhere. Adding text through this tool only
+and convert them into real text — hellobrivio doesn't do that anywhere. Adding text through this tool only
 places new content you type yourself; it has no way to read or recognize what's already printed in the
 image. If you need the existing text of a scan extracted, that's a different problem — see <a
 href="/pdf-to-text">PDF to Text</a>, though note that tool has the same limitation: it extracts existing text
@@ -205,7 +205,7 @@ None of this checks or guarantees how a specific recipient — a government port
 will treat the result. That depends entirely on their own requirements, not on anything this tool can verify.
 </p>
 
-<h2>What QuickTools Cannot Do</h2>
+<h2>What hellobrivio Cannot Do</h2>
 
 <p>
 Stated plainly, so there's no ambiguity about the scope of this tool:
@@ -241,7 +241,7 @@ form fields. If nothing happens, it's very likely a flat PDF or a scan. This is 
 rather than an exhaustive technical test, but it answers the question that matters in practice.
 </p>
 
-<h3>Can QuickTools fill in existing PDF form fields?</h3>
+<h3>Can hellobrivio fill in existing PDF form fields?</h3>
 <p>
 No. We tested this directly against a real fillable PDF: after using Add Text to PDF, the original form
 fields were still present and still empty. The tool adds independent text at a position you choose, it
@@ -251,7 +251,7 @@ doesn't read, fill, or interact with a PDF's existing form fields in any way.
 <h3>Can I add text to a scanned PDF, and does that perform OCR?</h3>
 <p>
 Yes, you can add text to a scanned PDF, and we confirmed the added text is real and selectable. But this
-isn't OCR, QuickTools doesn't read or recognize the text already present in the scanned image. Adding text
+isn't OCR, hellobrivio doesn't read or recognize the text already present in the scanned image. Adding text
 only places new content you type yourself; the original scan remains an image with no text data of its own.
 </p>
 
@@ -294,8 +294,8 @@ original content, and their added text all came through correctly in order.
 {{ faqpage([
   {"q": "Why can I type into some PDFs but not others?", "a": "Because they're built differently. A fillable PDF contains real interactive form fields that a PDF viewer renders as clickable boxes. A flat PDF, including most scanned or printed-to-PDF documents, has no such fields; any labels or lines you see are just fixed page content, so there's nothing for a viewer to let you click into."},
   {"q": "How do I know if my PDF has real form fields?", "a": "Click directly where you'd expect to type. If a text cursor appears and you can type right away, it has real form fields. If nothing happens, it's very likely a flat PDF or a scan. This is a practical, quick check rather than an exhaustive technical test, but it answers the question that matters in practice."},
-  {"q": "Can QuickTools fill in existing PDF form fields?", "a": "No. We tested this directly against a real fillable PDF: after using Add Text to PDF, the original form fields were still present and still empty. The tool adds independent text at a position you choose, it doesn't read, fill, or interact with a PDF's existing form fields in any way."},
-  {"q": "Can I add text to a scanned PDF, and does that perform OCR?", "a": "Yes, you can add text to a scanned PDF, and we confirmed the added text is real and selectable. But this isn't OCR, QuickTools doesn't read or recognize the text already present in the scanned image. Adding text only places new content you type yourself; the original scan remains an image with no text data of its own."},
+  {"q": "Can hellobrivio fill in existing PDF form fields?", "a": "No. We tested this directly against a real fillable PDF: after using Add Text to PDF, the original form fields were still present and still empty. The tool adds independent text at a position you choose, it doesn't read, fill, or interact with a PDF's existing form fields in any way."},
+  {"q": "Can I add text to a scanned PDF, and does that perform OCR?", "a": "Yes, you can add text to a scanned PDF, and we confirmed the added text is real and selectable. But this isn't OCR, hellobrivio doesn't read or recognize the text already present in the scanned image. Adding text only places new content you type yourself; the original scan remains an image with no text data of its own."},
   {"q": "Will the text I add be selectable and searchable?", "a": "Yes. We confirmed this directly, including on a scanned page, the newly added text is real PDF text and can be selected and searched, even though the underlying scanned image around it isn't."},
   {"q": "How do I add text to more than one page?", "a": "Add Text to PDF only places text on the first page of whatever you upload. For a multi-page document, split the PDF into individual pages first, add text to each page separately, then merge the edited pages back together in order. We tested this exact sequence on a three-page document and confirmed all pages, their original content, and their added text all came through correctly in order."}
 ]) }}

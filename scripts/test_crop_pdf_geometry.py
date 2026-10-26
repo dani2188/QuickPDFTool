@@ -34,7 +34,7 @@ from reportlab.lib.pagesizes import A3, A4, A5, letter  # noqa: E402
 from PyPDF2 import PdfReader, PdfWriter  # noqa: E402
 from PyPDF2.generic import FloatObject  # noqa: E402
 
-import app as qt_app  # noqa: E402  (the actual QuickTools Flask app)
+import app as qt_app  # noqa: E402  (the actual hellobrivio Flask app)
 
 
 def build_pdf(pagesize, landscape=False):

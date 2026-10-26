@@ -1,4 +1,4 @@
-"""Lightweight content/SEO audit for QuickTools templates.
+"""Lightweight content/SEO audit for hellobrivio templates.
 
 No new dependencies, no framework -- plain stdlib. Run from the repo root:
 
@@ -12,7 +12,9 @@ generated result screens, which aren't indexable content pages) for:
   - missing internal "More Tools" style links
   - internal href="/..." links that don't match any known app.py route
     (a broken-link signal; best-effort, string-based, not a live crawl)
-  - leftover "QuickPDFTools" text (should be fully renamed to "QuickTools")
+  - leftover old brand text in ANY template (including error/result screens),
+    app.py and style.css: "QuickTools", "QuickPDFTools" or a capitalised
+    "HelloBrivio" (the one brand is always lowercase "hellobrivio")
 
 Also reports duplicate <title>/description text across pages, since two
 pages targeting the same title is itself a low-value-content signal.
@@ -74,6 +76,23 @@ def get_known_routes():
     return routes
 
 
+OLD_BRAND = re.compile(r"QuickPDFTools?|QuickTools|Hellobrivio|HelloBrivio")
+
+
+def scan_brand():
+    """Old brand names anywhere user-facing: every template (not just the
+    indexable ones), app.py strings and the stylesheet."""
+    found = []
+    paths = [os.path.join(root, f) for root, _, files in os.walk(TPL) for f in files if f.endswith((".html", ".txt"))]
+    paths += [APP_PY, os.path.join(BASE, "static", "style.css")]
+    for path in paths:
+        text = open(path, encoding="utf-8").read()
+        for m in OLD_BRAND.finditer(text):
+            line = text.count("\n", 0, m.start()) + 1
+            found.append(f"[BRAND] {os.path.relpath(path, BASE)}:{line}: still contains '{m.group(0)}'")
+    return found
+
+
 def main():
     known_routes = get_known_routes()
     known_static = {r for r in known_routes if "<" not in r}
@@ -96,7 +115,7 @@ def main():
         desc = extract_block(html, "description")
         words = visible_word_count(html)
         has_related = "tools-mini-grid" in html or ("tools-grid" in html and "guide" in rel)
-        has_qpt = "QuickPDFTools" in html
+        has_qpt = False  # brand check now runs over every file in scan_brand()
 
         row = {
             "file": rel, "h1": h1_count, "title": title, "desc": desc,
@@ -114,8 +133,6 @@ def main():
             issues.append(f"[DESC] {rel}: no {{% block description %}}")
         if words < 150:
             issues.append(f"[THIN] {rel}: only {words} visible words")
-        if has_qpt:
-            issues.append(f"[BRAND] {rel}: still contains 'QuickPDFTools'")
 
         if title:
             titles.setdefault(title.strip(), []).append(rel)
@@ -158,6 +175,8 @@ def main():
         short = d[:70] + ("..." if len(d) > 70 else "")
         print(f"  {short!r} used by: {', '.join(fs)}")
     print()
+
+    issues.extend(scan_brand())
 
     print(f"=== All issues ({len(issues)}) ===")
     for i in issues:

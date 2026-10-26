@@ -6,7 +6,7 @@
 {% block title %}Electronic Signature vs. Digital Signature: What's the Actual Difference?{% endblock %}
 
 {% block description %}
-Two PDFs can both show an image of a handwritten signature, so what actually makes one a digitally signed document? We break down the cryptographic mechanism, using QuickTools' own Sign PDF tool as the concrete example of what a visual signature is and isn't.
+Two PDFs can both show an image of a handwritten signature, so what actually makes one a digitally signed document? We break down the cryptographic mechanism, using hellobrivio's own Sign PDF tool as the concrete example of what a visual signature is and isn't.
 {% endblock %}
 
 {% block content %}
@@ -74,7 +74,7 @@ it shows.
 </p>
 
 <p>
-QuickTools' own <a href="/sign-pdf">Sign PDF</a> tool works exactly this way, and it's a useful concrete
+hellobrivio's own <a href="/sign-pdf">Sign PDF</a> tool works exactly this way, and it's a useful concrete
 example because we can inspect precisely what it produces. It takes an uploaded signature image and
 places it on the page using PyMuPDF's image-insertion function. The result is a normal
 <code>DeviceRGB</code> image object on the page — nothing more. There's no private-key operation
@@ -134,7 +134,7 @@ encoding, since PDF supports multiple signature handlers and formats:
 
 <p>
 None of these fields exist in an image-based signature, because there's no signature dictionary at all
-— just an image object on the page, which is exactly what forensic inspection of QuickTools' own output
+— just an image object on the page, which is exactly what forensic inspection of hellobrivio's own output
 confirms (more on that below).
 </p>
 
@@ -189,7 +189,7 @@ prove someone's identity — that assurance depends on the certificate authority
 behind it, which is a separate question from whether the cryptographic math checks out.
 </p>
 
-<h2>What Does QuickTools Sign PDF Actually Create?</h2>
+<h2>What Does hellobrivio Sign PDF Actually Create?</h2>
 
 <p>
 Given all of the above, it's worth being concrete about exactly what <a href="/sign-pdf">Sign PDF</a>
@@ -223,7 +223,7 @@ for the practical walkthrough of using the current tool.
 
 <h2>Related Guides</h2>
 <ul>
-  <li><a href="/how-to-sign-pdf">How to Sign a PDF Online</a> — the step-by-step walkthrough of QuickTools' current tool.</li>
+  <li><a href="/how-to-sign-pdf">How to Sign a PDF Online</a> — the step-by-step walkthrough of hellobrivio's current tool.</li>
   <li><a href="/blog/pdf-security-basics">Passwords, Redaction &amp; Watermarks</a> — what each PDF security tool actually protects against.</li>
   <li><a href="/blog/what-encryption-does-protect-pdf-use">What Kind of Encryption Does Protect PDF Actually Use?</a> — the same kind of "what's actually happening" investigation, applied to Protect PDF.</li>
 </ul>
@@ -269,7 +269,7 @@ PDF's own native signature mechanism and CMS-based signing to add requirements t
 long-term validation, rather than replacing how PDF stores signatures.
 </p>
 
-<h3>Does QuickTools Sign PDF create a digital signature?</h3>
+<h3>Does hellobrivio Sign PDF create a digital signature?</h3>
 <p>
 No. It places an image of a signature onto the page. The resulting file contains a normal image object
 with no signature dictionary, no ByteRange, and no cryptographic signature data, so it doesn't provide
@@ -290,6 +290,6 @@ the identity or tamper-detection properties a cryptographic digital signature do
   {"q": "What does a digital signature actually verify?", "a": "Two things: that the signature was created using a specific private key, tied to a certificate, and that the exact bytes covered by the signature haven't changed since it was applied. It verifies the cryptographic math, not the signer's real-world identity on its own. That assurance comes from the certificate authority and trust chain behind the certificate."},
   {"q": "How does a PDF detect that a signed document was changed?", "a": "At signing, a hash is calculated over the document bytes named in the signature's ByteRange and encrypted with the signer's private key. At verification, that hash is recalculated and compared against the decrypted signature value. A mismatch means the covered bytes changed since signing. Changes outside that range, such as certain PDF incremental updates, don't necessarily affect it."},
   {"q": "What is PAdES?", "a": "PAdES, PDF Advanced Electronic Signatures, is a PDF-specific signature profile from ETSI. It builds on PDF's own native signature mechanism and CMS-based signing to add requirements that support things like long-term validation, rather than replacing how PDF stores signatures."},
-  {"q": "Does QuickTools Sign PDF create a digital signature?", "a": "No. It places an image of a signature onto the page. The resulting file contains a normal image object with no signature dictionary, no ByteRange, and no cryptographic signature data, so it doesn't provide the identity or tamper-detection properties a cryptographic digital signature does."}
+  {"q": "Does hellobrivio Sign PDF create a digital signature?", "a": "No. It places an image of a signature onto the page. The resulting file contains a normal image object with no signature dictionary, no ByteRange, and no cryptographic signature data, so it doesn't provide the identity or tamper-detection properties a cryptographic digital signature does."}
 ]) }}
 {% endblock %}
