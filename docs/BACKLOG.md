@@ -610,3 +610,19 @@ out of scope — this fix only recognizes QuickTools' own watermark format.
 **Notes:** Check the result with a link-preview debugger after deploying, since platforms cache `og:image`.
 
 **Resolved (2026-10-24, branch `feat/hellobrivio-logo`):** the official 512px mark replaces the placeholder in `static/img/icon-512.png`. `favicon-32.png` and `apple-touch-icon.png` were regenerated from it; `favicon-192.png` is the supplied file. The link-preview cache check after deploy is still worth doing.
+
+---
+
+## QT-028 — Redirect the Render hostname and www to https://hellobrivio.com
+
+- **Area:** SEO / Infrastructure
+- **Priority:** P1
+- **Status:** Done
+- **Discovered:** Owner request (2026-10-26)
+- **Source:** `docs/SEO_GUIDELINES.md` §10 ("`quickpdftool.onrender.com` still resolves … but is non-canonical")
+
+**Problem:** The app answered on both `hellobrivio.com` and `quickpdftool.onrender.com`. Canonical tags already pointed at the domain, but two live hostnames serving the same pages is duplicate-content risk and splits link signals.
+
+**Proposed improvement:** N/A — already implemented.
+
+**Notes:** Fixed on branch `fix/redirect-onrender-to-domain`: `redirect_to_canonical_host()` in `app.py` redirects `*.onrender.com` and `www.hellobrivio.com` to `https://hellobrivio.com` with path and query kept (301, or 308 for form posts), handling `X-Forwarded-Host`. No `healthCheckPath` exists in `render.yaml`; an optional `HEALTH_CHECK_PATH` environment variable exempts one set in the Render dashboard. Verified by `scripts/test_canonical_redirect.py` and by running the full end-to-end suite (92/92) with `Host: hellobrivio.com`.

@@ -78,6 +78,18 @@ Two tool families depend on binaries **not installed via pip** — they must exi
 - `render.yaml`: single Render web service, installs `ghostscript`, `libreoffice`, `poppler-utils` at build time, then `pip install -r requirements.txt`, runs Gunicorn with `--workers 1`.
 - `app.py`'s `if __name__ == "__main__"` block also supports running directly with `python app.py` (reads `PORT` env var, defaults to 10000) for local dev without Gunicorn.
 
+### Canonical host redirect
+
+The one official address is **`https://hellobrivio.com`**. Render also serves the app at its default hostname (`quickpdftool.onrender.com`), so a `before_request` hook in `app.py` (`redirect_to_canonical_host`) sends every request for a host ending in `onrender.com`, or for `www.hellobrivio.com`, to `https://hellobrivio.com` plus the same path and query string. It is not configured in `render.yaml`, `Procfile` or Gunicorn (all unchanged), so it also works when running `python app.py` locally.
+
+- **Status codes:** `301` for GET/HEAD. Form posts and other methods get `308` (also permanent), because a `301` makes browsers turn a POST into a GET and drop the upload. In practice a page loaded on `hellobrivio.com` posts to `hellobrivio.com`, since every form action, the `/status/<file>` poll and the `/download…` links are relative; the `308` only matters for a page that was already open on the old host.
+- **Proxy handling:** Render sits behind a proxy. The hook checks both `Host` and every value in `X-Forwarded-Host`, and redirects if any of them is an onrender or www host, so a forged forwarded header can't be used to skip the redirect. `X-Forwarded-Proto` isn't needed, because the target is always `https://hellobrivio.com`.
+- **Not an open redirect:** the target origin is a constant (`CANONICAL_ORIGIN`); only the path and query string come from the request, and the path is percent-encoded (so CR/LF can't split the header).
+- **Never redirected:** `hellobrivio.com`, `localhost`, IP addresses, and look-alike names such as `notonrender.com` or `onrender.com.evil.io` (the match is on the full domain suffix, not a substring).
+- **Health check:** `render.yaml` has **no** `healthCheckPath`, so Render only checks that the port is open and there's nothing to exempt. If a health-check path is set in the Render dashboard, set the `HEALTH_CHECK_PATH` environment variable to the same value; that exact path is then never redirected.
+- **Everything we emit already names the canonical origin:** `<link rel="canonical">` and `og:url` are built as `https://hellobrivio.com{{ request.path }}` in `base.html`, and `sitemap.xml`, `robots.txt`, `og:image` and all JSON-LD use the same origin, whichever host the request arrived on.
+- **Test:** `scripts/test_canonical_redirect.py` (no server needed) checks the redirect rules, method preservation, look-alike hosts, the health-check exemption, and that every page, `sitemap.xml` and `robots.txt` use `https://hellobrivio.com` and never mention onrender.
+
 ## 8. Notable architectural characteristics / risks
 
 - **Monolith file**: all routes live in one 2,230-line `app.py`. Adding a tool means copy-pasting the upload/process/cleanup boilerplate from a similar route.

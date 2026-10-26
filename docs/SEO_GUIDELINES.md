@@ -103,4 +103,4 @@ Google may report `http://` URLs as *Page with redirect* because `http` 301-redi
 - Don't submit `http://` URLs in Search Console.
 
 ## 10. Domain note
-Primary host is **`hellobrivio.com`**. Canonical tags, `og:url`, `sitemap.xml`, and `robots.txt` all agree on it (aligned 2026-07). `quickpdftool.onrender.com` still resolves (Render default) but is non-canonical — do not link to it or list it in the sitemap. If the primary host ever changes, update all four in one pass.
+Primary host is **`hellobrivio.com`**. Canonical tags, `og:url`, `sitemap.xml`, and `robots.txt` all agree on it (aligned 2026-07). `quickpdftool.onrender.com` (Render's default hostname) and `www.hellobrivio.com` permanently redirect to `https://hellobrivio.com` (301; form posts get 308) via a `before_request` hook in `app.py` — see ARCHITECTURE.md §7. Never link to or list the onrender host. If the primary host ever changes, update the canonical tag, `og:url`, `sitemap.xml`, `robots.txt`, the JSON-LD URLs and `CANONICAL_ORIGIN` in `app.py` in one pass.
