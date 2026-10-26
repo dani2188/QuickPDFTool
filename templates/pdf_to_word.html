@@ -62,7 +62,7 @@ endblock %} {% block content %}
   <p>Any modern word processor can open DOCX files, including Microsoft Word (Windows and Mac), Google Docs (free, browser-based), and LibreOffice Writer (free desktop app).</p>
 
   <h3>Is there a page limit?</h3>
-  <p>There is no page limit, but the maximum file size is 20 MB. Compress your PDF first if it exceeds this limit.</p>
+  <p>There is no page limit, but the maximum file size is 20 MB. A PDF made of scanned pages is also limited by how much image data it holds: more than about {{ max_word_image_megapixels }} megapixels of page images in total (roughly {{ (max_word_image_megapixels / 3.9) | round(0, 'floor') | int }} pages scanned at 200 DPI) is too large to convert here. Compress or split the PDF first if it exceeds either limit.</p>
 
   <h3>Can I convert Word back to PDF?</h3>
   <p>Yes. After editing in Word, use our <a href="/word-to-pdf">Word to PDF tool</a> to convert it back to a PDF document.</p>
@@ -93,6 +93,6 @@ endblock %} {% block content %}
   {"q": "Will the formatting be preserved?", "a": "For digitally created PDFs, most formatting including headings, paragraphs, and basic layout is preserved. Complex elements like multi-column layouts, tables, or special fonts may require minor adjustments after conversion."},
   {"q": "Does this work with scanned PDFs?", "a": "Not for editing. This tool doesn't run OCR, so a scanned PDF (pictures of pages) becomes a Word file containing those pictures and no editable text. PDF to Text has the same limitation, so you'll need an OCR tool to turn a scan into editable text."},
   {"q": "What software do I need to open the DOCX file?", "a": "Any modern word processor can open DOCX files, including Microsoft Word (Windows and Mac), Google Docs (free, browser-based), and LibreOffice Writer (free desktop app)."},
-  {"q": "Is there a page limit?", "a": "There is no page limit, but the maximum file size is 20 MB. Compress your PDF first if it exceeds this limit."},
+  {"q": "Is there a page limit?", "a": "There is no page limit, but the maximum file size is 20 MB. A PDF made of scanned pages is also limited by how much image data it holds: more than about " ~ max_word_image_megapixels ~ " megapixels of page images in total (roughly " ~ ((max_word_image_megapixels / 3.9) | round(0, 'floor') | int) ~ " pages scanned at 200 DPI) is too large to convert here. Compress or split the PDF first if it exceeds either limit."},
   {"q": "Can I convert Word back to PDF?", "a": "Yes. After editing in Word, use our Word to PDF tool to convert it back to a PDF document."}
 ]) }}{% endblock %}

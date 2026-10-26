@@ -17,7 +17,6 @@ import datetime
 from urllib.parse import quote
 
 from werkzeug.utils import secure_filename
-from pdf2docx import Converter
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
 import json
@@ -90,6 +89,74 @@ UPLOAD_FOLDER = "uploads"
 
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
+
+
+# -----------------------------
+# MEMORY LIMITS (QT-009)
+# -----------------------------
+# The 20 MB upload cap bounds file SIZE, not memory: a 1 MB JPEG can be 80
+# megapixels, and a 0.5 MB PDF can have 300 pages or a poster-sized page.
+# Decoding costs roughly 9-13 bytes per pixel at peak (measured with
+# scripts/measure_memory.py), so these are pixel budgets. The defaults keep a
+# single request under about 400 MB on a 512 MB instance; raise them with the
+# environment variables if the Render plan has more RAM.
+
+def _megapixels_from_env(name, default):
+    try:
+        value = float(os.environ.get(name, default))
+    except (TypeError, ValueError):
+        value = float(default)
+    return max(1.0, value)
+
+
+MAX_IMAGE_MEGAPIXELS = _megapixels_from_env("MAX_IMAGE_MEGAPIXELS", 30)        # photos we fully decode
+MAX_PDF_RENDER_MEGAPIXELS = _megapixels_from_env("MAX_PDF_RENDER_MEGAPIXELS", 30)  # one rendered PDF page
+MAX_WORD_IMAGE_MEGAPIXELS = _megapixels_from_env("MAX_WORD_IMAGE_MEGAPIXELS", 20)  # all page images in a PDF -> Word
+
+
+@app.context_processor
+def limits_context():
+    """The enforced limits, for the templates that state them."""
+    return {"max_image_megapixels": int(MAX_IMAGE_MEGAPIXELS),
+            "max_word_image_megapixels": int(MAX_WORD_IMAGE_MEGAPIXELS)}
+
+
+def image_too_large_message(name, width, height):
+    """None if a width x height image is within MAX_IMAGE_MEGAPIXELS, else a user-facing error."""
+    megapixels = width * height / 1_000_000
+    if megapixels <= MAX_IMAGE_MEGAPIXELS:
+        return None
+    return (f"\"{name}\" is about {megapixels:.0f} megapixels ({width} \u00d7 {height} px), more than the "
+            f"{MAX_IMAGE_MEGAPIXELS:.0f}-megapixel limit for this tool. Please make the picture smaller first, "
+            f"for example by resizing it in your phone's or computer's photo editor, and try again.")
+
+
+def render_matrix(width, height, zoom=2):
+    """A fitz.Matrix scaling by `zoom`, reduced only when the rendered page would exceed
+    MAX_PDF_RENDER_MEGAPIXELS. Ordinary pages (A4 at 2x is about 2 MP) are never affected."""
+    pixels = width * height * zoom * zoom
+    limit = MAX_PDF_RENDER_MEGAPIXELS * 1_000_000
+    if pixels > limit:
+        zoom *= (limit / pixels) ** 0.5
+    return fitz.Matrix(zoom, zoom)
+
+
+def pdf_image_megapixels(path):
+    """Total pixels of all images placed on the pages of a PDF (read from its metadata, no decoding)."""
+    with fitz.open(path) as doc:
+        total = 0
+        for page_index in range(len(doc)):
+            for image in doc.get_page_images(page_index):
+                total += image[2] * image[3]
+    return total / 1_000_000
+
+
+def release_pdfplumber_page(page):
+    """Free what pdfplumber caches per page. Without this a 300-page PDF holds ~2.3 MB per page
+    (about 750 MB) until the request ends; with it the same request stays under 70 MB."""
+    close = getattr(page, "close", None) or getattr(page, "flush_cache", None)
+    if close:
+        close()
 
 
 def delete_file_later(file_path, delay=300):
@@ -166,12 +233,20 @@ def images_to_pdf(files, output_path):
             path, _ = save_upload(file)
             try:
                 with Image.open(path) as img:
-                    img.load()
                     width, height = img.size
                     if img.format == "JPEG" and img.mode in ("RGB", "L"):
+                        # Embedded byte-for-byte, so it doesn't need a full decode. Decoding at 1/8
+                        # scale still reads the whole stream (so a truncated file is caught) for
+                        # about 1/64 of the memory.
+                        img.draft(img.mode, (max(1, width // 8), max(1, height // 8)))
+                        img.load()
                         with open(path, "rb") as f:
                             data = f.read()
                     else:
+                        too_big = image_too_large_message(secure_filename(file.filename), width, height)
+                        if too_big:
+                            return too_big
+                        img.load()
                         buf = io.BytesIO()
                         flatten_on_white(img).save(buf, "PNG")
                         data = buf.getvalue()
@@ -232,7 +307,7 @@ def error_page(message, status=400):
 def _render_pdf_page_preview(doc, page_index):
     """Render one PDF page to a JPEG in static/ for the redact-pdf editor preview."""
     page = doc[page_index]
-    pix = page.get_pixmap(matrix=fitz.Matrix(2, 2))
+    pix = page.get_pixmap(matrix=render_matrix(page.rect.width, page.rect.height))
     img = Image.frombytes("RGB", [pix.width, pix.height], pix.samples)
 
     preview_name = f"{uuid.uuid4()}.jpg"
@@ -294,7 +369,7 @@ def _apply_pdf_redactions(doc, areas):
         for rect, style in pdf_rects:
             if style not in ("blur", "pixelate"):
                 continue
-            pix = page.get_pixmap(matrix=fitz.Matrix(3, 3), clip=rect)
+            pix = page.get_pixmap(matrix=render_matrix(rect.width, rect.height, zoom=3), clip=rect)
             region = Image.frombytes("RGB", [pix.width, pix.height], pix.samples)
             if style == "blur":
                 region = region.filter(ImageFilter.GaussianBlur(radius=10))
@@ -800,7 +875,7 @@ def pdf_to_png():
 
             page = doc[page_index]
 
-            pix = page.get_pixmap(matrix=fitz.Matrix(2, 2))
+            pix = page.get_pixmap(matrix=render_matrix(page.rect.width, page.rect.height))
 
             img = Image.frombytes("RGB", [pix.width, pix.height], pix.samples)
 
@@ -940,6 +1015,14 @@ def pdf_to_word():
 
         input_path, _ = save_upload(file)
         stem = upload_stem(file)
+
+        megapixels = pdf_image_megapixels(input_path)
+        if megapixels > MAX_WORD_IMAGE_MEGAPIXELS:
+            return error_page(
+                f"This PDF is mostly large page images (about {megapixels:.0f} megapixels in total), more than the "
+                f"{MAX_WORD_IMAGE_MEGAPIXELS:.0f} megapixels we can convert in one go. Scanned pages come out as pictures "
+                f"in the Word file, not editable text, so try splitting the PDF into smaller parts first, or use "
+                f"Compress PDF to shrink the images.")
 
         output_filename = f"{uuid.uuid4()}_{stem}.docx"
         output_path = os.path.join(UPLOAD_FOLDER, output_filename)
@@ -1308,6 +1391,9 @@ def compress_jpg():
 
             try:
                 img = Image.open(input_path)
+                too_big = image_too_large_message(display_name, img.width, img.height)
+                if too_big:
+                    return error_page(too_big)
                 img = ImageOps.exif_transpose(img)  # bake in orientation before EXIF is stripped
                 img = img.convert("RGB")
                 img.save(output_path, "JPEG", quality=quality, optimize=True)
@@ -1423,6 +1509,14 @@ def resize_image():
 
         try:
             img = Image.open(input_path)
+        except Exception:
+            return error_page("Could not read that image file.")
+
+        too_big = image_too_large_message(input_name, img.width, img.height)
+        if too_big:
+            return error_page(too_big)
+
+        try:
             img.load()
         except Exception:
             return error_page("Could not read that image file.")
@@ -1769,7 +1863,7 @@ def pdf_to_jpg():
 
             page = doc[page_index]
 
-            pix = page.get_pixmap(matrix=fitz.Matrix(2, 2))
+            pix = page.get_pixmap(matrix=render_matrix(page.rect.width, page.rect.height))
 
             img = Image.frombytes("RGB", [pix.width, pix.height], pix.samples)
 
@@ -2123,6 +2217,7 @@ def pdf_to_excel():
                 if table:
                     df = pd.DataFrame(table[1:], columns=table[0])
                     tables.append(df)
+                release_pdfplumber_page(page)
 
         if tables:
             final_df = pd.concat(tables)
@@ -2225,6 +2320,7 @@ def pdf_to_text():
                 text = page.extract_text()
                 if text:
                     text_content += text + "\n\n"
+                release_pdfplumber_page(page)
 
         with open(output_path, "w", encoding="utf-8") as f:
             f.write(text_content)
@@ -2267,7 +2363,7 @@ def pdf_to_webp():
             page = doc[page_index]
 
             # render page (better quality)
-            pix = page.get_pixmap(matrix=fitz.Matrix(2, 2))
+            pix = page.get_pixmap(matrix=render_matrix(page.rect.width, page.rect.height))
 
             # convert to PIL image
             img = Image.frombytes("RGB", [pix.width, pix.height], pix.samples)
@@ -2408,7 +2504,7 @@ def sign_pdf():
                 page_num = 0
             page = doc[page_num]
 
-            pix = page.get_pixmap(matrix=fitz.Matrix(2, 2))
+            pix = page.get_pixmap(matrix=render_matrix(page.rect.width, page.rect.height))
             img = Image.frombytes("RGB", [pix.width, pix.height], pix.samples)
             doc.close()
 
@@ -2518,7 +2614,7 @@ def add_text_to_pdf():
 
             doc = fitz.open(pdf_path)
             page = doc[0]
-            pix = page.get_pixmap(matrix=fitz.Matrix(2, 2))
+            pix = page.get_pixmap(matrix=render_matrix(page.rect.width, page.rect.height))
             img = Image.frombytes("RGB", [pix.width, pix.height], pix.samples)
             doc.close()
 

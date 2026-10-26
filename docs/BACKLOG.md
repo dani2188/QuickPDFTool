@@ -261,7 +261,7 @@ read from the environment either way.
 
 - **Area:** Performance
 - **Priority:** P1
-- **Status:** Open
+- **Status:** In Progress
 - **Discovered:** `ARCHITECTURE.md` §8 (documented, unresolved as of 2026-09-17)
 - **Source:** Local measurement recorded in `ARCHITECTURE.md`: server process ~93 MB working set at cold start, rising to ~394 MB working set / ~598 MB private memory after the first `pdf-to-word` request, and never dropping back down
 
@@ -283,6 +283,7 @@ kills.
 **Notes:** Not something to fix by changing `app.py`'s processing logic —
 this is a deployment-sizing and monitoring question, not a code defect.
 
+**Update (2026-10-26, branch `perf/qt-009-worker-memory`):** measured, and the premise above was wrong in an important way. `pdf2docx` was imported at module level (not lazily), and an ordinary `pdf-to-word` adds only about 15-30 MB. The real OOM risk was inputs that are small on disk but large once decoded, which the 20 MB upload cap does not bound: a 0.5 MB 300-page PDF took `pdf-to-text` to 793 MB, a 1.2 MB 81-megapixel JPEG took image tools to 762 MB, a single 5000 x 5000 pt PDF page took `pdf-to-jpg` to 1057 MB, and a 19 MB scan took `pdf-to-word` to 583 MB. All of these are fixed in code (page release in pdfplumber, megapixel limits, a pixel budget for page renders, lazy `pdf2docx` import); see `ARCHITECTURE.md` §8 for the before/after table, `scripts/measure_memory.py` to reproduce it and `scripts/test_memory_guards.py` for the guard tests. Left open, and split out as QT-029: confirming the Render plan's real RAM and whether OOM kills have happened, and the deployment options that need an owner decision.
 ---
 
 ## QT-010 — Ghostscript compression failures are swallowed instead of surfaced
@@ -626,3 +627,24 @@ out of scope — this fix only recognizes QuickTools' own watermark format.
 **Proposed improvement:** N/A — already implemented.
 
 **Notes:** Fixed on branch `fix/redirect-onrender-to-domain`: `redirect_to_canonical_host()` in `app.py` redirects `*.onrender.com` and `www.hellobrivio.com` to `https://hellobrivio.com` with path and query kept (301, or 308 for form posts), handling `X-Forwarded-Host`. No `healthCheckPath` exists in `render.yaml`; an optional `HEALTH_CHECK_PATH` environment variable exempts one set in the Render dashboard. Verified by `scripts/test_canonical_redirect.py` and by running the full end-to-end suite (92/92) with `Host: hellobrivio.com`.
+
+---
+
+## QT-029 — Decide Render plan size and worker recycling using the QT-009 measurements
+
+- **Area:** Infrastructure / Performance
+- **Priority:** P2
+- **Status:** Open
+- **Discovered:** QT-009 follow-up (2026-10-26)
+- **Source:** `scripts/measure_memory.py` results in `ARCHITECTURE.md` §8
+
+**Problem:** After the QT-009 fixes the worst single request the app allows needs roughly 380 MB (boot is about 90 MB, and a 30-megapixel decode or render adds about 290 MB). That fits a 512 MB instance, but only with about 130 MB of margin, and the Python process also shares the instance with Ghostscript/LibreOffice child processes. The numbers come from Windows; Render runs Linux, and the Render plan's real RAM is not recorded anywhere in the repository. Nobody has confirmed from Render's metrics whether OOM kills have actually happened.
+
+**Proposed improvement:** None of these has been applied; each needs an owner decision.
+1. **Confirm the plan's RAM** and check the Render "Events"/metrics for out-of-memory restarts. If it is 512 MB, either accept the thin margin or move to a 1 GB+ plan, after which the three `MAX_*_MEGAPIXELS` variables can be raised.
+2. **Run `scripts/measure_memory.py` on Linux** (any Linux machine or a CI job with the same Python version) to replace the Windows estimates.
+3. **Worker recycling** (`--max-requests N --max-requests-jitter M` on the Gunicorn command): would cap any slow growth, but it changes `render.yaml`/`Procfile`, and with one worker each recycle drops in-flight compress jobs and pending file-delete timers and costs about 2 s of boot. The measurements show no per-request growth, so the benefit is small today. Not recommended unless Linux numbers show growth.
+4. **Isolating conversions in a child process** (so `pdf2docx`/pdfplumber memory returns to the OS after each request): a larger change to protected processing code. With the guards in place an ordinary conversion adds under 100 MB, so it is not recommended now.
+5. **One reaper thread instead of one sleeping thread per file** in `delete_file_later()`: a 300-page split starts 301 threads (about 26 KB each, so about 8 MB), which is a thread-count rather than a memory problem. It touches a protected function; low priority.
+
+**Notes:** Do not change `render.yaml`, `Procfile` or the Gunicorn config without the owner's approval.

@@ -78,6 +78,15 @@ Two tool families depend on binaries **not installed via pip** — they must exi
 - `render.yaml`: single Render web service, installs `ghostscript`, `libreoffice`, `poppler-utils` at build time, then `pip install -r requirements.txt`, runs Gunicorn with `--workers 1`.
 - `app.py`'s `if __name__ == "__main__"` block also supports running directly with `python app.py` (reads `PORT` env var, defaults to 10000) for local dev without Gunicorn.
 
+### Environment variables
+
+| Variable | Purpose |
+|---|---|
+| `PORT` | Port for `python app.py` (default 10000); Gunicorn gets its port from `--bind` |
+| `REMOVE_BG_API_KEY` | remove.bg key for `/remove-background` (503 if missing) |
+| `MAX_IMAGE_MEGAPIXELS` (30), `MAX_PDF_RENDER_MEGAPIXELS` (30), `MAX_WORD_IMAGE_MEGAPIXELS` (20) | Memory limits, see §8 |
+| `HEALTH_CHECK_PATH` | Optional: a health-check path set in the Render dashboard, never redirected by the canonical-host hook |
+
 ### Canonical host redirect
 
 The one official address is **`https://hellobrivio.com`**. Render also serves the app at its default hostname (`quickpdftool.onrender.com`), so a `before_request` hook in `app.py` (`redirect_to_canonical_host`) sends every request for a host ending in `onrender.com`, or for `www.hellobrivio.com`, to `https://hellobrivio.com` plus the same path and query string. It is not configured in `render.yaml`, `Procfile` or Gunicorn (all unchanged), so it also works when running `python app.py` locally.
@@ -98,8 +107,31 @@ The one official address is **`https://hellobrivio.com`**. Render also serves th
 - **In-process, in-memory cleanup**: `delete_file_later` uses a sleeping daemon thread per file rather than a scheduled task/cron — cleanup is lost on process restart, and with `--workers 1` this is fine, but it wouldn't scale to multiple Gunicorn workers (each worker has its own thread pool and no shared knowledge of what's pending deletion).
 - **Public uploads route**: `/uploads/<filename>` serves anything in `uploads/` directly by filename. Filenames are UUID-prefixed (not guessable), but there's no auth or expiry check at serve time — if the delete-timer hasn't fired yet, the file is downloadable by anyone with the URL.
 - **Errors swallowed**: `compress_pdf()` catches all exceptions and just `print()`s them — a Ghostscript failure (e.g., binary not installed) fails silently rather than surfacing an error to the user.
-- **20 MB upload cap**: `MAX_CONTENT_LENGTH = 20 * 1024 * 1024` is global across all tools. Raised from 10 MB after local testing (below) showed comfortable headroom on processing time; `render.yaml` runs a single Gunicorn worker with no `plan:` set (Render's default/free tier RAM), so this should be re-verified against real Render metrics before pushing the cap any higher.
-- **`pdf-to-word` permanently bloats worker memory, independent of file size**: `pdf2docx` pulls in `opencv-python-headless` + `numpy`, both imported lazily on first use. Local testing (Windows, `python3.8.exe`) showed the server process sitting at ~93 MB working set at cold start and staying there through `compress-pdf`/`pdf-to-jpg`/`extract-images` calls — but a single `pdf-to-word` request permanently pushed it to ~394 MB working set / ~598 MB private memory, and it never drops back down (Python doesn't unload C-extension modules). With `--workers 1` on Render, the first `pdf-to-word` (or `pdf-to-excel`/`excel-to-pdf`, which import `pandas`/`openpyxl` the same way) call of the process's lifetime permanently eats a large chunk of whatever RAM the plan has, for every request after it — regardless of upload size. Worth watching for OOM kills on Render independent of the upload-size question.
+- **20 MB upload cap**: `MAX_CONTENT_LENGTH = 20 * 1024 * 1024` is global across all tools. It bounds a file's *size*, not the *memory* a request needs, which is what matters for the Render instance (see the next bullet). `render.yaml` runs a single Gunicorn worker with no `plan:` set, so Render's default RAM applies (assume 512 MB until confirmed in the Render dashboard).
+- **Memory is bounded by pixels and pages, not by file size** (QT-009). Measured with `scripts/measure_memory.py` (a fresh process per scenario, real routes, real files; Windows, Python 3.8, resident memory). The earlier claim that one `pdf-to-word` request permanently adds ~300 MB regardless of input was wrong: `pdf2docx` was imported at module level (so OpenCV/numpy were part of the boot cost) and an ordinary Word conversion adds only about 15-30 MB. What actually spikes memory is inputs that are small on disk but large once decoded:
+
+  | Input (size on disk) | Before | After |
+  |---|---|---|
+  | boot (`import app`) | 101 MB, 2.1 s | 91 MB, 2.1 s (`pdf2docx` now imported only by `/pdf-to-word`) |
+  | `pdf-to-text`, 300-page PDF (0.5 MB) | **793 MB** | 102 MB (pdfplumber pages are now released as they are read; output identical) |
+  | `pdf-to-excel`, 300-page PDF (0.5 MB) | 857 MB | 131 MB |
+  | resize-image / compress-jpg, 81-megapixel JPEG (1.2 MB) | **762 MB** | rejected with a 400 (limit 30 MP) |
+  | `jpg-to-pdf`, same 81 MP JPEG | 762 MB | 101 MB (the JPEG is embedded as-is, so it is only checked, at 1/8 scale) |
+  | `pdf-to-jpg`, A0 poster page (0 MB) | 409 MB | 378 MB (scaled to a 30 MP budget) |
+  | `pdf-to-jpg`, one 5000 x 5000 pt page (0 MB) | **1057 MB** | 379 MB (scaled to the budget) |
+  | `pdf-to-word`, 9-page scan (19 MB) | **583 MB peak** | rejected with a 400 (limit 20 MP of page images) |
+  | `pdf-to-word`, ordinary text PDFs (6 / 20 / 100 pages) | 116 / 129 / 185 MB | unchanged |
+  | every tool in one process, 5 cycles (heaviest allowed inputs) | peak 1451 MB | peak 809 MB; resident settles at about 515 MB |
+
+  What the guards in `app.py` do (limits are environment variables; raise them if the Render plan has more RAM):
+  - `MAX_IMAGE_MEGAPIXELS` (default 30): images that are fully decoded (resize-image, compress-jpg, and non-JPEG images in jpg-to-pdf / png-to-pdf) are rejected with a clear 400 above it. The check reads only the image header.
+  - `MAX_PDF_RENDER_MEGAPIXELS` (default 30): PDF pages rendered to images (pdf-to-jpg/png/webp, the sign / add-text / redact previews) use zoom 2 as before and are scaled down only if a page would exceed the budget, so ordinary pages (A4 is about 2 MP) are byte-for-byte unaffected and posters get a slightly lower zoom instead of failing.
+  - `MAX_WORD_IMAGE_MEGAPIXELS` (default 20): a PDF whose page images total more than this (about 5 pages scanned at 200 DPI) is rejected by `pdf-to-word`, with advice to split or compress. Peak memory there was about 13 bytes per image pixel.
+  - Peak memory while decoding is roughly 9-13 bytes per pixel, so the defaults keep one request under about 400 MB.
+
+  Findings that did **not** need a code change: there is no leak (resident memory is flat across repeated full cycles); Ghostscript peaked at only 19-25 MB on a 19 MB scan and runs as a separate process; and each `delete_file_later()` timer thread costs about 26 KB (1000 sleeping timers = +26 MB), though a 300-page split starts 301 of them.
+
+  Caveats: these numbers are from Windows. Linux (Render) uses a different allocator, so absolute figures will differ; run `scripts/measure_memory.py` on a Linux machine for production-like numbers. The Render plan's real RAM and whether OOM kills have happened are not known from the repository; see QT-029 in `docs/BACKLOG.md` for the options that need a decision (plan size, worker recycling, isolating conversions), none of which are applied.
 
 ## 9. Development environment
 
