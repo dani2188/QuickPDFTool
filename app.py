@@ -4,7 +4,7 @@ from PyPDF2 import PdfMerger, PdfReader, PdfWriter
 from PyPDF2.errors import PdfReadError
 from pdfminer.pdfparser import PDFSyntaxError
 
-from flask import Flask, request, render_template, send_file, jsonify
+from flask import Flask, request, render_template, send_file, jsonify, redirect
 import subprocess
 import os
 import threading
@@ -14,6 +14,7 @@ import uuid
 import io
 import zipfile
 import datetime
+from urllib.parse import quote
 
 from werkzeug.utils import secure_filename
 from pdf2docx import Converter
@@ -32,6 +33,58 @@ app = Flask(__name__)
 
 # limit upload size
 app.config['MAX_CONTENT_LENGTH'] = 20 * 1024 * 1024
+
+
+# -----------------------------
+# CANONICAL HOST REDIRECT
+# -----------------------------
+
+CANONICAL_ORIGIN = "https://hellobrivio.com"
+
+# Optional: set HEALTH_CHECK_PATH in the Render dashboard if a health-check
+# path is configured there (render.yaml has none), so it is never redirected.
+HEALTH_CHECK_PATH = os.environ.get("HEALTH_CHECK_PATH") or None
+
+
+def _host_needs_redirect(host):
+    """True for Render's default hostnames and the www host; False for the
+    canonical host, localhost, IP addresses and anything unknown."""
+    host = host.strip().lower().rstrip(".")
+    if host.startswith("["):  # bracketed IPv6 literal, possibly with a port
+        return False
+    host = host.split(":")[0]
+    return host == "onrender.com" or host.endswith(".onrender.com") or host == "www.hellobrivio.com"
+
+
+@app.before_request
+def redirect_to_canonical_host():
+    """Send every request for onrender.com or www.hellobrivio.com to
+    https://hellobrivio.com, keeping the path and query string.
+
+    Render sits behind a proxy, so the original host may arrive in
+    X-Forwarded-Host; both it and Host are checked, so a client can't dodge
+    the redirect by sending a different forwarded header. The target is a
+    fixed constant, never built from the request, so this can't become an
+    open redirect.
+    """
+    if HEALTH_CHECK_PATH and request.path == HEALTH_CHECK_PATH:
+        return None
+
+    hosts = [request.host]
+    forwarded = request.headers.get("X-Forwarded-Host")
+    if forwarded:
+        hosts += forwarded.split(",")
+
+    if not any(_host_needs_redirect(h) for h in hosts):
+        return None
+
+    target = CANONICAL_ORIGIN + quote(request.path, safe="/")
+    if request.query_string:
+        target += "?" + request.query_string.decode("latin-1")
+
+    # 301 for page views. A form POST must keep its method and body, which a
+    # 301 would turn into a GET, so those get a 308 (also permanent).
+    return redirect(target, code=301 if request.method in ("GET", "HEAD") else 308)
 
 UPLOAD_FOLDER = "uploads"
 
