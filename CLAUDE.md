@@ -58,6 +58,7 @@ The standing rule for UI/docs/architecture work: **preserve all existing tool fu
 - Start the app and exercise the affected route end-to-end (upload → process → download), not just a page load. The compress flow is: POST `/compress-pdf` → `processing.html` polls `/status/<file>` → `/download/<file>` → `result.html`.
 - Responsive check at 320 / 480 / 768 / 1024 / 1440px; no horizontal scroll; touch targets ≥ 44px.
 - Put temp/test files in the scratchpad, not the repo. Clean `uploads/` after testing.
+- **Memory limits** (`MAX_IMAGE_MEGAPIXELS`=30, `MAX_PDF_RENDER_MEGAPIXELS`=30, `MAX_WORD_IMAGE_MEGAPIXELS`=20): inputs over these are rejected or scaled down so a single request can't exhaust the instance's RAM (the 20 MB upload cap bounds file size, not decoded size). Raise them only with a bigger Render plan. When touching image/PDF processing, re-run `scripts/test_memory_guards.py`; see ARCHITECTURE.md §8 and `scripts/measure_memory.py`.
 - Commit only when asked. Branch off `master` if the task warrants it. **Push only when the user asks.**
 
 ---
