@@ -1,10 +1,10 @@
 # Architecture Overview
 
-This document describes the current architecture of the PDF/Image tools web app as of 2026-08-23. It reflects what exists in the repo today, not a target design.
+This document describes the current architecture of the PDF/Image tools web app as of 2026-10-26. It reflects what exists in the repo today, not a target design.
 
 ## 1. Summary
 
-A single-process **Flask** web application that offers ~38 browser-based PDF/image conversion and editing tools (compress, merge, split, convert, watermark, sign, redact, etc.), similar in spirit to iLovePDF/Smallpdf. There is no build step, no frontend framework, and no database — it's server-rendered HTML + a monolithic Python backend that shells out to external binaries (Ghostscript, LibreOffice) and Python libraries (PyMuPDF, PyPDF2, Pillow, pdf2docx) to do the actual file processing.
+A single-process **Flask** web application, branded **hellobrivio** (one lowercase brand name, also the product name), that offers ~31 browser-based PDF and image conversion/editing tools (compress, merge, split, convert, watermark, sign, redact, resize, remove background, etc.), similar in spirit to iLovePDF/Smallpdf. Image tools (Resize Image, Remove Background, Compress JPG) were merged in from a former separate static site on 2026-08-25 as native routes. There is no build step, no frontend framework, and no database — it's server-rendered HTML + a monolithic Python backend that shells out to external binaries (Ghostscript, LibreOffice), calls one external HTTP API (remove.bg), and uses Python libraries (PyMuPDF, PyPDF2, Pillow, pdf2docx) to do the actual file processing.
 
 ## 2. Tech stack
 
@@ -18,12 +18,13 @@ A single-process **Flask** web application that offers ~38 browser-based PDF/ima
 | Office conversion | `LibreOffice` (via `subprocess`, headless `--convert-to`) |
 | PDF compression | `Ghostscript` (via `subprocess`, `gswin64c`/`gs`) |
 | Spreadsheet conversion | `pandas`, `openpyxl` |
+| External API | `requests` → remove.bg (background removal only; key via `REMOVE_BG_API_KEY` env var) |
 | Deployment target | Render.com (`render.yaml`), Gunicorn (`Procfile`) |
 
 ## 3. Code layout
 
 ```
-app.py                 # entire backend: ~2,230 lines, ~77 routes, all in one file
+app.py                 # entire backend: ~2,718 lines, ~97 routes, all in one file
 templates/             # one Jinja2 template per tool page, usually paired with a *_guide.html SEO page
 templates/components/  # shared partials (e.g. upload.html)
 static/style.css        # single global stylesheet
@@ -54,14 +55,16 @@ Some multi-step tools (`add-text-to-pdf`, `sign-pdf`, `redact-pdf`) render a pre
 
 ## 5. Tool inventory (by category)
 
-- **Compression**: compress-pdf (levels: low/medium/extreme/default, via Ghostscript `-dPDFSETTINGS`), compress-pdf-to-1mb, compress-pdf-for-email
-- **Merge/Split/Organize**: merge-pdf, split-pdf, delete-pdf-pages, organize-pdf, rotate-pdf, crop-pdf
-- **Conversion — PDF ⇄ image**: pdf-to-jpg, pdf-to-png, pdf-to-webp, jpg-to-pdf, png-to-pdf, extract-images
+- **Compression**: compress-pdf (levels: low/medium/extreme/default, via Ghostscript `-dPDFSETTINGS`), compress-pdf-to-1mb, compress-pdf-for-email, compress-jpg (Pillow re-encode, no Ghostscript involved)
+- **Merge/Split/Organize**: merge-pdf, split-pdf, delete-pdf-pages, organize-pdf (hub page), rotate-pdf, crop-pdf
+- **Conversion — PDF ⇄ image**: pdf-to-jpg, pdf-to-png, pdf-to-webp, jpg-to-pdf, png-to-pdf, svg-to-pdf (PyMuPDF native SVG import, with a custom marker-inlining pre-pass since MuPDF's SVG parser drops most `<marker>`-based arrowheads — see `_inline_svg_markers()`), extract-images
 - **Conversion — PDF ⇄ Office**: pdf-to-word, word-to-pdf (LibreOffice), pdf-to-excel, excel-to-pdf (pandas/openpyxl)
 - **Conversion — PDF ⇄ text**: pdf-to-text (pdfplumber)
-- **Security**: protect-pdf (password), unlock-pdf
+- **Security**: protect-pdf (password), unlock-pdf, redact-pdf (PyMuPDF redaction annotations — permanently strips underlying content, not just a visual overlay; supports black/white/blur/pixelate)
 - **Editing/annotation**: add-page-numbers, add-watermark, remove-watermark, add-text-to-pdf, sign-pdf
-- **Marketing/SEO shell**: each tool above has a paired `/how-to-*` guide page, plus `about`, `blog`, `contact`, `privacy-policy`, `terms`, `sitemap.xml`, `robots.txt`, `ads.txt` (AdSense)
+- **Image tools** (merged in from the former standalone QuickImageTools static site, 2026-08-25): resize-image (server-side Pillow letterbox fit — scales to fit within the target box and pads with white, never crops/stretches), compress-jpg, remove-background (proxies to the remove.bg HTTP API server-side — see §6)
+- **Hub / listing pages**: pdf-tools, image-tools, convert-pdf, edit-pdf, organize-pdf (these three are thin hub pages, not processing routes)
+- **Marketing/SEO shell**: each tool above has a paired `/how-to-*` guide page, plus `about`, `blog` (+ per-article pages under `/blog/<slug>`), `contact`, `privacy-policy`, `terms`, `sitemap.xml`, `robots.txt`, `ads.txt` (AdSense)
 
 ## 6. External process dependencies
 
@@ -71,6 +74,8 @@ Two tool families depend on binaries **not installed via pip** — they must exi
 - **LibreOffice** (`soffice`/`libreoffice --headless`) — required for `word-to-pdf`.
 
 `render.yaml` installs both (plus `poppler-utils`) via `apt-get` in the Render build step. **Locally there is no equivalent setup script** — these must be installed manually on the dev machine, or the compress/word-to-pdf routes will fail (a missing Ghostscript makes compress-pdf show "temporarily unavailable" on the processing page; a missing LibreOffice makes word-to-pdf return a 503 page).
+
+**One route depends on a third-party HTTP API rather than a local binary**: `remove-background` proxies the upload to the remove.bg API server-side, reading the key from the `REMOVE_BG_API_KEY` environment variable (never exposed to the client — the previous standalone image-tools site had this key hardcoded in client-side JS, which is why it was rebuilt as a server-side proxy). If the env var isn't set, the route returns a `503` with a clear message rather than crashing. This is the only tool with a per-request cost and an external service dependency outside this deployment's control; remove.bg's free tier is non-commercial-use-only, so a paid/commercial plan is required for this to run legitimately on an ad-monetized site.
 
 ## 7. Deployment
 
@@ -92,8 +97,8 @@ The one official address is **`https://hellobrivio.com`**. Render also serves th
 
 ## 8. Notable architectural characteristics / risks
 
-- **Monolith file**: all routes live in one 2,230-line `app.py`. Adding a tool means copy-pasting the upload/process/cleanup boilerplate from a similar route.
-- **No shared processing/service layer**: file-save, UUID-naming, and cleanup-scheduling logic is duplicated per-route instead of factored into helpers.
+- **Monolith file**: all routes live in one 2,718-line `app.py`. Adding a tool means copy-pasting the upload/process/cleanup boilerplate from a similar route.
+- **No shared processing/service layer**: saving an upload (UUID name + scheduled deletion) is shared via `save_upload()`, but each tool's actual processing and its output-file handling are still written per-route.
 - **Unpinned dependencies**: `requirements.txt` has no version pins (`flask`, `Pillow`, `PyMuPDF`, etc. with no `==`), so `pip install` on Render can silently pick up newer major versions than what's used/tested locally.
 - **In-process, in-memory cleanup**: `delete_file_later` uses a sleeping daemon thread per file rather than a scheduled task/cron — cleanup is lost on process restart, and with `--workers 1` this is fine, but it wouldn't scale to multiple Gunicorn workers (each worker has its own thread pool and no shared knowledge of what's pending deletion).
 - **Public uploads route**: `/uploads/<filename>` serves anything in `uploads/` directly by filename. Filenames are UUID-prefixed (not guessable), but there's no auth or expiry check at serve time — if the delete-timer hasn't fired yet, the file is downloadable by anyone with the URL.
@@ -103,19 +108,10 @@ The one official address is **`https://hellobrivio.com`**. Render also serves th
 
 ## 9. Development environment
 
-**There is currently no isolated Python environment for this project.** Findings from inspecting the local machine:
+A project-local virtual environment exists at `.venv/` (Python 3.8) and is what's actually used — `.venv/Scripts/python.exe` / `.venv/Scripts/pip.exe`, not the global interpreter. Activate it with `.venv\Scripts\Activate.ps1` before running `python app.py` or installing dependencies, per `CLAUDE.md` §4.
 
-- `python`/`pip` resolve to the **global Windows Store Python 3.8** install (`sys.prefix == sys.base_prefix`), not a virtualenv.
-- Flask 3.0.3 and the other dependencies are installed **system-wide**, not scoped to this project.
-- `.gitignore` already lists `.venv/`, `__pycache__/`, `*.pyc`, `uploads/`, `.vscode/` — meaning a virtual environment was *anticipated* but never actually created.
-- `requirements.txt` has no lockfile (no `requirements-lock.txt`/`poetry.lock`/`Pipfile.lock`) and no version pins, so "works on my machine" isn't reproducible even if a venv is created today.
+- `requirements.txt` is still almost entirely unpinned (`flask`, `Pillow`, `PyMuPDF`, etc. with no `==`), with one deliberate exception: `reportlab<4.4.3`, pinned because 4.4.3+ calls `hashlib.md5(usedforsecurity=...)`, which isn't implemented on Python 3.8 and made `add-page-numbers`/`add-watermark`/`excel-to-pdf` throw a 500 until it was pinned back.
+- No lockfile (no `requirements-lock.txt`/`poetry.lock`/`Pipfile.lock`), so beyond that one pin, "works on my machine" still isn't fully reproducible — a future `pip install` on Render could pick up a newer major version of any other dependency than what's installed locally.
+- Confirmed installed versions in `.venv` as of this writing: Flask 3.0.3, Pillow 10.4.0, PyMuPDF 1.24.11, PyPDF2 3.0.1, reportlab 4.4.2, requests 2.32.4.
 
-**Recommendation**: create a project-local virtual environment so dependency versions are isolated from other Python projects on the machine and match what's installed on Render:
-
-```powershell
-python -m venv .venv
-.venv\Scripts\Activate.ps1
-pip install -r requirements.txt
-```
-
-Longer term, pin exact versions in `requirements.txt` (or generate a lockfile) so local, CI, and Render installs stay in sync.
+Longer term, pin exact versions in `requirements.txt` (or generate a lockfile) so local, CI, and Render installs stay in sync — the reportlab incident is a concrete example of what an unpinned dependency can silently break.

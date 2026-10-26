@@ -1,6 +1,6 @@
 # CLAUDE.md — Rules to check FIRST, before any action
 
-This is **hellobrivio**, a Flask monolith of ~38 browser-based PDF/image tools (server-rendered Jinja templates + one hand-written stylesheet). Read this before making changes.
+This is **hellobrivio**, a Flask monolith of ~31 browser-based PDF and image tools (server-rendered Jinja templates + one hand-written stylesheet). Read this before making changes.
 
 ---
 
@@ -47,8 +47,9 @@ The standing rule for UI/docs/architecture work: **preserve all existing tool fu
 ## 4. Environment & how to run
 
 - Use the project-local venv: `.venv\Scripts\Activate.ps1` (Windows) then `python app.py` → http://localhost:10000.
-- Deps: `pip install -r requirements.txt` (unpinned). Python 3.8 currently.
-- **System binaries required and NOT pip-installable:** Ghostscript (`gswin64c`/`gs`, all `compress-*` tools) and LibreOffice (`soffice`, `word-to-pdf`). If a compress/convert route "does nothing", check these are installed.
+- Deps: `pip install -r requirements.txt` — unpinned except `reportlab<4.4.3` (4.4.3+ breaks on Python 3.8, see ARCHITECTURE.md §9). Python 3.8 currently.
+- **System binaries required and NOT pip-installable:** Ghostscript (`gswin64c`/`gs`, all `compress-pdf*` tools) and LibreOffice (`soffice`, `word-to-pdf`). If a compress/convert route "does nothing", check these are installed.
+- **`remove-background` needs `REMOVE_BG_API_KEY`** set in the environment (a remove.bg API key) or it returns a 503 with a clear message — this is expected locally unless you've set it.
 
 ---
 
@@ -68,3 +69,4 @@ The standing rule for UI/docs/architecture work: **preserve all existing tool fu
 3. Add a matching `/how-to-<tool>` guide template.
 4. Add the new URL(s) to [sitemap.xml](sitemap.xml).
 5. Add related-tool links (`.tools-mini-grid`) and keep icons consistent with DESIGN_SYSTEM §9.
+6. Add a card to the right hub page — `templates/pdf_tools.html` for a PDF tool, `templates/image_tools.html` for an image tool — not both; the two are cross-linked to each other instead of duplicating listings.
