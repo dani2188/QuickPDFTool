@@ -648,3 +648,35 @@ out of scope — this fix only recognizes QuickTools' own watermark format.
 5. **One reaper thread instead of one sleeping thread per file** in `delete_file_later()`: a 300-page split starts 301 threads (about 26 KB each, so about 8 MB), which is a thread-count rather than a memory problem. It touches a protected function; low priority.
 
 **Notes:** Do not change `render.yaml`, `Procfile` or the Gunicorn config without the owner's approval.
+
+---
+
+## QT-030 — Password-protected PDFs return a 500 on six tools
+
+- **Area:** UX / Technical
+- **Priority:** P2
+- **Status:** Open
+- **Discovered:** SEO ticket T-1, while verifying the PDF to PNG page (2026-10-27)
+- **Source:** Uploading a PDF encrypted with a user password to each route (test client)
+
+**Problem:** `/pdf-to-png`, `/pdf-to-jpg`, `/pdf-to-webp`, `/extract-images`, `/pdf-to-text` and `/pdf-to-word` all return HTTP 500 ("Server Error") for a password-protected PDF, because PyMuPDF/pdfplumber raise on the encrypted document and nothing catches it. The pages and guides tell people to run Unlock PDF first, but the tool itself gives no message saying so. Other PDF routes that use PyPDF2 (split, rotate, merge, etc.) were not tested.
+
+**Proposed improvement:** Detect an encrypted document right after opening it (`doc.needs_pass` for PyMuPDF, `is_encrypted` for PyPDF2) and return the styled 400 page with a link to Unlock PDF, ideally through one shared helper like `error_page()`. Then update the PDF to PNG page's FAQ ("the conversion fails with an error") to say the tool shows a message.
+
+**Notes:** Found while checking the T-1 copy; not fixed there because it touches six routes.
+
+---
+
+## QT-031 — PDF to PNG/JPG/WebP results don't say when pages were skipped
+
+- **Area:** UX
+- **Priority:** P2
+- **Status:** Open
+- **Discovered:** SEO ticket T-1 (2026-10-27)
+- **Source:** `pdf_to_png()` (and the JPG and WebP routes), `MAX_PAGES = 20`
+
+**Problem:** These tools convert only the first 20 pages. For a 25-page PDF the results page says "20 page(s) converted" and nothing else, so a user who doesn't count the images doesn't learn that 5 pages were dropped. The PDF to PNG page and guide now document this and the workaround, but the tool should say it.
+
+**Proposed improvement:** Pass the PDF's real page count to the results template and show "Converted the first 20 of N pages" with a link to the guide's section on long PDFs when N is larger than the limit.
+
+**Notes:** Template and one extra variable per route; no change to the conversion itself.

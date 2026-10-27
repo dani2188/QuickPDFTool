@@ -1,110 +1,142 @@
 {% extends "base.html" %}
-{% set breadcrumb_label = "How to Convert PDF to PNG" %}
+{% set breadcrumb_label = "PDF to PNG Guide" %}
 {% set date_published = "2026-03-14" %}
-{% set date_modified = "2026-09-18" %}
+{% set date_modified = "2026-10-27" %}
 
-{% block title %}How to Convert PDF to PNG – Export PDF Pages as PNG Images{% endblock %}
+{% block title %}PDF to PNG Guide: Multi-Page PDFs, File Size and PNG vs JPG{% endblock %}
 
-{% block description %}Learn how to convert PDF pages to PNG images online for free. Step-by-step guide with tips, use cases, and FAQs about PDF to PNG conversion.{% endblock %}
+{% block description %}Fixes for common PDF to PNG problems: PDFs over 20 pages, files that are too big, soft text, no transparency, and when to pick JPG. With measured results.{% endblock %}
 
 {% block content %}
 
 <article class="guide-article">
 
-<h1>How to Convert PDF to PNG</h1>
+<h1>PDF to PNG: Multi-Page PDFs, File Size and Other Problems</h1>
 
 {% from "components/byline.html" import byline %}
 {{ byline(date_published, date_modified) }}
 
 <p>
-Converting a PDF to PNG produces high-quality lossless images of each page. Unlike JPG, PNG uses lossless compression, which means there is no quality degradation — every pixel is preserved exactly. This makes PNG the preferred format when you need crisp, accurate representations of PDF pages, especially for documents with sharp text, line art, or transparent backgrounds.
+This guide is for when a PDF to PNG conversion doesn't give you what you expected: not all the pages came
+back, the files are huge, the text looks soft, or you wanted a transparent background. Each section says
+what is happening and what to do about it, using what we measured on our own
+<a href="/pdf-to-png">PDF to PNG converter</a>. If you only need the basic steps, they are on the converter page.
+</p>
+
+<h2 id="long-pdfs">My PDF has more than 20 pages</h2>
+
+<p>
+The converter turns the first 20 pages into PNG images and ignores the rest. In our test a 25-page PDF
+produced 20 images, and the results page only said "20 page(s) converted", so the only way to notice is to
+count. To get the remaining pages, take off the ones you already have and convert again:
+</p>
+
+<ol>
+  <li><strong>Convert the PDF as usual.</strong> You get pages 1–20.</li>
+  <li><strong>Open <a href="/delete-pdf-pages">Delete PDF Pages</a>, upload the same PDF</strong> and type the numbers of the pages you already have, separated by commas: 1,2,3 and so on up to 20. A range such as 1-20 is not accepted. Download the shorter PDF.</li>
+  <li><strong>Convert the shorter PDF.</strong> Its first page is page 21 of the original. We tested this with a 45-page PDF: deleting pages 1–20 left 25 pages starting at "Page 21", and converting it gave the next 20 images.</li>
+  <li><strong>Repeat until you run out of pages,</strong> keeping each batch in its own folder. Every ZIP numbers its images from page_1.png again, so mixing batches would overwrite files.</li>
+</ol>
+
+<p>
+Don't use <a href="/split-pdf">Split PDF</a> for this. It writes one separate PDF per page, so a 45-page
+document becomes 45 files rather than a few sections. The same Delete PDF Pages method also works when you
+only want a few pages: list every page you do <em>not</em> want, then convert what is left.
+</p>
+
+<h2>The PNG files are too big</h2>
+
+<p>
+PNG stores every pixel exactly, so the size of the file depends on what is on the page, not on how many
+words or pages there are. A page of text or a line drawing is small. A page that is a photograph or a scan
+is mostly noise from PNG's point of view, and it comes out many times larger. The table further down
+shows what we measured for each kind of page.
 </p>
 
 <p>
-Our free tool converts every page of your PDF to a separate PNG image and lets you download them individually or all at once as a ZIP file.
+The pixel size can't be reduced in this tool, because every page is drawn at the same 2× scale. The way to
+get smaller files from photographic or scanned pages is to export JPG instead, as the comparison below shows.
 </p>
 
-<h2>Step 1 – Open the PDF to PNG Tool</h2>
+<h2>The text looks soft or blurry</h2>
 
 <p>
-Go to our <a href="/pdf-to-png">PDF to PNG converter</a>. You'll see a file upload area. Click to select your PDF or drag and drop it onto the page.
+The converter draws each page at 2× the PDF's own size, which is 144 pixels per inch (an A4 page is
+1190 × 1684 px), and there is no option to raise it. In a PDF, text is stored as shapes that stay sharp at any
+size; in a PNG it has become a fixed grid of pixels. So the image looks right at 100% and gets soft when
+you enlarge it, and no setting after the fact brings the sharpness back. If you need something that stays
+sharp when printed or enlarged, keep working from the PDF itself.
 </p>
 
-<h2>Step 2 – Upload Your PDF</h2>
+<h2>I need a transparent background</h2>
 
 <p>
-Select your PDF and upload it. The tool processes each page and renders it as a high-resolution PNG image. Pages are rendered at 2x resolution (200% zoom) to ensure sharp, detailed output.
+This tool can't produce one. Every PNG it writes is RGB with no transparency channel, and the page is drawn
+on white. We tested a page with a 40%-opaque red rectangle on it: the PNG showed solid pale red on white,
+not a see-through shape. PNG as a format supports transparency, but the conversion doesn't use it.
 </p>
 
-<p>
-The tool supports multi-page PDFs and processes up to 20 pages per upload. Each page becomes one PNG file.
-</p>
-
-<h2>Step 3 – Download Your PNG Images</h2>
-
-<p>
-After processing, you'll see a gallery showing all converted pages. You can download individual images by clicking on them, or download all images together as a single ZIP archive for convenience.
-</p>
-
-<h2>PNG vs JPG – When to Choose PNG</h2>
+<h2>The conversion shows an error</h2>
 
 <ul>
-  <li><strong>PNG is lossless:</strong> No image quality is lost during compression. Text remains sharp, lines stay crisp.</li>
-  <li><strong>JPG is lossy:</strong> Some quality is sacrificed for a smaller file size. Fine for photographs, but may introduce artefacts around text and sharp edges.</li>
-  <li><strong>Choose PNG when:</strong> the PDF contains text, diagrams, line art, logos, or anything with sharp edges where quality must be perfect.</li>
-  <li><strong>Choose JPG when:</strong> file size is a priority and the content is photographic with no sharp text edges.</li>
+  <li><strong>The PDF needs a password.</strong> The tool can't open it. <a href="/unlock-pdf">Unlock PDF</a> first, then convert the unlocked copy.</li>
+  <li><strong>The file is over 20 MB.</strong> You get a "file too large" page. <a href="/compress-pdf">Compress PDF</a> can shrink it first.</li>
+  <li><strong>The file is damaged or isn't really a PDF.</strong> You get a message saying it doesn't look like a valid PDF. Open it in a PDF viewer to check it, and try exporting it again from the program that made it.</li>
 </ul>
 
-<h2>Common Uses for PDF to PNG Conversion</h2>
+<h2 id="png-or-jpg">PNG or JPG for these pages?</h2>
 
-<p><strong>Web design and development:</strong> PNG images can be embedded in websites and web apps. Converting PDF diagrams, charts, or page designs to PNG makes them easy to use in HTML/CSS without requiring a PDF viewer.</p>
+<p>
+The comparison below uses the same four sample documents as the converter page, exported both ways.
+</p>
 
-<p><strong>Presentations:</strong> Import individual PDF pages as PNG slides into PowerPoint, Google Slides, or Keynote for pixel-perfect image quality.</p>
+{% include "components/examples/pdf_to_png_guide.html" %}
 
-<p><strong>Documentation and wikis:</strong> Technical documentation platforms and wikis like Confluence or Notion support inline PNG images but not embedded PDFs. Converting PDF screenshots or diagrams to PNG makes them easy to embed.</p>
-
-<p><strong>Social media graphics:</strong> Convert infographic pages from a PDF to PNG to share on Instagram, Twitter, or LinkedIn where image posts get more visibility than document attachments.</p>
-
-<p><strong>Archiving with transparency:</strong> PNG supports transparent backgrounds, making it possible to extract diagrams or charts with non-rectangular shapes from PDFs.</p>
+<p>
+Reading the table: for the text report and the line-art diagram the PNG was <em>smaller</em> than the JPG
+and exact, so PNG is the better choice there on both counts. For the photo brochure and the scanned letter
+the PNG was around four to six times the size of the JPG, while the JPG changed only a small fraction of the
+pixels, so JPG is the sensible choice for pages like those unless you need the exact pixels. Our general
+explainer, <a href="/blog/png-vs-jpg-guide">PNG vs JPG</a>, covers the formats beyond PDF pages.
+</p>
 
 <h2>Frequently Asked Questions</h2>
 
-<h3>How many pages can I convert at once?</h3>
+<h3>Can I convert only some pages of a PDF to PNG?</h3>
 <p>
-The tool converts up to 20 pages per upload. For longer documents, use the <a href="/split-pdf">Split PDF tool</a> to break the document into smaller parts first.
+Yes, by removing the others first. Use <a href="/delete-pdf-pages">Delete PDF Pages</a> and list the pages you
+don't want, separated by commas, then convert the PDF you get back. The numbers must be listed one by one,
+because ranges such as 3-10 are not accepted.
 </p>
 
-<h3>What resolution are the PNG files?</h3>
+<h3>Do the numbers in the file names match the PDF's page numbers?</h3>
 <p>
-Pages are rendered at 2x resolution. A standard A4 page produces an image of approximately 1654 × 2339 pixels, which is sharp enough for both screen use and most print applications.
+Inside the ZIP, page_1.png is the first page of the PDF you uploaded, page_2.png the second, and so on. If you
+deleted pages first, the numbering starts again from 1 for the shorter PDF, so page_1.png is then the first page
+that was left.
 </p>
 
-<h3>What is the difference between PDF to PNG and PDF to JPG?</h3>
+<h3>Why do single-page downloads have a long ID in the file name?</h3>
 <p>
-PNG is lossless — ideal for text, diagrams, and sharp graphics. JPG is lossy but produces smaller file sizes — better for photographic content where exact pixel accuracy is less critical.
-</p>
-
-<h3>Can I convert a password-protected PDF?</h3>
-<p>
-You'll need to <a href="/unlock-pdf">remove the password</a> before converting.
+Each upload is given a unique ID so that files from different people never get mixed up, and the single-page
+download links keep it as a prefix. The ZIP contains the same images with the plain names page_1.png, page_2.png and so on.
 </p>
 
 <h2>Related Tools</h2>
 
 <ul>
-  <li><a href="/pdf-to-png">PDF to PNG</a> – Convert your PDF now</li>
-  <li><a href="/pdf-to-jpg">PDF to JPG</a> – Convert to JPG for smaller file sizes</li>
-  <li><a href="/png-to-pdf">PNG to PDF</a> – Convert PNG images back to PDF</li>
-  <li><a href="/split-pdf">Split PDF</a> – Split long PDFs before converting</li>
+  <li><a href="/pdf-to-png">PDF to PNG</a> – the converter itself</li>
+  <li><a href="/pdf-to-jpg">PDF to JPG</a> – smaller files for photographic or scanned pages</li>
+  <li><a href="/delete-pdf-pages">Delete PDF Pages</a> – drop pages before converting</li>
+  <li><a href="/png-to-pdf">PNG to PDF</a> – combine PNG images back into a PDF</li>
 </ul>
 
 </article>
 
 {% endblock %}
 
-{% block jsonld %}{% from "components/jsonld.html" import howto, faqpage %}{{ howto(self.title(), self.description(), request.path, ["Open the PDF to PNG Tool", "Upload Your PDF", "Download Your PNG Images"]) }}{{ faqpage([
-  {"q": "How many pages can I convert at once?", "a": "The tool converts up to 20 pages per upload. For longer documents, use the Split PDF tool to break the document into smaller parts first."},
-  {"q": "What resolution are the PNG files?", "a": "Pages are rendered at 2x resolution. A standard A4 page produces an image of approximately 1654 × 2339 pixels, which is sharp enough for both screen use and most print applications."},
-  {"q": "What is the difference between PDF to PNG and PDF to JPG?", "a": "PNG is lossless — ideal for text, diagrams, and sharp graphics. JPG is lossy but produces smaller file sizes — better for photographic content where exact pixel accuracy is less critical."},
-  {"q": "Can I convert a password-protected PDF?", "a": "You'll need to remove the password before converting."}
+{% block jsonld %}{% from "components/jsonld.html" import howto, faqpage %}{{ howto(self.title(), self.description(), request.path, ["Convert the PDF as usual to get pages 1-20", "Delete the pages you already have with Delete PDF Pages", "Convert the shorter PDF to get the next 20 pages", "Repeat until you run out of pages, keeping each batch in its own folder"]) }}{{ faqpage([
+  {"q": "Can I convert only some pages of a PDF to PNG?", "a": "Yes, by removing the others first. Use Delete PDF Pages and list the pages you don't want, separated by commas, then convert the PDF you get back. The numbers must be listed one by one, because ranges such as 3-10 are not accepted."},
+  {"q": "Do the numbers in the file names match the PDF's page numbers?", "a": "Inside the ZIP, page_1.png is the first page of the PDF you uploaded, page_2.png the second, and so on. If you deleted pages first, the numbering starts again from 1 for the shorter PDF, so page_1.png is then the first page that was left."},
+  {"q": "Why do single-page downloads have a long ID in the file name?", "a": "Each upload is given a unique ID so that files from different people never get mixed up, and the single-page download links keep it as a prefix. The ZIP contains the same images with the plain names page_1.png, page_2.png and so on."}
 ]) }}{% endblock %}

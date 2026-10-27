@@ -22,6 +22,9 @@ No number on those pages is typed by hand: re-run this script to refresh
 them after changing a tool. Anything the tools write to uploads/ during the
 run is deleted at the end. Remove Background is not measured here -- it
 needs a paid remove.bg API key and has no local engine to run.
+
+`--only pdf_to_png` regenerates just the PDF to PNG tables (the tool page and
+its guide) and leaves every other partial, and its "Measured on" date, alone.
 """
 
 import datetime
@@ -183,6 +186,47 @@ def make_sharp_diagram(path):
     img.save(path, "PNG")
 
 
+def make_line_diagram(path):
+    """A one-page vector flowchart with thin lines and small labels: the content PNG suits best."""
+    doc = fitz.open()
+    page = doc.new_page(width=595, height=842)
+    page.insert_text((60, 60), "Order handling flow", fontsize=16, fontname="hebo")
+    labels = ["Order received", "Stock check", "Payment", "Pack", "Ship", "Confirm"]
+    boxes = []
+    for i, text in enumerate(labels):
+        col, row = i % 3, i // 3
+        rect = fitz.Rect(60 + col * 170, 110 + row * 150, 190 + col * 170, 170 + row * 150)
+        boxes.append(rect)
+        page.draw_rect(rect, width=0.8)
+        page.insert_textbox(rect + (6, 20, -6, 0), text, fontsize=11, fontname="helv", align=1)
+    for a, b in zip(boxes, boxes[1:]):
+        if a.y0 == b.y0:
+            start, end = fitz.Point(a.x1, a.y0 + 30), fitz.Point(b.x0, b.y0 + 30)
+        else:
+            start, end = fitz.Point(a.x0 + 65, a.y1), fitz.Point(b.x0 + 65, b.y0)
+            page.draw_polyline([start, fitz.Point(start.x, start.y + 45), fitz.Point(60 + 65, start.y + 45),
+                                fitz.Point(60 + 65, end.y)], width=0.6)
+            continue
+        page.draw_line(start, end, width=0.6)
+        page.draw_polyline([end, fitz.Point(end.x - 7, end.y - 3), fitz.Point(end.x - 7, end.y + 3)],
+                           closePath=True, fill=(0, 0, 0))
+    # a small line chart with 0.5 pt gridlines and 7 pt labels
+    left, top, width, height = 60, 460, 440, 240
+    for i in range(0, 11):
+        y = top + i * height / 10
+        page.draw_line((left, y), (left + width, y), width=0.3, color=(0.6, 0.6, 0.6))
+        page.insert_text((left - 22, y + 2.5), f"{100 - i * 10}", fontsize=7, fontname="helv")
+    values = [12, 18, 15, 28, 33, 31, 47, 52, 49, 66, 71, 84]
+    points = [fitz.Point(left + i * width / 11, top + height - v / 100 * height) for i, v in enumerate(values)]
+    page.draw_polyline(points, width=0.6)
+    for i, pt in enumerate(points):
+        page.draw_circle(pt, 1.6, fill=(0, 0, 0))
+        page.insert_text((pt.x - 4, top + height + 12), f"M{i + 1}", fontsize=7, fontname="helv")
+    page.insert_text((left, top - 12), "Orders per month (thin 0.5 pt lines, 7 pt labels)", fontsize=9, fontname="helv")
+    doc.save(path)
+    doc.close()
+
+
 def make_photo_brochure(path):
     doc = fitz.open()
     for i in range(3):
@@ -211,6 +255,8 @@ def ensure_samples(regenerate):
         synthetic_photo(3000, 2000, seed=1).save(f("landscape-photo.jpg"), "JPEG", quality=88)
     if not os.path.exists(f("portrait-photo.jpg")):
         synthetic_photo(1200, 1800, seed=2).save(f("portrait-photo.jpg"), "JPEG", quality=88)
+    if not os.path.exists(f("line-diagram.pdf")):
+        make_line_diagram(f("line-diagram.pdf"))
     if not os.path.exists(f("transparent-badge.png")):
         make_transparent_badge(f("transparent-badge.png"))
     if not os.path.exists(f("sharp-diagram.png")):
@@ -349,6 +395,88 @@ def measure_pdf_to_jpg(client):
     return rows
 
 
+def zip_images(client, route, path):
+    """Run `route` on a PDF and return its output images as [(name, bytes), ...] in page order."""
+    r = post(client, route, {"pdf": [path]})
+    zip_name = re.search(r'/download-file/([^"]+\.zip)"', r.get_data(as_text=True)).group(1)
+    with zipfile.ZipFile(os.path.join(UPLOADS, zip_name)) as z:
+        zip_size = os.path.getsize(os.path.join(UPLOADS, zip_name))
+        return [(i.filename, z.read(i)) for i in z.infolist()], zip_size
+
+
+PNG_SAMPLES = (("text-report.pdf", "Text report"), ("line-diagram.pdf", "Line-art diagram"),
+               ("photo-brochure.pdf", "Photo brochure"), ("scanned-letter.pdf", "Scanned letter"))
+
+
+def measure_pdf_to_png(client):
+    rows, modes, corners, widths = [], set(), {}, set()
+    for name, label in PNG_SAMPLES:
+        images, zip_size = zip_images(client, "/pdf-to-png", sample(name))
+        with fitz.open(sample(name)) as pdf:
+            pages, pt = len(pdf), pdf[0].rect
+        sizes = [len(data) for _, data in images]
+        first = Image.open(io.BytesIO(images[0][1]))
+        for _, data in images:
+            im = Image.open(io.BytesIO(data))
+            modes.add(im.mode)
+            corners.setdefault(label, set()).add(im.convert("RGB").getpixel((2, 2)))
+            widths.add(round(im.width / pt.width, 3))
+        rows.append((link(name, f"{label} ({pages} page{'s' if pages != 1 else ''})"),
+                     f"{len(images)} of {pages}", f"{first.width} × {first.height} px",
+                     f"{human(min(sizes))} – {human(max(sizes))}" if len(sizes) > 1 else human(sizes[0]),
+                     human(zip_size)))
+
+    # the 20-page cap, and a poster-sized page, through the same route
+    doc = fitz.open()
+    for i in range(25):
+        doc.new_page().insert_text((72, 72), f"Page {i + 1}")
+    cap_path = os.path.join(tempfile.mkdtemp(), "twenty-five-pages.pdf")
+    doc.save(cap_path)
+    capped, _ = zip_images(client, "/pdf-to-png", cap_path)
+    doc = fitz.open()
+    doc.new_page(width=2384, height=3370)  # A0
+    poster_path = os.path.join(os.path.dirname(cap_path), "a0.pdf")
+    doc.save(poster_path)
+    poster, _ = zip_images(client, "/pdf-to-png", poster_path)
+    poster_size = Image.open(io.BytesIO(poster[0][1])).size
+
+    # transparency: a page with no background and a 40%-opaque red rectangle on it
+    doc = fitz.open()
+    page = doc.new_page(width=595, height=842)
+    page.draw_rect(fitz.Rect(100, 100, 300, 300), fill=(1, 0, 0), fill_opacity=0.4)
+    alpha_path = os.path.join(os.path.dirname(cap_path), "see-through.pdf")
+    doc.save(alpha_path)
+    alpha_img = Image.open(io.BytesIO(zip_images(client, "/pdf-to-png", alpha_path)[0][0][1]))
+    return {"rows": rows, "modes": sorted(modes), "corners": corners, "scale": sorted(widths),
+            "capped_in": 25, "capped_out": len(capped), "poster": poster_size,
+            "alpha_mode": alpha_img.mode, "alpha_shape": alpha_img.getpixel((2 * 200, 2 * 200)),
+            "alpha_corner": alpha_img.getpixel((2, 2))}
+
+
+def measure_png_vs_jpg(client):
+    rows, ratios = [], {}
+    for name, label in PNG_SAMPLES:
+        png, _ = zip_images(client, "/pdf-to-png", sample(name))
+        jpg, _ = zip_images(client, "/pdf-to-jpg", sample(name))
+        a = np.asarray(Image.open(io.BytesIO(png[0][1])).convert("RGB"), dtype=int)
+        b = np.asarray(Image.open(io.BytesIO(jpg[0][1])).convert("RGB"), dtype=int)
+        off = (np.abs(a - b).max(axis=2) > 8).mean() * 100
+        png_avg = sum(len(d) for _, d in png) / len(png)
+        jpg_avg = sum(len(d) for _, d in jpg) / len(jpg)
+        ratios[name] = png_avg / jpg_avg
+        rows.append((link(name, label), human(png_avg), human(jpg_avg),
+                     f"{png_avg / jpg_avg:.1f}×", f"{off:.1f}%" if off >= 0.1 else "under 0.1%"))
+
+    # templates/pdf_to_png_guide.html reads these results in prose ("the PNG was smaller" for text and
+    # line art, "four to six times" larger for photos and scans). Refuse to publish if that stops being true.
+    problems = [n for n in ("text-report.pdf", "line-diagram.pdf") if ratios[n] >= 1]
+    problems += [n for n in ("photo-brochure.pdf", "scanned-letter.pdf") if not 3.5 <= ratios[n] <= 6.5]
+    if problems:
+        raise SystemExit(f"PNG vs JPG results changed for {problems}: update the sentences under the table in "
+                         "templates/pdf_to_png_guide.html, then relax this check.")
+    return rows
+
+
 def measure_resize(client):
     rows = []
     for name, stem in (("landscape-photo.jpg", "landscape"), ("portrait-photo.jpg", "portrait")):
@@ -386,7 +514,7 @@ def table(headers, rows):
             f"  <tbody>\n{body}\n  </tbody>\n</table>\n</div>")
 
 
-def write_partial(tool, body):
+def write_partial(tool, body, heading="Real Results: What to Expect"):
     os.makedirs(PARTIALS, exist_ok=True)
     stamp = (f"{{# Generated by scripts/measure_examples.py on {TODAY.isoformat()} -- "
              f"do not edit by hand; re-run the script to refresh. #}}\n")
@@ -394,7 +522,7 @@ def write_partial(tool, body):
               f"the linked sample files, which you can download and try yourself. Your own results will "
               f"depend on what's inside your file.</p>\n")
     with open(os.path.join(PARTIALS, f"{tool}.html"), "w", encoding="utf-8", newline="\n") as f:
-        f.write(stamp + '<h2>Real Results: What to Expect</h2>\n' + body + footer)
+        f.write(stamp + f"<h2>{heading}</h2>\n" + body + footer)
     print("wrote", f"templates/components/examples/{tool}.html")
 
 
@@ -484,10 +612,63 @@ def publish(results):
         + f'\n<div class="example-figures">\n{figures}\n</div>'))
 
 
+def background_sentence(corners):
+    white = [label for label, colors in corners.items() if colors == {(255, 255, 255)}]
+    other = [(label, sorted(colors)) for label, colors in corners.items() if colors != {(255, 255, 255)}]
+    text = (f"in the corner of every image from the {', '.join(w.lower() for w in white)} samples the color was pure "
+            "white (255, 255, 255), because those PDFs have no background of their own.")
+    for label, colors in other:
+        text += (f" The {label.lower()} keeps the paper tone that is part of its scanned image "
+                 f"(RGB {' / '.join('%d, %d, %d' % tuple(c) for c in colors)}), and the tool does not whiten it.")
+    return text
+
+
+def publish_pdf_to_png(png, versus):
+    scale = png["scale"][0]
+    write_partial("pdf_to_png", (
+        "<p>We converted four sample PDFs with this tool. Every page becomes one PNG at "
+        f"<strong>{scale:g}× the PDF's own size</strong>: a PDF page is measured in points (72 to an inch), so "
+        "2× is 144 pixels per inch. The PNG files carry no resolution (DPI) tag, so go by the pixel size; if a "
+        "program asks for a DPI value you will have to set it yourself.</p>\n"
+        + table(["Sample file", "Pages converted", "Size of each PNG", "PNG size per page", "Whole ZIP"], png["rows"])
+        + "\n<ul class=\"benefits\">\n"
+        f"  <li><strong>No transparency:</strong> every PNG we checked is 8-bit {'/'.join(png['modes'])} with "
+        "<strong>no transparency (alpha) channel</strong>. We tested a page with no background and a 40%-opaque "
+        f"red rectangle: the PNG is {png['alpha_mode']}, the corner is white {png['alpha_corner']} and the rectangle "
+        f"came out as solid pale red {png['alpha_shape']}, not see-through. Anything see-through in the PDF is "
+        "flattened onto white.</li>\n"
+        f"  <li><strong>Background color:</strong> {background_sentence(png['corners'])}</li>\n"
+        f"  <li><strong>Page limit:</strong> a {png['capped_in']}-page test PDF produced {png['capped_out']} PNGs, so "
+        "count the images you get back, because the results page only says \"20 page(s) converted\" and "
+        "does not mention that pages were left out.</li>\n"
+        f"  <li><strong>Very large pages:</strong> an A0 poster page (2384 × 3370 pt) came out at "
+        f"{png['poster'][0]} × {png['poster'][1]} px, a little under 2× because very large pages are scaled "
+        "to a limit of about 30 megapixels. Normal pages are never scaled down.</li>\n"
+        "</ul>"))
+    write_partial("pdf_to_png_guide", (
+        "<p>We rendered the same pages with <a href=\"/pdf-to-png\">PDF to PNG</a> and "
+        "<a href=\"/pdf-to-jpg\">PDF to JPG</a> (both at 2×) and compared them. The last column counts the "
+        "pixels where the JPG differs from the PNG by more than 8 levels out of 255 on any color channel. The PNG "
+        "is the page exactly as rendered, so that is how much JPEG compression changed. The JPGs here use this "
+        "site's quality setting of 90.</p>\n"
+        + table(["Sample file", "PNG per page", "JPG per page", "PNG size ÷ JPG size", "Pixels the JPG changed"], versus)),
+        heading="PNG or JPG for the Same Pages? What We Measured")
+
+
 def main():
     ensure_samples("--regenerate" in sys.argv[1:])
     before = set(os.listdir(UPLOADS))
     client = qt_app.app.test_client()
+    if "--only" in sys.argv[1:]:
+        only = sys.argv[sys.argv.index("--only") + 1]
+        if only != "pdf_to_png":
+            raise SystemExit("--only supports: pdf_to_png")
+        try:
+            publish_pdf_to_png(measure_pdf_to_png(client), measure_png_vs_jpg(client))
+        finally:
+            for name in set(os.listdir(UPLOADS)) - before:
+                os.remove(os.path.join(UPLOADS, name))
+        return
     try:
         results = {
             "gs": gs_version(),
@@ -499,11 +680,14 @@ def main():
             "png_to_pdf": measure_png_to_pdf(client),
             "pdf_to_jpg": measure_pdf_to_jpg(client),
             "resize": measure_resize(client),
+            "pdf_to_png": measure_pdf_to_png(client),
+            "pdf_to_png_vs_jpg": measure_png_vs_jpg(client),
         }
     finally:
         for name in set(os.listdir(UPLOADS)) - before:
             os.remove(os.path.join(UPLOADS, name))
     publish(results)
+    publish_pdf_to_png(results["pdf_to_png"], results["pdf_to_png_vs_jpg"])
     for name in sorted(os.listdir(EXAMPLES)):
         print(f"  static/examples/{name}: {human(os.path.getsize(os.path.join(EXAMPLES, name)))}")
 
