@@ -684,3 +684,19 @@ out of scope — this fix only recognizes QuickTools' own watermark format.
 **Notes:** Template and one extra variable per route; no change to the conversion itself.
 
 **Resolved (2026-10-27, branch `feat/t3-open-tool-qt-031`):** the PDF to PNG, JPG and WebP routes now pass the PDF's real page count (`total_pages`) to their results pages, and `components/page_limit_note.html` shows "20 of 45 pages converted" with instructions (Delete PDF Pages, then convert the shorter PDF) when pages were left out. The conversion itself is unchanged; a PDF with 20 pages or fewer still shows "N page(s) converted".
+
+---
+
+## QT-032 — "20MB per file" is wrong: the limit applies to the whole upload
+
+- **Area:** Content / UX
+- **Priority:** P2
+- **Status:** Open
+- **Discovered:** SEO ticket T-2 (2026-10-27)
+- **Source:** Tested on the real routes: two 14.5 MB JPGs (each under 20 MB) sent to `/compress-jpg` get HTTP 413, and so do two 12 MB PDFs sent to `/merge-pdf`. `MAX_CONTENT_LENGTH` caps the whole request body.
+
+**Problem:** Some pages describe the 20 MB cap as per file, which is only true for tools that take a single file. T-2 fixed it on `compress_jpg.html` ("Max upload size: 20MB in total") and in the Merge FAQ. Still saying "per file": `templates/convert_pdf.html` (visible text and FAQ schema), `templates/organize_pdf.html` ("combined size is limited by the 20MB per-file upload limit", visible text and FAQ schema), `templates/svg_to_pdf_guide.html` (visible text and FAQ schema; SVG to PDF takes several files), `templates/terms.html` ("Uploads are limited to 20MB per file") and `templates/index.html` ("per-file limits beyond the 20MB upload cap").
+
+**Proposed improvement:** Reword each to say the limit is 20MB per upload (in total), keeping visible text and FAQPage JSON-LD identical, and bump the Terms page's "Last updated" date because it is legal text.
+
+**Notes:** Small, mechanical; `scripts/faq_schema_audit.py` verifies the schema parity.
