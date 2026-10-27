@@ -905,6 +905,7 @@ def pdf_to_png():
         input_path, _ = save_upload(file)
 
         doc = fitz.open(input_path)
+        pages_in_pdf = len(doc)
 
         image_files = []
         MAX_PAGES = 20
@@ -946,7 +947,8 @@ def pdf_to_png():
             "pdf_to_png_result.html",
             images=image_files,
             zip_file=zip_filename,
-            total=len(image_files)
+            total=len(image_files),
+            total_pages=pages_in_pdf
         )
     
     return render_template("pdf_to_png.html")
@@ -1893,6 +1895,7 @@ def pdf_to_jpg():
         input_path, _ = save_upload(file)
 
         doc = fitz.open(input_path)
+        pages_in_pdf = len(doc)
 
         image_files = []
         MAX_PAGES = 20
@@ -1934,7 +1937,8 @@ def pdf_to_jpg():
             "pdf_to_jpg_result.html",
             images=image_files,
             zip_file=zip_filename,
-            total=len(image_files)
+            total=len(image_files),
+            total_pages=pages_in_pdf
         )
 
     return render_template("pdf_to_jpg.html")
@@ -2392,6 +2396,7 @@ def pdf_to_webp():
         input_path, _ = save_upload(file)
 
         doc = fitz.open(input_path)
+        pages_in_pdf = len(doc)
 
         image_files = []
         MAX_PAGES = 20  # safety limit
@@ -2425,7 +2430,8 @@ def pdf_to_webp():
         return render_template(
             "pdf_to_webp_result.html",
             images=image_files,
-            total=len(image_files)
+            total=len(image_files),
+            total_pages=pages_in_pdf
         )
 
     return render_template("pdf_to_webp.html")

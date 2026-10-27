@@ -128,8 +128,8 @@
 
   <h3>Can I convert a password-protected PDF?</h3>
   <p>
-    No. The tool can't open a PDF that needs a password, and the conversion fails with an error. Remove the
-    password first with <a href="/unlock-pdf">Unlock PDF</a>, then convert the unlocked copy.
+    Not directly. The tool can't convert a PDF that needs a password to open, and it tells you so instead of
+    converting. Remove the password first with <a href="/unlock-pdf">Unlock PDF</a>, then convert the unlocked copy.
   </p>
 
   <h2>More PDF Tools</h2>
@@ -155,6 +155,6 @@
   {"q": "Why is my PNG file larger than I expected?", "a": "PNG keeps every pixel, so the file size depends on what is on the page. Text and line art stay small, but pages with photos or scanned images produce files many times larger, as the measured table above shows. If size matters more than exact pixels, PDF to JPG makes the same pages much smaller."},
   {"q": "Is there a page limit?", "a": "Yes. Only the first 20 pages are converted, and the results page just says \"20 page(s) converted\" without noting that pages were left out, so count the images you get back. Our guide shows how to convert the rest of a longer PDF."},
   {"q": "Can I download just one page instead of the whole ZIP?", "a": "Yes. The results page gives you a \"download all\" ZIP button as well as an individual download link for every page."},
-  {"q": "Can I convert a password-protected PDF?", "a": "No. The tool can't open a PDF that needs a password, and the conversion fails with an error. Remove the password first with Unlock PDF, then convert the unlocked copy."}
+  {"q": "Can I convert a password-protected PDF?", "a": "Not directly. The tool can't convert a PDF that needs a password to open, and it tells you so instead of converting. Remove the password first with Unlock PDF, then convert the unlocked copy."}
 ]) }}
 {% endblock %}

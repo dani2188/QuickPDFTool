@@ -655,7 +655,7 @@ out of scope — this fix only recognizes QuickTools' own watermark format.
 
 - **Area:** UX / Technical
 - **Priority:** P2
-- **Status:** Open
+- **Status:** Done
 - **Discovered:** SEO ticket T-1, while verifying the PDF to PNG page (2026-10-27)
 - **Source:** Uploading a PDF encrypted with a user password to each route (test client)
 
@@ -665,13 +665,15 @@ out of scope — this fix only recognizes QuickTools' own watermark format.
 
 **Notes:** Found while checking the T-1 copy; not fixed there because it touches six routes.
 
+**Resolved (2026-10-27, PR #12):** a survey of every PDF route showed 11 returned a 500 for a PDF that needs a password (the six listed, plus `pdf-to-excel`, `remove-watermark`, `redact-pdf`, `add-text-to-pdf` and `sign-pdf`), and the 8 PyPDF2-based routes returned a 400 with the misleading "doesn't look like a valid PDF". One `before_request` hook, `reject_password_protected_pdf()`, now returns a styled 400 that names the file and links to Unlock PDF for all of them. Owner-password-only PDFs, Unlock PDF and Compress PDF are unaffected. `scripts/test_encrypted_pdfs.py` (48 checks) covers it, and the PDF to PNG page and guide now describe the new behaviour.
+
 ---
 
 ## QT-031 — PDF to PNG/JPG/WebP results don't say when pages were skipped
 
 - **Area:** UX
 - **Priority:** P2
-- **Status:** Open
+- **Status:** Done
 - **Discovered:** SEO ticket T-1 (2026-10-27)
 - **Source:** `pdf_to_png()` (and the JPG and WebP routes), `MAX_PAGES = 20`
 
@@ -680,3 +682,5 @@ out of scope — this fix only recognizes QuickTools' own watermark format.
 **Proposed improvement:** Pass the PDF's real page count to the results template and show "Converted the first 20 of N pages" with a link to the guide's section on long PDFs when N is larger than the limit.
 
 **Notes:** Template and one extra variable per route; no change to the conversion itself.
+
+**Resolved (2026-10-27, branch `feat/t3-open-tool-qt-031`):** the PDF to PNG, JPG and WebP routes now pass the PDF's real page count (`total_pages`) to their results pages, and `components/page_limit_note.html` shows "20 of 45 pages converted" with instructions (Delete PDF Pages, then convert the shorter PDF) when pages were left out. The conversion itself is unchanged; a PDF with 20 pages or fewer still shows "N page(s) converted".
