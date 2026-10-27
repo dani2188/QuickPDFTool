@@ -1,0 +1,19 @@
+{# "N page(s) converted" line for the PDF-to-image results pages. When the PDF had more pages than were
+   converted (the tools stop at 20), say so and say how to get the rest. total = images made,
+   total_pages = pages in the uploaded PDF, guide_url = optional step-by-step guide. #}
+
+{% macro converted_line(total, total_pages, guide_url=none) -%}
+{% if total_pages and total_pages > total -%}
+<p class="file-info"><strong>{{ total }} of {{ total_pages }} pages converted</strong></p>
+<div class="result-note" role="note">
+  <p>
+    Only the first {{ total }} pages are converted, so {% if total_pages == total + 1 %}page {{ total_pages }} is{% else %}pages {{ total + 1 }} to {{ total_pages }} are{% endif %} not included.
+    To convert the rest, remove the pages you already have with
+    <a href="/delete-pdf-pages">Delete PDF Pages</a> (list them separated by commas: 1, 2, 3 and so on up to {{ total }}),
+    then convert the shorter PDF.{% if guide_url %} <a href="{{ guide_url }}">Step-by-step guide</a>{% endif %}
+  </p>
+</div>
+{%- else -%}
+<p class="file-info">{{ total }} page(s) converted</p>
+{%- endif %}
+{%- endmacro %}

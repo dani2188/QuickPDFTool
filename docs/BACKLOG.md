@@ -671,7 +671,7 @@ out of scope — this fix only recognizes QuickTools' own watermark format.
 
 - **Area:** UX
 - **Priority:** P2
-- **Status:** Open
+- **Status:** Done
 - **Discovered:** SEO ticket T-1 (2026-10-27)
 - **Source:** `pdf_to_png()` (and the JPG and WebP routes), `MAX_PAGES = 20`
 
@@ -680,3 +680,5 @@ out of scope — this fix only recognizes QuickTools' own watermark format.
 **Proposed improvement:** Pass the PDF's real page count to the results template and show "Converted the first 20 of N pages" with a link to the guide's section on long PDFs when N is larger than the limit.
 
 **Notes:** Template and one extra variable per route; no change to the conversion itself.
+
+**Resolved (2026-10-27, branch `feat/t3-open-tool-qt-031`):** the PDF to PNG, JPG and WebP routes now pass the PDF's real page count (`total_pages`) to their results pages, and `components/page_limit_note.html` shows "20 of 45 pages converted" with instructions (Delete PDF Pages, then convert the shorter PDF) when pages were left out. The conversion itself is unchanged; a PDF with 20 pages or fewer still shows "N page(s) converted".

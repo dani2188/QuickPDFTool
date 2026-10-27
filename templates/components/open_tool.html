@@ -1,0 +1,8 @@
+{# A prominent "Open the tool" button for the top of a how-to guide, right under the byline, so a reader who
+   only wants to use the tool doesn't have to scroll. Usage in a guide:
+     {% from "components/open_tool.html" import open_tool %}
+     {{ open_tool("/pdf-to-jpg", "Open the PDF to JPG tool") }} #}
+
+{% macro open_tool(href, label) -%}
+<p class="open-tool"><a class="main-btn" href="{{ href }}">{{ label }}</a></p>
+{%- endmacro %}
