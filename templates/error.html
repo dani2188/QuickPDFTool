@@ -9,7 +9,12 @@
 <h1>{% if status >= 500 %}Temporarily Unavailable{% else %}We Couldn't Process That{% endif %}</h1>
 <p class="subtitle">{{ message }}</p>
 
+{% if action %}
+<a href="{{ action[0] }}" class="main-btn">{{ action[1] }}</a>
+<p><a href="javascript:history.back()">Go back</a></p>
+{% else %}
 <a href="javascript:history.back()" class="main-btn">Go back and try again</a>
+{% endif %}
 
 <div class="more-tools" style="margin-top: 40px;">
   <h3>Try Another Tool</h3>

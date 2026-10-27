@@ -295,9 +295,50 @@ def breadcrumb_context():
     return {"breadcrumb_trail": breadcrumb_trail}
 
 
-def error_page(message, status=400):
-    """Styled error response, instead of a bare string on a blank page."""
-    return render_template("error.html", message=message, status=status), status
+def error_page(message, status=400, action=None):
+    """Styled error response, instead of a bare string on a blank page.
+
+    `action` is an optional (url, label) pair shown as the main button, for errors with a clear next step.
+    """
+    return render_template("error.html", message=message, status=status, action=action), status
+
+
+# -----------------------------
+# PASSWORD-PROTECTED PDFs (QT-030)
+# -----------------------------
+
+# Routes that must still receive a PDF that needs a password: Unlock PDF exists to open it, and Compress PDF
+# reports its own error through the polling flow.
+PASSWORD_PDF_EXEMPT_PATHS = {"/unlock-pdf", "/compress-pdf"}
+
+
+def _pdf_needs_password(upload):
+    """True if this uploaded PDF needs a password to open. A PDF with only an owner password (restrictions
+    but no password to open) opens normally and returns False, as do damaged or non-PDF files, which each
+    route already reports in its own way."""
+    data = upload.stream.read()
+    upload.stream.seek(0)
+    try:
+        with fitz.open(stream=data, filetype="pdf") as doc:
+            return bool(doc.needs_pass)
+    except Exception:
+        return False
+
+
+@app.before_request
+def reject_password_protected_pdf():
+    """Without this, a PDF that needs a password made 11 tools return a 500 and the PyPDF2-based ones
+    claim the file is not a valid PDF. One check here covers every PDF upload, including future tools."""
+    if request.method != "POST" or request.path in PASSWORD_PDF_EXEMPT_PATHS:
+        return None
+    for field in ("pdf", "pdfs"):
+        for upload in request.files.getlist(field):
+            if upload.filename and upload.filename.lower().endswith(".pdf") and _pdf_needs_password(upload):
+                return error_page(
+                    f"\"{secure_filename(upload.filename)}\" is password-protected, so we can't open it. "
+                    "Remove the password with Unlock PDF first, then try again with the unlocked copy.",
+                    action=("/unlock-pdf", "Unlock PDF"))
+    return None
 
 
 # -----------------------------

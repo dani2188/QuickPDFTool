@@ -49,7 +49,9 @@ Every tool follows the same pattern. Saving an upload is shared via `save_upload
    - **compress-pdf only** → the polling flow: a background thread runs Ghostscript, `processing.html` polls `/status/<filename>`, then `/download/<filename>` renders `result.html`. If Ghostscript fails, `compress_pdf()` writes `<output>.error`, `/status` returns `{"ready": false, "error": ...}`, and the processing page stops polling and shows the message (it also gives up client-side after ~3 minutes, matching `--timeout 180`).
 5. **Cleanup**: `delete_file_later(path, delay)` spawns a **daemon `threading.Thread`** that sleeps for `delay` seconds (default 300s) then deletes the file. There is no job queue, no cron, and no guarantee cleanup runs if the process restarts before the timer fires.
 
-Invalid input returns a styled 4xx page via `error_page(message, status)` (`templates/error.html`), not a bare string.
+Invalid input returns a styled 4xx page via `error_page(message, status, action=None)` (`templates/error.html`), not a bare string; `action` adds a main button for errors with a clear next step.
+
+**Password-protected PDFs** (QT-030) are rejected before any route runs: `reject_password_protected_pdf()` is a `before_request` hook that looks at every uploaded `pdf` / `pdfs` file on a POST and, if PyMuPDF says it needs a password to open, returns a 400 that names the file and links to Unlock PDF. Without it, 11 tools returned a 500 and the PyPDF2-based ones claimed the file wasn't a valid PDF. A PDF with only an owner password (it opens freely, with restrictions) is not blocked. `/unlock-pdf` and `/compress-pdf` are exempt (`PASSWORD_PDF_EXEMPT_PATHS`); new PDF tools get the check automatically. Test: `scripts/test_encrypted_pdfs.py`.
 
 Some multi-step tools (`add-text-to-pdf`, `sign-pdf`, `redact-pdf`) render a preview image first, then apply the edit in a second POST referencing the previously uploaded file by its generated `uploads/` filename. That client-supplied name is always passed through `resolve_upload()`, which rejects anything that isn't a plain filename inside `uploads/`.
 
