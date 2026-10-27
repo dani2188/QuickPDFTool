@@ -655,7 +655,7 @@ out of scope — this fix only recognizes QuickTools' own watermark format.
 
 - **Area:** UX / Technical
 - **Priority:** P2
-- **Status:** Open
+- **Status:** Done
 - **Discovered:** SEO ticket T-1, while verifying the PDF to PNG page (2026-10-27)
 - **Source:** Uploading a PDF encrypted with a user password to each route (test client)
 
@@ -664,6 +664,8 @@ out of scope — this fix only recognizes QuickTools' own watermark format.
 **Proposed improvement:** Detect an encrypted document right after opening it (`doc.needs_pass` for PyMuPDF, `is_encrypted` for PyPDF2) and return the styled 400 page with a link to Unlock PDF, ideally through one shared helper like `error_page()`. Then update the PDF to PNG page's FAQ ("the conversion fails with an error") to say the tool shows a message.
 
 **Notes:** Found while checking the T-1 copy; not fixed there because it touches six routes.
+
+**Resolved (2026-10-27, PR #12):** a survey of every PDF route showed 11 returned a 500 for a PDF that needs a password (the six listed, plus `pdf-to-excel`, `remove-watermark`, `redact-pdf`, `add-text-to-pdf` and `sign-pdf`), and the 8 PyPDF2-based routes returned a 400 with the misleading "doesn't look like a valid PDF". One `before_request` hook, `reject_password_protected_pdf()`, now returns a styled 400 that names the file and links to Unlock PDF for all of them. Owner-password-only PDFs, Unlock PDF and Compress PDF are unaffected. `scripts/test_encrypted_pdfs.py` (48 checks) covers it, and the PDF to PNG page and guide now describe the new behaviour.
 
 ---
 
