@@ -11,6 +11,9 @@
 Download the converted WebP images below.
 </p>
 
+{% from "components/page_limit_note.html" import converted_line %}
+{{ converted_line(total, total_pages) }}
+
 <div class="tools-mini-grid">
 
 {% for image in images %}

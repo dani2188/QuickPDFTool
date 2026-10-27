@@ -587,6 +587,16 @@ input[type="radio"] {
 /* BREADCRUMB                                                    */
 /* ============================================================= */
 
+.open-tool {
+  margin: 0 0 var(--s3);
+}
+
+.result-note a {
+  color: inherit;
+  font-weight: 600;
+  text-decoration: underline;
+}
+
 .byline {
   color: var(--muted);
   font-size: 14px;
@@ -912,7 +922,8 @@ input[type="radio"] {
   margin: 15px 0;
 }
 
-.target-missed {
+.target-missed,
+.result-note {
   color: #8a6100;
   background: #fff8e1;
   padding: 10px 14px;

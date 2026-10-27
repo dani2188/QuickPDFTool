@@ -15,7 +15,8 @@
 {% endif %}
 
 <!-- TOTAL -->
-<p class="file-info">{{ total }} page(s) converted</p>
+{% from "components/page_limit_note.html" import converted_line %}
+{{ converted_line(total, total_pages, "/how-to-pdf-to-png#long-pdfs") }}
 
 <!-- IMAGE LIST -->
 <div class="tools-mini-grid">

@@ -16,6 +16,9 @@
 {% from "components/byline.html" import byline %}
 {{ byline(date_published, date_modified) }}
 
+{% from "components/open_tool.html" import open_tool %}
+{{ open_tool("/remove-watermark", "Open the Remove Watermark tool") }}
+
 <p>
 Watermarks are often added to PDFs to indicate a document is a draft, confidential, or a sample. Once the document is finalised or approved, you may need to remove the watermark to produce a clean, professional version. Our free online tool recognizes and removes the specific watermark added by our own Add Watermark tool, and cleans up the PDF's content streams generally, without requiring any software.
 </p>
