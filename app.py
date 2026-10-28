@@ -121,6 +121,18 @@ def limits_context():
             "max_word_image_megapixels": int(MAX_WORD_IMAGE_MEGAPIXELS)}
 
 
+# Per-tool social preview images, made by scripts/make_og_images.py: static/img/og/<route-slug>.png.
+_OG_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "static", "img", "og")
+OG_IMAGE_SLUGS = {f[:-4] for f in os.listdir(_OG_DIR)} if os.path.isdir(_OG_DIR) else set()
+
+
+@app.context_processor
+def og_image_context():
+    """The page's own og:image when a tool page has one; None means base.html uses the shared icon."""
+    slug = request.path.strip("/")
+    return {"og_tool_image": f"https://hellobrivio.com/static/img/og/{slug}.png" if slug in OG_IMAGE_SLUGS else None}
+
+
 def image_too_large_message(name, width, height):
     """None if a width x height image is within MAX_IMAGE_MEGAPIXELS, else a user-facing error."""
     megapixels = width * height / 1_000_000

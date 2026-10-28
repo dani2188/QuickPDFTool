@@ -20,7 +20,8 @@ The single source of truth is [`static/style.css`](../static/style.css) — this
 | File (`static/img/`) | Use |
 |---|---|
 | `logo.png` (612 × 160, transparent) | Header (displayed 153 × 40) and footer (122 × 32). `alt="hellobrivio"`, explicit `width`/`height` to prevent layout shift, links to `/`. |
-| `icon-512.png` (512 × 512) | Organization `logo` in JSON-LD and the default `og:image` / `twitter:image`. |
+| `icon-512.png` (512 × 512) | Organization `logo` in JSON-LD and the default `og:image` / `twitter:image` (hubs, home, legal pages, guides, blog). |
+| `og/<route-slug>.png` (1200 × 630) | One social preview image per tool page, made from the logo, the icon and the brand red by `scripts/make_og_images.py`. `app.py` serves it as that page's `og:image` / `twitter:image` when the file exists. Add a tool to the script's `TOOLS`, re-run it and commit the PNG. |
 | `favicon-32.png`, `favicon-192.png` | `<link rel="icon">` in `base.html`. |
 | `apple-touch-icon.png` (180 × 180, opaque) | `<link rel="apple-touch-icon">`; corners are filled with brand red because iOS paints transparency black. |
 
