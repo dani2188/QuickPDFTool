@@ -66,10 +66,69 @@ or a different backdrop entirely.
 
 <p><strong>Logos and scanned graphics:</strong> Strip a white or solid background out of a scanned or photographed logo to get a usable transparent version.</p>
 
+<h2>When the Cut-Out Goes Wrong</h2>
+
+<h3>"Could not remove the background from that image"</h3>
+
+<p>
+The photo is sent to an outside background-removal service, and this message appears whenever that
+service declines to return a result. The tool does not receive a reason, so we cannot tell you whether it
+was an unreadable file, a photo with no clear subject, or a limit on the service's side. Try a different
+file, or re-save the photo as a standard JPG or PNG and upload that. A photo with one obvious subject
+against a plain background is the safest test.
+</p>
+
+<h3>"Could not reach the background removal service" or "isn't configured"</h3>
+
+<p>
+Both messages mean the problem is on the server side, not in your photo. The first means the outside
+service did not answer in time; wait a minute and try again. The second means the server is missing the
+key it needs to call the service, which only the site owner can fix, and retrying will not help.
+</p>
+
+<h3>The wrong thing is cut out, or part of the subject is missing</h3>
+
+<p>
+Detection picks one main subject automatically and offers no way to correct it. The cases that tend to
+go wrong are a subject whose colour is close to the background (a white product on a white table), a
+subject partly hidden behind another object, and a scene with two equally prominent subjects. Retake or
+crop the photo so the subject is the clear focus, or give it more contrast against what is behind it.
+</p>
+
+<h3>A light outline shows up on a dark background</h3>
+
+<p>
+Cut-outs from automatic tools can keep a thin fringe of the original background colour around the edge,
+and a bright fringe stands out once the subject sits on a dark colour. We have not measured how often
+this happens with this tool. If you see it, try the cut-out on a background closer in tone to the
+original, or soften the edge in an image editor.
+</p>
+
+<h3>A form refuses the file or the background turns black</h3>
+
+<p>
+The download is a PNG. Some upload forms accept JPG only, and a JPG cannot be transparent, so
+converting the cut-out to JPG replaces the transparent area with a solid colour. Which colour depends on
+the program doing the conversion. Put the cut-out on the background colour you want first, then export
+that as a JPG.
+</p>
+
 <h2>Frequently Asked Questions</h2>
 
 <h3>Can I use the result commercially?</h3>
 <p>Yes — the transparent PNG is your processed image, free to use for products, marketing, or any other purpose.</p>
+
+<h3>The photo has several people or objects. Which one is kept?</h3>
+<p>The service decides what counts as the main subject and you cannot point at one. If it keeps the wrong one, crop the photo down to the subject you want in your phone's gallery or any editor, then upload the cropped copy.</p>
+
+<h3>How do I get a white or coloured background instead of transparency?</h3>
+<p>This tool only delivers transparency. The <a href="/resize-image">Resize Image tool</a> fills transparent areas with white, so running the cut-out through it gives you a white background at a preset size. We confirmed that a fully transparent PNG comes out solid white. For any other colour, set the background in a slide, document or image editor.</p>
+
+<h3>Is the result the same resolution as my photo?</h3>
+<p>We have not verified this. The tool asks the background-removal service for its automatic output size and the service decides, so the result may not match your original. Check the pixel dimensions of the downloaded PNG before relying on it for print or a large banner.</p>
+
+<h3>Can I shrink the PNG with Compress JPG?</h3>
+<p>No. Compress JPG accepts only JPG files and skips anything else, and a JPG cannot hold transparency anyway. If the transparent PNG is too large, resizing it down is the option that keeps the cut-out intact, though resizing also puts it on a white canvas.</p>
 
 <h2>Related Tools</h2>
 
@@ -87,6 +146,10 @@ or a different backdrop entirely.
 {% from "components/jsonld.html" import howto, faqpage %}
 {{ howto(self.title(), self.description(), request.path, ["Open the Background Remover", "Click Remove Background", "Download Your Transparent PNG"]) }}
 {{ faqpage([
-  {"q": "Can I use the result commercially?", "a": "Yes — the transparent PNG is your processed image, free to use for products, marketing, or any other purpose."}
+  {"q": "Can I use the result commercially?", "a": "Yes — the transparent PNG is your processed image, free to use for products, marketing, or any other purpose."},
+  {"q": "The photo has several people or objects. Which one is kept?", "a": "The service decides what counts as the main subject and you cannot point at one. If it keeps the wrong one, crop the photo down to the subject you want in your phone's gallery or any editor, then upload the cropped copy."},
+  {"q": "How do I get a white or coloured background instead of transparency?", "a": "This tool only delivers transparency. The Resize Image tool fills transparent areas with white, so running the cut-out through it gives you a white background at a preset size. We confirmed that a fully transparent PNG comes out solid white. For any other colour, set the background in a slide, document or image editor."},
+  {"q": "Is the result the same resolution as my photo?", "a": "We have not verified this. The tool asks the background-removal service for its automatic output size and the service decides, so the result may not match your original. Check the pixel dimensions of the downloaded PNG before relying on it for print or a large banner."},
+  {"q": "Can I shrink the PNG with Compress JPG?", "a": "No. Compress JPG accepts only JPG files and skips anything else, and a JPG cannot hold transparency anyway. If the transparent PNG is too large, resizing it down is the option that keeps the cut-out intact, though resizing also puts it on a white canvas."}
 ]) }}
 {% endblock %}

@@ -57,7 +57,7 @@ Click "Resize Image" and the file downloads automatically, sized exactly to your
 <h2>How the Resize Actually Works</h2>
 
 <p>
-Your photo is scaled down (never up, and never cropped) so it fits entirely within the target
+Your photo is scaled (down or up, and never cropped) so it fits entirely within the target
 dimensions while keeping its original proportions. If your photo's shape doesn't exactly match the
 target — a landscape photo going into a square slot, for example — the leftover space is padded with
 white rather than cropping any part of your photo away. This means the entire original image is always
@@ -90,6 +90,87 @@ preserved somewhere in the output, even if that means white bars on the sides or
 
 <p>Platform requirements can change — check the platform's official help center for the latest specs if in doubt.</p>
 
+<h2>When the Result Isn't What You Expected</h2>
+
+<h3>A landscape photo posted as a Story: huge bars, small photo</h3>
+
+<p>
+Take a 1600 × 1200 landscape photo and the 1080 × 1920 Story preset. The photo is scaled to the full
+1080 px width, which makes it 810 px tall, and the remaining 1110 px of height is split into a 555 px
+white bar above and below. That is arithmetic from the rule above, and the tool's output matches it. The
+photo ends up as a thin strip across the middle of a tall canvas. If that looks wrong, the preset is the
+problem, not the file: a square or 4:5 preset leaves far smaller bars for a landscape photo, and a
+photo shot upright suits Story or Reels sizes much better.
+</p>
+
+<h3>A small image comes out soft or blocky</h3>
+
+<p>
+Small images are enlarged to fill the target, not left at their original size. A 300 × 300 test image
+sent to the 1080 × 1080 preset came out filling the whole canvas. Enlarging cannot add detail that was
+never captured, so a small thumbnail or a heavily cropped photo will look softer at 1080 px than it did
+small. Start from the largest original you have, not from a copy that was already shrunk for the web.
+</p>
+
+<h3>A logo with a transparent background comes out on white</h3>
+
+<p>
+The output is built on a white canvas, so transparent areas of a PNG become white. We tested this with
+a fully transparent PNG: the result was solid white. White blends in on a white feed or document, but on
+a dark or coloured background it shows as a box around the logo. The tool does not offer a transparent
+output, so if you need one, place the logo on its final background in an editor instead.
+</p>
+
+<h3>The photo was sideways on the phone but upright in the result (or the reverse)</h3>
+
+<p>
+Phones often store a photo sideways and add a note saying how to turn it. The tool reads that note and
+applies the rotation before resizing, so the result should look the way the photo does in your gallery.
+If a viewer shows the original sideways, that viewer is ignoring the note; the resized file does not need
+it.
+</p>
+
+<h3>An animated GIF becomes a single picture</h3>
+
+<p>
+The result is one still PNG or JPG. Animation is not kept, so do not use this tool to resize a GIF that
+has to keep moving.
+</p>
+
+<h3>"Could not read that image file"</h3>
+
+<p>
+That message means the upload was not a readable image: a file renamed with an image extension, a
+download that stopped partway, or a damaged copy. Open the file in an image viewer first. If it opens
+there, re-export it as a JPG or PNG and try again.
+</p>
+
+<h3>Which preset for a photo that is none of these shapes?</h3>
+
+<p>
+Choose the preset whose aspect ratio is closest to your photo's, since the bars get smaller as the
+shapes get closer. A near-square photo suits Instagram Post, a 3:2 camera photo suits Facebook, YouTube
+or X, and a tall phone photo suits Portrait or Story. A photo that has to fill the whole frame with no
+bars needs to be cropped to the right shape in an editor first. This tool never crops.
+</p>
+
+<h2>Frequently Asked Questions</h2>
+
+<h3>Does the resized file keep my photo's location and camera details?</h3>
+<p>No. The tool writes a new image, and the original's metadata is not copied into it, so GPS location, camera model and timestamp are not in the result.</p>
+
+<h3>Why is my PNG result larger than the original photo?</h3>
+<p>PNG stores every pixel without loss, so a photograph saved as PNG is often much bigger than the same photograph saved as JPG. If the file is too large to upload, choose JPG output. We have not measured the typical difference, so we do not quote one.</p>
+
+<h3>Can I enter my own width and height?</h3>
+<p>Not on the page. It offers the six presets in the table above. For another size, pick the closest preset or use a general image editor.</p>
+
+<h3>Will the white bars show on a dark background?</h3>
+<p>Yes. The bars are solid white pixels that are part of the image, so a dark feed or page shows them as bright bands. Pick a preset closer to your photo's shape to make them thinner.</p>
+
+<h3>Should I resize first or compress first?</h3>
+<p>Resize first, then <a href="/compress-jpg">compress</a> the result if it is still too large (the compressor only takes JPG files, so choose JPG output). Resizing changes the pixel dimensions and compressing only changes how tightly the file is stored.</p>
+
 <h2>Related Tools</h2>
 
 <ul>
@@ -104,5 +185,13 @@ preserved somewhere in the output, even if that means white bars on the sides or
 
 {% block jsonld %}
 {% from "components/jsonld.html" import howto %}
+{% from "components/jsonld.html" import faqpage %}
 {{ howto(self.title(), self.description(), request.path, ["Open the Resize Image Tool", "Pick a Preset", "Choose PNG or JPG", "Download Your Resized Image"]) }}
+{{ faqpage([
+  {"q": "Does the resized file keep my photo's location and camera details?", "a": "No. The tool writes a new image, and the original's metadata is not copied into it, so GPS location, camera model and timestamp are not in the result."},
+  {"q": "Why is my PNG result larger than the original photo?", "a": "PNG stores every pixel without loss, so a photograph saved as PNG is often much bigger than the same photograph saved as JPG. If the file is too large to upload, choose JPG output. We have not measured the typical difference, so we do not quote one."},
+  {"q": "Can I enter my own width and height?", "a": "Not on the page. It offers the six presets in the table above. For another size, pick the closest preset or use a general image editor."},
+  {"q": "Will the white bars show on a dark background?", "a": "Yes. The bars are solid white pixels that are part of the image, so a dark feed or page shows them as bright bands. Pick a preset closer to your photo's shape to make them thinner."},
+  {"q": "Should I resize first or compress first?", "a": "Resize first, then compress the result if it is still too large (the compressor only takes JPG files, so choose JPG output). Resizing changes the pixel dimensions and compressing only changes how tightly the file is stored."}
+]) }}
 {% endblock %}

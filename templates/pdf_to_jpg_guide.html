@@ -44,7 +44,7 @@ Select your PDF file and upload it. The tool supports any standard PDF, includin
 </p>
 
 <p>
-The tool renders each page at 2x resolution (200% zoom) to ensure the resulting images are sharp and detailed, suitable for both screen viewing and print use.
+The tool renders each page at 2x resolution (200% zoom) to ensure the resulting images are sharp and detailed, sharp for screen viewing. For print, see the notes further down.
 </p>
 
 <h2>Step 3 – Download the JPG Images</h2>
@@ -75,6 +75,57 @@ Once conversion is complete, you'll see a gallery of all the extracted page imag
 
 <p><strong>Archiving form data:</strong> Convert a filled-out PDF form to images to create a visual archive that anyone can view without needing a PDF reader.</p>
 
+<h2>When the Result Isn't What You Expected</h2>
+
+<h3>The text in the images can't be selected, searched or clicked</h3>
+
+<p>
+Each page becomes a flat picture. Text, links and form fields are no longer text, links or fields, and
+the images carry none of the PDF's search or copy ability. If you need the words, run the original PDF
+through <a href="/pdf-to-text">PDF to Text</a> or <a href="/pdf-to-word">PDF to Word</a> instead of
+reading them back out of the JPGs.
+</p>
+
+<h3>Page 30 of a 45-page PDF never shows up</h3>
+
+<p>
+Only the first 20 pages are converted, so a page later in the file is not in the results however you
+download them. When you want one late page, cut it out first with <a href="/split-pdf">Split PDF</a>, or
+remove the earlier pages with <a href="/delete-pdf-pages">Delete PDF Pages</a>, then convert the smaller
+file.
+</p>
+
+<h3>Small text looks soft when the image is printed or zoomed in</h3>
+
+<p>
+The images are made at twice the PDF's own page size, which is generous for a screen and thin for a page
+printed at full size. We have not tested printed output, so check one printout before you commit a
+batch. Dense small print, such as a footnote or a table of figures, shows the softness first.
+</p>
+
+<h3>A faint haze or fringe around text and thin lines</h3>
+
+<p>
+JPG is built for photographs, and sharp black-on-white edges are where it struggles. A page that is
+mostly text, a diagram or a spreadsheet can show a slight halo around the letters. For pages like that,
+<a href="/pdf-to-png">PDF to PNG</a> keeps edges clean at the cost of bigger files.
+</p>
+
+<h3>You wanted the photos inside the PDF, not pictures of the pages</h3>
+
+<p>
+This tool photographs whole pages, so a photo in the PDF comes out with the page text and margins around
+it. To get the embedded pictures themselves, use <a href="/extract-images">Extract Images</a>.
+</p>
+
+<h3>"Couldn't process that" or "doesn't look like a valid PDF"</h3>
+
+<p>
+The first appears for a password-protected PDF, which has to be opened with <a href="/unlock-pdf">Unlock
+PDF</a> before it can be converted. The second means the file is damaged or is not a PDF at all, for
+example a download that stopped partway. Opening it in a PDF viewer will show which case you have.
+</p>
+
 <h2>Frequently Asked Questions</h2>
 
 <h3>Can I convert PDF to PNG instead?</h3>
@@ -91,6 +142,15 @@ Yes. The conversion renders the page at high resolution, so text remains sharp a
 <p>
 Yes. Scanned PDFs are already image-based, so they convert particularly well. The result will look exactly like the scanned original.
 </p>
+
+<h3>Why do my images come out in different sizes?</h3>
+<p>Each page is rendered at twice its own size, so a PDF that mixes portrait pages, landscape pages or different paper sizes produces images of different dimensions. Nothing is wrong; the images follow the pages.</p>
+
+<h3>Will pages with a coloured or transparent background keep it?</h3>
+<p>Pages are drawn onto a plain image with no transparency, and JPG cannot hold transparency in any case. Anything that was see-through in the PDF is shown as it looks on screen against white.</p>
+
+<h3>Can I turn the JPG images back into text?</h3>
+<p>Not with this tool. It does not read text from images. Convert the original PDF with PDF to Text instead, which works from the PDF's own text where it has any.</p>
 
 <h2>Related Tools</h2>
 
@@ -109,5 +169,8 @@ Yes. Scanned PDFs are already image-based, so they convert particularly well. Th
 {% block jsonld %}{% from "components/jsonld.html" import howto, faqpage %}{{ howto(self.title(), self.description(), request.path, ["Open the PDF to JPG Tool", "Upload Your PDF", "Download the JPG Images"]) }}{{ faqpage([
   {"q": "Can I convert PDF to PNG instead?", "a": "Yes. Use our PDF to PNG converter if you need transparent backgrounds or lossless image quality."},
   {"q": "Will the text in my PDF be readable in the JPG images?", "a": "Yes. The conversion renders the page at high resolution, so text remains sharp and legible in the resulting images, especially at 2x zoom."},
-  {"q": "Does this work for scanned PDFs?", "a": "Yes. Scanned PDFs are already image-based, so they convert particularly well. The result will look exactly like the scanned original."}
+  {"q": "Does this work for scanned PDFs?", "a": "Yes. Scanned PDFs are already image-based, so they convert particularly well. The result will look exactly like the scanned original."},
+  {"q": "Why do my images come out in different sizes?", "a": "Each page is rendered at twice its own size, so a PDF that mixes portrait pages, landscape pages or different paper sizes produces images of different dimensions. Nothing is wrong; the images follow the pages."},
+  {"q": "Will pages with a coloured or transparent background keep it?", "a": "Pages are drawn onto a plain image with no transparency, and JPG cannot hold transparency in any case. Anything that was see-through in the PDF is shown as it looks on screen against white."},
+  {"q": "Can I turn the JPG images back into text?", "a": "Not with this tool. It does not read text from images. Convert the original PDF with PDF to Text instead, which works from the PDF's own text where it has any."}
 ]) }}{% endblock %}
