@@ -726,6 +726,12 @@ input[type="radio"] {
 /* DATA TABLE                                                    */
 /* ============================================================= */
 
+/* Code blocks scroll inside themselves instead of widening the page. */
+pre {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
 .table-wrap {
   max-width: 700px;
   margin: var(--s3) auto;
