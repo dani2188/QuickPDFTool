@@ -16,6 +16,9 @@
 {% from "components/byline.html" import byline %}
 {{ byline(date_published, date_modified) }}
 
+{% from "components/open_tool.html" import open_tool %}
+{{ open_tool("/compress-jpg", "Open the Compress JPG tool") }}
+
 <p>
 Modern phone cameras produce photos that are several megabytes each — great for print, often too
 large for email, messaging apps, or a website upload field. Compressing a JPG re-encodes it at a

@@ -16,6 +16,9 @@
 {% from "components/byline.html" import byline %}
 {{ byline(date_published, date_modified) }}
 
+{% from "components/open_tool.html" import open_tool %}
+{{ open_tool("/add-watermark", "Open the Add Watermark tool") }}
+
 <p>
 A watermark is a text or image overlaid on the pages of a document, typically semi-transparent, to indicate the document's status, ownership, or confidentiality. Common watermarks include "CONFIDENTIAL", "DRAFT", "SAMPLE", or a company name. Watermarks are a quick and effective way to communicate important information about a document's intended use.
 </p>

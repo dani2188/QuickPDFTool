@@ -16,6 +16,9 @@
 {% from "components/byline.html" import byline %}
 {{ byline(date_published, date_modified) }}
 
+{% from "components/open_tool.html" import open_tool %}
+{{ open_tool("/crop-pdf", "Open the Crop PDF tool") }}
+
 <p>
 Cropping a PDF adjusts the visible area of its pages — effectively trimming margins or removing unwanted white space, headers, footers, or borders. This is useful for removing oversized margins from scanned documents, cutting away page borders added by printing software, or focusing on a specific region of a page.
 </p>

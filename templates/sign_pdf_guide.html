@@ -16,6 +16,9 @@
 {% from "components/byline.html" import byline %}
 {{ byline(date_published, date_modified) }}
 
+{% from "components/open_tool.html" import open_tool %}
+{{ open_tool("/sign-pdf", "Open the Sign PDF tool") }}
+
 <p>
 Adding a signature to a PDF used to require printing the document, signing it by hand, then scanning it back into a digital format. Today you can sign any PDF directly online without a printer, scanner, or special software. Our free tool lets you upload your signature as an image and place it precisely on any page of your document.
 </p>

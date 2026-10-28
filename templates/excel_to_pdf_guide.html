@@ -16,6 +16,9 @@
 {% from "components/byline.html" import byline %}
 {{ byline(date_published, date_modified) }}
 
+{% from "components/open_tool.html" import open_tool %}
+{{ open_tool("/excel-to-pdf", "Open the Excel to PDF tool") }}
+
 <p>
 Excel spreadsheets are powerful tools for data management, but they're not ideal for sharing. Recipients need Microsoft Excel or a compatible app to open them correctly, and the formatting can shift between different versions or devices. Converting your Excel file to PDF solves all of this — a PDF looks the same everywhere, opens on any device, and is the standard format for sharing data with people outside your workflow.
 </p>

@@ -20,6 +20,9 @@ Learn how to add password protection to a PDF file. Prevent unauthorised access 
 {% from "components/byline.html" import byline %}
 {{ byline(date_published, date_modified) }}
 
+{% from "components/open_tool.html" import open_tool %}
+{{ open_tool("/protect-pdf", "Open the Protect PDF tool") }}
+
 <p>
 PDF password protection prevents unauthorised people from opening, reading, or printing your document. It's an important security measure for contracts, financial records, confidential reports, personal identification documents, and any other sensitive information you share digitally.
 </p>

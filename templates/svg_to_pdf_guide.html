@@ -16,6 +16,9 @@
 {% from "components/byline.html" import byline %}
 {{ byline(date_published, date_modified) }}
 
+{% from "components/open_tool.html" import open_tool %}
+{{ open_tool("/svg-to-pdf", "Open the SVG to PDF tool") }}
+
 <p>
 SVG (Scalable Vector Graphics) is the format most design tools export logos, icons, and diagrams in,
 because it describes shapes and text as mathematical paths rather than a grid of pixels — it looks
