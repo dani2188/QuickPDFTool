@@ -100,31 +100,6 @@
     <li><span class="step-number">4</span> Click Resize Image and download the result</li>
   </ul>
 
-  <h2>Social Media Image Size Reference</h2>
-  <p>Bookmark these recommended dimensions. Platforms occasionally change their specs — check the platform's official help center if in doubt.</p>
-
-  <div class="table-wrap">
-    <table class="data-table">
-      <thead>
-        <tr>
-          <th>Platform</th>
-          <th>Content Type</th>
-          <th>Recommended Size</th>
-          <th>Aspect Ratio</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr><td>Instagram</td><td>Square Post</td><td>1080 × 1080</td><td>1:1</td></tr>
-        <tr><td>Instagram</td><td>Portrait Post</td><td>1080 × 1350</td><td>4:5</td></tr>
-        <tr><td>Instagram</td><td>Story / Reels</td><td>1080 × 1920</td><td>9:16</td></tr>
-        <tr><td>TikTok</td><td>Video / Cover</td><td>1080 × 1920</td><td>9:16</td></tr>
-        <tr><td>YouTube</td><td>Thumbnail</td><td>1280 × 720</td><td>16:9</td></tr>
-        <tr><td>Facebook</td><td>Post / Share</td><td>1200 × 630</td><td>1.91:1</td></tr>
-        <tr><td>X (Twitter)</td><td>In-feed Image</td><td>1200 × 675</td><td>16:9</td></tr>
-      </tbody>
-    </table>
-  </div>
-
   {% include "components/examples/resize_image.html" %}
 
   <h2>Frequently Asked Questions</h2>
@@ -140,6 +115,9 @@
 
   <h3>Is my photo stored after resizing?</h3>
   <p>No. Files are processed on a secure server and deleted automatically within minutes.</p>
+
+  <h3>Is there a size limit?</h3>
+  <p>Yes. The upload can be up to 20MB and the image up to {{ max_image_megapixels }} megapixels. A larger photo is rejected with a message asking you to make it smaller first.</p>
 
   <h3>More Tools</h3>
   <div class="tools-mini-grid">
@@ -192,5 +170,6 @@
   {"q": "Will resizing crop or stretch my photo?", "a": "No. The image is scaled down to fit entirely within the target dimensions, keeping its original proportions. If the shape doesn't match exactly, white padding fills the remaining space — nothing is cropped or distorted."},
   {"q": "Why does my resized image have white bars?", "a": "That's the padding described above — it appears when your photo's aspect ratio doesn't exactly match the preset you chose (for example, a landscape photo resized to a square). It's the tradeoff for never cropping content out of your photo."},
   {"q": "PNG or JPG — which should I choose?", "a": "PNG is lossless and better for graphics, logos, or anything with sharp edges or text. JPG produces a smaller file and is usually the better choice for photos."},
-  {"q": "Is my photo stored after resizing?", "a": "No. Files are processed on a secure server and deleted automatically within minutes."}
+  {"q": "Is my photo stored after resizing?", "a": "No. Files are processed on a secure server and deleted automatically within minutes."},
+  {"q": "Is there a size limit?", "a": "Yes. The upload can be up to 20MB and the image up to " ~ max_image_megapixels ~ " megapixels. A larger photo is rejected with a message asking you to make it smaller first."}
 ]) }}{% endblock %}

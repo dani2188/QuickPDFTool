@@ -71,13 +71,6 @@
   <p><strong>High:</strong> Stronger compression for when file size matters more than pixel-perfect detail — still fine for web use and messaging.</p>
   <p><strong>Extreme:</strong> Maximum size reduction. Visible quality loss (blocky shadows, softer detail), best reserved for thumbnails or when every kilobyte counts.</p>
 
-  <h2>When Should You Compress a JPG?</h2>
-
-  <p><strong>Emailing photos:</strong> A handful of full-resolution phone photos can easily exceed an email attachment limit — compress them first.</p>
-  <p><strong>Uploading to a website or form:</strong> Many upload fields cap image size; compression gets you under the limit without cropping.</p>
-  <p><strong>Faster-loading pages:</strong> Smaller images mean quicker page loads if you're publishing photos online.</p>
-  <p><strong>Saving storage:</strong> Compressing a large batch of photos before archiving frees up real space.</p>
-
   <h2>Frequently Asked Questions</h2>
 
   <h3>Will compressing lose quality?</h3>
@@ -88,6 +81,9 @@
 
   <h3>Does this remove my photo's location/EXIF data?</h3>
   <p>Yes — re-encoding strips EXIF metadata (including GPS location, camera model, and timestamp), which also shaves off a little extra size. The photo's visual orientation is preserved either way.</p>
+
+  <h3>Is my photo stored after compressing?</h3>
+  <p>No. Your photos are processed automatically on our server and never looked at by a person. The originals are deleted after about a minute and the compressed files after about five minutes.</p>
 
   <h3>Can I compress PNG or other formats here?</h3>
   <p>This tool is specifically for JPG/JPEG files. To convert a PNG to a JPG first, or to work with PDFs, see our other <a href="/pdf-tools">PDF and image tools</a>.</p>
@@ -114,5 +110,6 @@
   {"q": "Will compressing lose quality?", "a": "JPG compression is \"lossy\" by nature, so yes, some detail is discarded — but at Low or Medium settings the difference is barely visible on screen. Higher levels trade more quality for smaller files."},
   {"q": "Can I compress several photos at once?", "a": "Yes. Select multiple files and each is compressed individually with the same level, then bundled into one ZIP for download."},
   {"q": "Does this remove my photo's location/EXIF data?", "a": "Yes — re-encoding strips EXIF metadata (including GPS location, camera model, and timestamp), which also shaves off a little extra size. The photo's visual orientation is preserved either way."},
+  {"q": "Is my photo stored after compressing?", "a": "No. Your photos are processed automatically on our server and never looked at by a person. The originals are deleted after about a minute and the compressed files after about five minutes."},
   {"q": "Can I compress PNG or other formats here?", "a": "This tool is specifically for JPG/JPEG files. To convert a PNG to a JPG first, or to work with PDFs, see our other PDF and image tools."}
 ]) }}{% endblock %}

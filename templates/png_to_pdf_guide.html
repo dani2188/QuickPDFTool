@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% set breadcrumb_label = "How to Convert PNG to PDF" %}
 {% set date_published = "2026-03-14" %}
-{% set date_modified = "2026-10-24" %}
+{% set date_modified = "2026-10-28" %}
 
 {% block title %}How to Convert PNG to PDF – Combine PNG Images Into a PDF{% endblock %}
 
@@ -73,11 +73,6 @@ The tool converts your PNG images into a multi-page PDF, with each image on its 
 Our PNG to PDF tool is specifically for PNG files. For JPG images, use our <a href="/jpg-to-pdf">JPG to PDF tool</a>. If you need to mix formats, convert all files to the same format first, then combine them.
 </p>
 
-<h3>Will transparent areas in my PNG show up?</h3>
-<p>
-Transparent areas appear white. A PDF page can't be see-through, so the converter places your image on a white background.
-</p>
-
 <h3>Is there a limit on the number of images I can convert?</h3>
 <p>
 There is no hard limit. Processing time increases with the number and size of images. For very large collections, consider splitting into smaller batches and then <a href="/merge-pdf">merging the resulting PDFs</a>.
@@ -104,7 +99,6 @@ Each image keeps its full pixel size and is stored losslessly, so very high-reso
 
 {% block jsonld %}{% from "components/jsonld.html" import howto, faqpage %}{{ howto(self.title(), self.description(), request.path, ["Open the PNG to PDF Tool", "Upload Your PNG Images", "Download Your PDF"]) }}{{ faqpage([
   {"q": "Can I mix PNG and JPG in the same PDF?", "a": "Our PNG to PDF tool is specifically for PNG files. For JPG images, use our JPG to PDF tool. If you need to mix formats, convert all files to the same format first, then combine them."},
-  {"q": "Will transparent areas in my PNG show up?", "a": "Transparent areas appear white. A PDF page can't be see-through, so the converter places your image on a white background."},
   {"q": "Is there a limit on the number of images I can convert?", "a": "There is no hard limit. Processing time increases with the number and size of images. For very large collections, consider splitting into smaller batches and then merging the resulting PDFs."},
   {"q": "Why is my PDF so large?", "a": "Each image keeps its full pixel size and is stored losslessly, so very high-resolution PNGs make large PDFs. Use the Compress PDF tool after conversion to reduce the file size."}
 ]) }}{% endblock %}
