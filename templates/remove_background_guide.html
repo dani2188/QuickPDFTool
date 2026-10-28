@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% set breadcrumb_label = "How to Remove the Background from a Photo" %}
 {% set date_published = "2026-08-26" %}
-{% set date_modified = "2026-09-18" %}
+{% set date_modified = "2026-10-28" %}
 
 {% block title %}How to Remove the Background from a Photo Online{% endblock %}
 
@@ -65,15 +65,6 @@ or a different backdrop entirely.
 
 <h2>Frequently Asked Questions</h2>
 
-<h3>What file formats are supported?</h3>
-<p>Upload JPG, PNG, or WebP. The result is always delivered as a PNG with a transparent background.</p>
-
-<h3>How accurate is the background removal?</h3>
-<p>It performs very well on clear subjects — people, animals, products — set against a reasonably simple background. Complex or cluttered scenes may be less precise around fine edges.</p>
-
-<h3>Are my images stored or shared?</h3>
-<p>Your image is uploaded to our server, sent securely to a background-removal service purely to process your request, and deleted automatically within minutes. See our <a href="/privacy-policy">Privacy Policy</a> for details.</p>
-
 <h3>Can I use the result commercially?</h3>
 <p>Yes — the transparent PNG is your processed image, free to use for products, marketing, or any other purpose.</p>
 
@@ -93,9 +84,6 @@ or a different backdrop entirely.
 {% from "components/jsonld.html" import howto, faqpage %}
 {{ howto(self.title(), self.description(), request.path, ["Open the Background Remover", "Click Remove Background", "Download Your Transparent PNG"]) }}
 {{ faqpage([
-  {"q": "What file formats are supported?", "a": "Upload JPG, PNG, or WebP. The result is always delivered as a PNG with a transparent background."},
-  {"q": "How accurate is the background removal?", "a": "It performs very well on clear subjects — people, animals, products — set against a reasonably simple background. Complex or cluttered scenes may be less precise around fine edges."},
-  {"q": "Are my images stored or shared?", "a": "Your image is uploaded to our server, sent securely to a background-removal service purely to process your request, and deleted automatically within minutes. See our Privacy Policy for details."},
   {"q": "Can I use the result commercially?", "a": "Yes — the transparent PNG is your processed image, free to use for products, marketing, or any other purpose."}
 ]) }}
 {% endblock %}

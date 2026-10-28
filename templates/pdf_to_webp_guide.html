@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% set breadcrumb_label = "How to Convert PDF to WebP" %}
 {% set date_published = "2026-03-16" %}
-{% set date_modified = "2026-09-18" %}
+{% set date_modified = "2026-10-28" %}
 
 {% block title %}How to Convert PDF to WebP Online | PDF to WebP Free{% endblock %}
 
@@ -73,16 +73,6 @@ After conversion, a gallery shows all the converted images. Download individual 
 WebP is supported by all modern web browsers. For maximum compatibility with older devices, desktop applications, and non-web uses, JPG or PNG may be preferable. For websites and web apps, WebP is the best choice.
 </p>
 
-<h3>How many pages can I convert at once?</h3>
-<p>
-The tool converts up to 20 pages per upload. For longer documents, use the <a href="/split-pdf">Split PDF tool</a> to break the document into parts first.
-</p>
-
-<h3>What quality level is used?</h3>
-<p>
-Images are saved at 80% quality, which is a good balance between file size and visual fidelity for web use. Text and diagrams remain sharp at this setting.
-</p>
-
 <h3>Can I convert a password-protected PDF?</h3>
 <p>
 You'll need to <a href="/unlock-pdf">remove the password</a> before converting.
@@ -103,7 +93,5 @@ You'll need to <a href="/unlock-pdf">remove the password</a> before converting.
 
 {% block jsonld %}{% from "components/jsonld.html" import howto, faqpage %}{{ howto(self.title(), self.description(), request.path, ["Open the PDF to WebP Tool", "Upload Your PDF", "Download the WebP Images"]) }}{{ faqpage([
   {"q": "Is WebP supported everywhere?", "a": "WebP is supported by all modern web browsers. For maximum compatibility with older devices, desktop applications, and non-web uses, JPG or PNG may be preferable. For websites and web apps, WebP is the best choice."},
-  {"q": "How many pages can I convert at once?", "a": "The tool converts up to 20 pages per upload. For longer documents, use the Split PDF tool to break the document into parts first."},
-  {"q": "What quality level is used?", "a": "Images are saved at 80% quality, which is a good balance between file size and visual fidelity for web use. Text and diagrams remain sharp at this setting."},
   {"q": "Can I convert a password-protected PDF?", "a": "You'll need to remove the password before converting."}
 ]) }}{% endblock %}

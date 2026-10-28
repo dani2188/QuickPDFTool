@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% set breadcrumb_label = "How to Merge PDF Files" %}
 {% set date_published = "2026-03-13" %}
-{% set date_modified = "2026-09-18" %}
+{% set date_modified = "2026-10-28" %}
 
 {% block title %}
 How to Merge PDF Files Online – Combine Multiple PDFs Into One
@@ -87,11 +87,6 @@ The resulting document preserves all original formatting, text, images, and page
 No. The merge process combines the files without modifying their content. Text, images, and layouts are preserved exactly as they were in the original files.
 </p>
 
-<h3>Can I merge PDFs with different page sizes?</h3>
-<p>
-Yes. Each page retains its original dimensions when merged. A landscape page from one file and a portrait page from another will both appear correctly in the merged document.
-</p>
-
 <h3>Is there a file size limit?</h3>
 <p>
 Individual files are subject to our standard upload limit. For very large documents, consider <a href="/compress-pdf">compressing them</a> before merging to speed up the process.
@@ -100,11 +95,6 @@ Individual files are subject to our standard upload limit. For very large docume
 <h3>Can I reorder pages after merging?</h3>
 <p>
 If the page order is wrong after merging, you can use our <a href="/split-pdf">Split PDF tool</a> to extract individual pages, then re-merge them in the correct order.
-</p>
-
-<h3>Will the bookmarks and links in my PDFs be preserved?</h3>
-<p>
-Basic document content including text and images is always preserved. Complex interactive elements like bookmarks and hyperlinks are generally carried over, though behaviour may vary depending on the original file.
 </p>
 
 <h2>Related Tools</h2>
@@ -122,8 +112,6 @@ Basic document content including text and images is always preserved. Complex in
 
 {% block jsonld %}{% from "components/jsonld.html" import howto, faqpage %}{{ howto(self.title(), self.description(), request.path, ["Open the Merge PDF Tool", "Upload All Your PDF Files", "Download the Merged PDF"]) }}{{ faqpage([
   {"q": "Does merging PDFs reduce quality?", "a": "No. The merge process combines the files without modifying their content. Text, images, and layouts are preserved exactly as they were in the original files."},
-  {"q": "Can I merge PDFs with different page sizes?", "a": "Yes. Each page retains its original dimensions when merged. A landscape page from one file and a portrait page from another will both appear correctly in the merged document."},
   {"q": "Is there a file size limit?", "a": "Individual files are subject to our standard upload limit. For very large documents, consider compressing them before merging to speed up the process."},
-  {"q": "Can I reorder pages after merging?", "a": "If the page order is wrong after merging, you can use our Split PDF tool to extract individual pages, then re-merge them in the correct order."},
-  {"q": "Will the bookmarks and links in my PDFs be preserved?", "a": "Basic document content including text and images is always preserved. Complex interactive elements like bookmarks and hyperlinks are generally carried over, though behaviour may vary depending on the original file."}
+  {"q": "Can I reorder pages after merging?", "a": "If the page order is wrong after merging, you can use our Split PDF tool to extract individual pages, then re-merge them in the correct order."}
 ]) }}{% endblock %}

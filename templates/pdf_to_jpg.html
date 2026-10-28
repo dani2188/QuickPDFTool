@@ -56,10 +56,10 @@
   <h2>Frequently Asked Questions</h2>
 
   <h3>What quality are the output images?</h3>
-  <p>Pages are rendered at 2x resolution with 90% JPEG quality, producing sharp images suitable for screen viewing, presentations, and web use.</p>
+  <p>Pages are rendered at 2× the PDF's own size, which is 144 pixels per inch (an A4 page comes out at 1190 × 1684 pixels), and saved as JPG at 90% quality. That is sharp for screens, presentations and web use. There is no option to choose a different resolution.</p>
 
   <h3>How many pages can I convert at once?</h3>
-  <p>Up to 20 pages are converted per upload. For longer documents, split them first using the <a href="/split-pdf">Split PDF tool</a> and convert each section separately.</p>
+  <p>Only the first 20 pages are converted, and the results page says how many were converted out of the total (for example "20 of 45 pages converted"). To convert the rest, remove the pages you already have with <a href="/delete-pdf-pages">Delete PDF Pages</a> (list them separated by commas) and convert the shorter PDF.</p>
 
   <h3>Can I convert just one page?</h3>
   <p>The tool converts all pages and lets you download them individually, so you can simply download the specific page you need.</p>
@@ -88,8 +88,8 @@
 {% endblock %}
 
 {% block jsonld %}{% from "components/jsonld.html" import webapp, faqpage %}{{ webapp(self.title(), self.description(), request.path) }}{{ faqpage([
-  {"q": "What quality are the output images?", "a": "Pages are rendered at 2x resolution with 90% JPEG quality, producing sharp images suitable for screen viewing, presentations, and web use."},
-  {"q": "How many pages can I convert at once?", "a": "Up to 20 pages are converted per upload. For longer documents, split them first using the Split PDF tool and convert each section separately."},
+  {"q": "What quality are the output images?", "a": "Pages are rendered at 2× the PDF's own size, which is 144 pixels per inch (an A4 page comes out at 1190 × 1684 pixels), and saved as JPG at 90% quality. That is sharp for screens, presentations and web use. There is no option to choose a different resolution."},
+  {"q": "How many pages can I convert at once?", "a": "Only the first 20 pages are converted, and the results page says how many were converted out of the total (for example \"20 of 45 pages converted\"). To convert the rest, remove the pages you already have with Delete PDF Pages (list them separated by commas) and convert the shorter PDF."},
   {"q": "Can I convert just one page?", "a": "The tool converts all pages and lets you download them individually, so you can simply download the specific page you need."},
   {"q": "Is there a difference between PDF to JPG and PDF to PNG?", "a": "JPG uses lossy compression and is best for photos and colour-rich pages. PNG is lossless and better for pages with text, diagrams, or transparency. Use our PDF to PNG tool if quality or transparency matters most."},
   {"q": "Are my files deleted after conversion?", "a": "Yes. All uploaded and converted files are automatically deleted from our server within a few minutes."}
