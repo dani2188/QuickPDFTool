@@ -1862,15 +1862,20 @@ def extract_images():
             if len(images) >= MAX_IMAGES:
                 break
 
-        doc.close()
+        # When the cap was reached, count what the PDF holds so the results page can say how many
+        # were left out (counted the same way as above, per page, without extracting anything).
+        total_images = len(images)
+        if len(images) >= MAX_IMAGES:
+            total_images = sum(len(doc[i].get_images(full=True)) for i in range(len(doc)))
 
-        # ✅ SMART UX FLAG
-        limit_reached = len(images) >= MAX_IMAGES
+        doc.close()
 
         return render_template(
             "extract_images_result.html",
             images=images,
-            limit=limit_reached
+            limit=total_images > MAX_IMAGES,
+            total_images=total_images,
+            max_images=MAX_IMAGES,
         )
 
     return render_template("extract_images.html")

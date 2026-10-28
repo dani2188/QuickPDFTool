@@ -855,7 +855,7 @@ def publish_extract(res):
         f"and compared them with the extracted files byte for byte: "
         f"{'identical' if res['identical'] else 'NOT identical'}.</li>\n"
         f"  <li><strong>The 50-image limit:</strong> the 55-image sample produced {cap} files. "
-        + ("The results page mentions the limit. " if cap_mentioned else
+        + ("The results page says so and how many were left out. " if cap_mentioned else
            "The results page does not say that images were left out, so count the files you get back "
            "if your PDF has many images.")
         + "</li>\n"
