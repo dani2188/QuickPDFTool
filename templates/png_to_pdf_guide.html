@@ -16,6 +16,9 @@
 {% from "components/byline.html" import byline %}
 {{ byline(date_published, date_modified) }}
 
+{% from "components/open_tool.html" import open_tool %}
+{{ open_tool("/png-to-pdf", "Open the PNG to PDF tool") }}
+
 <p>
 PNG images are great for individual use, but when you need to compile multiple images into a single document for sharing, archiving, or submission, converting them to PDF is the best approach. PDF is universally compatible, preserves the images at full quality, and is accepted by virtually every system, portal, and email client.
 </p>

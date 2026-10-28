@@ -16,6 +16,9 @@
 {% from "components/byline.html" import byline %}
 {{ byline(date_published, date_modified) }}
 
+{% from "components/open_tool.html" import open_tool %}
+{{ open_tool("/pdf-to-webp", "Open the PDF to WebP tool") }}
+
 <p>
 WebP is a modern image format developed by Google that provides excellent compression while maintaining high visual quality. WebP images are significantly smaller than equivalent JPG or PNG files, making them ideal for websites where page load speed matters. Converting PDF pages to WebP produces lightweight, high-quality images that are perfect for web use.
 </p>

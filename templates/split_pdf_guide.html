@@ -20,6 +20,9 @@ Learn how to split a PDF into individual pages or separate sections. Step-by-ste
 {% from "components/byline.html" import byline %}
 {{ byline(date_published, date_modified) }}
 
+{% from "components/open_tool.html" import open_tool %}
+{{ open_tool("/split-pdf", "Open the Split PDF tool") }}
+
 <p>
 Splitting a PDF means breaking a single document into smaller pieces — either extracting individual pages or dividing a long document into separate files. This is useful when you only need a specific section of a document, when you need to share part of a file without revealing the whole thing, or when you want to reorganise pages across multiple documents.
 </p>

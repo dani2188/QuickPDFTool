@@ -9,8 +9,8 @@ Uses Flask's test client with a temporary upload folder and no timers, so it nee
   - PDF to PNG / JPG / WebP results say "N page(s) converted" for PDFs of 20 pages or fewer, and
     "20 of N pages converted" plus how to convert the rest when pages were left out;
   - the files really produced still stop at 20;
-  - the how-to guides for Remove Watermark and PDF to JPG show an "Open the tool" button right under
-    the byline, before the first section, linking to the right tool, and other guides are unchanged.
+  - every how-to guide shows an "Open the tool" button right under the byline, before the first
+    section, linking to its tool.
 
 Exits 1 on any failure.
 """
@@ -83,22 +83,24 @@ for route, kind in (("/pdf-to-png", "PNG"), ("/pdf-to-jpg", "JPG"), ("/pdf-to-we
     check(f"{kind}: step-by-step guide link only on the PNG page", has_guide == (kind == "PNG"), has_guide)
 
 # --- the guides' button -----------------------------------------------------------------------
-for path, href, label in (("/how-to-remove-watermark-pdf", "/remove-watermark", "Open the Remove Watermark tool"),
-                          ("/how-to-pdf-to-jpg", "/pdf-to-jpg", "Open the PDF to JPG tool")):
+import similarity_audit  # for the guide -> tool map
+
+rules = {r.rule for r in qt_app.app.url_map.iter_rules()}
+guides = sorted(r for r in rules if r.startswith("/how-to-"))
+check("all 29 how-to guides found", len(guides) == 29, len(guides))
+for path in guides:
+    tool = next((t for t, g in similarity_audit.GUIDE_FOR_TOOL.items() if g == path), "/" + path[len("/how-to-"):])
     html = client.get(path).get_data(as_text=True)
-    button = re.search(r'<p class="open-tool"><a class="main-btn" href="([^"]+)">([^<]+)</a></p>', html)
+    button = re.search(r'<p class="open-tool"><a class="main-btn" href="([^"]+)">(Open the [^<]+ tool)</a></p>', html)
     byline_at, button_at = html.find('class="byline"'), html.find('class="open-tool"')
     first_h2 = html.find("<h2", byline_at)
-    check(f"{path}: one button -> {href} labelled '{label}'",
-          bool(button) and button.group(1) == href and button.group(2) == label and html.count('class="open-tool"') == 1,
+    check(f"{path}: one button -> {tool}",
+          bool(button) and button.group(1) == tool and html.count('class="open-tool"') == 1,
           button.groups() if button else None)
+    check(f"{path}: the tool it links to exists", tool in rules and client.get(tool).status_code == 200)
     check(f"{path}: button sits under the byline and before the first section", byline_at < button_at < first_h2,
           (byline_at, button_at, first_h2))
     check(f"{path}: still exactly one h1", len(re.findall(r"<h1[ >]", html)) == 1)
-
-for path in ("/how-to-compress-pdf", "/how-to-merge-pdf", "/how-to-pdf-to-png"):
-    check(f"{path}: other guides are unchanged (no button)",
-          'class="open-tool"' not in client.get(path).get_data(as_text=True))
 
 print(f"\n{'FAILED: ' + str(len(failures)) if failures else 'All checks passed.'}")
 sys.exit(1 if failures else 0)

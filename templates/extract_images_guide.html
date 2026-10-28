@@ -16,6 +16,9 @@
 {% from "components/byline.html" import byline %}
 {{ byline(date_published, date_modified) }}
 
+{% from "components/open_tool.html" import open_tool %}
+{{ open_tool("/extract-images", "Open the Extract Images tool") }}
+
 <p>
 PDF documents often contain images — photographs, diagrams, charts, logos, and illustrations — embedded within the file. If you need those images separately as individual files, extracting them is far more efficient than taking screenshots. Our free tool pulls every image out of your PDF and lets you download them as individual files.
 </p>

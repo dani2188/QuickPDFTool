@@ -16,6 +16,9 @@
 {% from "components/byline.html" import byline %}
 {{ byline(date_published, date_modified) }}
 
+{% from "components/open_tool.html" import open_tool %}
+{{ open_tool("/pdf-to-text", "Open the PDF to Text tool") }}
+
 <p>
 PDF files lock their content in a fixed format that is not directly editable. When you need the raw text from a PDF — to copy it into another document, analyse it, run it through a spell checker, or process it with software — extracting it as a plain text file (.txt) is the most efficient approach.
 </p>

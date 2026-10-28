@@ -16,6 +16,9 @@
 {% from "components/byline.html" import byline %}
 {{ byline(date_published, date_modified) }}
 
+{% from "components/open_tool.html" import open_tool %}
+{{ open_tool("/pdf-to-excel", "Open the PDF to Excel tool") }}
+
 <p>
 Many reports, invoices, financial statements, and data exports are distributed as PDF files. While PDFs are great for viewing, they're not designed for data analysis. Converting a PDF to Excel extracts the tabular data into a spreadsheet where you can sort, filter, calculate, and analyse it freely.
 </p>

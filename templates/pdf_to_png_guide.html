@@ -16,6 +16,9 @@
 {% from "components/byline.html" import byline %}
 {{ byline(date_published, date_modified) }}
 
+{% from "components/open_tool.html" import open_tool %}
+{{ open_tool("/pdf-to-png", "Open the PDF to PNG tool") }}
+
 <p>
 This guide is for when a PDF to PNG conversion doesn't give you what you expected: not all the pages came
 back, the files are huge, the text looks soft, or you wanted a transparent background. Each section says

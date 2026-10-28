@@ -16,6 +16,9 @@
 {% from "components/byline.html" import byline %}
 {{ byline(date_published, date_modified) }}
 
+{% from "components/open_tool.html" import open_tool %}
+{{ open_tool("/remove-background", "Open the Remove Background tool") }}
+
 <p>
 Cutting a subject out from its background used to mean a fiddly manual selection in an image editor.
 Automatic background removal detects the main subject and strips everything else out in seconds,

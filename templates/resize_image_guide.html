@@ -16,6 +16,9 @@
 {% from "components/byline.html" import byline %}
 {{ byline(date_published, date_modified) }}
 
+{% from "components/open_tool.html" import open_tool %}
+{{ open_tool("/resize-image", "Open the Resize Image tool") }}
+
 <p>
 Upload a photo with the "wrong" dimensions to most platforms and it gets auto-cropped — sometimes
 cutting off exactly the part of the image you cared about. Resizing to the platform's actual

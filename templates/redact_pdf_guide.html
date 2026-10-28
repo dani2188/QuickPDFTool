@@ -16,6 +16,9 @@
 {% from "components/byline.html" import byline %}
 {{ byline(date_published, date_modified) }}
 
+{% from "components/open_tool.html" import open_tool %}
+{{ open_tool("/redact-pdf", "Open the Redact PDF tool") }}
+
 <p>
 Before sharing a contract, medical record, invoice, or ID scan, you often need to hide certain
 details — a social security number, an account number, a signature, or a face in a photo. Simply
