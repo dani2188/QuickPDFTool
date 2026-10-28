@@ -13,8 +13,10 @@ What it does:
    (sitemap/robots/ads.txt). Download, status and upload routes all take a
    <filename> parameter, so they are excluded automatically.
 2. Renders each page through the test client to learn which template it
-   uses, and takes that template's last git commit date as <lastmod>
-   (falling back to today for a template with no commit yet).
+   uses, and takes the last git commit date of that template (plus any
+   page-specific components/examples/* partial it includes) as <lastmod>;
+   shared chrome such as base.html never moves it. A template with no
+   commit yet falls back to today.
 3. Writes sitemap.xml with the homepage first and the rest sorted by path.
 
 With --check it rewrites nothing: it compares the routes against the
@@ -76,11 +78,27 @@ def template_for(client, path):
 
 
 def last_commit_date(rel_path):
+    """Date of the last commit that touched `rel_path` (author date, so a rebase
+    or merge that rewrites committer dates cannot move it)."""
     out = subprocess.run(
-        ["git", "log", "-1", "--format=%cs", "--", rel_path],
+        ["git", "log", "-1", "--format=%as", "--", rel_path],
         cwd=BASE, capture_output=True, text=True, check=True,
     ).stdout.strip()
     return out or datetime.date.today().isoformat()
+
+
+EXAMPLE_INCLUDE = re.compile(r'\{%-?\s*include\s+"(components/examples/[^"]+)"')
+
+
+def content_files(template):
+    """The files whose edits change this page's content: its own template plus
+    the page-specific components/examples/* partials it includes. Shared chrome
+    (base.html, jsonld, byline, breadcrumb, open_tool, upload) is excluded on
+    purpose: editing it must not move every page's lastmod."""
+    rel = f"templates/{template}"
+    with open(os.path.join(BASE, rel), encoding="utf-8") as f:
+        partials = EXAMPLE_INCLUDE.findall(f.read())
+    return [rel] + [f"templates/{p}" for p in partials]
 
 
 def build():
@@ -88,7 +106,7 @@ def build():
     entries = []
     for path in public_paths():
         template = template_for(client, path)
-        lastmod = last_commit_date(f"templates/{template}")
+        lastmod = max(last_commit_date(f) for f in content_files(template))
         entries.append((path, lastmod))
 
     lines = ['<?xml version="1.0" encoding="UTF-8"?>', "",
