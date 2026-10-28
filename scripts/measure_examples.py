@@ -25,6 +25,9 @@ needs a paid remove.bg API key and has no local engine to run.
 
 `--only pdf_to_png` regenerates just the PDF to PNG tables (the tool page and
 its guide) and leaves every other partial, and its "Measured on" date, alone.
+`--only` takes a comma-separated list of: pdf_to_png, jpg_to_pdf, resize_image,
+rotate_pdf, compress_jpg, extract_images (for example
+`--only rotate_pdf,compress_jpg,extract_images`).
 """
 
 import datetime
@@ -227,6 +230,54 @@ def make_line_diagram(path):
     doc.close()
 
 
+def make_landscape_timetable(path):
+    """Two landscape A4 pages (842 x 595 pt): a delivery timetable, for the Rotate PDF samples."""
+    doc = fitz.open()
+    days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
+    stops = ["North depot", "Old mill bakery", "Market hall", "Station kiosk", "Harbour cafe"]
+    for page_no in range(2):
+        page = doc.new_page(width=842, height=595)
+        page.insert_text((60, 60), f"Riverside Bakers' Co-operative — delivery timetable, week {page_no + 1}",
+                         fontsize=15, fontname="helv")
+        left, top, col_w, row_h = 60, 90, 140, 40
+        for r in range(len(days) + 2):
+            page.draw_line((left, top + r * row_h), (left + col_w * 5, top + r * row_h))
+        for c in range(6):
+            page.draw_line((left + c * col_w, top), (left + c * col_w, top + (len(days) + 1) * row_h))
+        for c, head in enumerate(["Stop"] + days[:4]):
+            page.insert_text((left + c * col_w + 6, top + 25), head, fontsize=11, fontname="hebo")
+        for r, stop in enumerate(stops, start=1):
+            page.insert_text((left + 6, top + r * row_h + 25), stop, fontsize=10, fontname="helv")
+            for c in range(1, 5):
+                hour = 6 + (r + c + page_no) % 5
+                page.insert_text((left + c * col_w + 6, top + r * row_h + 25), f"{hour:02d}:{(r * 15) % 60:02d}",
+                                 fontsize=10, fontname="helv")
+    doc.save(path, garbage=4, deflate=True)
+    doc.close()
+
+
+def make_many_images(path):
+    """One page-set with 55 small, different images, to show the 50-image limit of Extract Images."""
+    doc = fitz.open()
+    index = 0
+    for _ in range(5):
+        page = doc.new_page(width=595, height=842)
+        for slot in range(11):
+            if index >= 55:
+                break
+            arr = np.zeros((60, 60, 3), dtype="uint8")
+            arr[..., 0] = (index * 37) % 256
+            arr[..., 1] = np.linspace(0, 255, 60, dtype="uint8")[None, :]
+            arr[..., 2] = np.linspace(255, 0, 60, dtype="uint8")[:, None]
+            buf = io.BytesIO()
+            Image.fromarray(arr).save(buf, "PNG")
+            x, y = 40 + (slot % 4) * 130, 40 + (slot // 4) * 130
+            page.insert_image(fitz.Rect(x, y, x + 100, y + 100), stream=buf.getvalue())
+            index += 1
+    doc.save(path, garbage=4, deflate=True)
+    doc.close()
+
+
 def make_photo_brochure(path):
     doc = fitz.open()
     for i in range(3):
@@ -255,6 +306,12 @@ def ensure_samples(regenerate):
         synthetic_photo(3000, 2000, seed=1).save(f("landscape-photo.jpg"), "JPEG", quality=88)
     if not os.path.exists(f("portrait-photo.jpg")):
         synthetic_photo(1200, 1800, seed=2).save(f("portrait-photo.jpg"), "JPEG", quality=88)
+    if not os.path.exists(f("web-photo.jpg")):
+        synthetic_photo(1600, 1067, seed=3).save(f("web-photo.jpg"), "JPEG", quality=70)
+    if not os.path.exists(f("landscape-timetable.pdf")):
+        make_landscape_timetable(f("landscape-timetable.pdf"))
+    if not os.path.exists(f("many-images.pdf")):
+        make_many_images(f("many-images.pdf"))
     if not os.path.exists(f("line-diagram.pdf")):
         make_line_diagram(f("line-diagram.pdf"))
     if not os.path.exists(f("transparent-badge.png")):
@@ -505,6 +562,124 @@ def measure_resize(client):
     return rows
 
 
+def pt_size(page):
+    return f"{page.rect.width:.0f} × {page.rect.height:.0f} pt"
+
+
+def rotate_once(client, pdf_bytes, angle, tmp):
+    src = os.path.join(tmp, "in.pdf")
+    with open(src, "wb") as f:
+        f.write(pdf_bytes)
+    return post(client, "/rotate-pdf", {"pdf": [src]}, {"rotation": str(angle)}).data
+
+
+def measure_rotate(client):
+    rows, text_ok = [], True
+    with tempfile.TemporaryDirectory() as tmp:
+        for name, label in (("landscape-timetable.pdf", "Landscape timetable"), ("text-report.pdf", "Text report")):
+            with open(sample(name), "rb") as f:
+                original = f.read()
+            doc = fitz.open(stream=original, filetype="pdf")
+            text = "".join(p.get_text() for p in doc)
+            cells, size_after = [], None
+            for angle in (90, 180, 270):
+                out = rotate_once(client, original, angle, tmp)
+                rotated = fitz.open(stream=out, filetype="pdf")
+                if len(rotated) != len(doc):
+                    raise SystemExit(f"rotate {angle} changed the page count of {name}")
+                if "".join(p.get_text() for p in rotated) != text:
+                    text_ok = False
+                cells.append(f"{pt_size(rotated[0])} (set to {rotated[0].rotation}°)")
+                if angle == 90:
+                    size_after = len(out)
+            rows.append((link(name, label), str(len(doc)), pt_size(doc[0]), *cells,
+                         f"{human(len(original))} → {human(size_after)}"))
+        # Rotation is added to what the page already has: rotate the landscape sample 90° twice, then
+        # 90° and 270° (a full turn).
+        with open(sample("landscape-timetable.pdf"), "rb") as f:
+            base = f.read()
+        once = rotate_once(client, base, 90, tmp)
+        twice = rotate_once(client, once, 90, tmp)
+        full = rotate_once(client, once, 270, tmp)
+        stacking = {
+            "once": fitz.open(stream=once, filetype="pdf")[0].rotation,
+            "twice": fitz.open(stream=twice, filetype="pdf")[0].rotation,
+            "full": fitz.open(stream=full, filetype="pdf")[0].rotation,
+        }
+        # A PDF whose pages are already stored sideways (/Rotate 90) and displayed upright.
+        sideways = fitz.open(stream=base, filetype="pdf")
+        for page in sideways:
+            page.set_rotation(90)
+        sideways_bytes = sideways.tobytes()
+        shown = fitz.open(stream=sideways_bytes, filetype="pdf")[0]
+        fixed = fitz.open(stream=rotate_once(client, sideways_bytes, 270, tmp), filetype="pdf")[0]
+        stored = {"before": (pt_size(shown), shown.rotation), "after": (pt_size(fixed), fixed.rotation)}
+    return {"rows": rows, "text_ok": text_ok, "stacking": stacking, "stored": stored}
+
+
+def measure_compress_jpg(client):
+    rows, dims_ok, grew = [], True, []
+    with tempfile.TemporaryDirectory() as tmp:
+        for name, label in (("landscape-photo.jpg", "Large photo"), ("portrait-photo.jpg", "Portrait photo"),
+                            ("web-photo.jpg", "Web photo (already saved at quality 70)")):
+            original = os.path.getsize(sample(name))
+            with Image.open(sample(name)) as im:
+                src_dims = im.size
+            cells = []
+            for level in ("low", "medium", "high", "extreme"):
+                r = post(client, "/compress-jpg", {"images": [sample(name)]}, {"level": level})
+                zip_name = re.search(r'/download-file/([^"]+\.zip)"', r.get_data(as_text=True)).group(1)
+                with zipfile.ZipFile(os.path.join(UPLOADS, zip_name)) as z:
+                    data = z.read(z.infolist()[0])
+                with Image.open(io.BytesIO(data)) as im:
+                    if im.size != src_dims:
+                        dims_ok = False
+                cells.append(f"{human(len(data))}<br>({pct(len(data), original)})")
+                if len(data) > original:
+                    grew.append((label, level))
+            rows.append((link(name, label), f"{src_dims[0]} × {src_dims[1]} px", human(original), *cells))
+    return {"rows": rows, "dims_ok": dims_ok, "grew": grew}
+
+
+def measure_extract_images(client):
+    rows, notes = [], {}
+    for name, label in (("photo-brochure.pdf", "Photo brochure"), ("scanned-letter.pdf", "Scanned letter"),
+                        ("text-report.pdf", "Text report"), ("line-diagram.pdf", "Line-art diagram"),
+                        ("many-images.pdf", "Page set of 55 small images")):
+        r = post(client, "/extract-images", {"pdf": [sample(name)]})
+        html = r.get_data(as_text=True)
+        files = re.findall(r'/download-file/([^"]+)"', html)
+        got = []
+        for fn in files:
+            with open(os.path.join(UPLOADS, fn), "rb") as f:
+                got.append((fn, f.read()))
+        formats = sorted({fn.rsplit(".", 1)[-1].upper() for fn, _ in got})
+        dims = set()
+        for _, data in got:
+            with Image.open(io.BytesIO(data)) as im:
+                dims.add(f"{im.size[0]} × {im.size[1]} px")
+        total = sum(len(d) for _, d in got)
+        rows.append((link(name, label), human(os.path.getsize(sample(name))), str(len(got)),
+                     ", ".join(formats) or "none", " / ".join(sorted(dims)) or "none",
+                     human(total) if got else "—"))
+        if name == "photo-brochure.pdf":
+            # Byte-for-byte: regenerate the three JPEGs this sample was built from and compare.
+            identical = True
+            for i, (_, data) in enumerate(sorted(got, key=lambda g: re.search(r"_page(\d+)_", g[0]).group(1))):
+                buf = io.BytesIO()
+                synthetic_photo(2400, 1600, seed=100 + i).save(buf, "JPEG", quality=90)
+                identical = identical and buf.getvalue() == data
+            notes["identical"] = identical
+        if name == "many-images.pdf":
+            # Does the results page say anything about the limit? Ignore the file links (their names
+            # contain digits) and look at the words around them.
+            prose = re.sub(r"<a\b.*?</a>", " ", html, flags=re.S)
+            prose = re.sub(r"<(script|style)\b.*?</\1>", " ", prose, flags=re.S)
+            prose = re.sub(r"<[^>]+>", " ", prose)
+            notes["cap"] = (len(got), bool(re.search(r"\b(limit|50|first|only|more images)\b", prose, re.I)))
+    return {"rows": rows, **notes}
+
+
 # ------------------------------------------------------------- publishing
 
 def table(headers, rows):
@@ -575,14 +750,7 @@ def publish(results):
         + table(["Sample file", "Characters in PDF", "Editable characters in Word", "Tables", "Images",
                  "Word file size"], word_rows)))
 
-    write_partial("jpg_to_pdf", (
-        "<p>We converted two sample photos. A JPG is placed in the PDF exactly as it is — we compared "
-        "the image stored in the PDF with the file you uploaded, byte for byte — so there is no "
-        "re-compression and no quality loss, and the PDF is about the size of the photo. Each image "
-        "becomes one page whose size comes from the photo's pixel dimensions, so a large photo makes a "
-        "very large page — fine on screen, but scale to fit when you print.</p>\n"
-        + table(["Sample photo", "Pixels", "JPG size", "Stored unchanged in PDF?", "PDF page size", "PDF size"],
-                results["jpg_to_pdf"])))
+    publish_jpg_to_pdf(results["jpg_to_pdf"])
 
     write_partial("png_to_pdf", (
         "<p>We converted two sample PNGs. PNGs are stored losslessly: we decoded the image stored in each "
@@ -596,7 +764,25 @@ def publish(results):
         "72-points-per-inch scale) and saved as a JPG at quality 90, up to 20 pages per file.</p>\n"
         + table(["Sample file", "Pages converted", "Image size", "JPG file size per page"], results["pdf_to_jpg"])))
 
-    examples = results["resize"]
+    publish_resize(results["resize"])
+
+    publish_rotate(results["rotate_pdf"])
+    publish_compress_jpg(results["compress_jpg"])
+    publish_extract(results["extract_images"])
+
+
+def publish_jpg_to_pdf(rows):
+    write_partial("jpg_to_pdf", (
+        "<p>We converted two sample photos. A JPG is placed in the PDF exactly as it is — we compared "
+        "the image stored in the PDF with the file you uploaded, byte for byte — so there is no "
+        "re-compression and no quality loss, and the PDF is about the size of the photo. Each image "
+        "becomes one page whose size comes from the photo's pixel dimensions, so a large photo makes a "
+        "very large page — fine on screen, but scale to fit when you print.</p>\n"
+        + table(["Sample photo", "Pixels", "JPG size", "Stored unchanged in PDF?", "PDF page size", "PDF size"],
+                rows)))
+
+
+def publish_resize(examples):
     figures = "\n".join(
         f'<figure class="example-figure">\n  <img src="/static/examples/{e["out"]}" width="1080" height="1080" '
         f'loading="lazy" alt="{e["src"][0]} × {e["src"][1]} photo fitted into a 1080 × 1080 square with white bars">\n'
@@ -610,6 +796,72 @@ def publish(results):
                 [(link(e["name"]), f"{e['src'][0]} × {e['src'][1]}", f"{e['canvas'][0]} × {e['canvas'][1]}",
                   f"{e['content'][0]} × {e['content'][1]}", e["bars"]) for e in examples])
         + f'\n<div class="example-figures">\n{figures}\n</div>'))
+
+
+def publish_rotate(res):
+    st, sw = res["stacking"], res["stored"]
+    write_partial("rotate_pdf", (
+        "<p>We rotated two sample PDFs by 90°, 180° and 270° and measured the pages that came out. Rotating "
+        "changes how each page is displayed, not what is on it: the page count and the text are the same "
+        "afterwards. A landscape page rotated by 90° becomes a portrait page, and the other way round.</p>\n"
+        + table(["Sample file", "Pages", "Original page size", "After 90°", "After 180°", "After 270°",
+                 "File size (original → after 90°)"], res["rows"])
+        + "\n<ul class=\"benefits\">\n"
+        f"  <li><strong>Text unchanged:</strong> we extracted the text of every page before and after each "
+        f"rotation and compared it: {'identical in every case' if res['text_ok'] else 'it differed in at least one case'}.</li>\n"
+        "  <li><strong>Every page, every time:</strong> the rotation is applied to all pages of the file; "
+        "there is no option to rotate only some of them.</li>\n"
+        f"  <li><strong>Rotation adds up:</strong> after one 90° rotation our landscape sample was set to "
+        f"{st['once']}°; rotating that result by 90° again gave {st['twice']}°, and by 270° gave {st['full']}° "
+        "(back to how it started). A PDF whose pages were stored sideways "
+        f"({sw['before'][0]}, set to {sw['before'][1]}°) came out upright after 270°: {sw['after'][0]}, set to "
+        f"{sw['after'][1]}°.</li>\n"
+        "</ul>"))
+
+
+def publish_compress_jpg(res):
+    q = qt_app.JPG_COMPRESSION_QUALITY
+    grew = "".join(f"{label} at {level.capitalize()}" + ("; " if i < len(res["grew"]) - 1 else "")
+                   for i, (label, level) in enumerate(res["grew"]))
+    write_partial("compress_jpg", (
+        "<p>We compressed three sample photos at every level. Each level re-saves the photo as a JPG at a "
+        f"fixed quality: Low {q['low']}, Medium {q['medium']}, High {q['high']} and Extreme {q['extreme']} "
+        "(out of 100). The photos are drawn by a script, so their exact savings will differ from your "
+        "camera's; the pattern is what to look at. The pixel size never changes — "
+        f"{'we checked that every output has the same width and height as the original' if res['dims_ok'] else 'at least one output differed in size from the original'}"
+        ".</p>\n"
+        + table(["Sample photo", "Pixels", "Original", "Low", "Medium", "High", "Extreme"], res["rows"])
+        + "\n<ul class=\"benefits\">\n"
+        "  <li><strong>A JPG that is already small can grow:</strong> "
+        + (f"the output was larger than the original for: {grew}. Low re-saves at quality {q['low']}, "
+           "above the quality this sample was saved at (70), so it can't make it smaller. If your photo "
+           "has been compressed before, start at Medium or stronger."
+           if res["grew"] else "in this run no output was larger than its original.")
+        + "</li>\n"
+        "</ul>"))
+
+
+def publish_extract(res):
+    cap, cap_mentioned = res["cap"]
+    write_partial("extract_images", (
+        "<p>We ran five sample PDFs through the tool and counted what came out. The tool takes the image "
+        "files stored inside the PDF as they are; it does not draw the pages, so text and vector drawings "
+        "are never captured, and an image comes out at its full stored size even if the page shows it "
+        "smaller.</p>\n"
+        + table(["Sample file", "PDF size", "Images extracted", "Format", "Size of each image", "Total size of images"],
+                res["rows"])
+        + "\n<ul class=\"benefits\">\n"
+        f"  <li><strong>Original quality:</strong> we rebuilt the three JPEGs the photo brochure was made from "
+        f"and compared them with the extracted files byte for byte: "
+        f"{'identical' if res['identical'] else 'NOT identical'}.</li>\n"
+        f"  <li><strong>The 50-image limit:</strong> the 55-image sample produced {cap} files. "
+        + ("The results page mentions the limit. " if cap_mentioned else
+           "The results page does not say that images were left out, so count the files you get back "
+           "if your PDF has many images.")
+        + "</li>\n"
+        "  <li><strong>Nothing to extract:</strong> the text report and the line-art diagram contain no "
+        "embedded images (the diagram's lines are vector drawings), so there was nothing to download.</li>\n"
+        "</ul>"))
 
 
 def background_sentence(corners):
@@ -660,11 +912,21 @@ def main():
     before = set(os.listdir(UPLOADS))
     client = qt_app.app.test_client()
     if "--only" in sys.argv[1:]:
-        only = sys.argv[sys.argv.index("--only") + 1]
-        if only != "pdf_to_png":
-            raise SystemExit("--only supports: pdf_to_png")
+        only = sys.argv[sys.argv.index("--only") + 1].split(",")
+        runners = {
+            "pdf_to_png": lambda: publish_pdf_to_png(measure_pdf_to_png(client), measure_png_vs_jpg(client)),
+            "jpg_to_pdf": lambda: publish_jpg_to_pdf(measure_jpg_to_pdf(client)),
+            "resize_image": lambda: publish_resize(measure_resize(client)),
+            "rotate_pdf": lambda: publish_rotate(measure_rotate(client)),
+            "compress_jpg": lambda: publish_compress_jpg(measure_compress_jpg(client)),
+            "extract_images": lambda: publish_extract(measure_extract_images(client)),
+        }
+        unknown = [o for o in only if o not in runners]
+        if unknown:
+            raise SystemExit(f"--only supports: {', '.join(runners)} (got {', '.join(unknown)})")
         try:
-            publish_pdf_to_png(measure_pdf_to_png(client), measure_png_vs_jpg(client))
+            for tool in only:
+                runners[tool]()
         finally:
             for name in set(os.listdir(UPLOADS)) - before:
                 os.remove(os.path.join(UPLOADS, name))
@@ -682,6 +944,9 @@ def main():
             "resize": measure_resize(client),
             "pdf_to_png": measure_pdf_to_png(client),
             "pdf_to_png_vs_jpg": measure_png_vs_jpg(client),
+            "rotate_pdf": measure_rotate(client),
+            "compress_jpg": measure_compress_jpg(client),
+            "extract_images": measure_extract_images(client),
         }
     finally:
         for name in set(os.listdir(UPLOADS)) - before:
