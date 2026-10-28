@@ -9,6 +9,16 @@
 
 <p>Download the images extracted from your PDF.</p>
 
+{% if limit %}
+<p class="file-info"><strong>{{ images|length }} of {{ total_images }} images extracted</strong></p>
+<div class="result-note" role="note">
+  <p>
+    Only the first {{ max_images }} images are extracted, so the other {{ total_images - images|length }} in your PDF are not included.
+    If your images are spread over several pages, you can get the rest by splitting the PDF by pages with <a href="/split-pdf">Split PDF</a> and extracting the images from each part.
+  </p>
+</div>
+{% endif %}
+
 <div class="tools-mini-grid">
 
 {% for img in images %}
