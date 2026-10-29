@@ -13,12 +13,15 @@ import platform
 import uuid
 import io
 import zipfile
+import unicodedata
 import datetime
 from urllib.parse import quote
 
 from werkzeug.utils import secure_filename
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
 import json
 import re
 import math
@@ -199,6 +202,41 @@ def upload_stem(file_storage):
     """User-facing base name (no extension) of an upload, for download names."""
     safe = secure_filename(file_storage.filename) or "file"
     return os.path.splitext(safe)[0] or "file"
+
+
+def carry_over_document_info(reader, writer):
+    """Copy title/author/subject/keywords and the bookmark tree from `reader` to `writer`.
+
+    PyPDF2 writes a fresh document, so without this a rotated or watermarked file loses both
+    (Compress PDF keeps them because Ghostscript does). Best effort: a bookmark whose target
+    can't be resolved is skipped rather than failing the whole request. Bookmarks keep their
+    title, nesting and target page; their zoom/position settings become "fit page".
+    """
+    try:
+        info = {k: v for k, v in (reader.metadata or {}).items() if k != "/Producer"}
+        if info:
+            writer.add_metadata(info)
+    except Exception:
+        pass
+
+    def copy(items, parent=None):
+        last = None
+        for item in items:
+            if isinstance(item, list):
+                copy(item, last)
+                continue
+            try:
+                page_number = reader.get_destination_page_number(item)
+                if page_number is None or not 0 <= page_number < len(writer.pages):
+                    continue
+                last = writer.add_outline_item(str(item.title), page_number, parent=parent)
+            except Exception:
+                continue
+
+    try:
+        copy(reader.outline)
+    except Exception:
+        pass
 
 
 def resolve_upload(name):
@@ -998,6 +1036,7 @@ def rotate_pdf():
         for page in reader.pages:
             page.rotate(rotation)
             writer.add_page(page)
+        carry_over_document_info(reader, writer)
 
         output_filename = f"{uuid.uuid4()}_rotated.pdf"
         output_path = os.path.join(UPLOAD_FOLDER, output_filename)
@@ -1413,6 +1452,23 @@ def pdf_to_jpg_guide():
     return render_template("pdf_to_jpg_guide.html")
 
 
+def readable_jpg_name(filename):
+    """File name to show and to use inside the ZIP: the upload's own name, made safe.
+
+    secure_filename() throws away every non-ASCII character, so "照片.jpg" became just "jpg" (no
+    extension at all) and "фото.jpeg" became "jpeg". Letters and digits of any script are kept
+    here; path separators, control characters and other punctuation are replaced, so the name
+    can't escape the ZIP's folder. The extension is the upload's own (.jpg/.jpeg); a name with
+    nothing usable before it becomes "image".
+    """
+    base = unicodedata.normalize("NFC", filename.replace("\\", "/").rsplit("/", 1)[-1])
+    ext = ".jpeg" if base.lower().endswith(".jpeg") else ".jpg"
+    stem = base[:-len(ext)] if base.lower().endswith(ext) else base
+    stem = "".join(ch if ch.isalnum() or ch in "-_." else "_" for ch in stem.strip())
+    stem = re.sub(r"_+", "_", stem).strip("._")[:100]
+    return (stem or "image") + ext
+
+
 def unique_zip_name(name, used):
     """Return `name`, or `name (2)`, `name (3)`... if it is already in `used`, and record it.
     Compared case-insensitively because Windows and macOS extract "A.jpg" and "a.jpg" to one file."""
@@ -1447,14 +1503,15 @@ def compress_jpg():
             if not file.filename.lower().endswith((".jpg", ".jpeg")):
                 continue
 
-            display_name = secure_filename(file.filename)
-            input_path = os.path.join(UPLOAD_FOLDER, f"{uuid.uuid4()}_{display_name}")
+            display_name = readable_jpg_name(file.filename)
+            disk_name = secure_filename(display_name) or "image.jpg"
+            input_path = os.path.join(UPLOAD_FOLDER, f"{uuid.uuid4()}_{disk_name}")
             file.save(input_path)
             delete_file_later(input_path, delay=60)
 
             original_size = os.path.getsize(input_path)
 
-            output_name = f"{uuid.uuid4()}_{display_name}"
+            output_name = f"{uuid.uuid4()}_{disk_name}"
             output_path = os.path.join(UPLOAD_FOLDER, output_name)
 
             try:
@@ -1709,6 +1766,56 @@ def compress_pdf_1mb():
 
 
 
+# Helvetica (reportlab's built-in font) only draws the Western European Windows-1252 character
+# set; anything else came out as solid boxes. Text outside that set is drawn with the Droid Sans
+# Fallback font that ships inside PyMuPDF (Latin, Cyrillic, Greek and Chinese/Japanese/Korean),
+# subset by reportlab so the output PDF grows by a few KB, not the 3.5 MB font. Text Helvetica can
+# draw keeps using it, so those watermarks are unchanged.
+WATERMARK_FALLBACK_FONT = "WatermarkFallback"
+_watermark_fallback = {}
+
+
+def _watermark_fallback_glyphs():
+    """The fallback font (for its glyph test), registering it with reportlab on first use."""
+    if "font" not in _watermark_fallback:
+        try:
+            font = fitz.Font("cjk")
+            pdfmetrics.registerFont(TTFont(WATERMARK_FALLBACK_FONT, io.BytesIO(font.buffer)))
+            _watermark_fallback["font"] = font
+        except Exception:
+            _watermark_fallback["font"] = None
+    return _watermark_fallback["font"]
+
+
+def _helvetica_can_draw(text):
+    try:
+        text.encode("cp1252")
+        return True
+    except UnicodeEncodeError:
+        return False
+
+
+def unsupported_watermark_chars(text):
+    """The distinct characters of `text` that no available font can draw, as a short string."""
+    font = _watermark_fallback_glyphs()
+    bad = []
+    for ch in text:
+        if ch.isspace() or ch in bad:
+            continue
+        if font is None or not font.has_glyph(ord(ch)):
+            bad.append(ch)
+    return " ".join(bad[:10])
+
+
+def watermark_font_for(text):
+    """Font name to draw `text` with, or None if some character can't be drawn by any font."""
+    if _helvetica_can_draw(text):
+        return "Helvetica"
+    if unsupported_watermark_chars(text):
+        return None
+    return WATERMARK_FALLBACK_FONT
+
+
 @app.route("/add-watermark", methods=["GET", "POST"])
 def add_watermark():
 
@@ -1723,6 +1830,17 @@ def add_watermark():
         input_path, _ = save_upload(file)
         stem = upload_stem(file)
 
+        if not watermark_text or not watermark_text.strip():
+            return error_page("Please enter the watermark text.")
+
+        font_name = watermark_font_for(watermark_text)
+        if font_name is None:
+            return error_page(
+                "The watermark text contains characters that can't be drawn: "
+                + unsupported_watermark_chars(watermark_text)
+                + ". Please use letters, numbers or symbols from the Latin, Cyrillic, Greek or Chinese/Japanese/Korean alphabets."
+            )
+
         reader = PdfReader(input_path)
         writer = PdfWriter()
 
@@ -1732,7 +1850,7 @@ def add_watermark():
 
             c = canvas.Canvas(packet, pagesize=letter)
 
-            c.setFont("Helvetica", 40)
+            c.setFont(font_name, 40)
             c.setFillGray(0.5, 0.3)
 
             c.drawString(*_watermark_origin(float(page.mediabox.height)), watermark_text)
@@ -1746,6 +1864,7 @@ def add_watermark():
             page.merge_page(overlay.pages[0])
 
             writer.add_page(page)
+        carry_over_document_info(reader, writer)
 
         output_filename = f"{uuid.uuid4()}_watermarked.pdf"
         output_path = os.path.join(UPLOAD_FOLDER, output_filename)
@@ -1773,6 +1892,9 @@ def add_watermark():
 # page's height, crop box and rotation instead of assuming Letter.
 WATERMARK_ORIGIN = (150.0, 400.0)
 
+# Name PyMuPDF reports for the fallback font add_watermark draws non-Windows-1252 text with.
+WATERMARK_FALLBACK_FONT_NAME = "Droid-Sans-Fallback"
+
 # A page shorter than this has no room for the text at y=400 (the glyphs are
 # about 29pt tall), so the stamp would fall outside the page and vanish. On
 # such pages the baseline is centred vertically instead. Taller pages keep the
@@ -1796,7 +1918,7 @@ def _is_own_watermark_span(span, page):
     origin = chars[0][2]
     if abs(origin[0] - expected.x) > 1.5 or abs(origin[1] - expected.y) > 1.5:
         return False
-    if span.get("font") != "Helvetica":
+    if span.get("font") not in ("Helvetica", WATERMARK_FALLBACK_FONT_NAME):
         return False
     if abs(span.get("size", 0) - 40.0) > 0.5:
         return False
