@@ -43,7 +43,7 @@ def post(route, pdf, **data):
 def body(page):
     page.insert_text((72, 72), "Body text stays", fontsize=14)
     page.draw_rect(fitz.Rect(72, 100, 200, 140))
-    page.insert_text((72, 300), "DRAFT", fontsize=11)  # same word, ordinary text
+    page.insert_text((72, 230), "DRAFT", fontsize=11)  # same word, ordinary text
 
 
 def big_spans(pdf, page_no=0):
@@ -63,6 +63,10 @@ SHAPES = {
     "landscape Letter": (792, 612, 0, None), "landscape A4": (842, 595, 0, None),
     "A4 rotated 90": (595, 842, 90, None), "A4 rotated 180": (595, 842, 180, None),
     "A4 rotated 270": (595, 842, 270, None), "A4 with crop box": (595, 842, 0, fitz.Rect(20, 30, 500, 800)),
+    # Short pages used to get no watermark at all (the stamp sat above the page edge).
+    "short 300x300": (300, 300, 0, None), "short 400pt tall": (612, 400, 0, None),
+    "short 439pt tall": (612, 439, 0, None), "short 440pt tall": (612, 440, 0, None),
+    "short 250 rotated 90": (400, 250, 90, None), "short with crop box": (500, 350, 0, fitz.Rect(10, 20, 480, 330)),
 }
 
 for name, (w, h, rotation, crop) in SHAPES.items():
@@ -78,6 +82,11 @@ for name, (w, h, rotation, crop) in SHAPES.items():
     words = page_words(cleaned)
     check(f"{name}: watermark present before, gone after",
           len(big_spans(marked)) == 1 and not big_spans(cleaned))
+    spans = big_spans(marked)
+    page_rect = fitz.open(stream=marked, filetype="pdf")[0].rect
+    # Vertical fit only: a long text can still run past the right edge of a narrow page.
+    check(f"{name}: watermark sits inside the page vertically",
+          len(spans) == 1 and page_rect.y0 <= spans[0]["bbox"][1] and spans[0]["bbox"][3] <= page_rect.y1)
     check(f"{name}: page content survives", "Body" in words and words.count("DRAFT") == 1)
 
 doc = fitz.open()

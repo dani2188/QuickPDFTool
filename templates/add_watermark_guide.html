@@ -90,13 +90,14 @@ across, it ran past the right edge in our test. Roughly 18 capital letters is th
 or Letter; shorter pages fit fewer. On A5 even "CONFIDENTIAL" is clipped slightly.
 </p>
 
-<h3>The watermark isn't there at all on a small page</h3>
+<h3>Short pages: the watermark moves to the middle of the page</h3>
 
 <p>
-The text is placed 400 points above the bottom edge of the page. A page shorter than that, such as a
-300 × 300 point square, has no room for it, and in our test the output contained no watermark and gave
-no warning. Check the first page of the result before sending it to anyone, especially for small-format
-documents such as cards, tickets or receipts.
+On a page taller than about 440 points (roughly 6 inches), which covers Letter, A4 and A5, the text sits
+at its usual fixed spot. On a shorter page, such as a small square or a ticket-sized page, that spot would
+be above the edge of the page, so the tool centres the text vertically instead. In our tests it now
+appears on pages from 250 to 439 points tall, and the Remove Watermark tool still finds and removes it.
+Text that is too wide for a narrow page can still run past the right edge, as described above.
 </p>
 
 <h3>It sits in the upper left of a landscape page</h3>

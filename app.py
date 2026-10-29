@@ -1413,6 +1413,18 @@ def pdf_to_jpg_guide():
     return render_template("pdf_to_jpg_guide.html")
 
 
+def unique_zip_name(name, used):
+    """Return `name`, or `name (2)`, `name (3)`... if it is already in `used`, and record it.
+    Compared case-insensitively because Windows and macOS extract "A.jpg" and "a.jpg" to one file."""
+    stem, ext = os.path.splitext(name)
+    candidate, n = name, 1
+    while candidate.lower() in used:
+        n += 1
+        candidate = f"{stem} ({n}){ext}"
+    used.add(candidate.lower())
+    return candidate
+
+
 @app.route("/compress-jpg", methods=["GET", "POST"])
 def compress_jpg():
 
@@ -1423,6 +1435,7 @@ def compress_jpg():
         quality = JPG_COMPRESSION_QUALITY.get(level, 75)
 
         results = []
+        used_names = set()
         compressed_paths = []
         total_original = 0
         total_compressed = 0
@@ -1465,7 +1478,7 @@ def compress_jpg():
 
             results.append({
                 "filename": output_name,
-                "display_name": display_name,
+                "display_name": unique_zip_name(display_name, used_names),
                 "original_kb": round(original_size / 1024, 1),
                 "compressed_kb": round(compressed_size / 1024, 1),
                 "reduction": reduction,
@@ -1722,7 +1735,7 @@ def add_watermark():
             c.setFont("Helvetica", 40)
             c.setFillGray(0.5, 0.3)
 
-            c.drawString(150, 400, watermark_text)
+            c.drawString(*_watermark_origin(float(page.mediabox.height)), watermark_text)
 
             c.save()
 
@@ -1760,12 +1773,26 @@ def add_watermark():
 # page's height, crop box and rotation instead of assuming Letter.
 WATERMARK_ORIGIN = (150.0, 400.0)
 
+# A page shorter than this has no room for the text at y=400 (the glyphs are
+# about 29pt tall), so the stamp would fall outside the page and vanish. On
+# such pages the baseline is centred vertically instead. Taller pages keep the
+# original position exactly, so existing output and the removal signature
+# above are unchanged for them.
+SHORT_PAGE_HEIGHT = 440.0
+
+
+def _watermark_origin(page_height):
+    """Text origin (user space, unrotated page) for a page `page_height` points tall."""
+    if page_height >= SHORT_PAGE_HEIGHT:
+        return WATERMARK_ORIGIN
+    return (WATERMARK_ORIGIN[0], page_height / 2 - 14.0)
+
 
 def _is_own_watermark_span(span, page):
     chars = span.get("chars")
     if not chars:
         return False
-    expected = fitz.Point(*WATERMARK_ORIGIN) * page.transformation_matrix
+    expected = fitz.Point(*_watermark_origin(abs(page.mediabox.height))) * page.transformation_matrix
     origin = chars[0][2]
     if abs(origin[0] - expected.x) > 1.5 or abs(origin[1] - expected.y) > 1.5:
         return False
