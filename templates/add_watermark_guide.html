@@ -48,7 +48,7 @@ Upload your PDF and type the text you want to use as a watermark. Common choices
 </ul>
 
 <p>
-The watermark will be applied in a large, semi-transparent grey text across each page, positioned centrally so it is clearly visible without obscuring the underlying content.
+The watermark is applied as one line of large, light-grey, semi-transparent text at a fixed spot on each page. See the troubleshooting notes below for what that means on different page sizes.
 </p>
 
 <h2>Step 3 – Download the Watermarked PDF</h2>
@@ -77,6 +77,68 @@ After processing, download the watermarked PDF. Every page will have the waterma
 
 <p><strong>Business proposals:</strong> A proposal watermarked with the company name discourages the recipient from passing it to competitors.</p>
 
+<h2>When the Watermark Doesn't Look Right</h2>
+
+<h3>The end of a long watermark is cut off</h3>
+
+<p>
+The text starts 150 points (about 2 inches) in from the left edge and runs to the right in one line,
+so whatever does not fit before the page edge is simply lost. At the tool's text size, "DRAFT" is about
+133 points wide, "DO NOT COPY" about 280 and "CONFIDENTIAL" about 293, measured with the font the tool
+uses. "DO NOT COPY - CONFIDENTIAL DRAFT" is about 753 points wide, and on an A4 page, which is 595 points
+across, it ran past the right edge in our test. Roughly 18 capital letters is the most that fits on A4
+or Letter; shorter pages fit fewer. On A5 even "CONFIDENTIAL" is clipped slightly.
+</p>
+
+<h3>The watermark isn't there at all on a small page</h3>
+
+<p>
+The text is placed 400 points above the bottom edge of the page. A page shorter than that, such as a
+300 × 300 point square, has no room for it, and in our test the output contained no watermark and gave
+no warning. Check the first page of the result before sending it to anyone, especially for small-format
+documents such as cards, tickets or receipts.
+</p>
+
+<h3>It sits in the upper left of a landscape page</h3>
+
+<p>
+The position is fixed to the page's coordinates, not to its middle. On a portrait Letter or A4 page that
+lands near the centre. On a landscape Letter page, our test put the text near the left, in the upper
+third of the page. If a centred or diagonal mark matters, this tool will not produce one.
+</p>
+
+<h3>It is almost invisible on a photo or a dark page</h3>
+
+<p>
+The mark is light grey at low opacity, and its colour cannot be changed. On a white page that reads
+clearly. On a dark scan or a page filled with a photograph, it can fade into the background. Look at the
+result on the busiest page, not only the first one.
+</p>
+
+<h3>Cyrillic or Chinese letters turn into boxes</h3>
+
+<p>
+The font only covers Latin letters. In our test, accented letters such as É and é and the € sign came
+out correctly, while Cyrillic and Chinese characters were drawn as solid boxes. We have not tested other
+scripts, so check the result before sending it if your watermark uses one.
+</p>
+
+<h3>Someone took the watermark off</h3>
+
+<p>
+A watermark made here is ordinary text laid over the page, so any PDF editor can delete it, and our own
+<a href="/remove-watermark">Remove Watermark</a> tool is built to find exactly this kind of stamp. Treat
+it as a label, not as protection. If the document has to be locked, see <a href="/protect-pdf">Protect
+PDF</a>.
+</p>
+
+<h3>The bookmarks and the document title are gone</h3>
+
+<p>
+The output is a rebuilt file. In our test, a PDF with a table of contents and a title came back with
+neither, while the clickable web links on the pages survived. If your file relies on its outline, plan to recreate the bookmarks after watermarking.
+</p>
+
 <h2>Frequently Asked Questions</h2>
 
 <h3>Can I remove a watermark I've added?</h3>
@@ -88,6 +150,12 @@ You can use our <a href="/remove-watermark">Remove Watermark tool</a> to attempt
 <p>
 Yes. The watermark is embedded into the PDF content and will appear on screen and in print.
 </p>
+
+<h3>Can the watermark be selected, searched or copied?</h3>
+<p>Yes. It is real text, not a picture, so searching the PDF finds it and copying text from a page includes it. The page's own text underneath stays selectable as before.</p>
+
+<h3>Does adding the watermark change the size of my pages?</h3>
+<p>No. The page dimensions stay the same; the watermark is laid on top of the existing page.</p>
 
 <h2>Related Tools</h2>
 
@@ -104,5 +172,7 @@ Yes. The watermark is embedded into the PDF content and will appear on screen an
 
 {% block jsonld %}{% from "components/jsonld.html" import howto, faqpage %}{{ howto(self.title(), self.description(), request.path, ["Open the Add Watermark Tool", "Upload Your PDF and Enter Watermark Text", "Download the Watermarked PDF"]) }}{{ faqpage([
   {"q": "Can I remove a watermark I've added?", "a": "You can use our Remove Watermark tool to attempt removal, or simply use the original unwatermarked file if you kept it."},
-  {"q": "Will the watermark be visible when the document is printed?", "a": "Yes. The watermark is embedded into the PDF content and will appear on screen and in print."}
+  {"q": "Will the watermark be visible when the document is printed?", "a": "Yes. The watermark is embedded into the PDF content and will appear on screen and in print."},
+  {"q": "Can the watermark be selected, searched or copied?", "a": "Yes. It is real text, not a picture, so searching the PDF finds it and copying text from a page includes it. The page's own text underneath stays selectable as before."},
+  {"q": "Does adding the watermark change the size of my pages?", "a": "No. The page dimensions stay the same; the watermark is laid on top of the existing page."}
 ]) }}{% endblock %}

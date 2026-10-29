@@ -78,6 +78,44 @@ After setting the rotation, the tool processes your document and produces a new 
 
 <p><strong>Preparing for printing:</strong> Printing a sideways document wastes paper and is unreadable. Always check orientation before printing and rotate if needed.</p>
 
+<h2>When the Rotation Doesn't Fix It</h2>
+
+<h3>Most pages are sideways but a few are fine</h3>
+
+<p>
+Rotation applies to every page, so the order of work matters. If most of the pages are wrong, rotate the
+whole file first, and then deal with the few pages that are now wrong. If most pages are right and only a
+few are wrong, pull those few out with <a href="/split-pdf">Split PDF</a>, rotate them separately, and
+rejoin everything with <a href="/merge-pdf">Merge PDF</a>. Whichever way you go, look through the
+finished file page by page, since the pieces are put back in the order you give them.
+</p>
+
+<h3>You rotated the wrong way</h3>
+
+<p>
+Rotation adds up on each pass. If a 90° turn went the wrong direction, you do not have to go back to the
+original: turn the result by 180° to undo it and go the right way, or run the original again with the
+other angle. If the upload page confuses you, a good rule is to picture the top of the text. Where it
+points left, the page needs a clockwise turn; where it points right, it needs the other one.
+</p>
+
+<h3>The scan is only a little crooked</h3>
+
+<p>
+The tool turns pages in steps of 90°, 180° and 270°. Any other value is refused with a message asking
+for one of those three. A scan that is a few degrees off needs deskewing in a scanning or image
+application. This tool cannot straighten it.
+</p>
+
+<h3>Bookmarks and the document title disappeared</h3>
+
+<p>
+The result is written as a new file. In our test, a three-page PDF with a table of contents and a title
+and author came back with no bookmarks and without the title and author, while its clickable web links
+were still working on each page. If your file relies on a bookmarked outline, plan to recreate it after
+rotating.
+</p>
+
 <h2>Frequently Asked Questions</h2>
 
 <h3>Will rotation affect the text content of my PDF?</h3>
@@ -95,6 +133,12 @@ Yes. The rotation is saved into the PDF file itself, so it displays correctly in
 You'll need to <a href="/unlock-pdf">remove the password</a> first, then rotate the pages, and optionally re-protect the file afterwards.
 </p>
 
+<h3>Will rotating change the size of the file much?</h3>
+<p>Very little. Our measurements on the tool page show a difference of a few hundred bytes for small test files. We have not measured large scanned documents.</p>
+
+<h3>Will page numbers and headers rotate too?</h3>
+<p>Yes. They are part of the page, so they turn with it. The text stays unchanged and only the page's display direction is altered.</p>
+
 <h2>Related Tools</h2>
 
 <ul>
@@ -111,5 +155,7 @@ You'll need to <a href="/unlock-pdf">remove the password</a> first, then rotate 
 {% block jsonld %}{% from "components/jsonld.html" import howto, faqpage %}{{ howto(self.title(), self.description(), request.path, ["Open the Rotate PDF Tool", "Choose Your Rotation Angle", "Download the Rotated PDF"]) }}{{ faqpage([
   {"q": "Will rotation affect the text content of my PDF?", "a": "No. Rotation is a display operation — the text, images, and all content within the PDF remain unchanged. Only the viewing orientation is modified."},
   {"q": "Does the rotated file look the same in all PDF viewers?", "a": "Yes. The rotation is saved into the PDF file itself, so it displays correctly in Adobe Acrobat, Chrome, Edge, Preview on Mac, and any other standard PDF viewer."},
-  {"q": "Can I rotate a password-protected PDF?", "a": "You'll need to remove the password first, then rotate the pages, and optionally re-protect the file afterwards."}
+  {"q": "Can I rotate a password-protected PDF?", "a": "You'll need to remove the password first, then rotate the pages, and optionally re-protect the file afterwards."},
+  {"q": "Will rotating change the size of the file much?", "a": "Very little. Our measurements on the tool page show a difference of a few hundred bytes for small test files. We have not measured large scanned documents."},
+  {"q": "Will page numbers and headers rotate too?", "a": "Yes. They are part of the page, so they turn with it. The text stays unchanged and only the page's display direction is altered."}
 ]) }}{% endblock %}

@@ -77,6 +77,67 @@ Click "Compress JPG." When it's done, you'll see the total space saved along wit
 
 <p><strong>Saving storage:</strong> Compressing a large batch of photos before archiving frees up real space on disk or in cloud storage.</p>
 
+<h2>When a Batch Doesn't Go as Planned</h2>
+
+<h3>You need an exact file size and the result is still too big</h3>
+
+<p>
+The tool has four fixed levels and no target-size setting, so it cannot aim for "under 200 KB". Try the
+next level up from your original, not from a result you already compressed. If Extreme is still too
+large, the quality setting is not the lever left: the photo has too many pixels, and this tool keeps the
+pixel dimensions unchanged. Reduce them with the <a href="/resize-image">Resize Image tool</a>, or
+compress the original at a lower resolution, then compare.
+</p>
+
+<h3>The ZIP has fewer photos than you uploaded</h3>
+
+<p>
+Files that are not JPG or JPEG, and files that cannot be read as an image, are skipped without a
+warning. The result page lists every photo that was processed, so count the rows against what you
+selected. If nothing in the upload is usable, the tool stops with "No valid JPG
+files were uploaded."
+</p>
+
+<h3>Two photos share a file name</h3>
+
+<p>
+The ZIP keeps each photo under its original name, so two files called IMG_0001.jpg from different
+folders end up as two entries with the same name inside the archive. We tested this and the ZIP did hold
+both under one name, so extracting it can overwrite one with the other. Rename one before uploading, or
+use the individual download links on the result page instead of the ZIP.
+</p>
+
+<h3>A file name lost its accents or came back as "jpg"</h3>
+
+<p>
+File names are cleaned for safe storage. In our test, "été.jpg" came back as "ete.jpg", and a name made
+entirely of Chinese characters came back as just "jpg", with no extension. The picture itself is fine.
+Rename the file with Latin letters and digits before uploading to keep a meaningful name, or rename it
+after download.
+</p>
+
+<h3>One very large photo stops the whole batch</h3>
+
+<p>
+A photo that exceeds the tool's size limit in pixels is not skipped. The tool returns an error and
+produces no ZIP, even if the other photos were fine. The <a href="/compress-jpg">tool page</a> states the
+limit. Take the oversized photo out, run the rest, and handle the large one separately.
+</p>
+
+<h2>Frequently Asked Questions</h2>
+
+<h3>Does compressing make my photo smaller in pixels?</h3>
+<p>No. The pixel dimensions stay exactly as they were; only the way the picture is stored changes. If an upload form limits width and height as well as file size, <a href="/resize-image">resize the photo</a> instead.</p>
+
+<h3>Can I run a file through again to shrink it further?</h3>
+<p>Not usefully. Each pass re-encodes the picture, and in a quick check on one synthetic test image, passes after the first changed the size only marginally. Go back to the original and pick a stronger level instead of stacking passes. We have not measured this on real photos, so treat it as a rule of thumb.</p>
+
+<h3>Why might colours look slightly different afterwards?</h3>
+<p>The tool does not copy the original's embedded colour profile into the compressed file. We confirmed the profile is gone but have not measured how visible the change is, and it depends on the viewer and the original profile. If colour accuracy matters, compare the result against the original before you rely on it.</p>
+
+<h3>Are .jpeg and .JPG files accepted too?</h3>
+<p>Yes. The extension check ignores capital letters and accepts both .jpg and .jpeg.</p>
+
 <h2>Related Tools</h2>
 
 <ul>
@@ -91,6 +152,12 @@ Click "Compress JPG." When it's done, you'll see the total space saved along wit
 {% endblock %}
 
 {% block jsonld %}
-{% from "components/jsonld.html" import howto %}
+{% from "components/jsonld.html" import howto, faqpage %}
 {{ howto(self.title(), self.description(), request.path, ["Open the Compress JPG Tool", "Select Your Photos", "Choose a Compression Level", "Download Your Compressed Photos"]) }}
+{{ faqpage([
+  {"q": "Does compressing make my photo smaller in pixels?", "a": "No. The pixel dimensions stay exactly as they were; only the way the picture is stored changes. If an upload form limits width and height as well as file size, resize the photo instead."},
+  {"q": "Can I run a file through again to shrink it further?", "a": "Not usefully. Each pass re-encodes the picture, and in a quick check on one synthetic test image, passes after the first changed the size only marginally. Go back to the original and pick a stronger level instead of stacking passes. We have not measured this on real photos, so treat it as a rule of thumb."},
+  {"q": "Why might colours look slightly different afterwards?", "a": "The tool does not copy the original's embedded colour profile into the compressed file. We confirmed the profile is gone but have not measured how visible the change is, and it depends on the viewer and the original profile. If colour accuracy matters, compare the result against the original before you rely on it."},
+  {"q": "Are .jpeg and .JPG files accepted too?", "a": "Yes. The extension check ignores capital letters and accepts both .jpg and .jpeg."}
+]) }}
 {% endblock %}

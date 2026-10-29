@@ -46,7 +46,7 @@ The tool supports multi-page PDFs and processes up to 20 pages per upload.
 <h2>Step 3 – Download the WebP Images</h2>
 
 <p>
-After conversion, a gallery shows all the converted images. Download individual images or all of them together. Each image is named by its page number for easy identification.
+After conversion, a gallery shows all the converted images. Download each image from the list on the results page; there is no ZIP for WebP. Each image is named by its page number for easy identification.
 </p>
 
 <h2>Why Choose WebP Over JPG or PNG?</h2>
@@ -69,6 +69,57 @@ After conversion, a gallery shows all the converted images. Download individual 
 
 <p><strong>E-commerce product images:</strong> Product sheets and specification PDFs can be converted to WebP for fast-loading product pages.</p>
 
+<h2>When Converting to WebP Doesn't Work Out</h2>
+
+<h3>You expected a ZIP and got a list of separate downloads</h3>
+
+<p>
+The WebP result page gives one download link per page and no ZIP file, which is different from
+<a href="/pdf-to-jpg">PDF to JPG</a>. With a 20-page file that means 20 separate downloads. If you
+would rather have one archive and do not need WebP specifically, the JPG tool is the quicker route.
+</p>
+
+<h3>A form or program says the image format is not supported</h3>
+
+<p>
+Some upload forms, older image editors and office programs accept only JPG or PNG. The file is fine; the
+receiving side does not read WebP. Convert with <a href="/pdf-to-jpg">PDF to JPG</a> or
+<a href="/pdf-to-png">PDF to PNG</a> instead, and check what formats the destination takes before you
+convert a whole document.
+</p>
+
+<h3>The WebP files are not much smaller than JPGs would have been</h3>
+
+<p>
+How much smaller WebP gets depends on the page. Photo-heavy pages and plain text pages respond
+differently, and we have not measured this tool's WebP output against its JPG output. The two tools also
+save at different quality settings, so a size comparison between them mixes two variables. Convert one
+representative page both ways and compare the files before you choose a format for a whole site.
+</p>
+
+<h3>Text looks smudged or slightly blocky</h3>
+
+<p>
+WebP at this quality is lossy, and dense small text is where compression shows first. If the text is
+the point of the page, <a href="/pdf-to-png">PDF to PNG</a> is lossless and keeps the edges exactly.
+</p>
+
+<h3>The words and links in the page can't be used any more</h3>
+
+<p>
+Each page is turned into a picture, so text can no longer be selected or searched and links no longer
+click. For a web page that must stay readable to search engines, put the text in the page itself and use
+the image as illustration.
+</p>
+
+<h3>A page late in the document is missing</h3>
+
+<p>
+Pages after the twentieth are not converted, and the result page says how many of the total were done.
+To get a later page, cut it out with <a href="/split-pdf">Split PDF</a> first and convert the smaller
+file.
+</p>
+
 <h2>Frequently Asked Questions</h2>
 
 <h3>Is WebP supported everywhere?</h3>
@@ -80,6 +131,12 @@ WebP is supported by all modern web browsers. For maximum compatibility with old
 <p>
 You'll need to <a href="/unlock-pdf">remove the password</a> before converting.
 </p>
+
+<h3>Do the converted pages have a transparent background?</h3>
+<p>No. Pages are drawn onto a plain image with no transparency, so anything that was see-through in the PDF appears as it does on screen against white. If you need real transparency, WebP from this tool is not the route.</p>
+
+<h3>Are the images the same size as the ones from PDF to JPG?</h3>
+<p>Yes. Both tools render each page at twice its own size, so the pixel dimensions match. What differs is the format and the quality setting, and therefore the file size.</p>
 
 <h2>Related Tools</h2>
 
@@ -96,5 +153,7 @@ You'll need to <a href="/unlock-pdf">remove the password</a> before converting.
 
 {% block jsonld %}{% from "components/jsonld.html" import howto, faqpage %}{{ howto(self.title(), self.description(), request.path, ["Open the PDF to WebP Tool", "Upload Your PDF", "Download the WebP Images"]) }}{{ faqpage([
   {"q": "Is WebP supported everywhere?", "a": "WebP is supported by all modern web browsers. For maximum compatibility with older devices, desktop applications, and non-web uses, JPG or PNG may be preferable. For websites and web apps, WebP is the best choice."},
-  {"q": "Can I convert a password-protected PDF?", "a": "You'll need to remove the password before converting."}
+  {"q": "Can I convert a password-protected PDF?", "a": "You'll need to remove the password before converting."},
+  {"q": "Do the converted pages have a transparent background?", "a": "No. Pages are drawn onto a plain image with no transparency, so anything that was see-through in the PDF appears as it does on screen against white. If you need real transparency, WebP from this tool is not the route."},
+  {"q": "Are the images the same size as the ones from PDF to JPG?", "a": "Yes. Both tools render each page at twice its own size, so the pixel dimensions match. What differs is the format and the quality setting, and therefore the file size."}
 ]) }}{% endblock %}

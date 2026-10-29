@@ -85,6 +85,57 @@ Click the download button to save your compressed PDF to your device. The file w
 
 <p><strong>Faster sharing:</strong> Smaller files transfer more quickly over messaging apps, cloud links, and download links.</p>
 
+<h2>When Compression Doesn't Go as Planned</h2>
+
+<h3>You set a target size and got "couldn't get under"</h3>
+
+<p>
+With a target size, the tool tries the four levels in order, from Low to Extreme, and stops at the first
+one that gets under your number. If even Extreme is not enough, it gives you the Extreme result anyway
+and says it could not reach the target. That is the end of what quality settings can do for the file. The
+result page suggests splitting the document into parts. <a href="/split-pdf">Split PDF</a> does that, and
+each part can be compressed on its own. A document with a hard limit on total size, such as a single
+upload field, may need a different approach, such as removing pages you do not need with
+<a href="/delete-pdf-pages">Delete PDF Pages</a>.
+</p>
+
+<h3>Everything went grey, including the coloured shapes</h3>
+
+<p>
+Extreme converts the whole document to greyscale, not only its photos. In our test a solid red
+rectangle drawn in the PDF came out grey. Charts and other coloured drawings lose their colour too, so a
+legend that says "the red line" stops making sense. If colour carries meaning, use High
+instead, which keeps colour but lowers the image resolution.
+</p>
+
+<h3>The download is gone when you come back</h3>
+
+<p>
+The compressed file is kept for about ten minutes after you upload and the original for about five. If
+you leave the processing page and return later, the download link answers "File not ready" and you need
+to run the file again. The result page's before-and-after sizes also need the original to still be on the
+server, so after the five minutes they show a dash.
+</p>
+
+<h3>"We couldn't compress this PDF"</h3>
+
+<p>
+The message names two causes: a damaged file or a password-protected one. Open the PDF in a viewer to
+tell which. If the viewer asks for a password, remove it with <a href="/unlock-pdf">Unlock PDF</a> and
+compress the unlocked copy. If it will not open there either, the file is damaged and you need a fresh
+copy from whoever made it. If it opens normally and still fails, the message does not tell us why, so we
+cannot say more from here.
+</p>
+
+<h3>Bookmarks, links and searchable text after compressing</h3>
+
+<p>
+They survive. In our test a three-page PDF with a table of contents, a title, author and clickable web
+links came out of Medium and of Extreme with all of them intact, and the text was still searchable. That
+makes compression the safer choice than some other tools on this site when the document's navigation
+matters. Rotating and watermarking, by comparison, lost the bookmarks in the same kind of test.
+</p>
+
 <h2>Frequently Asked Questions</h2>
 
 <h3>Will compressing a PDF damage or corrupt my document?</h3>
@@ -96,6 +147,12 @@ No. Compression works by removing redundant data and downsampling images. Your t
 <p>
 This happens when the PDF has already been heavily optimised, or when it contains mostly text with no images. In this case, the original file is already as small as it can be.
 </p>
+
+<h3>Can I compress a PDF that I have already compressed?</h3>
+<p>You can, but a second pass at the same level is unlikely to help much, since the first pass already did the work. We have not measured this. If the first result is still too large, go back to the original file and choose a stronger level, or use a target size.</p>
+
+<h3>Should I compress before or after merging several PDFs?</h3>
+<p>In most cases after. Compressing the merged file once covers everything and gives you a single before-and-after figure to judge.</p>
 
 <h2>Related Tools</h2>
 
@@ -113,5 +170,7 @@ This happens when the PDF has already been heavily optimised, or when it contain
 
 {% block jsonld %}{% from "components/jsonld.html" import howto, faqpage %}{{ howto(self.title(), self.description(), request.path, ["Open the Compress PDF Tool", "Choose Your Compression Level", "Download Your Compressed PDF"]) }}{{ faqpage([
   {"q": "Will compressing a PDF damage or corrupt my document?", "a": "No. Compression works by removing redundant data and downsampling images. Your text, layout, and structure remain intact. The document will still open in any PDF reader."},
-  {"q": "What if the compressed file is the same size as the original?", "a": "This happens when the PDF has already been heavily optimised, or when it contains mostly text with no images. In this case, the original file is already as small as it can be."}
+  {"q": "What if the compressed file is the same size as the original?", "a": "This happens when the PDF has already been heavily optimised, or when it contains mostly text with no images. In this case, the original file is already as small as it can be."},
+  {"q": "Can I compress a PDF that I have already compressed?", "a": "You can, but a second pass at the same level is unlikely to help much, since the first pass already did the work. We have not measured this. If the first result is still too large, go back to the original file and choose a stronger level, or use a target size."},
+  {"q": "Should I compress before or after merging several PDFs?", "a": "In most cases after. Compressing the merged file once covers everything and gives you a single before-and-after figure to judge."}
 ]) }}{% endblock %}
