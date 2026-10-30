@@ -75,5 +75,25 @@ check("distinct names are left untouched", names == ["a.jpg", "b.jpg"])
 page, z, names = run([(jpg(RED), "x.jpg"), (io.BytesIO(b"not an image"), "x.jpg"), (jpg(GREEN), "x.jpg")])
 check("an unreadable duplicate does not use up a number", names == ["x.jpg", "x (2).jpg"])
 
+# Non-Latin names used to be reduced to the bare extension ("照片.jpg" -> "jpg").
+page, z, names = run([(jpg(RED), "照片.jpg"), (jpg(GREEN), "фото.JPEG"), (jpg(BLUE), "日本語 のファイル.jpg")])
+check("Chinese name is kept", "照片.jpg" in names)
+check("Cyrillic name is kept, with its extension", "фото.jpeg" in names)
+check("spaces in a Japanese name become underscores", "日本語_のファイル.jpg" in names)
+check("every non-Latin entry ends in .jpg/.jpeg", all(n.lower().endswith((".jpg", ".jpeg")) for n in names))
+check("non-Latin names appear on the result page", "照片.jpg" in page and "фото.jpeg" in page)
+check("each non-Latin entry holds its own photo",
+      [max(range(3), key=lambda i: dominant(z, n)[i]) for n in ["照片.jpg", "фото.jpeg", "日本語_のファイル.jpg"]] == [0, 1, 2])
+link = re.search(r'href="(/download-file/[^"]+)"', page)
+check("per-file download link still works", link is not None and client.get(link.group(1)).status_code == 200)
+
+page, z, names = run([(jpg(RED), "照片.jpg"), (jpg(GREEN), "照片.jpg")])
+check("duplicate non-Latin names get a counter", names == ["照片.jpg", "照片 (2).jpg"])
+
+page, z, names = run([(jpg(RED), "../../evil/..\\x.jpg"), (jpg(GREEN), "///.jpg")])
+check("path separators never reach the ZIP entry name",
+      all("/" not in n and "\\" not in n and not n.startswith(".") for n in names))
+check("a name with nothing usable falls back to image.jpg", "image.jpg" in names)
+
 print(f"\n{'FAILED: ' + str(len(failures)) if failures else 'All checks passed.'}")
 sys.exit(1 if failures else 0)

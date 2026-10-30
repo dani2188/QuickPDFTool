@@ -106,13 +106,13 @@ the second one becomes IMG_0001 (2).jpg, the third IMG_0001 (3).jpg, and the res
 names. Names that differ only in capital letters count as the same name.
 </p>
 
-<h3>A file name lost its accents or came back as "jpg"</h3>
+<h3>A file name looks different in the ZIP</h3>
 
 <p>
-File names are cleaned for safe storage. In our test, "été.jpg" came back as "ete.jpg", and a name made
-entirely of Chinese characters came back as just "jpg", with no extension. The picture itself is fine.
-Rename the file with Latin letters and digits before uploading to keep a meaningful name, or rename it
-after download.
+Letters and digits of any alphabet are kept, so "été.jpg", "фото.jpeg" and "照片.jpg" come back under
+their own names. In our test, spaces and brackets became underscores ("IMG (2).jpg" came back as
+"IMG_2.jpg"), folder parts of a path were dropped, and a name with nothing usable in it became
+"image.jpg". The extension is always .jpg or .jpeg.
 </p>
 
 <h3>One very large photo stops the whole batch</h3>
