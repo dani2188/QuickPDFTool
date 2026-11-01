@@ -18,7 +18,7 @@ A single-process **Flask** web application, branded **hellobrivio** (one lowerca
 | Office conversion | `LibreOffice` (via `subprocess`, headless `--convert-to`) |
 | PDF compression | `Ghostscript` (via `subprocess`, `gswin64c`/`gs`) |
 | Spreadsheet conversion | `pandas`, `openpyxl` |
-| External API | `requests` → remove.bg (background removal only; key via `REMOVE_BG_API_KEY` env var) |
+| Background removal | rembg + u2netp (local, onnxruntime CPU); optional fallback: `requests` → remove.bg API (`BACKGROUND_REMOVER=removebg`, key via `REMOVE_BG_API_KEY`) |
 | Deployment target | Render.com (`render.yaml`), Gunicorn (`Procfile`) |
 
 ## 3. Code layout
@@ -77,7 +77,7 @@ Two tool families depend on binaries **not installed via pip** — they must exi
 
 `render.yaml` installs both (plus `poppler-utils`) via `apt-get` in the Render build step. **Locally there is no equivalent setup script** — these must be installed manually on the dev machine, or the compress/word-to-pdf routes will fail (a missing Ghostscript makes compress-pdf show "temporarily unavailable" on the processing page; a missing LibreOffice makes word-to-pdf return a 503 page).
 
-**One route depends on a third-party HTTP API rather than a local binary**: `remove-background` proxies the upload to the remove.bg API server-side, reading the key from the `REMOVE_BG_API_KEY` environment variable (never exposed to the client — the previous standalone image-tools site had this key hardcoded in client-side JS, which is why it was rebuilt as a server-side proxy). If the env var isn't set, the route returns a `503` with a clear message rather than crashing. This is the only tool with a per-request cost and an external service dependency outside this deployment's control; remove.bg's free tier is non-commercial-use-only, so a paid/commercial plan is required for this to run legitimately on an ad-monetized site.
+**`remove-background` runs a local model by default**: rembg with the small u2netp ONNX model, loaded once per process on first use (the 4.6 MB model file is downloaded to `~/.u2net` on the first request, so that request needs network access to GitHub). The onnxruntime session is built in `app.py` with the CPU memory arena off, because with the default the process grew to ~550 MB after two requests; measured peaks are in `scripts/measure_background_removal.py` (about 390 MB at 0.5 MP, 440 MB at 6 MP). The model segments a copy capped at `BACKGROUND_SEGMENTATION_MAX_DIM` (1280 px, longest side); its mask is scaled up and applied to the full-size original, so the PNG keeps the upload's resolution. That cap barely changes memory (the model only sees 320 x 320 whatever it is given; memory grows with the full-size output), so uploads are still limited to `MAX_BACKGROUND_MEGAPIXELS` (6). Background removal, Ghostscript (Compress PDF) and LibreOffice (Word to PDF) share one `HEAVY_JOB_LOCK` and run one at a time; a request that waits more than 120 s gets a 503 "server is busy" page. `scripts/fetch_background_model.py` downloads the model into `.u2net/` during the Render build, and `BACKGROUND_WARMUP=1` (set in `render.yaml`) loads it at start-up. The previous engine is kept behind `BACKGROUND_REMOVER=removebg`: it proxies the upload to the remove.bg API server-side, reading the key from `REMOVE_BG_API_KEY` (503 if missing). In that mode the tool has a per-request cost and an external dependency, and remove.bg's free tier is non-commercial-use-only, so a paid/commercial plan is required on an ad-monetized site.
 
 ## 7. Deployment
 
@@ -90,7 +90,9 @@ Two tool families depend on binaries **not installed via pip** — they must exi
 | Variable | Purpose |
 |---|---|
 | `PORT` | Port for `python app.py` (default 10000); Gunicorn gets its port from `--bind` |
-| `REMOVE_BG_API_KEY` | remove.bg key for `/remove-background` (503 if missing) |
+| `BACKGROUND_REMOVER` | `local` (default, rembg/u2netp) or `removebg` (API fallback) for `/remove-background` |
+| `MAX_BACKGROUND_MEGAPIXELS` | pixel limit for local background removal (default 6) |
+| `REMOVE_BG_API_KEY` | remove.bg key, only used when `BACKGROUND_REMOVER=removebg` (503 if missing) |
 | `MAX_IMAGE_MEGAPIXELS` (30), `MAX_PDF_RENDER_MEGAPIXELS` (30), `MAX_WORD_IMAGE_MEGAPIXELS` (20) | Memory limits, see §8 |
 | `HEALTH_CHECK_PATH` | Optional: a health-check path set in the Render dashboard, never redirected by the canonical-host hook |
 

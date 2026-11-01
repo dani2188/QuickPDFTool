@@ -151,49 +151,51 @@ especially for a high-stakes final image.
 <h2>What hellobrivio Actually Does</h2>
 
 <p>
-hellobrivio's <a href="/remove-background">Remove Background</a> tool doesn't run its own segmentation —
-the uploaded image is sent as-is to <a href="https://www.remove.bg/api">remove.bg's public API</a>
-(<code>POST /v1.0/removebg</code>), which does the actual foreground/background detection. hellobrivio
-sends only one parameter beyond the image itself — <code>size=auto</code> — and performs no cropping,
-resizing, or re-encoding before the upload. Whatever comes back is written to disk unmodified and handed
-back as a PNG with transparency; hellobrivio doesn't composite it onto a background, adjust the edges, or
-otherwise touch the result.
+hellobrivio's <a href="/remove-background">Remove Background</a> tool runs its own segmentation on our
+server, with an open-source model (u2netp, run through the rembg library). Your image is not sent to
+another company. The model looks at a copy of the photo reduced to at most 1280 pixels on its longest
+side and produces a mask: for every pixel, how likely it is to belong to the main subject. That mask is
+scaled up to the size of your original photo and used as its transparency, so the PNG you download has
+the same pixel dimensions as the photo you uploaded and its colours are untouched. hellobrivio does not
+composite the result onto a background or retouch the edges.
 </p>
 
 <p>
-A few constraints come directly from remove.bg's own public API documentation, not from hellobrivio:
+We chose the smallest model of that family (about 4.6 MB) because it is fast and light enough to run on a
+small server, and that choice shows at the edges. In our test of seven photos it matched a model about
+forty times larger on animals and a product shot on plain backgrounds, and fell short on a dark subject
+against a dark background, on a rose's thin stem and on a glass.
+</p>
+
+<p>
+Two limits come from running it on a small server:
 </p>
 
 <div class="table-wrap">
 <table class="data-table">
   <thead>
     <tr>
-      <th>Constraint</th>
-      <th>Documented by remove.bg</th>
+      <th>Limit</th>
+      <th>Value</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td>Request size limit</td>
-      <td>12 MB per image — tighter than hellobrivio's own 20 MB upload cap</td>
+      <td>File size</td>
+      <td>20 MB, the same cap as every hellobrivio tool</td>
     </tr>
     <tr>
-      <td><code>size=auto</code> (what hellobrivio requests)</td>
-      <td>Capped at 25 megapixels, kept for backwards compatibility</td>
-    </tr>
-    <tr>
-      <td>PNG output</td>
-      <td>Limited to 10 megapixels regardless of size setting</td>
+      <td>Picture size</td>
+      <td>{{ max_background_megapixels }} megapixels; larger pictures are refused with a message rather than shrunk</td>
     </tr>
   </tbody>
 </table>
 </div>
 
 <p>
-The practical takeaway is the first row: a file between 12MB and hellobrivio's 20MB limit will upload
-successfully but then fail at the remove.bg step, coming back as the tool's generic "could not remove the
-background" error — not because the image content was a problem, but because of this specific size
-mismatch between the two limits.
+A 12-megapixel phone photo is therefore over the picture-size limit. Reducing it first in your phone's or
+computer's photo editor is the fix. The downloaded PNG then has the smaller size too, since it always
+matches the photo you upload.
 </p>
 
 <h2>Related Tools</h2>

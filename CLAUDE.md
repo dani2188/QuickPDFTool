@@ -49,7 +49,7 @@ The standing rule for UI/docs/architecture work: **preserve all existing tool fu
 - Use the project-local venv: `.venv\Scripts\Activate.ps1` (Windows) then `python app.py` → http://localhost:10000.
 - Deps: `pip install -r requirements.txt` — unpinned except `reportlab<4.4.3` (4.4.3+ breaks on Python 3.8, see ARCHITECTURE.md §9). Python 3.8 currently.
 - **System binaries required and NOT pip-installable:** Ghostscript (`gswin64c`/`gs`, all `compress-pdf*` tools) and LibreOffice (`soffice`, `word-to-pdf`). If a compress/convert route "does nothing", check these are installed.
-- **`remove-background` needs `REMOVE_BG_API_KEY`** set in the environment (a remove.bg API key) or it returns a 503 with a clear message — this is expected locally unless you've set it.
+- **`remove-background` runs locally** with rembg + the u2netp model (`BACKGROUND_REMOVER=local`, the default; no key needed). The model file (4.6 MB) lives in `.u2net/` (gitignored); `scripts/fetch_background_model.py` fetches it, and rembg falls back to downloading it on first use. Set `BACKGROUND_REMOVER=removebg` plus `REMOVE_BG_API_KEY` to use the remove.bg API instead (503 without a key). Inputs over `MAX_BACKGROUND_MEGAPIXELS` (6) are rejected; see `scripts/measure_background_removal.py` for memory and time.
 
 ---
 

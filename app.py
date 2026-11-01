@@ -115,13 +115,18 @@ def _megapixels_from_env(name, default):
 MAX_IMAGE_MEGAPIXELS = _megapixels_from_env("MAX_IMAGE_MEGAPIXELS", 30)        # photos we fully decode
 MAX_PDF_RENDER_MEGAPIXELS = _megapixels_from_env("MAX_PDF_RENDER_MEGAPIXELS", 30)  # one rendered PDF page
 MAX_WORD_IMAGE_MEGAPIXELS = _megapixels_from_env("MAX_WORD_IMAGE_MEGAPIXELS", 20)  # all page images in a PDF -> Word
+# Local background removal needs ~250 MB for the model plus roughly 10 MB per megapixel on top of the app
+# (scripts/measure_background_removal.py: peak 390 MB at 0.5 MP, 440 MB at 6 MP, 640 MB at 30 MP on Windows),
+# so its limit is tighter than the shared one above.
+MAX_BACKGROUND_MEGAPIXELS = _megapixels_from_env("MAX_BACKGROUND_MEGAPIXELS", 6)
 
 
 @app.context_processor
 def limits_context():
     """The enforced limits, for the templates that state them."""
     return {"max_image_megapixels": int(MAX_IMAGE_MEGAPIXELS),
-            "max_word_image_megapixels": int(MAX_WORD_IMAGE_MEGAPIXELS)}
+            "max_word_image_megapixels": int(MAX_WORD_IMAGE_MEGAPIXELS),
+            "max_background_megapixels": int(MAX_BACKGROUND_MEGAPIXELS)}
 
 
 # Per-tool social preview images, made by scripts/make_og_images.py: static/img/og/<route-slug>.png.
@@ -136,13 +141,14 @@ def og_image_context():
     return {"og_tool_image": f"https://hellobrivio.com/static/img/og/{slug}.png" if slug in OG_IMAGE_SLUGS else None}
 
 
-def image_too_large_message(name, width, height):
-    """None if a width x height image is within MAX_IMAGE_MEGAPIXELS, else a user-facing error."""
+def image_too_large_message(name, width, height, limit=None):
+    """None if a width x height image is within `limit` (default MAX_IMAGE_MEGAPIXELS), else a user-facing error."""
+    limit = MAX_IMAGE_MEGAPIXELS if limit is None else limit
     megapixels = width * height / 1_000_000
-    if megapixels <= MAX_IMAGE_MEGAPIXELS:
+    if megapixels <= limit:
         return None
     return (f"\"{name}\" is about {megapixels:.0f} megapixels ({width} \u00d7 {height} px), more than the "
-            f"{MAX_IMAGE_MEGAPIXELS:.0f}-megapixel limit for this tool. Please make the picture smaller first, "
+            f"{limit:.0f}-megapixel limit for this tool. Please make the picture smaller first, "
             f"for example by resizing it in your phone's or computer's photo editor, and try again.")
 
 
@@ -572,6 +578,35 @@ JPG_COMPRESSION_QUALITY = {
 }
 
 
+# Ghostscript (Compress PDF), LibreOffice (Word to PDF) and the background-removal model each need
+# a few hundred MB, and the instance has 512 MB. They take turns: only one of them runs at a time
+# in this process (gunicorn runs one worker). Compress PDF runs in a thread after its request has
+# returned, so without this it could overlap with another request's heavy job.
+HEAVY_JOB_LOCK = threading.Lock()
+HEAVY_JOB_WAIT = 120  # seconds a request waits for its turn before telling the visitor we're busy
+
+
+class ServerBusy(Exception):
+    pass
+
+
+class heavy_job:
+    """Context manager: wait up to `timeout` seconds for the heavy-job lock, else raise ServerBusy."""
+
+    def __init__(self, timeout=None):
+        self.timeout = HEAVY_JOB_WAIT if timeout is None else timeout
+
+    def __enter__(self):
+        if not HEAVY_JOB_LOCK.acquire(timeout=self.timeout):
+            raise ServerBusy()
+
+    def __exit__(self, *exc):
+        HEAVY_JOB_LOCK.release()
+
+
+BUSY_MESSAGE = "The server is busy with other files right now. Please try again in a minute."
+
+
 def _run_ghostscript(extra_flags, input_path, temp_output):
     gs_command = "gswin64c" if platform.system() == "Windows" else "gs"
 
@@ -588,7 +623,8 @@ def _run_ghostscript(extra_flags, input_path, temp_output):
     ]
 
     command = base_flags + extra_flags + [f"-sOutputFile={temp_output}", input_path]
-    subprocess.run(command, check=True)
+    with HEAVY_JOB_LOCK:
+        subprocess.run(command, check=True)
 
 
 def compress_pdf(input_path, output_path, level="medium", target_size=None, email_opt=False):
@@ -1155,15 +1191,18 @@ def word_to_pdf():
         office_command = "soffice" if platform.system() == "Windows" else "libreoffice"
 
         try:
-            result = subprocess.run([
-                office_command,
-                "--headless",
-                "--convert-to",
-                "pdf",
-                input_path,
-                "--outdir",
-                UPLOAD_FOLDER
-            ])
+            with heavy_job():
+                result = subprocess.run([
+                    office_command,
+                    "--headless",
+                    "--convert-to",
+                    "pdf",
+                    input_path,
+                    "--outdir",
+                    UPLOAD_FOLDER
+                ])
+        except ServerBusy:
+            return error_page(BUSY_MESSAGE, 503)
         except OSError:
             return error_page("Word conversion is temporarily unavailable. Please try again later.", 503)
 
@@ -1668,6 +1707,90 @@ def resize_image_guide():
     return render_template("resize_image_guide.html")
 
 
+# Background removal engine, chosen by the BACKGROUND_REMOVER environment variable:
+#   "local"    (default) rembg with the small u2netp model, run inside this process: free, no key,
+#              nothing leaves the server, lower quality than remove.bg on hair and fine detail.
+#   "removebg" the remove.bg API (needs REMOVE_BG_API_KEY); kept as the fallback.
+BACKGROUND_REMOVER = os.environ.get("BACKGROUND_REMOVER", "local").strip().lower()
+BACKGROUND_MODEL = "u2netp"
+# Keep the model file inside the project folder, so the one fetched at build time
+# (scripts/fetch_background_model.py) is the one used at run time.
+os.environ.setdefault("U2NET_HOME", os.path.join(os.path.dirname(os.path.abspath(__file__)), ".u2net"))
+# The model looks at a 320 x 320 picture whatever it is given, so the longest side of the copy it
+# segments is capped here (1280 keeps 4x that detail, and ~1.2 MP for a 4:3 photo). The mask is then
+# scaled up to the photo's real size and applied to the untouched original. Raise it (env var) if the
+# plan gets more RAM; it only changes how much work the copy costs, never the size of the result.
+BACKGROUND_SEGMENTATION_MAX_DIM = int(_megapixels_from_env("BACKGROUND_SEGMENTATION_MAX_DIM", 1280))
+_background_session = {}
+_background_lock = threading.Lock()  # guards creating the shared session only
+
+
+def _background_model():
+    """The shared rembg session, created on first use (importing rembg and reading the model is
+    slow and costs memory, so a server that never removes a background never pays for it)."""
+    with _background_lock:
+        if "session" not in _background_session:
+            import onnxruntime
+            from rembg.sessions.u2netp import U2netpSession
+            # rembg's new_session() gives no way to change these. With onnxruntime's default CPU
+            # memory arena the process grew to ~550 MB after two requests and never gave it back;
+            # without it, it settles near 100 MB (measured with scripts/measure_background_removal.py).
+            options = onnxruntime.SessionOptions()
+            options.enable_cpu_mem_arena = False
+            options.enable_mem_pattern = False
+            # Basic graph optimisation lowers the model's own working memory by ~75 MB (316 -> 242 MB
+            # peak) at the same speed; the extended levels are what allocate the extra buffers.
+            options.graph_optimization_level = onnxruntime.GraphOptimizationLevel.ORT_ENABLE_BASIC
+            threads = int(os.environ.get("OMP_NUM_THREADS", min(2, os.cpu_count() or 1)))
+            options.intra_op_num_threads = options.inter_op_num_threads = threads
+            _background_session["session"] = U2netpSession(BACKGROUND_MODEL, options, ["CPUExecutionProvider"])
+        return _background_session["session"]
+
+
+def _warm_up_background_model():
+    try:
+        _background_model()
+    except Exception as e:  # noqa: BLE001  (the first request will try again and report the error)
+        print("Background model warm-up failed:", e)
+
+
+# Importing rembg and loading the model took ~8 s of the first request after every restart. With
+# BACKGROUND_WARMUP=1 (set in render.yaml) that happens in a thread at start-up instead. It costs the
+# same ~115 MB the first request would have, just earlier. Off by default so tests and scripts stay light.
+if BACKGROUND_REMOVER == "local" and os.environ.get("BACKGROUND_WARMUP") == "1":
+    threading.Thread(target=_warm_up_background_model, daemon=True).start()
+
+
+def remove_background_local(input_path, output_path):
+    """Cut the background out of `input_path` with rembg/u2netp and save a transparent PNG.
+
+    The mask comes from a downscaled copy (BACKGROUND_SEGMENTATION_MAX_DIM) and is applied to the
+    full-size original as its alpha channel, so the PNG has the photo's own resolution. Asking the
+    rembg session for the mask directly, instead of rembg.remove(), avoids its extra full-size copies.
+    Waits for the shared heavy-job lock (raises ServerBusy if it has to wait too long).
+    """
+    session = _background_model()
+    with heavy_job():
+        with Image.open(input_path) as src:
+            photo = ImageOps.exif_transpose(src).convert("RGBA")
+        width, height = photo.size
+        longest = max(width, height)
+        if longest > BACKGROUND_SEGMENTATION_MAX_DIM:
+            scale = BACKGROUND_SEGMENTATION_MAX_DIM / longest
+            small = photo.resize((max(1, round(width * scale)), max(1, round(height * scale))),
+                                 Image.BILINEAR, reducing_gap=2.0).convert("RGB")
+        else:
+            small = photo.convert("RGB")
+        mask = session.predict(small)[0]
+        small.close()
+        if mask.size != photo.size:
+            mask = mask.resize(photo.size, Image.BILINEAR)
+        photo.putalpha(mask)
+        mask.close()
+        photo.save(output_path, "PNG")
+        photo.close()
+
+
 @app.route("/remove-background", methods=["GET", "POST"])
 def remove_background():
 
@@ -1678,8 +1801,9 @@ def remove_background():
         if not file or not file.filename:
             return error_page("No file selected. Please choose a file and try again.")
 
+        use_api = BACKGROUND_REMOVER == "removebg"
         api_key = os.environ.get("REMOVE_BG_API_KEY")
-        if not api_key:
+        if use_api and not api_key:
             return error_page(
                 "Background removal isn't configured on this server yet "
                 "(missing REMOVE_BG_API_KEY).",
@@ -1691,26 +1815,46 @@ def remove_background():
         file.save(input_path)
         delete_file_later(input_path, delay=60)
 
-        try:
-            with open(input_path, "rb") as f:
-                response = requests.post(
-                    "https://api.remove.bg/v1.0/removebg",
-                    files={"image_file": f},
-                    data={"size": "auto"},
-                    headers={"X-Api-Key": api_key},
-                    timeout=60,
-                )
-        except requests.RequestException:
-            return error_page("Could not reach the background removal service. Please try again.", 502)
-
-        if response.status_code != 200:
-            return error_page("Could not remove the background from that image. Please try a different file.")
-
         output_name = f"{uuid.uuid4()}_no_bg.png"
         output_path = os.path.join(UPLOAD_FOLDER, output_name)
 
-        with open(output_path, "wb") as f:
-            f.write(response.content)
+        if use_api:
+            try:
+                with open(input_path, "rb") as f:
+                    response = requests.post(
+                        "https://api.remove.bg/v1.0/removebg",
+                        files={"image_file": f},
+                        data={"size": "auto"},
+                        headers={"X-Api-Key": api_key},
+                        timeout=60,
+                    )
+            except requests.RequestException:
+                return error_page("Could not reach the background removal service. Please try again.", 502)
+
+            if response.status_code != 200:
+                return error_page("Could not remove the background from that image. Please try a different file.")
+
+            with open(output_path, "wb") as f:
+                f.write(response.content)
+
+        else:
+            try:
+                with Image.open(input_path) as probe:
+                    too_big = image_too_large_message(input_name, probe.width, probe.height, MAX_BACKGROUND_MEGAPIXELS)
+            except Exception:
+                return error_page("That file doesn't look like a valid image. Please try a JPG, PNG or WebP.")
+            if too_big:
+                return error_page(too_big)
+
+            try:
+                remove_background_local(input_path, output_path)
+            except ServerBusy:
+                return error_page(BUSY_MESSAGE, 503)
+            except MemoryError:
+                return error_page("That image is too large to process right now. Please try a smaller one.", 503)
+            except Exception as e:
+                print("Background removal ERROR:", e)
+                return error_page("Could not remove the background from that image. Please try a different file.")
 
         delete_file_later(output_path)
 
