@@ -116,12 +116,24 @@ clearly. On a dark scan or a page filled with a photograph, it can fade into the
 result on the busiest page, not only the first one.
 </p>
 
-<h3>Cyrillic or Chinese letters turn into boxes</h3>
+<h3>Cyrillic, Greek or Chinese text looks different from the Latin one</h3>
 
 <p>
-The font only covers Latin letters. In our test, accented letters such as É and é and the € sign came
-out correctly, while Cyrillic and Chinese characters were drawn as solid boxes. We have not tested other
-scripts, so check the result before sending it if your watermark uses one.
+Western European text, including accented letters such as É and é and the € sign, is drawn in the
+standard font. Text that font cannot draw is drawn in a plain sans-serif font that also covers Cyrillic,
+Greek, Chinese, Japanese and Korean. In our test, Russian, Greek, Chinese, Japanese and Korean
+watermarks came out readable instead of as solid boxes. If a watermark mixes both kinds, such as
+"Draft 草稿", the whole text uses the second font, so it will not look like a Latin-only watermark. The
+text is drawn in one line from a fixed position, so long text in these scripts can still run past the
+right edge of a narrow page. Check the result before sending it.
+</p>
+
+<h3>The tool says some characters can't be drawn</h3>
+
+<p>
+Characters that neither font contains, such as emoji or Arabic letters in our test, are refused. You get
+a message that lists them and no file. Remove or replace those characters and try again. Nothing is
+produced half-finished.
 </p>
 
 <h3>Someone took the watermark off</h3>
@@ -133,11 +145,15 @@ it as a label, not as protection. If the document has to be locked, see <a href=
 PDF</a>.
 </p>
 
-<h3>The bookmarks and the document title are gone</h3>
+<h3>Check the bookmarks after watermarking</h3>
 
 <p>
-The output is a rebuilt file. In our test, a PDF with a table of contents and a title came back with
-neither, while the clickable web links on the pages survived. If your file relies on its outline, plan to recreate the bookmarks after watermarking.
+The output is a rebuilt file, but the title, author, subject, keywords and the bookmarks are copied
+across. In our test, a five-page PDF with nested bookmarks came back with the same titles, nesting and
+pages, and the same document information. Each bookmark opens its page at "fit page" zoom, so a
+bookmark that pointed to a spot lower down a page now opens at the top of it. A bookmark whose target
+cannot be read is left out rather than stopping the job, so with a damaged file, compare the outline
+before you send it.
 </p>
 
 <h2>Frequently Asked Questions</h2>

@@ -107,13 +107,15 @@ for one of those three. A scan that is a few degrees off needs deskewing in a sc
 application. This tool cannot straighten it.
 </p>
 
-<h3>Bookmarks and the document title disappeared</h3>
+<h3>Check the bookmarks after rotating</h3>
 
 <p>
-The result is written as a new file. In our test, a three-page PDF with a table of contents and a title
-and author came back with no bookmarks and without the title and author, while its clickable web links
-were still working on each page. If your file relies on a bookmarked outline, plan to recreate it after
-rotating.
+The result is written as a new file, but the title, author, subject, keywords and the bookmarks are
+copied across. In our test, a five-page PDF with nested bookmarks came back with the same titles,
+nesting and pages, and the same document information. Each bookmark opens its page at "fit page" zoom,
+so a bookmark that pointed to a spot lower down a page now opens at the top of it. A bookmark whose
+target cannot be read is left out rather than stopping the job, so with a damaged file, compare the
+outline before you send it.
 </p>
 
 <h2>Frequently Asked Questions</h2>
