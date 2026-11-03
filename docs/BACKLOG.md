@@ -711,7 +711,7 @@ out of scope — this fix only recognizes QuickTools' own watermark format.
 
 - **Area:** Validation
 - **Priority:** P2
-- **Status:** Open
+- **Status:** Done
 - **Discovered:** 2026-11-01, an end-to-end check posted `photo.jpg` to `/pdf-to-png` and expected a rejection but got HTTP 200
 - **Source:** `/pdf-to-png`, `/pdf-to-jpg`, `/pdf-to-webp` routes in `app.py`
 
@@ -720,3 +720,5 @@ out of scope — this fix only recognizes QuickTools' own watermark format.
 **Proposed improvement:** Reject non-PDF uploads on these routes with the same styled 400 used elsewhere (check the file's `%PDF` header or `doc.is_pdf`), and decide whether to point the user to JPG to PDF / Resize Image.
 
 **Notes:** Confirmed on HEAD without the Remove Background changes, so it predates them. Not fixed in the local-background-removal PR by request. The old end-to-end check `B2 /pdf-to-png {'pdf': 'photo.jpg'}` expects the rejection.
+
+**Resolved (2026-11-03, branch `fix/pdf-input-validation`):** a survey of every route that reads a `pdf`/`pdfs` upload found the gap was wider than the three converters: a JPG (and a text file) was also accepted by Extract Images, Redact PDF, Sign PDF, Add Text to PDF and Compress PDF (which accepted it and only failed later in the polling flow), PDF to Word accepted a JPG renamed to .pdf, and Remove Watermark returned a 500. The fix is one content check (`%PDF-` in the first 1024 bytes) in the existing `before_request` hook, now `reject_bad_pdf_uploads()`, so every current and future PDF tool is covered and no route changed. Regression test: `scripts/test_non_pdf_uploads.py`, which discovers the routes itself.

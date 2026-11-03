@@ -380,17 +380,39 @@ def _pdf_needs_password(upload):
         return False
 
 
+def _looks_like_pdf(upload):
+    """True if the upload starts like a PDF: "%PDF-" within its first 1024 bytes, which is where the
+    PDF specification and every reader look for it. Judged by content, not by file name, so a real PDF
+    saved without an extension still works and a JPG renamed to .pdf does not."""
+    head = upload.stream.read(1024)
+    upload.stream.seek(0)
+    return b"%PDF-" in head
+
+
 @app.before_request
-def reject_password_protected_pdf():
-    """Without this, a PDF that needs a password made 11 tools return a 500 and the PyPDF2-based ones
-    claim the file is not a valid PDF. One check here covers every PDF upload, including future tools."""
-    if request.method != "POST" or request.path in PASSWORD_PDF_EXEMPT_PATHS:
+def reject_bad_pdf_uploads():
+    """One check for every PDF upload, including future tools (QT-030, QT-033).
+
+    A file that is not a PDF used to reach the route. PyPDF2 and pdfplumber raised on it, but PyMuPDF
+    opens images and text files as one-page documents, so PDF to PNG/JPG/WebP, Extract Images, Redact,
+    Sign, Add Text and Compress PDF returned a result for a JPG, and Remove Watermark crashed with a 500.
+    A PDF that needs a password used to make 11 tools return a 500 and the PyPDF2-based ones claim the
+    file is not a valid PDF."""
+    if request.method != "POST":
         return None
     for field in ("pdf", "pdfs"):
         for upload in request.files.getlist(field):
-            if upload.filename and upload.filename.lower().endswith(".pdf") and _pdf_needs_password(upload):
+            if not upload.filename:
+                continue
+            name = secure_filename(upload.filename)
+            if not _looks_like_pdf(upload):
+                if upload.filename.lower().endswith(".pdf"):
+                    return error_page("That file doesn't look like a valid PDF. It may be damaged — please try a different file.")
+                return error_page(f"\"{name}\" is not a PDF. Please choose a PDF file; this tool can't read images or other documents.")
+            if (request.path not in PASSWORD_PDF_EXEMPT_PATHS and upload.filename.lower().endswith(".pdf")
+                    and _pdf_needs_password(upload)):
                 return error_page(
-                    f"\"{secure_filename(upload.filename)}\" is password-protected, so we can't open it. "
+                    f"\"{name}\" is password-protected, so we can't open it. "
                     "Remove the password with Unlock PDF first, then try again with the unlocked copy.",
                     action=("/unlock-pdf", "Unlock PDF"))
     return None
@@ -1744,10 +1766,12 @@ def _background_model():
 
 
 def _warm_up_background_model():
+    started = time.perf_counter()
     try:
         _background_model()
+        print(f"[background] model ready after {time.perf_counter() - started:.1f} s (start-up warm-up)", flush=True)
     except Exception as e:  # noqa: BLE001  (the first request will try again and report the error)
-        print("Background model warm-up failed:", e)
+        print("[background] warm-up failed:", e, flush=True)
 
 
 # Importing rembg and loading the model took ~8 s of the first request after every restart. With
@@ -1813,8 +1837,12 @@ def remove_background():
         if too_big:
             return error_page(too_big)
 
+        started = time.perf_counter()
+        warm = "session" in _background_session
         try:
             remove_background_local(input_path, output_path)
+            print(f"[background] {probe.width}x{probe.height} px done in {time.perf_counter() - started:.1f} s "
+                  f"({'warm' if warm else 'cold: loaded the model'})", flush=True)
         except ServerBusy:
             return error_page(BUSY_MESSAGE, 503)
         except MemoryError:
