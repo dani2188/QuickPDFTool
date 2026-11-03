@@ -1,4 +1,4 @@
-"""Remove Background: the local engine (rembg + u2netp) is the default, remove.bg is the fallback.
+"""Remove Background runs locally (rembg + u2netp): no API key, no external service, no toggle.
 
 Run from the repo root:
 
@@ -6,17 +6,15 @@ Run from the repo root:
 
 Drives the real /remove-background route and checks that:
 
-  - with no REMOVE_BG_API_KEY at all, the default engine still returns a transparent PNG: the
-    background of a simple subject is transparent, the subject stays opaque, and the picture keeps
-    its size (this is what used to be a 503);
+  - with no API key of any kind, it returns a transparent PNG: the background of a simple subject
+    is transparent, the subject stays opaque, and the picture keeps its size;
   - an EXIF-rotated photo comes out upright;
   - a file that is not an image, and a picture over the pixel limit, get a clear 400, not a 500;
   - the model segments a copy capped at BACKGROUND_SEGMENTATION_MAX_DIM, while the PNG keeps the
     photo's own size; and the heavy-job lock makes background removal, Word to PDF and Ghostscript
     take turns (a request that waits too long gets a 503 'busy' page);
-  - BACKGROUND_REMOVER=removebg keeps the old behaviour: 503 without a key, and with a key the
-    upload goes to the remove.bg API (mocked here) and its answer is returned unchanged;
-  - an API failure in that mode still gives the same 502 / 400 messages.
+  - nothing of the old remove.bg path is left: no toggle, no key lookup, no call to any outside
+    service (a network call here would fail the test).
 
 Needs the u2netp model file (downloaded by rembg on first use to ~/.u2net). Exits 1 on any failure.
 """
@@ -32,7 +30,6 @@ except AttributeError:
 
 BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, BASE)
-os.environ.pop("REMOVE_BG_API_KEY", None)
 
 from PIL import Image, ImageDraw  # noqa: E402
 
@@ -75,9 +72,8 @@ def post(data, name="photo.jpg"):
 
 
 # ---- default engine, no API key anywhere
-check("default engine is local", qt_app.BACKGROUND_REMOVER == "local")
 r = post(subject_photo())
-check("works without REMOVE_BG_API_KEY", r.status_code == 200 and r.data.startswith(b"\x89PNG"))
+check("works with no API key", r.status_code == 200 and r.data.startswith(b"\x89PNG"))
 if r.status_code == 200:
     out = Image.open(io.BytesIO(r.data))
     check("output is an RGBA PNG of the same size", out.mode == "RGBA" and out.size == (640, 480))
@@ -125,7 +121,6 @@ session.predict = real_predict
 # ---- heavy jobs take turns (Ghostscript, LibreOffice, the model)
 import threading  # noqa: E402
 
-qt_app.BACKGROUND_REMOVER = "local"
 qt_app.HEAVY_JOB_WAIT = 0.3
 qt_app.HEAVY_JOB_LOCK.acquire()
 try:
@@ -156,46 +151,24 @@ qt_app.HEAVY_JOB_LOCK.release()
 t.join(2)
 check("...and runs once the first has finished", started == [1])
 
-# ---- the remove.bg fallback is intact behind the toggle
-qt_app.BACKGROUND_REMOVER = "removebg"
-r = post(subject_photo())
-check("removebg mode without a key: 503 as before", r.status_code == 503 and "REMOVE_BG_API_KEY" in r.get_data(as_text=True))
+# ---- the remove.bg path is really gone
+source = open(os.path.join(BASE, "app.py"), encoding="utf-8").read()
+check("app.py no longer mentions remove.bg, its key or a toggle",
+      not any(w in source.lower() for w in ("remove.bg", "removebg", "remove_bg", "background_remover")))
+check("app.py no longer imports requests", "import requests" not in source)
+check("no BACKGROUND_REMOVER attribute is left", not hasattr(qt_app, "BACKGROUND_REMOVER"))
 
-os.environ["REMOVE_BG_API_KEY"] = "test-key"
-calls = []
+import socket  # noqa: E402
 
-
-class FakeResponse:
-    def __init__(self, status, content=b""):
-        self.status_code, self.content = status, content
-
-
-def fake_post(url, **kwargs):
-    calls.append((url, kwargs))
-    return FakeResponse(200, b"\x89PNG-from-remove-bg")
-
-
-real_post = qt_app.requests.post
-qt_app.requests.post = fake_post
-r = post(subject_photo())
-check("removebg mode with a key calls the remove.bg API", len(calls) == 1 and calls[0][0] == "https://api.remove.bg/v1.0/removebg")
-check("...with the key in the header", calls and calls[0][1]["headers"] == {"X-Api-Key": "test-key"})
-check("...and returns the API's answer unchanged", r.status_code == 200 and r.data == b"\x89PNG-from-remove-bg")
-
-qt_app.requests.post = lambda url, **kw: FakeResponse(403)
-r = post(subject_photo())
-check("removebg mode: API refusal still gives the same 400 message",
-      r.status_code == 400 and "Could not remove the background" in r.get_data(as_text=True))
-
-
-def boom(url, **kw):
-    raise qt_app.requests.RequestException("down")
-
-
-qt_app.requests.post = boom
-r = post(subject_photo())
-check("removebg mode: unreachable API still gives a 502", r.status_code == 502)
-qt_app.requests.post = real_post
+real_connect = socket.socket.connect
+socket.socket.connect = lambda *a, **k: (_ for _ in ()).throw(AssertionError("network call attempted"))
+os.environ["REMOVE_BG_API_KEY"] = "ignored-if-set"
+try:
+    r = post(subject_photo())
+finally:
+    socket.socket.connect = real_connect
+    del os.environ["REMOVE_BG_API_KEY"]
+check("a set REMOVE_BG_API_KEY is ignored and no network connection is made", r.status_code == 200)
 
 print(f"\n{'FAILED: ' + str(len(failures)) if failures else 'All checks passed.'}")
 sys.exit(1 if failures else 0)

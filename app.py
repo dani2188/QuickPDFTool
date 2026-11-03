@@ -26,7 +26,6 @@ import json
 import re
 import math
 import xml.etree.ElementTree as ET
-import requests
 
 
 
@@ -1707,11 +1706,8 @@ def resize_image_guide():
     return render_template("resize_image_guide.html")
 
 
-# Background removal engine, chosen by the BACKGROUND_REMOVER environment variable:
-#   "local"    (default) rembg with the small u2netp model, run inside this process: free, no key,
-#              nothing leaves the server, lower quality than remove.bg on hair and fine detail.
-#   "removebg" the remove.bg API (needs REMOVE_BG_API_KEY); kept as the fallback.
-BACKGROUND_REMOVER = os.environ.get("BACKGROUND_REMOVER", "local").strip().lower()
+# Background removal runs rembg with the small u2netp model inside this process: no API key, nothing
+# leaves the server.
 BACKGROUND_MODEL = "u2netp"
 # Keep the model file inside the project folder, so the one fetched at build time
 # (scripts/fetch_background_model.py) is the one used at run time.
@@ -1757,7 +1753,7 @@ def _warm_up_background_model():
 # Importing rembg and loading the model took ~8 s of the first request after every restart. With
 # BACKGROUND_WARMUP=1 (set in render.yaml) that happens in a thread at start-up instead. It costs the
 # same ~115 MB the first request would have, just earlier. Off by default so tests and scripts stay light.
-if BACKGROUND_REMOVER == "local" and os.environ.get("BACKGROUND_WARMUP") == "1":
+if os.environ.get("BACKGROUND_WARMUP") == "1":
     threading.Thread(target=_warm_up_background_model, daemon=True).start()
 
 
@@ -1801,15 +1797,6 @@ def remove_background():
         if not file or not file.filename:
             return error_page("No file selected. Please choose a file and try again.")
 
-        use_api = BACKGROUND_REMOVER == "removebg"
-        api_key = os.environ.get("REMOVE_BG_API_KEY")
-        if use_api and not api_key:
-            return error_page(
-                "Background removal isn't configured on this server yet "
-                "(missing REMOVE_BG_API_KEY).",
-                503,
-            )
-
         input_name = secure_filename(file.filename)
         input_path = os.path.join(UPLOAD_FOLDER, f"{uuid.uuid4()}_{input_name}")
         file.save(input_path)
@@ -1818,43 +1805,23 @@ def remove_background():
         output_name = f"{uuid.uuid4()}_no_bg.png"
         output_path = os.path.join(UPLOAD_FOLDER, output_name)
 
-        if use_api:
-            try:
-                with open(input_path, "rb") as f:
-                    response = requests.post(
-                        "https://api.remove.bg/v1.0/removebg",
-                        files={"image_file": f},
-                        data={"size": "auto"},
-                        headers={"X-Api-Key": api_key},
-                        timeout=60,
-                    )
-            except requests.RequestException:
-                return error_page("Could not reach the background removal service. Please try again.", 502)
+        try:
+            with Image.open(input_path) as probe:
+                too_big = image_too_large_message(input_name, probe.width, probe.height, MAX_BACKGROUND_MEGAPIXELS)
+        except Exception:
+            return error_page("That file doesn't look like a valid image. Please try a JPG, PNG or WebP.")
+        if too_big:
+            return error_page(too_big)
 
-            if response.status_code != 200:
-                return error_page("Could not remove the background from that image. Please try a different file.")
-
-            with open(output_path, "wb") as f:
-                f.write(response.content)
-
-        else:
-            try:
-                with Image.open(input_path) as probe:
-                    too_big = image_too_large_message(input_name, probe.width, probe.height, MAX_BACKGROUND_MEGAPIXELS)
-            except Exception:
-                return error_page("That file doesn't look like a valid image. Please try a JPG, PNG or WebP.")
-            if too_big:
-                return error_page(too_big)
-
-            try:
-                remove_background_local(input_path, output_path)
-            except ServerBusy:
-                return error_page(BUSY_MESSAGE, 503)
-            except MemoryError:
-                return error_page("That image is too large to process right now. Please try a smaller one.", 503)
-            except Exception as e:
-                print("Background removal ERROR:", e)
-                return error_page("Could not remove the background from that image. Please try a different file.")
+        try:
+            remove_background_local(input_path, output_path)
+        except ServerBusy:
+            return error_page(BUSY_MESSAGE, 503)
+        except MemoryError:
+            return error_page("That image is too large to process right now. Please try a smaller one.", 503)
+        except Exception as e:
+            print("Background removal ERROR:", e)
+            return error_page("Could not remove the background from that image. Please try a different file.")
 
         delete_file_later(output_path)
 

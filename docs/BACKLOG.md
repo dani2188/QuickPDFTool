@@ -48,7 +48,7 @@ what we intended to do about it.
 
 - **Area:** UX
 - **Priority:** P1
-- **Status:** Open
+- **Status:** Done
 - **Discovered:** Article #4 technical research (2026-09-16)
 - **Source:** Remove Background implementation inspection (`app.py`, `/remove-background` route)
 
@@ -68,6 +68,8 @@ receiving only a generic provider-failure message.
 **Notes:** Do not change the implementation as part of logging this
 backlog item. Do not expose API credentials in any UI copy or error
 message.
+
+**Resolved (2026-11-03, branch `feat/local-background-removal`):** moot. Remove Background no longer calls the remove.bg API, so its 12 MB request limit is gone. The tool now runs a local model and rejects pictures over 6 megapixels (`MAX_BACKGROUND_MEGAPIXELS`) with a clear message; the tool page states the limit.
 
 ---
 
@@ -237,7 +239,7 @@ dependency set for the whole app at once.
 
 - **Area:** Monetization
 - **Priority:** P1
-- **Status:** Open
+- **Status:** Done
 - **Discovered:** `ARCHITECTURE.md` §6 (documented, unresolved as of 2026-09-17)
 - **Source:** `ARCHITECTURE.md`: "remove.bg's free tier is non-commercial-use-only, so a paid/commercial plan is required for this to run legitimately on an ad-monetized site."
 
@@ -254,6 +256,8 @@ ad-monetized site, and upgrade it if it isn't.
 **Notes:** This is an account/billing check, not a code change — nothing
 in `app.py` needs to change regardless of the plan tier, since the key is
 read from the environment either way.
+
+**Resolved (2026-11-03, branch `feat/local-background-removal`):** moot. Remove Background now runs a local open-source model; the remove.bg integration, `REMOVE_BG_API_KEY` and the toggle were deleted (the remove.bg API is shutting down on 2026-12-01). No third-party service processes uploads.
 
 ---
 
@@ -552,11 +556,11 @@ out of scope — this fix only recognizes QuickTools' own watermark format.
 - **Discovered:** C3 (2026-10-22)
 - **Source:** `scripts/measure_examples.py`
 
-**Problem:** The other seven top tools show measured results generated from `static/examples/`. Remove Background can only be measured with a remove.bg API key, which isn't available locally, and numbers must not be invented.
+**Problem:** The other seven top tools show measured results generated from `static/examples/`. Remove Background has none, and numbers must not be invented.
 
-**Proposed improvement:** With `REMOVE_BG_API_KEY` set, add a `measure_remove_background()` step (e.g. a portrait and a product photo with fine edges) to the script, include its partial on `remove_background.html`, and re-run.
+**Proposed improvement:** Remove Background now runs locally (rembg/u2netp), so it can be measured without a key. Add a `measure_remove_background()` step to the script (e.g. a portrait and a product photo with fine edges: time, output size, foreground share), include its partial on `remove_background.html`, and re-run. `scripts/measure_background_removal.py` already measures peak memory and time per picture size.
 
-**Notes:** Each call uses a paid remove.bg credit; see QT-008 for the licensing check.
+**Notes:** The model is weak on dark-on-dark subjects, thin stems and glass (see the Remove Background guide), so choose sample photos that show typical results, not only the easy cases.
 
 ---
 
@@ -700,3 +704,19 @@ out of scope — this fix only recognizes QuickTools' own watermark format.
 **Proposed improvement:** Reword each to say the limit is 20MB per upload (in total), keeping visible text and FAQPage JSON-LD identical, and bump the Terms page's "Last updated" date because it is legal text.
 
 **Notes:** Small, mechanical; `scripts/faq_schema_audit.py` verifies the schema parity.
+
+---
+
+## QT-033 — PDF to PNG, JPG and WebP accept an image file and return a result
+
+- **Area:** Validation
+- **Priority:** P2
+- **Status:** Open
+- **Discovered:** 2026-11-01, an end-to-end check posted `photo.jpg` to `/pdf-to-png` and expected a rejection but got HTTP 200
+- **Source:** `/pdf-to-png`, `/pdf-to-jpg`, `/pdf-to-webp` routes in `app.py`
+
+**Problem:** Uploading a JPG (not a PDF) to PDF to PNG returns 200 and a normal "PDF to PNG Result" page with a one-page ZIP and `page_1.png`. The same file sent to PDF to JPG and PDF to WebP is also accepted (results pages with `page_1.jpg` / `page_1.webp`). PyMuPDF opens image files as one-page documents, so the routes' "is this a PDF" handling never fires. The user gets a result for a file the tool says it doesn't take, with no warning that it was not a PDF. Not checked: whether other PDF tools behave the same way with an image upload.
+
+**Proposed improvement:** Reject non-PDF uploads on these routes with the same styled 400 used elsewhere (check the file's `%PDF` header or `doc.is_pdf`), and decide whether to point the user to JPG to PDF / Resize Image.
+
+**Notes:** Confirmed on HEAD without the Remove Background changes, so it predates them. Not fixed in the local-background-removal PR by request. The old end-to-end check `B2 /pdf-to-png {'pdf': 'photo.jpg'}` expects the rejection.

@@ -97,7 +97,7 @@ the actual backend, the same discipline used for the tool-page remediation:
 1. Read the real route in `app.py` for any tool the article references.
 2. Read `ARCHITECTURE.md` §5–6 for the tool inventory and known
    limitations (no OCR, no true form-field filling, resize never crops,
-   remove-background needs a paid remove.bg plan for commercial use, etc.).
+   remove-background runs a small local model that struggles with fine detail, etc.).
 3. If the article's premise requires a capability that doesn't exist,
    either drop that section or state the limitation honestly (this is what
    the tool-page remediation did throughout — e.g. `pdf_to_word.html`

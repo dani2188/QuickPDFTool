@@ -20,8 +20,8 @@ What it does:
 
 No number on those pages is typed by hand: re-run this script to refresh
 them after changing a tool. Anything the tools write to uploads/ during the
-run is deleted at the end. Remove Background is not measured here -- it
-needs a paid remove.bg API key and has no local engine to run.
+run is deleted at the end. Remove Background is not measured here (its
+memory and time are in scripts/measure_background_removal.py; see QT-024 for the missing results section).
 
 `--only pdf_to_png` regenerates just the PDF to PNG tables (the tool page and
 its guide) and leaves every other partial, and its "Measured on" date, alone.

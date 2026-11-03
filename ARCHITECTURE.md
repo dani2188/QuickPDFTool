@@ -4,7 +4,7 @@ This document describes the current architecture of the PDF/Image tools web app 
 
 ## 1. Summary
 
-A single-process **Flask** web application, branded **hellobrivio** (one lowercase brand name, also the product name), that offers ~31 browser-based PDF and image conversion/editing tools (compress, merge, split, convert, watermark, sign, redact, resize, remove background, etc.), similar in spirit to iLovePDF/Smallpdf. Image tools (Resize Image, Remove Background, Compress JPG) were merged in from a former separate static site on 2026-08-25 as native routes. There is no build step, no frontend framework, and no database — it's server-rendered HTML + a monolithic Python backend that shells out to external binaries (Ghostscript, LibreOffice), calls one external HTTP API (remove.bg), and uses Python libraries (PyMuPDF, PyPDF2, Pillow, pdf2docx) to do the actual file processing.
+A single-process **Flask** web application, branded **hellobrivio** (one lowercase brand name, also the product name), that offers ~31 browser-based PDF and image conversion/editing tools (compress, merge, split, convert, watermark, sign, redact, resize, remove background, etc.), similar in spirit to iLovePDF/Smallpdf. Image tools (Resize Image, Remove Background, Compress JPG) were merged in from a former separate static site on 2026-08-25 as native routes. There is no build step, no frontend framework, and no database — it's server-rendered HTML + a monolithic Python backend that shells out to external binaries (Ghostscript, LibreOffice), runs one local ML model (rembg/u2netp, for Remove Background), and uses Python libraries (PyMuPDF, PyPDF2, Pillow, pdf2docx) to do the actual file processing.
 
 ## 2. Tech stack
 
@@ -18,7 +18,7 @@ A single-process **Flask** web application, branded **hellobrivio** (one lowerca
 | Office conversion | `LibreOffice` (via `subprocess`, headless `--convert-to`) |
 | PDF compression | `Ghostscript` (via `subprocess`, `gswin64c`/`gs`) |
 | Spreadsheet conversion | `pandas`, `openpyxl` |
-| Background removal | rembg + u2netp (local, onnxruntime CPU); optional fallback: `requests` → remove.bg API (`BACKGROUND_REMOVER=removebg`, key via `REMOVE_BG_API_KEY`) |
+| Background removal | rembg + u2netp (local, onnxruntime CPU); no external API |
 | Deployment target | Render.com (`render.yaml`), Gunicorn (`Procfile`) |
 
 ## 3. Code layout
@@ -64,7 +64,7 @@ Some multi-step tools (`add-text-to-pdf`, `sign-pdf`, `redact-pdf`) render a pre
 - **Conversion — PDF ⇄ text**: pdf-to-text (pdfplumber)
 - **Security**: protect-pdf (password), unlock-pdf, redact-pdf (PyMuPDF redaction annotations — permanently strips underlying content, not just a visual overlay; supports black/white/blur/pixelate)
 - **Editing/annotation**: add-page-numbers, add-watermark, remove-watermark, add-text-to-pdf, sign-pdf
-- **Image tools** (merged in from the former standalone QuickImageTools static site, 2026-08-25): resize-image (server-side Pillow letterbox fit — scales to fit within the target box and pads with white, never crops/stretches), compress-jpg, remove-background (proxies to the remove.bg HTTP API server-side — see §6)
+- **Image tools** (merged in from the former standalone QuickImageTools static site, 2026-08-25): resize-image (server-side Pillow letterbox fit — scales to fit within the target box and pads with white, never crops/stretches), compress-jpg, remove-background (local rembg/u2netp model — see §6)
 - **Hub / listing pages**: pdf-tools, image-tools, convert-pdf, edit-pdf, organize-pdf (these three are thin hub pages, not processing routes)
 - **Marketing/SEO shell**: each tool above has a paired `/how-to-*` guide page, plus `about`, `blog` (+ per-article pages under `/blog/<slug>`), `contact`, `privacy-policy`, `terms`, `sitemap.xml`, `robots.txt`, `ads.txt` (AdSense)
 
@@ -77,7 +77,7 @@ Two tool families depend on binaries **not installed via pip** — they must exi
 
 `render.yaml` installs both (plus `poppler-utils`) via `apt-get` in the Render build step. **Locally there is no equivalent setup script** — these must be installed manually on the dev machine, or the compress/word-to-pdf routes will fail (a missing Ghostscript makes compress-pdf show "temporarily unavailable" on the processing page; a missing LibreOffice makes word-to-pdf return a 503 page).
 
-**`remove-background` runs a local model by default**: rembg with the small u2netp ONNX model, loaded once per process on first use (the 4.6 MB model file is downloaded to `~/.u2net` on the first request, so that request needs network access to GitHub). The onnxruntime session is built in `app.py` with the CPU memory arena off, because with the default the process grew to ~550 MB after two requests; measured peaks are in `scripts/measure_background_removal.py` (about 390 MB at 0.5 MP, 440 MB at 6 MP). The model segments a copy capped at `BACKGROUND_SEGMENTATION_MAX_DIM` (1280 px, longest side); its mask is scaled up and applied to the full-size original, so the PNG keeps the upload's resolution. That cap barely changes memory (the model only sees 320 x 320 whatever it is given; memory grows with the full-size output), so uploads are still limited to `MAX_BACKGROUND_MEGAPIXELS` (6). Background removal, Ghostscript (Compress PDF) and LibreOffice (Word to PDF) share one `HEAVY_JOB_LOCK` and run one at a time; a request that waits more than 120 s gets a 503 "server is busy" page. `scripts/fetch_background_model.py` downloads the model into `.u2net/` during the Render build, and `BACKGROUND_WARMUP=1` (set in `render.yaml`) loads it at start-up. The previous engine is kept behind `BACKGROUND_REMOVER=removebg`: it proxies the upload to the remove.bg API server-side, reading the key from `REMOVE_BG_API_KEY` (503 if missing). In that mode the tool has a per-request cost and an external dependency, and remove.bg's free tier is non-commercial-use-only, so a paid/commercial plan is required on an ad-monetized site.
+**`remove-background` runs a local model**: rembg with the small u2netp ONNX model, loaded once per process on first use (the 4.6 MB model file is downloaded to `~/.u2net` on the first request, so that request needs network access to GitHub). The onnxruntime session is built in `app.py` with the CPU memory arena off, because with the default the process grew to ~550 MB after two requests; measured peaks are in `scripts/measure_background_removal.py` (about 390 MB at 0.5 MP, 440 MB at 6 MP). The model segments a copy capped at `BACKGROUND_SEGMENTATION_MAX_DIM` (1280 px, longest side); its mask is scaled up and applied to the full-size original, so the PNG keeps the upload's resolution. That cap barely changes memory (the model only sees 320 x 320 whatever it is given; memory grows with the full-size output), so uploads are still limited to `MAX_BACKGROUND_MEGAPIXELS` (6). Background removal, Ghostscript (Compress PDF) and LibreOffice (Word to PDF) share one `HEAVY_JOB_LOCK` and run one at a time; a request that waits more than 120 s gets a 503 "server is busy" page. `scripts/fetch_background_model.py` downloads the model into `.u2net/` during the Render build, and `BACKGROUND_WARMUP=1` (set in `render.yaml`) loads it at start-up.
 
 ## 7. Deployment
 
@@ -90,9 +90,9 @@ Two tool families depend on binaries **not installed via pip** — they must exi
 | Variable | Purpose |
 |---|---|
 | `PORT` | Port for `python app.py` (default 10000); Gunicorn gets its port from `--bind` |
-| `BACKGROUND_REMOVER` | `local` (default, rembg/u2netp) or `removebg` (API fallback) for `/remove-background` |
 | `MAX_BACKGROUND_MEGAPIXELS` | pixel limit for local background removal (default 6) |
-| `REMOVE_BG_API_KEY` | remove.bg key, only used when `BACKGROUND_REMOVER=removebg` (503 if missing) |
+| `BACKGROUND_SEGMENTATION_MAX_DIM` | longest side of the copy the background model segments (default 1280); raise it with a bigger plan |
+| `BACKGROUND_WARMUP` | `1` loads the background model at start-up (set in `render.yaml`) |
 | `MAX_IMAGE_MEGAPIXELS` (30), `MAX_PDF_RENDER_MEGAPIXELS` (30), `MAX_WORD_IMAGE_MEGAPIXELS` (20) | Memory limits, see §8 |
 | `HEALTH_CHECK_PATH` | Optional: a health-check path set in the Render dashboard, never redirected by the canonical-host hook |
 

@@ -9,5 +9,4 @@ pdfplumber
 pandas
 openpyxl
 PyMuPDF
-requests
 rembg[cpu]  # local background removal (u2netp model); [cpu] pulls in onnxruntime
