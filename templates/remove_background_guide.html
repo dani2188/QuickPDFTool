@@ -71,28 +71,39 @@ or a different backdrop entirely.
 <h3>"Could not remove the background from that image"</h3>
 
 <p>
-The photo is sent to an outside background-removal service, and this message appears whenever that
-service declines to return a result. The tool does not receive a reason, so we cannot tell you whether it
-was an unreadable file, a photo with no clear subject, or a limit on the service's side. Try a different
-file, or re-save the photo as a standard JPG or PNG and upload that. A photo with one obvious subject
-against a plain background is the safest test.
+This message appears when processing the picture fails unexpectedly. A file that is not an image at all
+gets a different message ("doesn't look like a valid image"). In both cases, try a different file, or
+re-save the photo as a standard JPG or PNG and upload that.
 </p>
 
-<h3>"Could not reach the background removal service" or "isn't configured"</h3>
+<h3>"More than the {{ max_background_megapixels }}-megapixel limit" or "The server is busy"</h3>
 
 <p>
-Both messages mean the problem is on the server side, not in your photo. The first means the outside
-service did not answer in time; wait a minute and try again. The second means the server is missing the
-key it needs to call the service, which only the site owner can fix, and retrying will not help.
+The first message means the picture has too many pixels for this tool. A typical 12-megapixel phone
+photo is over the limit. Make the picture smaller in your
+phone's or computer's photo editor and upload that copy. The second means the server is working on
+another file; wait a minute and try again. Neither message is about your photo's content.
 </p>
 
 <h3>The wrong thing is cut out, or part of the subject is missing</h3>
 
 <p>
-Detection picks one main subject automatically and offers no way to correct it. The cases that tend to
-go wrong are a subject whose colour is close to the background (a white product on a white table), a
-subject partly hidden behind another object, and a scene with two equally prominent subjects. Retake or
-crop the photo so the subject is the clear focus, or give it more contrast against what is behind it.
+Detection picks the main subject automatically and offers no way to correct it. The cases that tend to
+go wrong are a subject whose colour is close to the background, a subject partly hidden behind another
+object, and a scene with two equally prominent subjects. In our test of a vintage portrait with a dark
+coat in front of a dark board, parts of the coat and one arm came out half-transparent and a chalk line
+from the board stayed in. Retake or crop the photo so the subject is the clear focus, or give it more
+contrast against what is behind it.</p>
+
+<h3>Stems, glass and fine hair come out rough</h3>
+
+<p>
+The tool uses a small, fast model, which is why it can run on our own server without sending your photo
+anywhere. In our test of seven photos, animals and an apple on a plain background came out clean, while a
+rose lost most of its stem and leaves and a wine glass kept a soft, smeared edge. We did not compare the
+results with another service, so we cannot say how much better a larger tool would do. For a
+high-stakes image, check the edges at full size before using it, and tidy them in an image editor if
+needed.
 </p>
 
 <h3>A light outline shows up on a dark background</h3>
@@ -119,13 +130,13 @@ that as a JPG.
 <p>Yes — the transparent PNG is your processed image, free to use for products, marketing, or any other purpose.</p>
 
 <h3>The photo has several people or objects. Which one is kept?</h3>
-<p>The service decides what counts as the main subject and you cannot point at one. If it keeps the wrong one, crop the photo down to the subject you want in your phone's gallery or any editor, then upload the cropped copy.</p>
+<p>The model decides what counts as the main subject and you cannot point at one. If it keeps the wrong one, crop the photo down to the subject you want in your phone's gallery or any editor, then upload the cropped copy.</p>
 
 <h3>How do I get a white or coloured background instead of transparency?</h3>
 <p>This tool only delivers transparency. The <a href="/resize-image">Resize Image tool</a> fills transparent areas with white, so running the cut-out through it gives you a white background at a preset size. We confirmed that a fully transparent PNG comes out solid white. For any other colour, set the background in a slide, document or image editor.</p>
 
 <h3>Is the result the same resolution as my photo?</h3>
-<p>We have not verified this. The tool asks the background-removal service for its automatic output size and the service decides, so the result may not match your original. Check the pixel dimensions of the downloaded PNG before relying on it for print or a large banner.</p>
+<p>Yes. In our test the PNG had exactly the pixel dimensions of the uploaded photo, including a photo that needed rotating according to its camera orientation. The cut-out edge is computed from a much smaller copy of the photo and scaled up, so it follows the outline of the subject but not strand-level detail.</p>
 
 <h3>Can I shrink the PNG with Compress JPG?</h3>
 <p>No. Compress JPG accepts only JPG files and skips anything else, and a JPG cannot hold transparency anyway. If the transparent PNG is too large, resizing it down is the option that keeps the cut-out intact, though resizing also puts it on a white canvas.</p>
@@ -147,9 +158,9 @@ that as a JPG.
 {{ howto(self.title(), self.description(), request.path, ["Open the Background Remover", "Click Remove Background", "Download Your Transparent PNG"]) }}
 {{ faqpage([
   {"q": "Can I use the result commercially?", "a": "Yes — the transparent PNG is your processed image, free to use for products, marketing, or any other purpose."},
-  {"q": "The photo has several people or objects. Which one is kept?", "a": "The service decides what counts as the main subject and you cannot point at one. If it keeps the wrong one, crop the photo down to the subject you want in your phone's gallery or any editor, then upload the cropped copy."},
+  {"q": "The photo has several people or objects. Which one is kept?", "a": "The model decides what counts as the main subject and you cannot point at one. If it keeps the wrong one, crop the photo down to the subject you want in your phone's gallery or any editor, then upload the cropped copy."},
   {"q": "How do I get a white or coloured background instead of transparency?", "a": "This tool only delivers transparency. The Resize Image tool fills transparent areas with white, so running the cut-out through it gives you a white background at a preset size. We confirmed that a fully transparent PNG comes out solid white. For any other colour, set the background in a slide, document or image editor."},
-  {"q": "Is the result the same resolution as my photo?", "a": "We have not verified this. The tool asks the background-removal service for its automatic output size and the service decides, so the result may not match your original. Check the pixel dimensions of the downloaded PNG before relying on it for print or a large banner."},
+  {"q": "Is the result the same resolution as my photo?", "a": "Yes. In our test the PNG had exactly the pixel dimensions of the uploaded photo, including a photo that needed rotating according to its camera orientation. The cut-out edge is computed from a much smaller copy of the photo and scaled up, so it follows the outline of the subject but not strand-level detail."},
   {"q": "Can I shrink the PNG with Compress JPG?", "a": "No. Compress JPG accepts only JPG files and skips anything else, and a JPG cannot hold transparency anyway. If the transparent PNG is too large, resizing it down is the option that keeps the cut-out intact, though resizing also puts it on a white canvas."}
 ]) }}
 {% endblock %}
