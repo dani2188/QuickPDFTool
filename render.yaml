@@ -12,6 +12,9 @@ services:
       python scripts/fetch_background_model.py || echo "model prefetch failed; will download on first use"
 
     startCommand: gunicorn app:app --bind 0.0.0.0:$PORT --timeout 180 --workers 1
+    # Background-removal incidents (OOM, 2026-11-04): BACKGROUND_WARMUP=1 was removed so nothing heavy
+    # loads at boot (the model loads on first use). To switch the tool off without a deploy, add
+    # BACKGROUND_REMOVAL_DISABLED=1 here or in the dashboard.
     envVars:
-      - key: BACKGROUND_WARMUP
+      - key: NUMBA_DISABLE_JIT
         value: "1"

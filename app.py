@@ -1709,6 +1709,13 @@ def resize_image_guide():
 # Background removal runs rembg with the small u2netp model inside this process: no API key, nothing
 # leaves the server.
 BACKGROUND_MODEL = "u2netp"
+# rembg imports pymatting (alpha matting, which this tool never uses), and pymatting compiles its
+# functions with numba/llvmlite as soon as it is imported: ~15 s and a large memory spike on a small
+# instance (production was OOM-killed inside llvmlite). Interpreted mode skips the compile; it must be
+# set before rembg is first imported, which only happens lazily below.
+os.environ.setdefault("NUMBA_DISABLE_JIT", "1")
+# Kill switch: BACKGROUND_REMOVAL_DISABLED=1 in the Render environment turns the tool off without a deploy.
+BACKGROUND_REMOVAL_DISABLED = os.environ.get("BACKGROUND_REMOVAL_DISABLED") == "1"
 # Keep the model file inside the project folder, so the one fetched at build time
 # (scripts/fetch_background_model.py) is the one used at run time.
 os.environ.setdefault("U2NET_HOME", os.path.join(os.path.dirname(os.path.abspath(__file__)), ".u2net"))
@@ -1753,7 +1760,7 @@ def _warm_up_background_model():
 # Importing rembg and loading the model took ~8 s of the first request after every restart. With
 # BACKGROUND_WARMUP=1 (set in render.yaml) that happens in a thread at start-up instead. It costs the
 # same ~115 MB the first request would have, just earlier. Off by default so tests and scripts stay light.
-if os.environ.get("BACKGROUND_WARMUP") == "1":
+if os.environ.get("BACKGROUND_WARMUP") == "1" and not BACKGROUND_REMOVAL_DISABLED:
     threading.Thread(target=_warm_up_background_model, daemon=True).start()
 
 
@@ -1789,6 +1796,9 @@ def remove_background_local(input_path, output_path):
 
 @app.route("/remove-background", methods=["GET", "POST"])
 def remove_background():
+
+    if BACKGROUND_REMOVAL_DISABLED:
+        return error_page("Remove Background is temporarily unavailable. Please try again later.", 503)
 
     if request.method == "POST":
 
