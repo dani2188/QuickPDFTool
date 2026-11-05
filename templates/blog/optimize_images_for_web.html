@@ -19,7 +19,7 @@
 
 <p>Images are typically the largest contributor to a webpage's total transfer size, often outweighing all of a page's text, code, and other assets combined. This makes image optimization one of the highest-impact actions you can take to speed up your website.</p>
 
-<p>This guide covers the key techniques for optimizing images — from choosing the right format to resizing correctly and compressing efficiently — with practical steps you can take today without any paid tools.</p>
+<p>This guide covers the key techniques for optimizing images, from choosing the right format to resizing correctly and compressing efficiently, with practical steps you can take today without any paid tools.</p>
 
 <h2>Why Image Optimization Matters</h2>
 
@@ -27,14 +27,14 @@
 
 <ul class="benefits">
   <li><strong>SEO ranking:</strong> Google uses page speed as a direct ranking factor, particularly through its Core Web Vitals metrics. Slow-loading images hurt your Largest Contentful Paint (LCP) score, which is one of the three core metrics.</li>
-  <li><strong>User experience:</strong> Slow-loading pages frustrate visitors and increase the chance they leave before the page finishes loading — heavy, unoptimized images are one of the most common causes of that delay.</li>
+  <li><strong>User experience:</strong> Slow-loading pages frustrate visitors and increase the chance they leave before the page finishes loading. Heavy, unoptimized images are one of the most common causes of that delay.</li>
   <li><strong>Mobile performance:</strong> Mobile users often have slower connections and less powerful processors. Images that are fine on desktop can make a mobile page unusable.</li>
   <li><strong>Bandwidth costs:</strong> If you're paying for a CDN or hosting bandwidth, large unoptimized images translate directly to higher monthly bills.</li>
 </ul>
 
 <h2>Step 1: Resize Images to Their Display Size</h2>
 
-<p>The single biggest optimization most websites need is resizing images to the size at which they're actually displayed. It sounds obvious, but it's extremely common to upload a 4000 × 3000 pixel camera photo when the image will be displayed at 800 × 600 pixels on the page. The browser downloads the full 4000px image, then scales it down — wasting the extra data entirely.</p>
+<p>The single biggest optimization most websites need is resizing images to the size at which they're actually displayed. It sounds obvious, but it's extremely common to upload a 4000 × 3000 pixel camera photo when the image will be displayed at 800 × 600 pixels on the page. The browser downloads the full 4000px image, then scales it down, wasting the extra data entirely.</p>
 
 <p><strong>Rule of thumb:</strong> resize your image so its pixel dimensions match the largest size it will be displayed at on your page, multiplied by 2 for high-DPI (retina) screens. So if an image is displayed at 600px wide, resize it to 1200px wide before uploading.</p>
 
@@ -45,10 +45,10 @@
 <p>Choosing the correct format can reduce file size by 50% or more with no visible quality difference:</p>
 
 <ul class="benefits">
-  <li><strong>JPG</strong> — use for photographs. Lossy compression produces very small files with minimal visible degradation at quality settings of 80–90%. Never use PNG for photos on a website.</li>
-  <li><strong>PNG</strong> — use for logos, icons, screenshots, and graphics with text or sharp edges. PNG is lossless, so these crisp-edged elements stay sharp. For photos, PNG produces files 3–10× larger than JPG with no visible benefit.</li>
-  <li><strong>WebP</strong> — Google's modern format supports both lossy and lossless compression and produces files 25–35% smaller than JPG or PNG at equivalent quality. Supported by all modern browsers.</li>
-  <li><strong>SVG</strong> — for logos and icons that need to scale to any size without pixelation, SVG (Scalable Vector Graphics) is ideal. SVG files are tiny and resolution-independent. Our <a href="/svg-to-pdf">SVG to PDF tool</a> can convert one into a PDF when you need to share it that way.</li>
+  <li><strong>JPG</strong>: use for photographs. Lossy compression produces very small files with minimal visible degradation at quality settings of 80–90%. Never use PNG for photos on a website.</li>
+  <li><strong>PNG</strong>: use for logos, icons, screenshots, and graphics with text or sharp edges. PNG is lossless, so these crisp-edged elements stay sharp. For photos, PNG produces files 3–10× larger than JPG with no visible benefit.</li>
+  <li><strong>WebP</strong>: Google's modern format supports both lossy and lossless compression and produces files 25–35% smaller than JPG or PNG at equivalent quality. Supported by all modern browsers.</li>
+  <li><strong>SVG</strong>: for logos and icons that need to scale to any size without pixelation, SVG (Scalable Vector Graphics) is ideal. SVG files are tiny and resolution-independent. Our <a href="/svg-to-pdf">SVG to PDF tool</a> can convert one into a PDF when you need to share it that way.</li>
 </ul>
 
 <h2>Step 3: Compress Your Images</h2>
@@ -76,7 +76,7 @@
 
 <h2>Step 5: Use Lazy Loading</h2>
 
-<p>By default, browsers load all images on a page — even those that are far below the visible area. Lazy loading delays the loading of off-screen images until the user scrolls near them. This significantly improves initial page load time.</p>
+<p>By default, browsers load all images on a page, even those that are far below the visible area. Lazy loading delays the loading of off-screen images until the user scrolls near them. This significantly improves initial page load time.</p>
 
 <pre>&lt;img src="image.jpg" loading="lazy" alt="Description" /&gt;</pre>
 
@@ -92,7 +92,7 @@
 
 <ul class="benefits">
   <li><strong>Largest Contentful Paint (LCP):</strong> this measures how quickly the largest content element on the page loads. In most cases, that element is a hero image or banner. A large, unoptimized hero image is the most common reason for a poor LCP score.</li>
-  <li><strong>Cumulative Layout Shift (CLS):</strong> this measures visual stability — whether elements jump around as the page loads. Images without explicit width and height attributes cause layout shifts because the browser doesn't know how much space to reserve before the image loads. Always set <code>width</code> and <code>height</code> attributes on your images.</li>
+  <li><strong>Cumulative Layout Shift (CLS):</strong> this measures visual stability, whether elements jump around as the page loads. Images without explicit width and height attributes cause layout shifts because the browser doesn't know how much space to reserve before the image loads. Always set <code>width</code> and <code>height</code> attributes on your images.</li>
 </ul>
 
 <h2>Image Optimization Checklist</h2>
@@ -113,9 +113,9 @@
 <ul>
   <li><a href="/blog/png-vs-jpg-guide">PNG vs JPG: Which Image Format Should You Use?</a></li>
   <li><a href="/blog/how-to-resize-images-for-social-media">How to Resize Images for Social Media</a></li>
-  <li><a href="/compress-jpg">Compress JPG</a> — try the tool now</li>
-  <li><a href="/how-to-compress-jpg">How to Compress a JPG File</a> — step-by-step instructions for the tool itself.</li>
-  <li><a href="/how-to-resize-image">How to Resize an Image for Social Media</a> — step-by-step instructions for the tool itself.</li>
+  <li><a href="/compress-jpg">Compress JPG</a>: try the tool now</li>
+  <li><a href="/how-to-compress-jpg">How to Compress a JPG File</a>: step-by-step instructions for the tool itself.</li>
+  <li><a href="/how-to-resize-image">How to Resize an Image for Social Media</a>: step-by-step instructions for the tool itself.</li>
 </ul>
 
 </article>

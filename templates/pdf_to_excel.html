@@ -57,7 +57,7 @@
     tables. Tables without visible borders, scanned images of tables, or
     complex merged-cell layouts may not be detected accurately or at all. If a
     page contains no detectable table, its content won't appear in the output.
-    This tool is not OCR — it reads the PDF's underlying table structure, so it
+    This tool is not OCR. It reads the PDF's underlying table structure, so it
     can't extract tables from scanned image-only pages. For plain text
     instead, try <a href="/pdf-to-text">PDF to Text</a>.
   </p>
@@ -65,13 +65,13 @@
   <h2>Frequently Asked Questions</h2>
 
   <h3>Will this work on scanned PDFs?</h3>
-  <p>No. This tool reads table structures from digitally-created PDFs — it doesn't perform OCR, so tables inside scanned images won't be detected.</p>
+  <p>No. This tool reads table structures from digitally-created PDFs. It doesn't perform OCR, so tables inside scanned images won't be detected.</p>
 
   <h3>What kind of tables convert best?</h3>
   <p>Tables with visible gridlines or clear borders convert most reliably. Loosely spaced text without borders may not be detected as a table.</p>
 
   <h3>Will formulas or cell formatting be preserved?</h3>
-  <p>No, only the extracted text values are placed into cells — formulas, colors, and formatting from the original PDF are not recreated.</p>
+  <p>No, only the extracted text values are placed into cells. Formulas, colors, and formatting from the original PDF are not recreated.</p>
 
   <h3>What if my PDF has more than one table?</h3>
   <p>The tool extracts one table per page. If your tables are each on their own page, all of them will be included in the output, in page order. If two or more separate tables appear on the same page, only one of them is extracted.</p>
@@ -96,9 +96,9 @@
 {% endblock %}
 
 {% block jsonld %}{% from "components/jsonld.html" import webapp, faqpage %}{{ webapp(self.title(), self.description(), request.path) }}{{ faqpage([
-  {"q": "Will this work on scanned PDFs?", "a": "No. This tool reads table structures from digitally-created PDFs — it doesn't perform OCR, so tables inside scanned images won't be detected."},
+  {"q": "Will this work on scanned PDFs?", "a": "No. This tool reads table structures from digitally-created PDFs. It doesn't perform OCR, so tables inside scanned images won't be detected."},
   {"q": "What kind of tables convert best?", "a": "Tables with visible gridlines or clear borders convert most reliably. Loosely spaced text without borders may not be detected as a table."},
-  {"q": "Will formulas or cell formatting be preserved?", "a": "No, only the extracted text values are placed into cells — formulas, colors, and formatting from the original PDF are not recreated."},
+  {"q": "Will formulas or cell formatting be preserved?", "a": "No, only the extracted text values are placed into cells. Formulas, colors, and formatting from the original PDF are not recreated."},
   {"q": "What if my PDF has more than one table?", "a": "The tool extracts one table per page. If your tables are each on their own page, all of them will be included in the output, in page order. If two or more separate tables appear on the same page, only one of them is extracted."},
   {"q": "Are my files kept private?", "a": "Yes. Uploaded files are automatically deleted from our server shortly after processing."}
 ]) }}{% endblock %}

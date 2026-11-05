@@ -31,8 +31,8 @@
   <h2>Extract Images from PDF Online</h2>
 
   <p>
-    Pull every embedded image out of a PDF — photos, graphics, scanned
-    illustrations — as individual downloadable files, at their original
+    Pull every embedded image out of a PDF (photos, graphics, scanned
+    illustrations) as individual downloadable files, at their original
     embedded quality. Useful when you need to reuse an image that's stuck
     inside a PDF but don't have the source file.
   </p>
@@ -55,7 +55,7 @@
   <h2>Important considerations</h2>
 
   <p>
-    This extracts images exactly as they're embedded in the PDF — it doesn't
+    This extracts images exactly as they're embedded in the PDF. It doesn't
     render or rasterize the page, so vector graphics or text won't be
     captured, only actual embedded image objects (JPG, PNG, etc.). Up to 50
     images are extracted per upload; if a document contains more, only the
@@ -67,13 +67,13 @@
   <h2>Frequently Asked Questions</h2>
 
   <h3>What image formats are extracted?</h3>
-  <p>Images come out in their original embedded format — usually JPG or PNG, whichever the PDF used internally. No conversion is applied.</p>
+  <p>Images come out in their original embedded format, usually JPG or PNG, whichever the PDF used internally. No conversion is applied.</p>
 
   <h3>Is there a limit on how many images can be extracted?</h3>
   <p>Yes, up to 50 images per upload. Documents with more embedded images will only have the first 50 extracted.</p>
 
   <h3>Will this extract charts, diagrams, or vector graphics?</h3>
-  <p>Only actual embedded image objects are extracted. Vector graphics, shapes, and text are not images and won't be pulled out — use <a href="/pdf-to-jpg">PDF to JPG</a> if you want a rendered snapshot of a whole page instead.</p>
+  <p>Only actual embedded image objects are extracted. Vector graphics, shapes, and text are not images and won't be pulled out. Use <a href="/pdf-to-jpg">PDF to JPG</a> if you want a rendered snapshot of a whole page instead.</p>
 
   <h3>Does image quality stay the same as in the PDF?</h3>
   <p>Yes. Images are extracted at their original embedded resolution and quality, with no re-compression.</p>
@@ -92,9 +92,9 @@
 {% endblock %}
 
 {% block jsonld %}{% from "components/jsonld.html" import webapp, faqpage %}{{ webapp(self.title(), self.description(), request.path) }}{{ faqpage([
-  {"q": "What image formats are extracted?", "a": "Images come out in their original embedded format — usually JPG or PNG, whichever the PDF used internally. No conversion is applied."},
+  {"q": "What image formats are extracted?", "a": "Images come out in their original embedded format, usually JPG or PNG, whichever the PDF used internally. No conversion is applied."},
   {"q": "Is there a limit on how many images can be extracted?", "a": "Yes, up to 50 images per upload. Documents with more embedded images will only have the first 50 extracted."},
-  {"q": "Will this extract charts, diagrams, or vector graphics?", "a": "Only actual embedded image objects are extracted. Vector graphics, shapes, and text are not images and won't be pulled out — use PDF to JPG if you want a rendered snapshot of a whole page instead."},
+  {"q": "Will this extract charts, diagrams, or vector graphics?", "a": "Only actual embedded image objects are extracted. Vector graphics, shapes, and text are not images and won't be pulled out. Use PDF to JPG if you want a rendered snapshot of a whole page instead."},
   {"q": "Does image quality stay the same as in the PDF?", "a": "Yes. Images are extracted at their original embedded resolution and quality, with no re-compression."},
   {"q": "Are my files kept private?", "a": "Yes. Uploaded files are automatically deleted from our server after processing."}
 ]) }}{% endblock %}

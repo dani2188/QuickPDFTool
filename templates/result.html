@@ -16,12 +16,11 @@
 
   {% if target_info %}
     {% if target_info.met %}
-    <p class="target-met">🎯 Target reached — your file is under {{ target_info.target_mb }} MB.</p>
+    <p class="target-met">🎯 Target reached: your file is under {{ target_info.target_mb }} MB.</p>
     {% else %}
     <p class="target-missed">
       ⚠️ We compressed as much as possible, but couldn't get under {{ target_info.target_mb }} MB
-      without destroying quality. This can happen with image-heavy or already-compressed PDFs —
-      try splitting the document into smaller parts instead.
+      without destroying quality. This can happen with image-heavy or already-compressed PDFs. Try splitting the document into smaller parts instead.
     </p>
     {% endif %}
   {% endif %}

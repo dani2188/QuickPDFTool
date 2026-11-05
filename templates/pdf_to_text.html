@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% set breadcrumb_label = "PDF to Text" %} {% block title %}PDF to Text Converter – Extract Text from PDF Online{% endblock %}
-{% block description %} Extract the text layer from a PDF into a plain .txt file. Free, no signup — works on digitally-created PDFs, not scanned images. {% endblock %} {% block content %}
+{% block description %} Extract the text layer from a PDF into a plain .txt file. Free, no signup. Works on digitally-created PDFs, not scanned images. {% endblock %} {% block content %}
 
 <h1>PDF to Text</h1>
 
@@ -31,8 +31,8 @@
   <h2>Extract Text from a PDF</h2>
 
   <p>
-    This tool reads the actual text layer embedded in your PDF — the same underlying text you could
-    select and copy in a PDF viewer — and writes it out to a plain .txt file, one page's text after
+    This tool reads the actual text layer embedded in your PDF, the same underlying text you could
+    select and copy in a PDF viewer, and writes it out to a plain .txt file, one page's text after
     another, separated by a blank line. It doesn't try to preserve columns, tables, or formatting;
     the output is deliberately plain so it's easy to search, paste into another document, or feed
     into another tool.
@@ -40,8 +40,8 @@
 
   <p>
     <strong>This only works on PDFs that already contain real text.</strong> If your PDF is a scan or a
-    photograph of a document, there's no text layer to read — those pages have no embedded text at all,
-    only pixels — and this tool has no OCR (optical character recognition) to read text out of an image.
+    photograph of a document, there's no text layer to read. Those pages have no embedded text at all,
+    only pixels, and this tool has no OCR (optical character recognition) to read text out of an image.
     Pages with no extractable text are simply skipped, which can mean an empty or near-empty result for
     a fully scanned document.
   </p>
@@ -66,13 +66,13 @@
   <h3>Will this work on a scanned document?</h3>
   <p>
     Not reliably. A scanned PDF is really a sequence of page images with no embedded text, so there's
-    nothing for this tool to extract — it doesn't perform OCR. If you need text out of a scanned
+    nothing for this tool to extract. It doesn't perform OCR. If you need text out of a scanned
     document, you'll need an OCR-specific tool.
   </p>
 
   <h3>Does it preserve tables, columns, or formatting?</h3>
   <p>
-    No. The output is plain text with each page's content separated by a blank line — column layouts,
+    No. The output is plain text with each page's content separated by a blank line. Column layouts,
     tables, and font styling are not preserved. If you need to keep formatting, use
     <a href="/pdf-to-word">PDF to Word</a> instead.
   </p>
@@ -80,7 +80,7 @@
   <h3>Why is my output file empty or missing some pages?</h3>
   <p>
     Pages with no extractable text (usually scanned pages, or pages that are entirely images) are
-    skipped rather than producing garbled output — an empty result means the source PDF had no
+    skipped rather than producing garbled output. An empty result means the source PDF had no
     embedded text at all.
   </p>
 
@@ -106,9 +106,9 @@
 {% from "components/jsonld.html" import webapp, faqpage %}
 {{ webapp(self.title(), self.description(), request.path) }}
 {{ faqpage([
-  {"q": "Will this work on a scanned document?", "a": "Not reliably. A scanned PDF is really a sequence of page images with no embedded text, so there's nothing for this tool to extract — it doesn't perform OCR. If you need text out of a scanned document, you'll need an OCR-specific tool."},
-  {"q": "Does it preserve tables, columns, or formatting?", "a": "No. The output is plain text with each page's content separated by a blank line — column layouts, tables, and font styling are not preserved. If you need to keep formatting, use PDF to Word instead."},
-  {"q": "Why is my output file empty or missing some pages?", "a": "Pages with no extractable text (usually scanned pages, or pages that are entirely images) are skipped rather than producing garbled output — an empty result means the source PDF had no embedded text at all."},
+  {"q": "Will this work on a scanned document?", "a": "Not reliably. A scanned PDF is really a sequence of page images with no embedded text, so there's nothing for this tool to extract. It doesn't perform OCR. If you need text out of a scanned document, you'll need an OCR-specific tool."},
+  {"q": "Does it preserve tables, columns, or formatting?", "a": "No. The output is plain text with each page's content separated by a blank line. Column layouts, tables, and font styling are not preserved. If you need to keep formatting, use PDF to Word instead."},
+  {"q": "Why is my output file empty or missing some pages?", "a": "Pages with no extractable text (usually scanned pages, or pages that are entirely images) are skipped rather than producing garbled output. An empty result means the source PDF had no embedded text at all."},
   {"q": "Is the text extracted in reading order?", "a": "Text is pulled out in the order it's stored in the PDF, which usually matches reading order for simple single-column documents. Multi-column layouts, sidebars, or complex page designs can come out in a different order than you'd read them visually, since the tool doesn't try to detect columns."}
 ]) }}
 {% endblock %}

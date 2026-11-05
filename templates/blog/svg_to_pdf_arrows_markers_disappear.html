@@ -21,7 +21,7 @@ Why SVG arrowheads can disappear or move during PDF conversion, how hellobrivio 
 
 <p>
 You convert a flowchart or diagram from SVG to PDF, and the shapes and connecting lines all show up
-correctly — but the arrowheads don't. The line between two boxes is there; the little triangle at the end
+correctly, but the arrowheads don't. The line between two boxes is there; the little triangle at the end
 of it isn't. Nothing looks broken elsewhere in the file, which makes it a confusing, specific kind of
 problem. The reason usually comes down to one detail of how the arrowhead was built in the original SVG: it
 was probably defined as a marker, not as an ordinary shape, and markers are handled differently during
@@ -31,7 +31,7 @@ conversion than the rest of the drawing.
 <h2>What Is an SVG Marker?</h2>
 
 <p>
-Most of what's visible in an SVG — rectangles, lines, text — is geometry described directly where it
+Most of what's visible in an SVG (rectangles, lines, text) is geometry described directly where it
 appears. A marker works differently. It's a small piece of reusable artwork, defined once, that a line or
 path can reference by name to decorate its start or end point. A line doesn't draw its own arrowhead;
 instead it says, in effect, "attach the artwork named <code>arrow</code> to my end point," using a
@@ -41,7 +41,7 @@ positioned, rotated, and scaled onto the line automatically by whatever is rende
 </p>
 
 <p>
-This is a convenient way to build a diagram — draw the arrowhead once, reuse it on every connector — but it
+This is a convenient way to build a diagram (draw the arrowhead once, reuse it on every connector), but it
 means the arrowhead isn't part of the line's own geometry. Rendering it correctly requires actually
 resolving that reference: finding the named marker, figuring out where the line ends and which direction
 it's pointing, and drawing the marker's artwork at that spot, rotated to match.
@@ -53,14 +53,14 @@ it's pointing, and drawing the marker's artwork at that spot, rotated to match.
 hellobrivio's <a href="/svg-to-pdf">SVG to PDF</a> tool converts each uploaded file using PyMuPDF, which does
 the actual work of turning SVG drawing instructions into PDF page content. We tested what our conversion
 path does with a marker-based arrow before any special handling is applied, using the simplest possible
-case: a single straight line with a triangular <code>marker-end</code>. The result was consistent — the
+case: a single straight line with a triangular <code>marker-end</code>. The result was consistent: the
 line itself converted and appeared in the output PDF, but the arrowhead did not. Nothing about the line's
 own geometry was affected; the marker reference attached to it simply wasn't resolved into visible artwork.
 </p>
 
 <p>
 This is the important distinction to hold onto: the problem isn't that PDF, or this conversion path, can't
-represent a triangle or an arrow shape — obviously it can, and does, once that shape exists as ordinary
+represent a triangle or an arrow shape. Obviously it can, and does, once that shape exists as ordinary
 geometry. The issue is specifically the indirection a marker introduces. The arrowhead is defined once,
 somewhere else in the file, and referenced by name; if that reference doesn't get expanded into real
 geometry during conversion, there's nothing left to draw at the line's end.
@@ -71,8 +71,7 @@ geometry during conversion, there's nothing left to draw at the line's end.
 <p>
 Because of that, hellobrivio's current SVG preprocessing looks at every uploaded SVG before handing it to
 PyMuPDF, and for lines, polylines, and paths that reference a marker, it works out where that marker's
-artwork should end up — the position at the relevant end of the line, rotated to match the line's direction
-— and rewrites it as ordinary, explicit path geometry placed directly at that spot. From that point on,
+artwork should end up (the position at the relevant end of the line, rotated to match the line's direction) and rewrites it as ordinary, explicit path geometry placed directly at that spot. From that point on,
 there's no marker reference left to resolve; it's just another shape on the page, the same as anything else
 in the drawing.
 </p>
@@ -90,12 +89,12 @@ range of configurations. Arrowheads came through correctly positioned and correc
 </p>
 
 <ul class="benefits">
-  <li>Straight lines — horizontal, vertical, and diagonal</li>
+  <li>Straight lines: horizontal, vertical, and diagonal</li>
   <li>Polylines (multi-segment straight paths)</li>
   <li>Paths described with simple, absolute <code>M</code>/<code>L</code> coordinates</li>
   <li><code>marker-start</code>, <code>marker-end</code>, and both together on the same line</li>
   <li>Multiple separate arrows within the same diagram</li>
-  <li>Arrows combined with text and other shapes in the same file — the rest of the diagram wasn't
+  <li>Arrows combined with text and other shapes in the same file: the rest of the diagram wasn't
   affected by the presence of an arrow</li>
   <li><code>orient="auto"</code>, so the arrowhead rotates to follow the line's direction rather than
   staying fixed</li>
@@ -103,7 +102,7 @@ range of configurations. Arrowheads came through correctly positioned and correc
 
 <p>
 The marker artwork itself needs to be built from a <code>&lt;path&gt;</code> or a <code>&lt;polygon&gt;</code>
-for this to work — those are the two shape types this preprocessing knows how to turn into explicit geometry.
+for this to work. Those are the two shape types this preprocessing knows how to turn into explicit geometry.
 </p>
 
 <h2>When the Arrow Is Still Missing or Misplaced</h2>
@@ -115,7 +114,7 @@ the arrow not appearing at all, and the arrow appearing somewhere it shouldn't.
 
 <p>
 <strong>Cases where the arrowhead can end up in the wrong place:</strong> if the line or path carrying the
-marker — or a parent group it sits inside — has its own <code>transform</code> attribute (a
+marker, or a parent group it sits inside, has its own <code>transform</code> attribute (a
 translate, rotate, or scale applied in the SVG), the newly generated arrowhead geometry can land at the
 wrong position relative to the line. In testing, the line itself moved correctly to its transformed
 location, while the generated arrowhead stayed anchored to the line's untransformed coordinates, so the two
@@ -132,8 +131,8 @@ no longer lined up.
   misplaced arrowhead rather than a correctly positioned one.</li>
   <li><strong>Arc commands.</strong> Paths that use an elliptical arc command aren't handled correctly
   either, with the same risk of a misplaced result.</li>
-  <li><strong>Marker artwork built from a <code>&lt;circle&gt;</code>.</strong> A dot-style marker — a
-  filled circle at the end of a connector, instead of a triangular arrowhead — isn't converted by this
+  <li><strong>Marker artwork built from a <code>&lt;circle&gt;</code>.</strong> A dot-style marker (a
+  filled circle at the end of a connector, instead of a triangular arrowhead) isn't converted by this
   preprocessing and won't appear in the output. The same applies to marker artwork built from other
   structures this preprocessing doesn't specifically handle, such as nested groups or referenced/reused
   elements.</li>
@@ -154,7 +153,7 @@ above:
   <li><strong>Flatten transforms before exporting, if your design tool supports it.</strong> Many vector
   editors have an option to "flatten" or "apply" transforms so that shapes are described with their final,
   absolute coordinates rather than a transform layered on top. Where that option exists, using it before
-  exporting to SVG removes the specific condition that causes arrowhead misplacement — though not every
+  exporting to SVG removes the specific condition that causes arrowhead misplacement, though not every
   editor names or implements this the same way, so it's worth checking the result either way.</li>
   <li><strong>Prefer simple, absolute path geometry for the connecting lines themselves</strong> where your
   tool gives you the choice, rather than paths built from relative or curved commands.</li>
@@ -162,10 +161,9 @@ above:
   than a circle or a more complex nested structure, if your diagramming tool lets you choose.</li>
   <li><strong>Avoid relying on marker <code>viewBox</code> scaling</strong> when the exact size of the
   arrowhead matters for the final result.</li>
-  <li><strong>As a fallback, convert the arrowheads to ordinary shapes yourself before uploading</strong> —
-  most vector editors have an "expand" or "outline" feature that turns a marker-based decoration into a
+  <li><strong>As a fallback, convert the arrowheads to ordinary shapes yourself before uploading</strong>: most vector editors have an "expand" or "outline" feature that turns a marker-based decoration into a
   plain shape sitting directly on the canvas. Once an arrowhead is ordinary geometry rather than a marker
-  reference, this conversion path has nothing left to resolve — it converts like any other shape in the
+  reference, this conversion path has nothing left to resolve. It converts like any other shape in the
   file.</li>
 </ul>
 
@@ -173,8 +171,8 @@ above:
 
 <p>
 A missing or misplaced arrowhead is a narrow, specific symptom, not a sign that the conversion failed
-generally. In testing, everything else in a diagram — the boxes, the lines themselves, the text labels,
-other shapes — converted normally alongside an arrow that had a problem. It's worth opening the resulting
+generally. In testing, everything else in a diagram (the boxes, the lines themselves, the text labels,
+other shapes) converted normally alongside an arrow that had a problem. It's worth opening the resulting
 PDF and checking specifically for arrowheads rather than assuming the whole file needs to be redone.
 </p>
 
@@ -234,7 +232,7 @@ misplaced arrowhead is a localized symptom, not an indicator that the whole file
 
 <h2>Related Guides</h2>
 <ul>
-  <li><a href="/how-to-svg-to-pdf">How to Convert SVG to PDF</a> — step-by-step instructions for the tool itself.</li>
+  <li><a href="/how-to-svg-to-pdf">How to Convert SVG to PDF</a>: step-by-step instructions for the tool itself.</li>
 </ul>
 
 </article>

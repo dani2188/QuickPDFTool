@@ -2,12 +2,12 @@
 {% set breadcrumb_label = "Hide Sensitive Information in a PDF" %}
 
 {% block title %}Hide Sensitive Information in a PDF – Redact PDF Online{% endblock %}
-{% block description %}Black out, blur, or pixelate confidential text, numbers, or images in a PDF before sharing. Draw redaction boxes on any page and download a permanently secured PDF — free, no signup.{% endblock %}
+{% block description %}Black out, blur, or pixelate confidential text, numbers, or images in a PDF before sharing. Draw redaction boxes on any page and download a permanently secured PDF. Free, no signup.{% endblock %}
 
 {% block content %}
 
 <h1>Hide Sensitive Information in a PDF</h1>
-<p class="subtitle">Black out, blur, or pixelate confidential text, numbers, or images — then download a PDF that permanently hides them. Also known as redacting a PDF.</p>
+<p class="subtitle">Black out, blur, or pixelate confidential text, numbers, or images, then download a PDF that permanently hides them. Also known as redacting a PDF.</p>
 
 {% if not preview %}
 <div class="feature-guide">
@@ -15,7 +15,7 @@
   <ul class="steps">
     <li><span class="step-number">1</span> Upload your PDF document below</li>
     <li><span class="step-number">2</span> Choose the page and draw a box over anything you want to hide</li>
-    <li><span class="step-number">3</span> Pick a style — black, white, blur, or pixelate</li>
+    <li><span class="step-number">3</span> Pick a style: black, white, blur, or pixelate</li>
     <li><span class="step-number">4</span> Click "Apply Redaction" and download the secured PDF</li>
   </ul>
   <p style="margin-top: 12px; font-size: 0.9rem;">
@@ -79,7 +79,7 @@
       <img
         src="{{ url_for('static', filename=preview) }}"
         id="pdfPreview"
-        alt="Preview of page {{ page }} — draw a box over anything to redact"
+        alt="Preview of page {{ page }}. Draw a box over anything to redact"
         draggable="false"
       />
     </div>
@@ -99,12 +99,12 @@
 
 {% if not preview %}
 <div class="seo-content">
-  <h2>Redact PDF Online — Permanently Hide Confidential Information</h2>
+  <h2>Redact PDF Online: Permanently Hide Confidential Information</h2>
 
   <p>
     Use this tool to black out, blur, or pixelate sensitive text, numbers, signatures, or images in a PDF
     before you share it. Unlike simply drawing a box over text in a PDF viewer, this tool removes the
-    underlying content from the page — so it can't be recovered by copying text, editing the file, or
+    underlying content from the page, so it can't be recovered by copying text, editing the file, or
     zooming into a blurred region.
   </p>
 
@@ -119,14 +119,14 @@
   <h3>Privacy &amp; security</h3>
   <p>
     Your file is processed on a secure server and deleted automatically within minutes. Redaction is
-    permanent — the covered content is removed from the page data, not just hidden underneath a shape.
+    permanent. The covered content is removed from the page data, not just hidden underneath a shape.
   </p>
 
   <h3>Important considerations</h3>
   <ul class="benefits">
     <li><strong>Black is the most secure style.</strong> It leaves no visual trace of what was underneath. Blur and pixelate keep a hint of the original (useful for photos or signatures) while still permanently deleting the underlying data.</li>
-    <li><strong>Redaction can't be undone after download.</strong> Once you apply it and download the result, the covered content is gone from that file for good — keep your original, unredacted PDF if you might need the information again later.</li>
-    <li><strong>You draw the boxes yourself.</strong> This tool doesn't automatically detect sensitive information like names or numbers — you position each redaction box manually over what needs to be hidden, so double-check every page before applying.</li>
+    <li><strong>Redaction can't be undone after download.</strong> Once you apply it and download the result, the covered content is gone from that file for good. Keep your original, unredacted PDF if you might need the information again later.</li>
+    <li><strong>You draw the boxes yourself.</strong> This tool doesn't automatically detect sensitive information like names or numbers. You position each redaction box manually over what needs to be hidden, so double-check every page before applying.</li>
   </ul>
 
   <h3>Frequently Asked Questions</h3>
@@ -134,11 +134,11 @@
   <h4>Is the hidden content really gone, or just covered up?</h4>
   <p>
     Really gone. The text or image data inside each redaction box is deleted from the page itself, not
-    just hidden beneath a black shape — it can't be recovered by selecting text, copying, or editing
+    just hidden beneath a black shape. It can't be recovered by selecting text, copying, or editing
     the PDF.
   </p>
 
-  <h4>Which style should I use — black, white, blur, or pixelate?</h4>
+  <h4>Which style should I use: black, white, blur, or pixelate?</h4>
   <p>
     Black is the most secure and the default choice. White works better on forms with a light
     background. Blur and pixelate are useful when you want to obscure something like a face or
@@ -148,12 +148,12 @@
   <h4>Can I redact multiple pages at once?</h4>
   <p>
     Yes. Navigate between pages using Previous/Next and add redaction boxes on as many pages as you
-    need — everything is applied together when you click "Apply Redaction &amp; Download."
+    need. Everything is applied together when you click "Apply Redaction &amp; Download."
   </p>
 
   <h4>Does this automatically find sensitive information for me?</h4>
   <p>
-    No. You draw each redaction box yourself over the text or image you want removed — there's no
+    No. You draw each redaction box yourself over the text or image you want removed. There's no
     automatic detection of names, numbers, or other sensitive data.
   </p>
 
@@ -523,9 +523,9 @@
 {% from "components/jsonld.html" import webapp, faqpage %}
 {{ webapp(self.title(), self.description(), request.path) }}
 {{ faqpage([
-  {"q": "Is the hidden content really gone, or just covered up?", "a": "Really gone. The text or image data inside each redaction box is deleted from the page itself, not just hidden beneath a black shape — it can't be recovered by selecting text, copying, or editing the PDF."},
-  {"q": "Which style should I use — black, white, blur, or pixelate?", "a": "Black is the most secure and the default choice. White works better on forms with a light background. Blur and pixelate are useful when you want to obscure something like a face or signature while keeping a visual sense that something was there."},
-  {"q": "Can I redact multiple pages at once?", "a": "Yes. Navigate between pages using Previous/Next and add redaction boxes on as many pages as you need — everything is applied together when you click \"Apply Redaction & Download.\""},
-  {"q": "Does this automatically find sensitive information for me?", "a": "No. You draw each redaction box yourself over the text or image you want removed — there's no automatic detection of names, numbers, or other sensitive data."}
+  {"q": "Is the hidden content really gone, or just covered up?", "a": "Really gone. The text or image data inside each redaction box is deleted from the page itself, not just hidden beneath a black shape. It can't be recovered by selecting text, copying, or editing the PDF."},
+  {"q": "Which style should I use: black, white, blur, or pixelate?", "a": "Black is the most secure and the default choice. White works better on forms with a light background. Blur and pixelate are useful when you want to obscure something like a face or signature while keeping a visual sense that something was there."},
+  {"q": "Can I redact multiple pages at once?", "a": "Yes. Navigate between pages using Previous/Next and add redaction boxes on as many pages as you need. Everything is applied together when you click \"Apply Redaction & Download.\""},
+  {"q": "Does this automatically find sensitive information for me?", "a": "No. You draw each redaction box yourself over the text or image you want removed. There's no automatic detection of names, numbers, or other sensitive data."}
 ]) }}
 {% endblock %}

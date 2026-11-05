@@ -5,7 +5,7 @@
 
 {% block title %}How to Remove the Background from a Photo Online{% endblock %}
 
-{% block description %}Learn how to remove an image's background automatically and get a clean transparent PNG — for product photos, profile pictures, and creative work. Step-by-step guide and FAQs.{% endblock %}
+{% block description %}Learn how to remove an image's background automatically and get a clean transparent PNG, for product photos, profile pictures, and creative work. Step-by-step guide and FAQs.{% endblock %}
 
 {% block content %}
 
@@ -22,7 +22,7 @@
 <p>
 Cutting a subject out from its background used to mean a fiddly manual selection in an image editor.
 Automatic background removal detects the main subject and strips everything else out in seconds,
-leaving a transparent PNG you can drop onto any background — a product listing, a presentation slide,
+leaving a transparent PNG you can drop onto any background: a product listing, a presentation slide,
 a different photo entirely.
 </p>
 
@@ -36,7 +36,7 @@ upload area or dragging it in.
 <h2>Step 2 – Click Remove Background</h2>
 
 <p>
-The subject is detected automatically — no manual selection or masking needed. Processing usually
+The subject is detected automatically, no manual selection or masking needed. Processing usually
 takes a few seconds.
 </p>
 
@@ -127,7 +127,7 @@ that as a JPG.
 <h2>Frequently Asked Questions</h2>
 
 <h3>Can I use the result commercially?</h3>
-<p>Yes — the transparent PNG is your processed image, free to use for products, marketing, or any other purpose.</p>
+<p>Yes. The transparent PNG is your processed image, free to use for products, marketing, or any other purpose.</p>
 
 <h3>The photo has several people or objects. Which one is kept?</h3>
 <p>The model decides what counts as the main subject and you cannot point at one. If it keeps the wrong one, crop the photo down to the subject you want in your phone's gallery or any editor, then upload the cropped copy.</p>
@@ -157,7 +157,7 @@ that as a JPG.
 {% from "components/jsonld.html" import howto, faqpage %}
 {{ howto(self.title(), self.description(), request.path, ["Open the Background Remover", "Click Remove Background", "Download Your Transparent PNG"]) }}
 {{ faqpage([
-  {"q": "Can I use the result commercially?", "a": "Yes — the transparent PNG is your processed image, free to use for products, marketing, or any other purpose."},
+  {"q": "Can I use the result commercially?", "a": "Yes. The transparent PNG is your processed image, free to use for products, marketing, or any other purpose."},
   {"q": "The photo has several people or objects. Which one is kept?", "a": "The model decides what counts as the main subject and you cannot point at one. If it keeps the wrong one, crop the photo down to the subject you want in your phone's gallery or any editor, then upload the cropped copy."},
   {"q": "How do I get a white or coloured background instead of transparency?", "a": "This tool only delivers transparency. The Resize Image tool fills transparent areas with white, so running the cut-out through it gives you a white background at a preset size. We confirmed that a fully transparent PNG comes out solid white. For any other colour, set the background in a slide, document or image editor."},
   {"q": "Is the result the same resolution as my photo?", "a": "Yes. In our test the PNG had exactly the pixel dimensions of the uploaded photo, including a photo that needed rotating according to its camera orientation. The cut-out edge is computed from a much smaller copy of the photo and scaled up, so it follows the outline of the subject but not strand-level detail."},

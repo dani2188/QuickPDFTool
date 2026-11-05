@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% set breadcrumb_label = "Add Text to PDF" %} {% block title %}Add Text to PDF Online – Type Directly onto a PDF{% endblock %} {% block description %}Add typed text anywhere on a PDF page — a note, a date, a label. Free, no signup.{% endblock %} {% block content %}
+{% set breadcrumb_label = "Add Text to PDF" %} {% block title %}Add Text to PDF Online – Type Directly onto a PDF{% endblock %} {% block description %}Add typed text anywhere on a PDF page: a note, a date, a label. Free, no signup.{% endblock %} {% block content %}
 
 <h1>Add Text to PDF</h1>
 
@@ -183,8 +183,8 @@
     Add Text to PDF lets you type a note, a date, a label, or a short line of
     text directly onto a PDF page without opening desktop software. Upload a
     PDF, drag the text box to wherever it needs to sit on the page, then apply
-    it and download the edited file. It's aimed at quick, one-off edits — a
-    signature date, a stamp, a filled-in blank on a form — not full document
+    it and download the edited file. It's aimed at quick, one-off edits (a
+    signature date, a stamp, a filled-in blank on a form), not full document
     authoring.
   </p>
 
@@ -213,7 +213,7 @@
     add text, then <a href="/merge-pdf">merge</a> them back together).
   </p>
   <p>
-    There's a single font available, with adjustable size and color — this
+    There's a single font available, with adjustable size and color. This
     isn't a full text editor, so it won't match an existing font already used
     in the document.
   </p>
@@ -221,7 +221,7 @@
   <h2>Frequently Asked Questions</h2>
 
   <h3>Can I add text to every page at once?</h3>
-  <p>Not in one pass — this tool places text on the first page only. For multiple pages, split the PDF, add text to each page individually, then merge the results back together.</p>
+  <p>Not in one pass. This tool places text on the first page only. For multiple pages, split the PDF, add text to each page individually, then merge the results back together.</p>
 
   <h3>Can I change the font?</h3>
   <p>You can change the size and color of the text, but the font itself is fixed. If you need custom fonts or full formatting control, this tool isn't the right fit.</p>
@@ -250,7 +250,7 @@
 {% endblock %}
 
 {% block jsonld %}{% from "components/jsonld.html" import webapp, faqpage %}{{ webapp(self.title(), self.description(), request.path) }}{% if not preview %}{{ faqpage([
-  {"q": "Can I add text to every page at once?", "a": "Not in one pass — this tool places text on the first page only. For multiple pages, split the PDF, add text to each page individually, then merge the results back together."},
+  {"q": "Can I add text to every page at once?", "a": "Not in one pass. This tool places text on the first page only. For multiple pages, split the PDF, add text to each page individually, then merge the results back together."},
   {"q": "Can I change the font?", "a": "You can change the size and color of the text, but the font itself is fixed. If you need custom fonts or full formatting control, this tool isn't the right fit."},
   {"q": "Will the position be exact?", "a": "The text box position is scaled from where you drop it in the preview to the actual PDF page coordinates, so it lands in the same relative spot you placed it."},
   {"q": "Is my file kept private?", "a": "Yes. Uploaded files and previews are automatically deleted from our server a short time after processing."}

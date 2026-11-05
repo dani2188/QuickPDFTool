@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% set breadcrumb_label = "Unlock PDF" %} {% block title %}Unlock PDF Online – Remove a PDF Password{% endblock %}
-{% block description %}Remove password protection from a PDF you own, using the password you already know. Free, no signup — this does not crack or bypass an unknown password.{% endblock %} {% block
+{% block description %}Remove password protection from a PDF you own, using the password you already know. Free, no signup. This does not crack or bypass an unknown password.{% endblock %} {% block
 content %}
 
 <h1>Unlock PDF</h1>
@@ -31,14 +31,14 @@ content %}
 
   <p>
     This tool removes password protection from a PDF and produces a new copy that opens without a
-    password. It decrypts the file using the password you provide — <strong>you need to already know
+    password. It decrypts the file using the password you provide: <strong>you need to already know
     the current password</strong>. This isn't a password-cracking or recovery tool; it doesn't guess,
     brute-force, or bypass a password you don't have.
   </p>
 
   <p>
     A common legitimate use: you password-protected a PDF yourself (or received one with a password
-    you were given) and now want a version you can open freely — for editing, archiving, or sharing
+    you were given) and now want a version you can open freely, for editing, archiving, or sharing
     with people who don't need the extra step of entering a password each time.
   </p>
 
@@ -59,16 +59,16 @@ content %}
 
   <h2>Important considerations</h2>
   <ul class="benefits">
-    <li><strong>You must know the password.</strong> If you don't, this tool can't help — it only removes protection using a password you supply, it does not recover or crack unknown passwords.</li>
+    <li><strong>You must know the password.</strong> If you don't, this tool can't help. It only removes protection using a password you supply, it does not recover or crack unknown passwords.</li>
     <li><strong>Only unlock files you have the right to unlock.</strong> Removing password protection from a document you don't own or weren't authorized to access may violate the document owner's terms or applicable law.</li>
-    <li><strong>The unlocked copy has no protection at all.</strong> Anyone with the file can open it — re-share carefully.</li>
+    <li><strong>The unlocked copy has no protection at all.</strong> Anyone with the file can open it. Re-share carefully.</li>
   </ul>
 
   <h2>Frequently Asked Questions</h2>
 
   <h3>Can this recover a password I've forgotten?</h3>
   <p>
-    No. This tool decrypts a PDF using a password you provide — it doesn't guess, crack, or bypass an
+    No. This tool decrypts a PDF using a password you provide. It doesn't guess, crack, or bypass an
     unknown password. If you've genuinely lost the password, this tool can't recover it.
   </p>
 
@@ -82,7 +82,7 @@ content %}
   <p>
     It's fine for files you own or have the right to access, such as removing a password you set
     yourself. Removing protection from a document you don't have authorization to access is a
-    different matter — use this responsibly.
+    different matter. Use this responsibly.
   </p>
 
   <h2>More PDF Tools</h2>
@@ -104,8 +104,8 @@ content %}
 {% from "components/jsonld.html" import webapp, faqpage %}
 {{ webapp(self.title(), self.description(), request.path) }}
 {{ faqpage([
-  {"q": "Can this recover a password I've forgotten?", "a": "No. This tool decrypts a PDF using a password you provide — it doesn't guess, crack, or bypass an unknown password. If you've genuinely lost the password, this tool can't recover it."},
+  {"q": "Can this recover a password I've forgotten?", "a": "No. This tool decrypts a PDF using a password you provide. It doesn't guess, crack, or bypass an unknown password. If you've genuinely lost the password, this tool can't recover it."},
   {"q": "Will my original protected file be changed?", "a": "No. Your upload generates a separate, unprotected copy for download; the original isn't modified. Both files are deleted from our server automatically after processing."},
-  {"q": "Is it legal to unlock a PDF?", "a": "It's fine for files you own or have the right to access, such as removing a password you set yourself. Removing protection from a document you don't have authorization to access is a different matter — use this responsibly."}
+  {"q": "Is it legal to unlock a PDF?", "a": "It's fine for files you own or have the right to access, such as removing a password you set yourself. Removing protection from a document you don't have authorization to access is a different matter. Use this responsibly."}
 ]) }}
 {% endblock %}

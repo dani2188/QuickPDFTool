@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% set breadcrumb_label = "Convert PNG to PDF" %} {% block title %}PNG to PDF Converter – Combine PNG Images into a PDF{% endblock %} {% block description %}Combine one or more PNG images into a single PDF, in the order you upload them. Free, no signup — note that PNG transparency does not carry over to PDF.{% endblock %} {% block content %}
+{% set breadcrumb_label = "Convert PNG to PDF" %} {% block title %}PNG to PDF Converter – Combine PNG Images into a PDF{% endblock %} {% block description %}Combine one or more PNG images into a single PDF, in the order you upload them. Free, no signup. Note that PNG transparency does not carry over to PDF.{% endblock %} {% block content %}
 
 <h1>Convert PNG to PDF</h1>
 <p class="subtitle">Combine one or more PNG images into a single PDF document.</p>
@@ -53,9 +53,9 @@
 
   <h2>Important considerations</h2>
   <ul class="benefits">
-    <li><strong>Transparency becomes white.</strong> PNG supports a transparent background, but a PDF page can't be see-through — transparent areas are placed on white.</li>
-    <li><strong>Upload order is page order,</strong> and each page matches its source image's own dimensions — there's no cropping or resizing to a uniform page size.</li>
-    <li><strong>Images are stored losslessly.</strong> Every pixel of your PNG is kept exactly as it was — no JPEG artifacts around text or lines — so a batch of large PNGs makes a correspondingly large PDF. Use <a href="/compress-pdf">Compress PDF</a> afterward if the file needs to be smaller.</li>
+    <li><strong>Transparency becomes white.</strong> PNG supports a transparent background, but a PDF page can't be see-through. Transparent areas are placed on white.</li>
+    <li><strong>Upload order is page order,</strong> and each page matches its source image's own dimensions. There's no cropping or resizing to a uniform page size.</li>
+    <li><strong>Images are stored losslessly.</strong> Every pixel of your PNG is kept exactly as it was (no JPEG artifacts around text or lines), so a batch of large PNGs makes a correspondingly large PDF. Use <a href="/compress-pdf">Compress PDF</a> afterward if the file needs to be smaller.</li>
   </ul>
 
   {% include "components/examples/png_to_pdf.html" %}
@@ -70,20 +70,19 @@
 
   <h3>Can I mix PNG and JPG images in the same PDF?</h3>
   <p>
-    Yes — use <a href="/jpg-to-pdf">JPG to PDF</a>, which accepts both formats in the same upload.
+    Yes. Use <a href="/jpg-to-pdf">JPG to PDF</a>, which accepts both formats in the same upload.
   </p>
 
   <h3>Does this reduce my file size?</h3>
   <p>
-    Not by itself. PNGs are stored losslessly, so the PDF is about the same size as the PNGs you upload —
-    a little smaller or a little larger depending on the image. Run the result through
+    Not by itself. PNGs are stored losslessly, so the PDF is about the same size as the PNGs you upload, a little smaller or a little larger depending on the image. Run the result through
     <a href="/compress-pdf">Compress PDF</a> afterward if it needs to be smaller.
   </p>
 
   <h3>Does the order I upload files in matter?</h3>
   <p>
     Yes. The first image you select becomes page 1 of the PDF, and the rest follow in the order they
-    were uploaded — check the result and re-upload in the right order if the pages come out reversed
+    were uploaded. Check the result and re-upload in the right order if the pages come out reversed
     or shuffled.
   </p>
 
@@ -105,8 +104,8 @@
 {{ webapp(self.title(), self.description(), request.path) }}
 {{ faqpage([
   {"q": "What happens to transparent areas in my PNG?", "a": "They're placed on a white background, since a PDF page can't be see-through. If you need the transparency preserved for further editing, keep working with the PNG directly."},
-  {"q": "Can I mix PNG and JPG images in the same PDF?", "a": "Yes — use JPG to PDF, which accepts both formats in the same upload."},
-  {"q": "Does this reduce my file size?", "a": "Not by itself. PNGs are stored losslessly, so the PDF is about the same size as the PNGs you upload — a little smaller or a little larger depending on the image. Run the result through Compress PDF afterward if it needs to be smaller."},
-  {"q": "Does the order I upload files in matter?", "a": "Yes. The first image you select becomes page 1 of the PDF, and the rest follow in the order they were uploaded — check the result and re-upload in the right order if the pages come out reversed or shuffled."}
+  {"q": "Can I mix PNG and JPG images in the same PDF?", "a": "Yes. Use JPG to PDF, which accepts both formats in the same upload."},
+  {"q": "Does this reduce my file size?", "a": "Not by itself. PNGs are stored losslessly, so the PDF is about the same size as the PNGs you upload. A little smaller or a little larger depending on the image. Run the result through Compress PDF afterward if it needs to be smaller."},
+  {"q": "Does the order I upload files in matter?", "a": "Yes. The first image you select becomes page 1 of the PDF, and the rest follow in the order they were uploaded. Check the result and re-upload in the right order if the pages come out reversed or shuffled."}
 ]) }}
 {% endblock %}

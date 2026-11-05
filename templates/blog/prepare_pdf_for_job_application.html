@@ -22,7 +22,7 @@ A practical checklist for turning your resume into a PDF that opens cleanly, fit
 <p>
 Most job application systems (Applicant Tracking Systems, or ATS) accept a PDF resume, but "accept" and
 "display correctly" aren't the same thing. Here's a short checklist to run through before you hit
-submit — most of these take under a minute.
+submit. Most of these take under a minute.
 </p>
 
 <h2>1. Convert from Word to PDF instead of "printing to PDF" from a viewer</h2>
@@ -35,7 +35,7 @@ Converting directly from the source file preserves the layout you actually desig
 
 <h2>2. Check the file size against the portal's limit</h2>
 <p>
-A huge number of application systems cap uploads at exactly 1MB or 2MB — often without saying so
+A huge number of application systems cap uploads at exactly 1MB or 2MB, often without saying so
 clearly until the upload fails. A text-based resume is almost never naturally that large unless it
 contains a high-resolution photo or a background graphic. If your file is unexpectedly big, run it
 through <a href="/compress-pdf-to-1mb">Compress PDF to 1MB</a> before uploading.
@@ -45,12 +45,12 @@ through <a href="/compress-pdf-to-1mb">Compress PDF to 1MB</a> before uploading.
 <p>
 "resume_final_v3(1).pdf" or "Document1.pdf" is a small but real red flag to a recruiter skimming a
 folder of forty applications. Rename the file to something like <code>FirstName-LastName-Resume.pdf</code>
-before uploading — this isn't something any tool does automatically, it's just worth doing by hand.
+before uploading. This isn't something any tool does automatically, it's just worth doing by hand.
 </p>
 
 <h2>4. Double-check what's actually visible on the page</h2>
 <p>
-Open the finished PDF and read it exactly as a recruiter would — not just skim it. Check that no text
+Open the finished PDF and read it exactly as a recruiter would, not just skim it. Check that no text
 box overlaps another, that a table didn't get cut off at a page break, and that any hyperlinks (email,
 LinkedIn, portfolio) are the right ones. This step catches more real problems than any tool can.
 </p>
@@ -67,8 +67,8 @@ anything else on the page.
 <h2>6. Keep a copy of exactly what you sent</h2>
 <p>
 Save the final PDF you actually uploaded, not just the Word source. If you get a call back weeks
-later, you'll want to know precisely which version of your resume — and which job description
-wording, if you tailored it — that employer saw.
+later, you'll want to know precisely which version of your resume (and which job description
+wording, if you tailored it) that employer saw.
 </p>
 
 <h2>Frequently Asked Questions</h2>
@@ -82,7 +82,7 @@ the PDF.
 
 <h3>Should I compress my resume even if it's already small?</h3>
 <p>
-No need — compression only matters if you're bumping against an upload limit. A well-formatted
+No need. Compression only matters if you're bumping against an upload limit. A well-formatted
 text-based resume is typically well under 1MB already.
 </p>
 
@@ -103,8 +103,8 @@ software and installed fonts.
 
 <h2>Related Guides</h2>
 <ul>
-  <li><a href="/how-to-word-to-pdf">How to Convert Word to PDF</a> — step-by-step instructions for the tool itself.</li>
-  <li><a href="/how-to-redact-pdf">How to Hide Sensitive Information in a PDF</a> — step-by-step instructions for the tool itself.</li>
+  <li><a href="/how-to-word-to-pdf">How to Convert Word to PDF</a>: step-by-step instructions for the tool itself.</li>
+  <li><a href="/how-to-redact-pdf">How to Hide Sensitive Information in a PDF</a>: step-by-step instructions for the tool itself.</li>
 </ul>
 
 </article>
@@ -117,7 +117,7 @@ software and installed fonts.
 {{ article(self.title(), self.description(), request.path, date_published, date_modified) }}
 {{ faqpage([
   {"q": "Will an ATS actually read text correctly from a PDF resume?", "a": "Yes, as long as the PDF was created from a real text document (like Word) rather than scanned or exported as flattened images. Text created digitally remains selectable and machine-readable inside the PDF."},
-  {"q": "Should I compress my resume even if it's already small?", "a": "No need — compression only matters if you're bumping against an upload limit. A well-formatted text-based resume is typically well under 1MB already."},
+  {"q": "Should I compress my resume even if it's already small?", "a": "No need. Compression only matters if you're bumping against an upload limit. A well-formatted text-based resume is typically well under 1MB already."},
   {"q": "Is it ever better to submit a Word file instead of a PDF?", "a": "Only if the job posting specifically asks for one. PDF is the safer default because it displays identically everywhere, while a Word file can reflow or shift fonts depending on the reader's software and installed fonts."}
 ]) }}
 {% endblock %}

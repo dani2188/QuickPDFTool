@@ -24,7 +24,7 @@ Two PDFs can look identical: both show a picture of someone's handwritten signat
 signature line. One of them might be cryptographically signed. The other might just have an image
 pasted onto it. Visually, you cannot tell the difference. So what actually makes one a "digital
 signature" and the other just a signature-shaped image? The short answer is that a digital signature
-isn't a look, it's a mathematical operation performed on the document itself — and that operation
+isn't a look, it's a mathematical operation performed on the document itself, and that operation
 leaves a specific, inspectable structure inside the PDF that a plain image never creates.
 </p>
 
@@ -36,18 +36,18 @@ a legal and regulatory category, defined by intent, not by technique. Under
 <a href="https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX:32014R0910">EU Regulation
 910/2014</a>, known as eIDAS, Article 3(10) defines it as <em>"data in electronic form which is attached to or
 logically associated with other data in electronic form and which is used by the signatory to
-sign."</em> That definition is deliberately broad — a typed name at the bottom of an email, a scanned
+sign."</em> That definition is deliberately broad: a typed name at the bottom of an email, a scanned
 photo of a pen signature, and a cryptographic signature can all potentially qualify as an electronic
 signature in the eIDAS sense, because the definition is about purpose and intent, not about how it was
 produced.
 </p>
 
 <p>
-<strong>Digital signature</strong>, by contrast, is not itself an eIDAS legal category — it's a
+<strong>Digital signature</strong>, by contrast, is not itself an eIDAS legal category; it's a
 technical term for a specific cryptographic mechanism: a document digest (a hash) encrypted with a
 signer's private key, verifiable with the matching public key. A digital signature is one way to
 produce something that can also meet the legal definition of an electronic signature, and specifically
-the stricter tiers eIDAS defines — but not every electronic signature is a digital signature, and this
+the stricter tiers eIDAS defines, but not every electronic signature is a digital signature, and this
 article is about the technical distinction, not a legal one. Which tier a given signature legally
 qualifies for, in a given jurisdiction, for a given document, is a separate question from what we're
 explaining here.
@@ -59,15 +59,15 @@ requirements: it must be (1) uniquely linked to the signatory, (2) capable of id
 signatory, (3) created using signature-creation data the signatory can use under their sole control
 with a high level of confidence, and (4) linked to the signed data in such a way that <em>any
 subsequent change in the data is detectable</em>. These are EU regulatory requirements, not a universal
-global standard — but that fourth requirement, tamper-detection, is the exact property a cryptographic
+global standard, but that fourth requirement, tamper-detection, is the exact property a cryptographic
 mechanism is built to provide and a plain image cannot.
 </p>
 
 <h2>What a Signature Image Actually Is</h2>
 
 <p>
-A signature image is exactly what it sounds like: a picture — a photo of ink on paper, a scan, a
-transparent PNG — placed at a specific position on a PDF page. Structurally, a PDF has no idea what the
+A signature image is exactly what it sounds like: a picture (a photo of ink on paper, a scan, a
+transparent PNG) placed at a specific position on a PDF page. Structurally, a PDF has no idea what the
 picture depicts. To the file format, a signature image and a company logo and a product photo are the
 same kind of object: an embedded image, drawn at a location, with no semantic meaning attached to what
 it shows.
@@ -77,10 +77,10 @@ it shows.
 hellobrivio's own <a href="/sign-pdf">Sign PDF</a> tool works exactly this way, and it's a useful concrete
 example because we can inspect precisely what it produces. It takes an uploaded signature image and
 places it on the page using PyMuPDF's image-insertion function. The result is a normal
-<code>DeviceRGB</code> image object on the page — nothing more. There's no private-key operation
+<code>DeviceRGB</code> image object on the page, nothing more. There's no private-key operation
 anywhere in that process, no certificate binding a public key to a signer's identity, and no
 cryptographic link between that image and the rest of the document's content. None of this means the
-image "proves nothing" in every sense — it visually communicates that someone signed, and for a great
+image "proves nothing" in every sense. It visually communicates that someone signed, and for a great
 many everyday documents that's exactly what's needed. What it specifically does not provide is a way
 for a PDF viewer to mathematically verify <em>who</em> signed the document, or whether the document's
 signed bytes were altered afterward. Those are cryptographic properties, and nothing about placing an
@@ -91,7 +91,7 @@ image creates them.
 
 <p>
 A cryptographic digital signature is built specifically to supply the properties an image can't. At a
-conceptual level — this is simplified, not a complete implementation spec — the flow looks like this:
+conceptual level (this is simplified, not a complete implementation spec), the flow looks like this:
 </p>
 
 <ul class="benefits">
@@ -101,7 +101,7 @@ conceptual level — this is simplified, not a complete implementation spec — 
   value.</li>
   <li>The signature value, packaged as a cryptographic signature object, is written into a
   <strong>PDF signature dictionary</strong> inside the file.</li>
-  <li>The signer's <strong>certificate</strong> — which binds their identity to a public key — travels
+  <li>The signer's <strong>certificate</strong>, which binds their identity to a public key, travels
   with the signature so a viewer has something to check it against.</li>
   <li>A PDF viewer can later <strong>recompute the hash and verify the signature</strong> using that
   public key, without needing anything else from the signer.</li>
@@ -112,7 +112,7 @@ conceptual level — this is simplified, not a complete implementation spec — 
 <p>
 According to <a href="https://www.adobe.com/devnet-docs/acrobatetk/tools/DigSigDC/Acrobat_DigitalSignatures_in_PDF.pdf">Adobe's
 own developer documentation on digital signatures in PDF</a>, the signature lives in a signature
-dictionary with a specific set of entries — though not every signed PDF uses identical fields or
+dictionary with a specific set of entries, though not every signed PDF uses identical fields or
 encoding, since PDF supports multiple signature handlers and formats:
 </p>
 
@@ -127,7 +127,7 @@ encoding, since PDF supports multiple signature handlers and formats:
   <tbody>
     <tr><td><code>/ByteRange</code></td><td>Two offset/length pairs marking exactly which byte ranges of the file the signature covers</td></tr>
     <tr><td><code>/Contents</code></td><td>The actual encoded cryptographic signature value, sitting in the gap the ByteRange leaves open</td></tr>
-    <tr><td><code>/SubFilter</code></td><td>Which signature encoding/profile is used — for example <code>adbe.pkcs7.detached</code> or <code>ETSI.CAdES.detached</code></td></tr>
+    <tr><td><code>/SubFilter</code></td><td>Which signature encoding/profile is used, for example <code>adbe.pkcs7.detached</code> or <code>ETSI.CAdES.detached</code></td></tr>
     <tr><td><code>/Filter</code></td><td>Which signature handler is expected to process the signature</td></tr>
     <tr><td><code>/Cert</code></td><td>May carry certificate information directly, depending on the signature structure used</td></tr>
   </tbody>
@@ -135,8 +135,7 @@ encoding, since PDF supports multiple signature handlers and formats:
 </div>
 
 <p>
-None of these fields exist in an image-based signature, because there's no signature dictionary at all
-— just an image object on the page, which is exactly what forensic inspection of hellobrivio's own output
+None of these fields exist in an image-based signature, because there's no signature dictionary at all, just an image object on the page, which is exactly what forensic inspection of hellobrivio's own output
 confirms (more on that below).
 </p>
 
@@ -155,7 +154,7 @@ they don't, the mismatch is what a viewer reports as an invalid signature.
 It's worth being precise here rather than oversimplifying: this doesn't mean any change anywhere in a
 PDF always destroys every signature in it. PDF supports "incremental updates," where new content
 (including additional signatures) can be appended to a file without touching the bytes an earlier
-signature already covers — Adobe's documentation describes this as the mechanism that lets multiple
+signature already covers. Adobe's documentation describes this as the mechanism that lets multiple
 people sign the same document in sequence without invalidating each other's signatures. What actually
 breaks a signature is a change to bytes that specific signature's <code>/ByteRange</code> covers, not
 "any change to the file" in the broadest sense.
@@ -166,7 +165,7 @@ breaks a signature is a change to bytes that specific signature's <code>/ByteRan
 <p>
 The cryptographic signature object itself is usually built using <strong>CMS</strong>, Cryptographic
 Message Syntax. Per <a href="https://www.rfc-editor.org/rfc/rfc5652">RFC 5652</a>, CMS is a
-general-purpose container format — it's *"used to digitally sign, digest, authenticate, or encrypt
+general-purpose container format. It's *"used to digitally sign, digest, authenticate, or encrypt
 arbitrary message content"* and isn't specific to PDF at all; the same format underlies signed email
 and other signed data formats. Its <code>SignedData</code> structure bundles a message digest, the
 signature value, and the signer's certificate together.
@@ -177,7 +176,7 @@ signature value, and the signer's certificate together.
 Per <a href="https://www.etsi.org/deliver/etsi_en/319100_319199/31914201/01.02.01_60/en_31914201v010201p.pdf">ETSI's
 official EN 319 142-1 standard</a>, PAdES signatures <em>"build on PDF signatures specified in ISO
 32000-1 with an alternative signature encoding to support digital signature formats equivalent to...
-CAdES,"</em> adding requirements aimed at things like long-term validity — so a signature can still be
+CAdES,"</em> adding requirements aimed at things like long-term validity, so a signature can still be
 verified years later, after certificates involved may have expired. PAdES doesn't replace PDF's native
 signature dictionary; it's a stricter, more interoperable way of filling it in.
 </p>
@@ -187,7 +186,7 @@ The certificate itself follows the <strong>X.509</strong> format. Per
 <a href="https://www.rfc-editor.org/rfc/rfc5280">RFC 5280</a>, an X.509 certificate is a data structure
 that <em>"binds public key values to subjects,"</em> with that binding asserted by a trusted certificate
 authority's own signature on the certificate. Simply possessing a certificate doesn't independently
-prove someone's identity — that assurance depends on the certificate authority and the trust chain
+prove someone's identity. That assurance depends on the certificate authority and the trust chain
 behind it, which is a separate question from whether the cryptographic math checks out.
 </p>
 
@@ -199,7 +198,7 @@ produces today. Inspecting a real file it generates shows:
 </p>
 
 <ul class="benefits">
-  <li>A normal image XObject placed on the page — the signature picture itself.</li>
+  <li>A normal image XObject placed on the page: the signature picture itself.</li>
   <li><strong>No</strong> <code>/Sig</code> object.</li>
   <li><strong>No</strong> <code>/ByteRange</code>.</li>
   <li><strong>No</strong> <code>/AcroForm</code> signature field.</li>
@@ -207,7 +206,7 @@ produces today. Inspecting a real file it generates shows:
 </ul>
 
 <p>
-That makes it a visual signing tool, not a cryptographic PDF signing implementation — and that's not a
+That makes it a visual signing tool, not a cryptographic PDF signing implementation, and that's not a
 criticism of what it does; visual and cryptographic signatures solve genuinely different problems. If
 what you need is a document that visibly shows someone signed it, for an informal agreement, a form, or
 an internal approval, a placed image accomplishes exactly that, quickly, with no certificate to manage.
@@ -225,9 +224,9 @@ for the practical walkthrough of using the current tool.
 
 <h2>Related Guides</h2>
 <ul>
-  <li><a href="/how-to-sign-pdf">How to Sign a PDF Online</a> — the step-by-step walkthrough of hellobrivio's current tool.</li>
-  <li><a href="/blog/pdf-security-basics">Passwords, Redaction &amp; Watermarks</a> — what each PDF security tool actually protects against.</li>
-  <li><a href="/blog/what-encryption-does-protect-pdf-use">What Kind of Encryption Does Protect PDF Actually Use?</a> — the same kind of "what's actually happening" investigation, applied to Protect PDF.</li>
+  <li><a href="/how-to-sign-pdf">How to Sign a PDF Online</a>: the step-by-step walkthrough of hellobrivio's current tool.</li>
+  <li><a href="/blog/pdf-security-basics">Passwords, Redaction &amp; Watermarks</a>: what each PDF security tool actually protects against.</li>
+  <li><a href="/blog/what-encryption-does-protect-pdf-use">What Kind of Encryption Does Protect PDF Actually Use?</a>: the same kind of "what's actually happening" investigation, applied to Protect PDF.</li>
 </ul>
 
 <h2>Frequently Asked Questions</h2>

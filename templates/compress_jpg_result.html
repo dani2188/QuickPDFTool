@@ -24,7 +24,7 @@
   {% for r in results %}
   <li>
     <a href="/download-file/{{ r.filename }}">
-      {{ r.display_name }} — {{ r.original_kb }}KB → {{ r.compressed_kb }}KB ({{ r.reduction }}% smaller)
+      {{ r.display_name }}: {{ r.original_kb }}KB → {{ r.compressed_kb }}KB ({{ r.reduction }}% smaller)
     </a>
   </li>
   {% endfor %}

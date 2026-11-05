@@ -20,7 +20,7 @@
 {{ open_tool("/pdf-to-text", "Open the PDF to Text tool") }}
 
 <p>
-PDF files lock their content in a fixed format that is not directly editable. When you need the raw text from a PDF — to copy it into another document, analyse it, run it through a spell checker, or process it with software — extracting it as a plain text file (.txt) is the most efficient approach.
+PDF files lock their content in a fixed format that is not directly editable. When you need the raw text from a PDF (to copy it into another document, analyse it, run it through a spell checker, or process it with software), extracting it as a plain text file (.txt) is the most efficient approach.
 </p>
 
 <p>
@@ -40,13 +40,13 @@ Select your PDF and upload it. The tool extracts all text content from every pag
 </p>
 
 <p>
-<strong>Note:</strong> This tool works on text-based PDFs — documents where the text is actual selectable text (the kind you can highlight in a PDF reader). Scanned PDFs are images and do not contain extractable text.
+<strong>Note:</strong> This tool works on text-based PDFs: documents where the text is actual selectable text (the kind you can highlight in a PDF reader). Scanned PDFs are images and do not contain extractable text.
 </p>
 
 <h2>Step 3 – Download the Text File</h2>
 
 <p>
-Once extraction is complete, download the .txt file to your device. You can open it in any text editor — Notepad, TextEdit, VS Code, Word, or Google Docs — and use the content as you need.
+Once extraction is complete, download the .txt file to your device. You can open it in any text editor (Notepad, TextEdit, VS Code, Word, or Google Docs) and use the content as you need.
 </p>
 
 <h2>Tips for Extracting Text from PDFs</h2>
@@ -54,7 +54,7 @@ Once extraction is complete, download the .txt file to your device. You can open
 <ul>
   <li><strong>Text-based PDFs only:</strong> If your PDF was created from a word processor or exported from software, it contains real text. If it's a scanned document (photo of a page), the text is part of an image and cannot be extracted with this tool.</li>
   <li><strong>Check for garbled text:</strong> Some PDFs use custom encoding or embedded fonts that can cause special characters or symbols to appear incorrectly in the extracted text. Review the output for any obvious errors.</li>
-  <li><strong>Formatting is stripped:</strong> The extracted .txt file contains plain text only — no bold, italic, tables, or columns. For a more faithful conversion that preserves formatting, use our <a href="/pdf-to-word">PDF to Word converter</a> instead.</li>
+  <li><strong>Formatting is stripped:</strong> The extracted .txt file contains plain text only, no bold, italic, tables, or columns. For a more faithful conversion that preserves formatting, use our <a href="/pdf-to-word">PDF to Word converter</a> instead.</li>
   <li><strong>Large documents:</strong> The tool processes all pages in sequence. For very long documents, extraction may take a moment longer but will capture all pages.</li>
 </ul>
 
@@ -72,7 +72,7 @@ Once extraction is complete, download the .txt file to your device. You can open
 
 <h2>Frequently Asked Questions</h2>
 
-<h3>My extracted text is empty — why?</h3>
+<h3>My extracted text is empty. Why?</h3>
 <p>
 If the extracted text file is empty, your PDF is likely a scanned document (an image of text, not actual text). Scanned PDFs require OCR (optical character recognition) software to extract their content. This tool does not support OCR.
 </p>
@@ -106,7 +106,7 @@ PDF to Text (.txt) gives you plain text with no formatting. PDF to Word (.docx) 
 {% endblock %}
 
 {% block jsonld %}{% from "components/jsonld.html" import howto, faqpage %}{{ howto(self.title(), self.description(), request.path, ["Open the PDF to Text Tool", "Upload Your PDF", "Download the Text File"]) }}{{ faqpage([
-  {"q": "My extracted text is empty — why?", "a": "If the extracted text file is empty, your PDF is likely a scanned document (an image of text, not actual text). Scanned PDFs require OCR (optical character recognition) software to extract their content. This tool does not support OCR."},
+  {"q": "My extracted text is empty. Why?", "a": "If the extracted text file is empty, your PDF is likely a scanned document (an image of text, not actual text). Scanned PDFs require OCR (optical character recognition) software to extract their content. This tool does not support OCR."},
   {"q": "Will the text from multiple pages be combined?", "a": "Yes. Text from all pages is extracted and combined into a single .txt file, with pages separated by blank lines."},
   {"q": "Can I extract text from a password-protected PDF?", "a": "You'll need to remove the password first, then extract the text from the unlocked file."},
   {"q": "What's the difference between PDF to Text and PDF to Word?", "a": "PDF to Text (.txt) gives you plain text with no formatting. PDF to Word (.docx) attempts to preserve headings, bold text, tables, and other formatting. Use PDF to Word if you need an editable document that keeps the original layout."}

@@ -21,10 +21,10 @@
 
 <p>
 SVG (Scalable Vector Graphics) is the format most design tools export logos, icons, and diagrams in,
-because it describes shapes and text as mathematical paths rather than a grid of pixels — it looks
+because it describes shapes and text as mathematical paths rather than a grid of pixels. It looks
 sharp at any size. The problem is that not every device, printer, or recipient can open an SVG file
 directly. PDF solves that: it's universally supported, and because PDF is <em>also</em> a vector
-format, converting SVG to PDF keeps every path and letter exactly as crisp as the original — nothing
+format, converting SVG to PDF keeps every path and letter exactly as crisp as the original. Nothing
 gets rasterized into a fixed-resolution image along the way.
 </p>
 
@@ -38,7 +38,7 @@ select one or more SVG files.
 <h2>Step 2 – Upload Your SVG Files</h2>
 
 <p>
-Select all the SVG files you want to include. You can select several at once — each one becomes its
+Select all the SVG files you want to include. You can select several at once. Each one becomes its
 own page in the resulting PDF, in the order you selected them, and each page is sized to match that
 SVG's own dimensions.
 </p>
@@ -46,22 +46,21 @@ SVG's own dimensions.
 <h2>Step 3 – Download Your PDF</h2>
 
 <p>
-Click "Convert to PDF" and your file downloads automatically. Open it in any PDF viewer and zoom in —
-the shapes and text stay perfectly sharp, because they were never converted into pixels.
+Click "Convert to PDF" and your file downloads automatically. Open it in any PDF viewer and zoom in. The shapes and text stay perfectly sharp, because they were never converted into pixels.
 </p>
 
 <h2>Why this matters: vector vs. rasterized conversion</h2>
 
 <p>
 Some online converters turn an SVG into a PNG or JPG screenshot first, then place that image on a PDF
-page. That approach locks the graphic to whatever resolution the screenshot was taken at — zoom in far
+page. That approach locks the graphic to whatever resolution the screenshot was taken at. Zoom in far
 enough in the PDF and edges get blurry or blocky. This tool instead converts the SVG's actual paths
 and text directly into the PDF's own vector drawing instructions, so there's no fixed resolution to
 run out of.
 </p>
 
 <p>
-This includes diagram arrowheads defined with SVG <code>&lt;marker&gt;</code> elements — the technique
+This includes diagram arrowheads defined with SVG <code>&lt;marker&gt;</code> elements, the technique
 almost every flowchart, architecture diagram, and chart export tool uses to draw arrows on connector
 lines. Many lightweight SVG converters drop these silently, leaving lines with no arrowheads; this
 tool specifically detects and preserves them.
@@ -90,7 +89,7 @@ tool specifically detects and preserves them.
 
 <h3>Will my SVG's colours and gradients be preserved?</h3>
 <p>
-Yes — colours, gradients, strokes, and fills convert directly into the PDF's own vector drawing
+Yes. Colours, gradients, strokes, and fills convert directly into the PDF's own vector drawing
 instructions along with the shapes themselves.
 </p>
 
@@ -98,7 +97,7 @@ instructions along with the shapes themselves.
 <p>
 Text converts into real PDF text where possible, using an equivalent font. If your SVG already
 converted its text to paths/outlines during export (common when a design tool is used), it converts as
-shapes instead — either way, it stays sharp.
+shapes instead. Either way, it stays sharp.
 </p>
 
 <h3>Is there a file size limit?</h3>
@@ -108,7 +107,7 @@ Yes, 20MB per file, consistent with our other conversion tools.
 
 <h3>Is my file kept after conversion?</h3>
 <p>
-No. Files are processed on a secure server and deleted automatically within minutes — nothing is
+No. Files are processed on a secure server and deleted automatically within minutes. Nothing is
 stored permanently.
 </p>
 
@@ -126,8 +125,8 @@ stored permanently.
 {% endblock %}
 
 {% block jsonld %}{% from "components/jsonld.html" import howto, faqpage %}{{ howto(self.title(), self.description(), request.path, ["Open the SVG to PDF Tool", "Upload Your SVG Files", "Download Your PDF"]) }}{{ faqpage([
-  {"q": "Will my SVG's colours and gradients be preserved?", "a": "Yes — colours, gradients, strokes, and fills convert directly into the PDF's own vector drawing instructions along with the shapes themselves."},
-  {"q": "What happens to text in my SVG?", "a": "Text converts into real PDF text where possible, using an equivalent font. If your SVG already converted its text to paths/outlines during export (common when a design tool is used), it converts as shapes instead — either way, it stays sharp."},
+  {"q": "Will my SVG's colours and gradients be preserved?", "a": "Yes. Colours, gradients, strokes, and fills convert directly into the PDF's own vector drawing instructions along with the shapes themselves."},
+  {"q": "What happens to text in my SVG?", "a": "Text converts into real PDF text where possible, using an equivalent font. If your SVG already converted its text to paths/outlines during export (common when a design tool is used), it converts as shapes instead. Either way, it stays sharp."},
   {"q": "Is there a file size limit?", "a": "Yes, 20MB per file, consistent with our other conversion tools."},
-  {"q": "Is my file kept after conversion?", "a": "No. Files are processed on a secure server and deleted automatically within minutes — nothing is stored permanently."}
+  {"q": "Is my file kept after conversion?", "a": "No. Files are processed on a secure server and deleted automatically within minutes. Nothing is stored permanently."}
 ]) }}{% endblock %}
