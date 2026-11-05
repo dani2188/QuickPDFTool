@@ -15,6 +15,7 @@ import sys
 
 BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 os.environ.setdefault("U2NET_HOME", os.path.join(BASE, ".u2net"))
+os.environ.setdefault("NUMBA_DISABLE_JIT", "1")  # rembg -> pymatting would otherwise JIT-compile on import
 
 from rembg.sessions.u2netp import U2netpSession  # noqa: E402
 
