@@ -3,7 +3,7 @@
 
 <h1>Compress JPG</h1>
 
-<p class="subtitle">Shrink JPG photos quickly — one file or a whole batch at once.</p>
+<p class="subtitle">Shrink JPG photos quickly, one file or a whole batch at once.</p>
 
 <form method="POST" enctype="multipart/form-data">
   {% set button_text="Select JPG Files" %} {% set input_name="images" %} {%
@@ -49,8 +49,7 @@
   <h2>Compress JPG Images Online</h2>
 
   <p>
-    This free tool re-encodes your JPG photos at a lower quality setting to shrink their file size —
-    useful before emailing photos, uploading to a site with a size limit, or just saving storage space.
+    This free tool re-encodes your JPG photos at a lower quality setting to shrink their file size, useful before emailing photos, uploading to a site with a size limit, or just saving storage space.
     Upload one file or several at once; each is compressed individually and you get them all back in a
     single ZIP, plus individual download links.
   </p>
@@ -68,7 +67,7 @@
 
   <p><strong>Low:</strong> A light re-encode with almost no visible change. Best when you only need to trim a little size off an already-decent photo.</p>
   <p><strong>Medium:</strong> A balanced setting that noticeably shrinks the file while photos still look sharp on screen. Good default for most everyday photos.</p>
-  <p><strong>High:</strong> Stronger compression for when file size matters more than pixel-perfect detail — still fine for web use and messaging.</p>
+  <p><strong>High:</strong> Stronger compression for when file size matters more than pixel-perfect detail, still fine for web use and messaging.</p>
   <p><strong>Extreme:</strong> Maximum size reduction. Visible quality loss (blocky shadows, softer detail), best reserved for thumbnails or when every kilobyte counts.</p>
 
   {% include "components/examples/compress_jpg.html" %}
@@ -76,13 +75,13 @@
   <h2>Frequently Asked Questions</h2>
 
   <h3>Will compressing lose quality?</h3>
-  <p>JPG compression is "lossy" by nature, so yes, some detail is discarded — but at Low or Medium settings the difference is barely visible on screen. Higher levels trade more quality for smaller files.</p>
+  <p>JPG compression is "lossy" by nature, so yes, some detail is discarded, but at Low or Medium settings the difference is barely visible on screen. Higher levels trade more quality for smaller files.</p>
 
   <h3>Can I compress several photos at once?</h3>
   <p>Yes. Select multiple files and each is compressed individually with the same level, then bundled into one ZIP for download.</p>
 
   <h3>Does this remove my photo's location/EXIF data?</h3>
-  <p>Yes — re-encoding strips EXIF metadata (including GPS location, camera model, and timestamp), which also shaves off a little extra size. The photo's visual orientation is preserved either way.</p>
+  <p>Yes. Re-encoding strips EXIF metadata (including GPS location, camera model, and timestamp), which also shaves off a little extra size. The photo's visual orientation is preserved either way.</p>
 
   <h3>Is my photo stored after compressing?</h3>
   <p>No. Your photos are processed automatically on our server and never looked at by a person. The originals are deleted after about a minute and the compressed files after about five minutes.</p>
@@ -109,9 +108,9 @@
 {% endblock %}
 
 {% block jsonld %}{% from "components/jsonld.html" import webapp, faqpage %}{{ webapp(self.title(), self.description(), request.path) }}{{ faqpage([
-  {"q": "Will compressing lose quality?", "a": "JPG compression is \"lossy\" by nature, so yes, some detail is discarded — but at Low or Medium settings the difference is barely visible on screen. Higher levels trade more quality for smaller files."},
+  {"q": "Will compressing lose quality?", "a": "JPG compression is \"lossy\" by nature, so yes, some detail is discarded, but at Low or Medium settings the difference is barely visible on screen. Higher levels trade more quality for smaller files."},
   {"q": "Can I compress several photos at once?", "a": "Yes. Select multiple files and each is compressed individually with the same level, then bundled into one ZIP for download."},
-  {"q": "Does this remove my photo's location/EXIF data?", "a": "Yes — re-encoding strips EXIF metadata (including GPS location, camera model, and timestamp), which also shaves off a little extra size. The photo's visual orientation is preserved either way."},
+  {"q": "Does this remove my photo's location/EXIF data?", "a": "Yes. Re-encoding strips EXIF metadata (including GPS location, camera model, and timestamp), which also shaves off a little extra size. The photo's visual orientation is preserved either way."},
   {"q": "Is my photo stored after compressing?", "a": "No. Your photos are processed automatically on our server and never looked at by a person. The originals are deleted after about a minute and the compressed files after about five minutes."},
   {"q": "Can I compress PNG or other formats here?", "a": "This tool is specifically for JPG/JPEG files. To convert a PNG to a JPG first, or to work with PDFs, see our other PDF and image tools."}
 ]) }}{% endblock %}

@@ -27,14 +27,14 @@ endblock %} {% block content %}
 
   <p>
     This tool converts a .doc or .docx file to PDF using the same rendering engine a full office suite
-    uses, rather than a simplified text-only conversion — so fonts, images, tables, headers/footers, and
+    uses, rather than a simplified text-only conversion, so fonts, images, tables, headers/footers, and
     page layout carry over the way they would if you'd used "Save as PDF" in a desktop word processor.
   </p>
 
   <p>
     Converting to PDF is usually the right move once a document is finished: unlike a .docx file, a PDF
     displays identically on every device and every reader, regardless of which fonts or software the
-    recipient has installed — nothing reflows or shifts.
+    recipient has installed. Nothing reflows or shifts.
   </p>
 
   <h2>How to convert Word to PDF</h2>
@@ -55,7 +55,7 @@ endblock %} {% block content %}
   <h2>Important considerations</h2>
   <ul class="benefits">
     <li><strong>Complex layouts convert best when kept simple.</strong> Straightforward documents (text, standard tables, images) convert cleanly. Very elaborate layouts, embedded objects, or unusual fonts not available during conversion can occasionally render slightly differently than in the original.</li>
-    <li><strong>Once it's a PDF, it's not a Word document anymore.</strong> The output isn't editable text the way the original .docx was — if you need to keep editing, keep working in Word and only convert the final version.</li>
+    <li><strong>Once it's a PDF, it's not a Word document anymore.</strong> The output isn't editable text the way the original .docx was. If you need to keep editing, keep working in Word and only convert the final version.</li>
     <li><strong>Fonts embedded in the original document</strong> generally carry over correctly, since the conversion renders the document as it actually appears rather than re-typesetting it.</li>
   </ul>
 
@@ -63,7 +63,7 @@ endblock %} {% block content %}
 
   <h3>Will my formatting and fonts be preserved?</h3>
   <p>
-    Yes, in almost all cases — this uses a real document-rendering engine rather than a simplified
+    Yes, in almost all cases. This uses a real document-rendering engine rather than a simplified
     text extractor, so layout, fonts, tables, and images convert the way they'd look if printed from
     Word directly. Extremely unusual layouts or rare fonts can occasionally shift slightly.
   </p>
@@ -71,7 +71,7 @@ endblock %} {% block content %}
   <h3>Can I edit the PDF afterward?</h3>
   <p>
     Not as text the way you could in Word. If you need to add a note or signature, use
-    <a href="/add-text-to-pdf">Add Text to PDF</a> or <a href="/sign-pdf">Sign PDF</a> afterward — for
+    <a href="/add-text-to-pdf">Add Text to PDF</a> or <a href="/sign-pdf">Sign PDF</a> afterward. For
     substantial edits, it's easier to edit the original Word document and re-convert.
   </p>
 
@@ -99,8 +99,8 @@ endblock %} {% block content %}
 {% from "components/jsonld.html" import webapp, faqpage %}
 {{ webapp(self.title(), self.description(), request.path) }}
 {{ faqpage([
-  {"q": "Will my formatting and fonts be preserved?", "a": "Yes, in almost all cases — this uses a real document-rendering engine rather than a simplified text extractor, so layout, fonts, tables, and images convert the way they'd look if printed from Word directly. Extremely unusual layouts or rare fonts can occasionally shift slightly."},
-  {"q": "Can I edit the PDF afterward?", "a": "Not as text the way you could in Word. If you need to add a note or signature, use Add Text to PDF or Sign PDF afterward — for substantial edits, it's easier to edit the original Word document and re-convert."},
+  {"q": "Will my formatting and fonts be preserved?", "a": "Yes, in almost all cases. This uses a real document-rendering engine rather than a simplified text extractor, so layout, fonts, tables, and images convert the way they'd look if printed from Word directly. Extremely unusual layouts or rare fonts can occasionally shift slightly."},
+  {"q": "Can I edit the PDF afterward?", "a": "Not as text the way you could in Word. If you need to add a note or signature, use Add Text to PDF or Sign PDF afterward, for substantial edits, it's easier to edit the original Word document and re-convert."},
   {"q": "Does this work with both .doc and .docx?", "a": "Yes, both older .doc and modern .docx formats are accepted, as are OpenDocument .odt files."}
 ]) }}
 {% endblock %}

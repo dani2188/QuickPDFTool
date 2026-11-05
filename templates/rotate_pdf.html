@@ -57,7 +57,7 @@
   <h2>Frequently Asked Questions</h2>
 
   <h3>Will rotating a PDF affect the text or images?</h3>
-  <p>No. Rotation only changes the viewing orientation of the pages. All content — text, images, and layout — remains completely intact.</p>
+  <p>No. Rotation only changes the viewing orientation of the pages. All content (text, images, and layout) remains completely intact.</p>
 
   <h3>Can I rotate only specific pages?</h3>
   <p>This tool rotates all pages by the selected angle. If you need to rotate individual pages, split the document first using the <a href="/split-pdf">Split PDF tool</a>, rotate each page separately, then merge them back together.</p>
@@ -89,7 +89,7 @@
 {% endblock %}
 
 {% block jsonld %}{% from "components/jsonld.html" import webapp, faqpage %}{{ webapp(self.title(), self.description(), request.path) }}{{ faqpage([
-  {"q": "Will rotating a PDF affect the text or images?", "a": "No. Rotation only changes the viewing orientation of the pages. All content — text, images, and layout — remains completely intact."},
+  {"q": "Will rotating a PDF affect the text or images?", "a": "No. Rotation only changes the viewing orientation of the pages. All content (text, images, and layout) remains completely intact."},
   {"q": "Can I rotate only specific pages?", "a": "This tool rotates all pages by the selected angle. If you need to rotate individual pages, split the document first using the Split PDF tool, rotate each page separately, then merge them back together."},
   {"q": "What angles are available?", "a": "You can rotate by 90° (quarter turn clockwise), 180° (upside down), or 270° (quarter turn counter-clockwise, equivalent to 90° anti-clockwise)."},
   {"q": "Is the rotation permanent?", "a": "Yes. The rotation is saved into the PDF file itself, so it will display correctly in any PDF viewer without needing to be manually adjusted."},

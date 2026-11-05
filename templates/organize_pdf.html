@@ -26,7 +26,7 @@ Combine, split, and clean up PDF documents so they're structured the way you nee
 <div class="seo-content">
 
 <p>
-"Organizing" a PDF usually means restructuring it — combining several files into one, breaking one
+"Organizing" a PDF usually means restructuring it: combining several files into one, breaking one
 large file into smaller pieces, or getting rid of pages you don't need. Here's how to handle the most
 common situations.
 </p>
@@ -35,7 +35,7 @@ common situations.
 <p>
 If you've scanned a multi-page document as separate files, or you need to send several reports as a
 single attachment, use <strong><a href="/merge-pdf">Merge PDF</a></strong>. Upload the files in the
-order you want them combined — the merge keeps that order in the final document.
+order you want them combined. The merge keeps that order in the final document.
 </p>
 
 <h2>Breaking a large document into pieces</h2>
@@ -47,8 +47,8 @@ page range or split every page into its own file.
 
 <h2>Removing pages you don't need</h2>
 <p>
-<strong><a href="/delete-pdf-pages">Delete Pages</a></strong> removes specific pages — a blank scan, a
-cover sheet, or an outdated section — without touching the rest of the document.
+<strong><a href="/delete-pdf-pages">Delete Pages</a></strong> removes specific pages (a blank scan, a
+cover sheet, or an outdated section) without touching the rest of the document.
 </p>
 
 <h2>Pulling out just the images</h2>
@@ -71,7 +71,7 @@ order with tools you already have.
 
 <h3>Can I merge PDFs of different page sizes?</h3>
 <p>
-Yes. Each page keeps its own original size in the merged file — pages aren't stretched or cropped to
+Yes. Each page keeps its own original size in the merged file. Pages aren't stretched or cropped to
 match each other.
 </p>
 
@@ -90,7 +90,7 @@ applies across all of our tools.
 
 <h3>Will organizing a PDF affect the quality of scanned pages?</h3>
 <p>
-No — merging, splitting, and deleting pages don't re-compress or re-render page content, so scanned
+No. Merging, splitting, and deleting pages don't re-compress or re-render page content, so scanned
 image quality stays exactly as it was in the original file.
 </p>
 
@@ -115,9 +115,9 @@ image quality stays exactly as it was in the original file.
 {{ super() }}
 {% from "components/jsonld.html" import faqpage %}
 {{ faqpage([
-  {"q": "Can I merge PDFs of different page sizes?", "a": "Yes. Each page keeps its own original size in the merged file — pages aren't stretched or cropped to match each other."},
+  {"q": "Can I merge PDFs of different page sizes?", "a": "Yes. Each page keeps its own original size in the merged file. Pages aren't stretched or cropped to match each other."},
   {"q": "What's the difference between Split and Delete Pages?", "a": "Split PDF produces one or more new files from sections of the original (useful when you want to keep multiple parts). Delete Pages removes specific pages and gives you back a single file with the rest intact."},
   {"q": "Is there a limit to how many files I can merge?", "a": "There's no fixed file count, but the combined size is limited by the 20MB per-file upload limit that applies across all of our tools."},
-  {"q": "Will organizing a PDF affect the quality of scanned pages?", "a": "No — merging, splitting, and deleting pages don't re-compress or re-render page content, so scanned image quality stays exactly as it was in the original file."}
+  {"q": "Will organizing a PDF affect the quality of scanned pages?", "a": "No. Merging, splitting, and deleting pages don't re-compress or re-render page content, so scanned image quality stays exactly as it was in the original file."}
 ]) }}
 {% endblock %}

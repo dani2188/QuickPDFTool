@@ -6,7 +6,7 @@
 {% block title %}Resizing vs. Compressing an Image: What's the Difference?{% endblock %}
 
 {% block description %}
-Resizing and compressing an image solve different problems — one changes pixel dimensions, the other changes how efficiently those pixels are stored. Real tested examples show why a smaller image isn't automatically a smaller file, and how to choose the right operation.
+Resizing and compressing an image solve different problems. One changes pixel dimensions, the other changes how efficiently those pixels are stored. Real tested examples show why a smaller image isn't automatically a smaller file, and how to choose the right operation.
 {% endblock %}
 
 {% block content %}
@@ -30,11 +30,11 @@ which one you actually need saves a round of trial and error.
 <h2>What Is Image Resizing?</h2>
 
 <p>
-Resizing changes an image's pixel dimensions — its width and height, measured in pixels. A 4000×3000
+Resizing changes an image's pixel dimensions, its width and height, measured in pixels. A 4000×3000
 photo resized to 1080×1080 has fewer pixels than the original, full stop; some of the original detail is
 gone because there's less data left to represent it. hellobrivio's <a href="/resize-image">Resize Image</a>
 tool does this by scaling the photo down to fit entirely inside the target box you choose, then padding
-any leftover space with white — it never crops content out and never stretches the image out of
+any leftover space with white. It never crops content out and never stretches the image out of
 proportion. A landscape photo resized into a square target ends up with white bars above and below it,
 not a cropped or distorted version of the original framing.
 </p>
@@ -43,14 +43,14 @@ not a cropped or distorted version of the original framing.
 
 <p>
 Compression changes how efficiently the existing pixels are encoded into a file, without touching the
-pixel count at all. A 4000×3000 photo compressed at any level is still 4000×3000 pixels afterward — what
+pixel count at all. A 4000×3000 photo compressed at any level is still 4000×3000 pixels afterward. What
 changes is how much detail is thrown away when re-encoding it. hellobrivio's <a href="/compress-jpg">Compress
 JPG</a> tool re-encodes a JPEG at a lower quality setting (four levels, from a light re-encode to
-aggressive) to shrink the file, and does nothing to its dimensions. It only accepts JPG/JPEG files — there
+aggressive) to shrink the file, and does nothing to its dimensions. It only accepts JPG/JPEG files. There
 is currently no dedicated PNG compression tool on the site.
 </p>
 
-<h2>Why Fewer Pixels Usually Means a Smaller File — But Not Always</h2>
+<h2>Why Fewer Pixels Usually Means a Smaller File, But Not Always</h2>
 
 <p>
 Fewer pixels usually means less data to store, so resizing down typically shrinks the file as a side
@@ -80,11 +80,11 @@ JPEG source photo (6.16 MB) and ran it through the actual Resize Image tool down
 </div>
 
 <p>
-Same photo, same reduced dimensions, thirteen times the file size difference — purely from the output
+Same photo, same reduced dimensions, thirteen times the file size difference, purely from the output
 format. Photographic detail (the gradients and fine texture that make a photo look like a photo) doesn't
 compress well under PNG's lossless encoding, so a resized PNG can stay surprisingly large. In this same
 test, the full-resolution 4000×3000 original, compressed (not resized) at the strongest available
-setting, still came out smaller than the resized-but-uncompressed PNG — 439 KB versus 1.19 MB. Smaller
+setting, still came out smaller than the resized-but-uncompressed PNG: 439 KB versus 1.19 MB. Smaller
 dimensions is not the same claim as a smaller file; the encoding choice can matter more than the pixel
 count.
 </p>
@@ -117,7 +117,7 @@ the dimensions never move while the file size does:
 
 <p>
 Every one of those files still opens at full 4000×3000 resolution. Nothing about the image's actual size
-on screen changes — only how much of the fine detail survives re-encoding.
+on screen changes, only how much of the fine detail survives re-encoding.
 </p>
 
 <h2>When to Resize First</h2>
@@ -125,7 +125,7 @@ on screen changes — only how much of the fine detail survives re-encoding.
 <p>
 Resize when the destination cares about actual pixel dimensions, not just file size. A social media
 platform's post format, a profile picture upload, or a form that specifies "images must be exactly
-1200×630" all have a real dimension requirement that no amount of compression will satisfy — a
+1200×630" all have a real dimension requirement that no amount of compression will satisfy: a
 6000×4000 photo compressed to a tiny file size is still 6000×4000 pixels, and still the wrong shape or
 scale for a slot that expects something else.
 </p>
@@ -134,7 +134,7 @@ scale for a slot that expects something else.
 
 <p>
 Compress when the destination only cares about file size and the current dimensions are already right
-(or don't matter) — an email attachment limit, a storage quota, an upload field that rejects files over a
+(or don't matter): an email attachment limit, a storage quota, an upload field that rejects files over a
 certain size but doesn't care how many pixels they contain. Compressing keeps the full resolution intact,
 which matters if the image might need to be printed, cropped, or reused at a larger size later; resizing
 throws detail away permanently.
@@ -168,7 +168,7 @@ and a JPG quality level resizes and compresses at once. Testing that on the same
 One detail worth knowing if you're combining the tools manually rather than in one step: resizing to a
 lossless PNG first and then separately running that PNG through Compress JPG at quality 75 produced a
 byte-for-byte identical result to resizing straight to JPG at quality 75 in one pass. Because PNG doesn't
-throw anything away, doing the steps in either order costs nothing — the only step that actually loses
+throw anything away, doing the steps in either order costs nothing. The only step that actually loses
 detail is the JPEG re-encode itself, whichever point it happens at.
 </p>
 
@@ -202,11 +202,11 @@ few times):
 
 <p>
 On this specific already-compressed test file, the Low setting actually made the file slightly bigger,
-not smaller — the same effect seen when compressing an already-lean file with nothing left to give up:
+not smaller, the same effect seen when compressing an already-lean file with nothing left to give up:
 the re-encoding pass has its own small overhead, and with little redundant detail left to remove, that
 overhead isn't offset by any real savings. Every other level still helped, but by noticeably less than on
 the fresh photo. This is specific to the two files tested, not a guarantee about any particular photo, but
-the underlying reason — less redundant detail left to discard — applies generally to any image that's
+the underlying reason, less redundant detail left to discard, applies generally to any image that's
 already been compressed once.
 </p>
 
@@ -234,7 +234,7 @@ formats:
 </div>
 
 <p>
-For this graphic, PNG came out six times smaller than JPG at the identical dimensions — the exact
+For this graphic, PNG came out six times smaller than JPG at the identical dimensions, the exact
 opposite of the photo result earlier. JPEG's compression is tuned for photographic gradients and noise;
 flat color and sharp edges (logos, screenshots, text) tend to compress better under PNG's lossless
 encoding instead. See <a href="/blog/png-vs-jpg-guide">PNG vs JPG</a> for the fuller breakdown of when
@@ -272,7 +272,7 @@ each format wins.
   <li><strong>Compress JPG</strong> accepts only .jpg/.jpeg files, supports batch upload (multiple files
   compressed individually and returned in one ZIP), and offers four fixed quality levels rather than a
   slider. It never changes pixel dimensions.</li>
-  <li>There is currently no dedicated tool for compressing a PNG's file size directly — the only paths are
+  <li>There is currently no dedicated tool for compressing a PNG's file size directly. The only paths are
   converting it to JPG (via Resize Image's JPG output, or another converter) or resizing it to fewer
   pixels.</li>
 </ul>
@@ -286,12 +286,12 @@ each format wins.
 
 <h2>Related Guides</h2>
 <ul>
-  <li><a href="/blog/png-vs-jpg-guide">PNG vs JPG: Which Image Format Should You Use?</a> — the format
+  <li><a href="/blog/png-vs-jpg-guide">PNG vs JPG: Which Image Format Should You Use?</a>: the format
   decision behind several of the results above.</li>
-  <li><a href="/blog/optimize-images-for-web">How to Optimize Images for Faster Website Loading</a> — the
+  <li><a href="/blog/optimize-images-for-web">How to Optimize Images for Faster Website Loading</a>: the
   web-performance angle on resizing and compressing together.</li>
   <li><a href="/how-to-resize-image">How to Resize an Image</a> and
-  <a href="/how-to-compress-jpg">How to Compress a JPG</a> — step-by-step walkthroughs of each tool.</li>
+  <a href="/how-to-compress-jpg">How to Compress a JPG</a>: step-by-step walkthroughs of each tool.</li>
 </ul>
 
 <h2>Frequently Asked Questions</h2>

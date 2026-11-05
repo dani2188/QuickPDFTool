@@ -407,7 +407,7 @@ def reject_bad_pdf_uploads():
             name = secure_filename(upload.filename)
             if not _looks_like_pdf(upload):
                 if upload.filename.lower().endswith(".pdf"):
-                    return error_page("That file doesn't look like a valid PDF. It may be damaged — please try a different file.")
+                    return error_page("That file doesn't look like a valid PDF. It may be damaged. Please try a different file.")
                 return error_page(f"\"{name}\" is not a PDF. Please choose a PDF file; this tool can't read images or other documents.")
             if (request.path not in PASSWORD_PDF_EXEMPT_PATHS and upload.filename.lower().endswith(".pdf")
                     and _pdf_needs_password(upload)):
@@ -933,7 +933,7 @@ def bad_request(e):
 @app.errorhandler(PdfReadError)
 @app.errorhandler(PDFSyntaxError)
 def invalid_pdf(e):
-    return error_page("That file doesn't look like a valid PDF. It may be damaged — please try a different file.")
+    return error_page("That file doesn't look like a valid PDF. It may be damaged. Please try a different file.")
 
 
 @app.route("/split-pdf", methods=["GET", "POST"])
@@ -2583,7 +2583,7 @@ def pdf_to_excel():
             final_df = pd.concat(tables)
             final_df.to_excel(output_path, index=False)
         else:
-            return error_page("We couldn't find a table in this PDF. PDF to Excel needs tables with selectable text — scanned pages won't work.")
+            return error_page("We couldn't find a table in this PDF. PDF to Excel needs tables with selectable text. Scanned pages won't work.")
 
         delete_file_later(output_path)
 

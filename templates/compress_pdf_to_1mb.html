@@ -1,14 +1,14 @@
 {% extends "base.html" %}
 {% set breadcrumb_label = "Compress PDF to 1MB" %} {% block title %} Compress PDF to 1MB Online – Reduce
 PDF File Size {% endblock %} {% block description %} Compress a PDF to under
-1MB online for free — the size most application forms, portals, and upload
+1MB online for free, the size most application forms, portals, and upload
 fields require. Best-effort target compression, no signup. {% endblock %} {%
 block content %}
 
 <h1>Compress PDF to 1MB</h1>
 
 <p class="subtitle">
-  Shrink your PDF to fit a 1MB upload limit — the size cap used by most job
+  Shrink your PDF to fit a 1MB upload limit, the size cap used by most job
   applications, university portals, and government forms.
 </p>
 
@@ -46,7 +46,7 @@ block content %}
   <h2>How this tool tries to hit 1MB</h2>
   <p>
     Rather than applying one fixed setting, this tool compresses your file,
-    checks the resulting size, and — if it's still over 1MB — automatically
+    checks the resulting size, and, if it's still over 1MB, automatically
     re-compresses with a stronger setting and tries again, escalating through
     increasingly aggressive image downsampling until the file fits or no
     further reduction is possible.
@@ -61,17 +61,17 @@ block content %}
 
   <h2>If your file still won't fit under 1MB</h2>
   <ul class="benefits">
-    <li><strong>Split it first.</strong> Use <a href="/split-pdf">Split PDF</a> to break a long document into smaller sections, then compress each one — many upload forms accept multiple smaller files.</li>
-    <li><strong>Remove pages you don't need.</strong> A cover sheet, blank page, or duplicate scan adds size for no benefit — try <a href="/delete-pdf-pages">Delete Pages</a> first.</li>
+    <li><strong>Split it first.</strong> Use <a href="/split-pdf">Split PDF</a> to break a long document into smaller sections, then compress each one. Many upload forms accept multiple smaller files.</li>
+    <li><strong>Remove pages you don't need.</strong> A cover sheet, blank page, or duplicate scan adds size for no benefit. Try <a href="/delete-pdf-pages">Delete Pages</a> first.</li>
     <li><strong>Re-scan at a lower resolution.</strong> If the original is a phone scan, a 300 DPI scan compresses to 1MB far more easily than a 600+ DPI one.</li>
-    <li><strong>Use the full <a href="/compress-pdf">Compress PDF tool</a></strong> and manually pick "Extreme" — it converts images to grayscale, which shrinks colour scans significantly more than the automatic target-size loop alone if colour isn't required.</li>
+    <li><strong>Use the full <a href="/compress-pdf">Compress PDF tool</a></strong> and manually pick "Extreme". It converts images to grayscale, which shrinks colour scans significantly more than the automatic target-size loop alone if colour isn't required.</li>
   </ul>
 
   <h2>Frequently Asked Questions</h2>
 
   <h3>Will my PDF always end up exactly at or under 1MB?</h3>
   <p>
-    Not always — see above. The tool always returns the smallest version it
+    Not always. See above. The tool always returns the smallest version it
     could produce, even if that's slightly over 1MB, rather than degrading the
     document until it's unreadable.
   </p>
@@ -79,7 +79,7 @@ block content %}
   <h3>Does hitting 1MB mean my text becomes blurry?</h3>
   <p>
     No. Text is vector data and is never downsampled or blurred by
-    compression — only embedded images are affected. A text-only PDF will
+    compression. Only embedded images are affected. A text-only PDF will
     look identical after compression.
   </p>
 
@@ -93,7 +93,7 @@ block content %}
 
   <h3>Is this different from compressing for email?</h3>
   <p>
-    Yes — <a href="/compress-pdf-for-email">Compress PDF for Email</a> applies
+    Yes. <a href="/compress-pdf-for-email">Compress PDF for Email</a> applies
     one fixed high-compression setting tuned for typical email attachment
     limits (20–25MB), while this page keeps re-compressing until the file is
     at or near exactly 1MB, whatever that takes.
@@ -121,9 +121,9 @@ block content %}
 {% from "components/jsonld.html" import webapp, faqpage %}
 {{ webapp(self.title(), self.description(), request.path) }}
 {{ faqpage([
-  {"q": "Will my PDF always end up exactly at or under 1MB?", "a": "Not always — see above. The tool always returns the smallest version it could produce, even if that's slightly over 1MB, rather than degrading the document until it's unreadable."},
-  {"q": "Does hitting 1MB mean my text becomes blurry?", "a": "No. Text is vector data and is never downsampled or blurred by compression — only embedded images are affected. A text-only PDF will look identical after compression."},
+  {"q": "Will my PDF always end up exactly at or under 1MB?", "a": "Not always. See above. The tool always returns the smallest version it could produce, even if that's slightly over 1MB, rather than degrading the document until it's unreadable."},
+  {"q": "Does hitting 1MB mean my text becomes blurry?", "a": "No. Text is vector data and is never downsampled or blurred by compression. Only embedded images are affected. A text-only PDF will look identical after compression."},
   {"q": "What's the difference between this and the regular Compress PDF tool?", "a": "The Compress PDF tool lets you pick a fixed quality level (Low/Medium/High/Extreme) or type in any target size you want. This page is a shortcut that's pre-set to target exactly 1MB, since that's the size most people searching for this tool actually need."},
-  {"q": "Is this different from compressing for email?", "a": "Yes — Compress PDF for Email applies one fixed high-compression setting tuned for typical email attachment limits (20–25MB), while this page keeps re-compressing until the file is at or near exactly 1MB, whatever that takes."}
+  {"q": "Is this different from compressing for email?", "a": "Yes. Compress PDF for Email applies one fixed high-compression setting tuned for typical email attachment limits (20–25MB), while this page keeps re-compressing until the file is at or near exactly 1MB, whatever that takes."}
 ]) }}
 {% endblock %}

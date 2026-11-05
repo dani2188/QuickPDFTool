@@ -3,7 +3,7 @@
 
 <h1>Resize Image</h1>
 
-<p class="subtitle">Fit any photo to the exact size a platform expects — no cropping, no stretching.</p>
+<p class="subtitle">Fit any photo to the exact size a platform expects, no cropping, no stretching.</p>
 
 <form method="POST" enctype="multipart/form-data" class="no-auto-submit">
   <div id="dropArea" class="upload-box">
@@ -87,7 +87,7 @@
   <p>
     Every social platform expects a different image size, and uploading the wrong dimensions gets your
     photo auto-cropped in ways you don't control. This tool fits your image to the exact size a preset
-    calls for — scaling it to fit within the target box and padding any leftover space with white,
+    calls for, scaling it to fit within the target box and padding any leftover space with white,
     rather than stretching or cropping any part of your photo away.
   </p>
 
@@ -105,12 +105,12 @@
   <h2>Frequently Asked Questions</h2>
 
   <h3>Will resizing crop or stretch my photo?</h3>
-  <p>No. The image is scaled to fit entirely within the target dimensions, keeping its original proportions. If the shape doesn't match exactly, white padding fills the remaining space — nothing is cropped or distorted.</p>
+  <p>No. The image is scaled to fit entirely within the target dimensions, keeping its original proportions. If the shape doesn't match exactly, white padding fills the remaining space. Nothing is cropped or distorted.</p>
 
   <h3>Why does my resized image have white bars?</h3>
-  <p>That's the padding described above — it appears when your photo's aspect ratio doesn't exactly match the preset you chose (for example, a landscape photo resized to a square). It's the tradeoff for never cropping content out of your photo.</p>
+  <p>That's the padding described above. It appears when your photo's aspect ratio doesn't exactly match the preset you chose (for example, a landscape photo resized to a square). It's the tradeoff for never cropping content out of your photo.</p>
 
-  <h3>PNG or JPG — which should I choose?</h3>
+  <h3>PNG or JPG: which should I choose?</h3>
   <p>PNG is lossless and better for graphics, logos, or anything with sharp edges or text. JPG produces a smaller file and is usually the better choice for photos.</p>
 
   <h3>Is my photo stored after resizing?</h3>
@@ -167,9 +167,9 @@
 {% endblock %}
 
 {% block jsonld %}{% from "components/jsonld.html" import webapp, faqpage %}{{ webapp(self.title(), self.description(), request.path) }}{{ faqpage([
-  {"q": "Will resizing crop or stretch my photo?", "a": "No. The image is scaled to fit entirely within the target dimensions, keeping its original proportions. If the shape doesn't match exactly, white padding fills the remaining space — nothing is cropped or distorted."},
-  {"q": "Why does my resized image have white bars?", "a": "That's the padding described above — it appears when your photo's aspect ratio doesn't exactly match the preset you chose (for example, a landscape photo resized to a square). It's the tradeoff for never cropping content out of your photo."},
-  {"q": "PNG or JPG — which should I choose?", "a": "PNG is lossless and better for graphics, logos, or anything with sharp edges or text. JPG produces a smaller file and is usually the better choice for photos."},
+  {"q": "Will resizing crop or stretch my photo?", "a": "No. The image is scaled to fit entirely within the target dimensions, keeping its original proportions. If the shape doesn't match exactly, white padding fills the remaining space. Nothing is cropped or distorted."},
+  {"q": "Why does my resized image have white bars?", "a": "That's the padding described above. It appears when your photo's aspect ratio doesn't exactly match the preset you chose (for example, a landscape photo resized to a square). It's the tradeoff for never cropping content out of your photo."},
+  {"q": "PNG or JPG: which should I choose?", "a": "PNG is lossless and better for graphics, logos, or anything with sharp edges or text. JPG produces a smaller file and is usually the better choice for photos."},
   {"q": "Is my photo stored after resizing?", "a": "No. Files are processed on a secure server and deleted automatically within minutes."},
   {"q": "Is there a size limit?", "a": "Yes. The upload can be up to 20MB and the image up to " ~ max_image_megapixels ~ " megapixels. A larger photo is rejected with a message asking you to make it smaller first."}
 ]) }}{% endblock %}

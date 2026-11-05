@@ -55,8 +55,8 @@
 
   <p>
     This tool recognizes the specific watermark our own
-    <a href="/add-watermark">Add Watermark tool</a> adds — by its font,
-    size, color, and position — and removes exactly that, on top of a
+    <a href="/add-watermark">Add Watermark tool</a> adds (by its font,
+    size, color, and position) and removes exactly that, on top of a
     general cleanup of the PDF's internal content streams. It does not
     detect or remove watermarks added by other PDF software, since those
     can look completely different and there's no reliable way to
@@ -71,10 +71,10 @@
   <p>No, only the specific watermark added by our own Add Watermark tool. This tool recognizes that watermark's exact appearance and removes it; it doesn't detect or remove watermarks added by other PDF software, and it can't remove a watermark baked into a scanned image's pixels.</p>
 
   <h3>Will removing a watermark affect the rest of my document?</h3>
-  <p>The tool only removes the specific watermark text it recognizes — the underlying text, images, and any other content in your document are preserved.</p>
+  <p>The tool only removes the specific watermark text it recognizes. The underlying text, images, and any other content in your document are preserved.</p>
 
   <h3>Can I add a watermark back afterward?</h3>
-  <p>Yes — use the <a href="/add-watermark">Add Watermark tool</a> to stamp new text onto the cleaned file.</p>
+  <p>Yes. Use the <a href="/add-watermark">Add Watermark tool</a> to stamp new text onto the cleaned file.</p>
 
   <h3>Is this legal to use on any document?</h3>
   <p>Only remove watermarks from documents you own or have the right to modify. Removing a watermark from copyrighted or licensed material without permission may violate its terms.</p>
@@ -100,8 +100,8 @@
 
 {% block jsonld %}{% from "components/jsonld.html" import webapp, faqpage %}{{ webapp(self.title(), self.description(), request.path) }}{{ faqpage([
   {"q": "Will this remove any watermark?", "a": "No, only the specific watermark added by our own Add Watermark tool. This tool recognizes that watermark's exact appearance and removes it; it doesn't detect or remove watermarks added by other PDF software, and it can't remove a watermark baked into a scanned image's pixels."},
-  {"q": "Will removing a watermark affect the rest of my document?", "a": "The tool only removes the specific watermark text it recognizes — the underlying text, images, and any other content in your document are preserved."},
-  {"q": "Can I add a watermark back afterward?", "a": "Yes — use the Add Watermark tool to stamp new text onto the cleaned file."},
+  {"q": "Will removing a watermark affect the rest of my document?", "a": "The tool only removes the specific watermark text it recognizes. The underlying text, images, and any other content in your document are preserved."},
+  {"q": "Can I add a watermark back afterward?", "a": "Yes. Use the Add Watermark tool to stamp new text onto the cleaned file."},
   {"q": "Is this legal to use on any document?", "a": "Only remove watermarks from documents you own or have the right to modify. Removing a watermark from copyrighted or licensed material without permission may violate its terms."},
   {"q": "Are my files kept private?", "a": "Yes. Your uploaded file is processed and automatically deleted from our server within a few minutes."}
 ]) }}{% endblock %}

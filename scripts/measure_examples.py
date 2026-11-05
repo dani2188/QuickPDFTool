@@ -718,8 +718,8 @@ def publish(results):
 
     m = results["merge"]
     write_partial("merge", (
-        f"<p>We merged three sample PDFs — a {link('text-report.pdf', 'text report')}, a "
-        f"{link('scanned-letter.pdf', 'scanned letter')} and a {link('photo-brochure.pdf', 'photo brochure')} — "
+        f"<p>We merged three sample PDFs (a {link('text-report.pdf', 'text report')}, a "
+        f"{link('scanned-letter.pdf', 'scanned letter')} and a {link('photo-brochure.pdf', 'photo brochure')}) "
         "in that order. Merging copies pages as they are; it doesn't re-compress anything, so the result "
         "is roughly the sum of its parts.</p>\n"
         + table(["", "Pages", "Size"], [
@@ -744,7 +744,7 @@ def publish(results):
         "<p>We converted two sample PDFs and counted what came out in the Word file (characters are "
         "counted without spaces). A PDF with real text converts to editable text, and ruled tables "
         "become Word tables. A scanned PDF contains only pictures of text, so the Word file holds those "
-        "pictures and no editable text — this tool does not run OCR. The page images are also stored "
+        "pictures and no editable text. This tool does not run OCR. The page images are also stored "
         f"less compactly in Word: our scanned sample's .docx was {ratios['scanned-letter.pdf']:.1f}× the "
         "size of the PDF.</p>\n"
         + table(["Sample file", "Characters in PDF", "Editable characters in Word", "Tables", "Images",
@@ -773,11 +773,11 @@ def publish(results):
 
 def publish_jpg_to_pdf(rows):
     write_partial("jpg_to_pdf", (
-        "<p>We converted two sample photos. A JPG is placed in the PDF exactly as it is — we compared "
-        "the image stored in the PDF with the file you uploaded, byte for byte — so there is no "
+        "<p>We converted two sample photos. A JPG is placed in the PDF exactly as it is (we compared "
+        "the image stored in the PDF with the file you uploaded, byte for byte), so there is no "
         "re-compression and no quality loss, and the PDF is about the size of the photo. Each image "
         "becomes one page whose size comes from the photo's pixel dimensions, so a large photo makes a "
-        "very large page — fine on screen, but scale to fit when you print.</p>\n"
+        "very large page. That is fine on screen, but scale to fit when you print.</p>\n"
         + table(["Sample photo", "Pixels", "JPG size", "Stored unchanged in PDF?", "PDF page size", "PDF size"],
                 rows)))
 
@@ -827,8 +827,8 @@ def publish_compress_jpg(res):
         "<p>We compressed three sample photos at every level. Each level re-saves the photo as a JPG at a "
         f"fixed quality: Low {q['low']}, Medium {q['medium']}, High {q['high']} and Extreme {q['extreme']} "
         "(out of 100). The photos are drawn by a script, so their exact savings will differ from your "
-        "camera's; the pattern is what to look at. The pixel size never changes — "
-        f"{'we checked that every output has the same width and height as the original' if res['dims_ok'] else 'at least one output differed in size from the original'}"
+        "camera's; the pattern is what to look at. The pixel size never changes. "
+        f"{'We checked that every output has the same width and height as the original' if res['dims_ok'] else 'At least one output differed in size from the original'}"
         ".</p>\n"
         + table(["Sample photo", "Pixels", "Original", "Low", "Medium", "High", "Extreme"], res["rows"])
         + "\n<ul class=\"benefits\">\n"

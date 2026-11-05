@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% set breadcrumb_label = "Add Page Numbers" %} {% block title %}Add Page Numbers to PDF Online{% endblock %}
-{% block description %}Automatically number every page of a PDF, starting at 1. Free, no signup — numbers are placed in the bottom-right corner of each page.{% endblock %} {% block content %}
+{% block description %}Automatically number every page of a PDF, starting at 1. Free, no signup. Numbers are placed in the bottom-right corner of each page.{% endblock %} {% block content %}
 
 <h1>Add Page Numbers</h1>
 
@@ -28,8 +28,7 @@
 
   <p>
     This tool stamps a page number onto every page of your PDF, starting at 1 and counting up
-    sequentially through the document. Numbers are placed in the bottom-right corner of each page —
-    there's currently no option to change the position, starting number, or style, so this is a
+    sequentially through the document. Numbers are placed in the bottom-right corner of each page. There's currently no option to change the position, starting number, or style, so this is a
     one-click, no-configuration way to get straightforward sequential numbering.
   </p>
 
@@ -49,22 +48,22 @@
 
   <h2>Important considerations</h2>
   <ul class="benefits">
-    <li><strong>Position and style aren't configurable.</strong> Numbers always go in the bottom-right corner in a plain numeral style — there's no option for "Page X of Y," Roman numerals, or a different corner.</li>
+    <li><strong>Position and style aren't configurable.</strong> Numbers always go in the bottom-right corner in a plain numeral style. There's no option for "Page X of Y," Roman numerals, or a different corner.</li>
     <li><strong>Very small or unusually-sized pages</strong> may show the number slightly differently placed relative to standard US Letter/A4 pages, since the numbering is overlaid using a standard page template.</li>
-    <li><strong>Do this after merging, before protecting.</strong> If you're combining files with <a href="/merge-pdf">Merge PDF</a>, number the combined result rather than each file separately — and add a password with <a href="/protect-pdf">Protect PDF</a> last, since encrypted PDFs can't be edited further.</li>
+    <li><strong>Do this after merging, before protecting.</strong> If you're combining files with <a href="/merge-pdf">Merge PDF</a>, number the combined result rather than each file separately, and add a password with <a href="/protect-pdf">Protect PDF</a> last, since encrypted PDFs can't be edited further.</li>
   </ul>
 
   <h2>Frequently Asked Questions</h2>
 
   <h3>Can I start numbering from something other than 1, or use "Page X of Y"?</h3>
   <p>
-    Not currently — every document is numbered sequentially starting at 1, with a plain number and no
+    Not currently. Every document is numbered sequentially starting at 1, with a plain number and no
     "of Y" suffix.
   </p>
 
   <h3>Can I choose where on the page the number appears?</h3>
   <p>
-    Not currently — numbers are placed in the bottom-right corner of every page.
+    Not currently. Numbers are placed in the bottom-right corner of every page.
   </p>
 
   <h3>Will this work correctly on non-standard page sizes?</h3>
@@ -94,8 +93,8 @@
 {% from "components/jsonld.html" import webapp, faqpage %}
 {{ webapp(self.title(), self.description(), request.path) }}
 {{ faqpage([
-  {"q": "Can I start numbering from something other than 1, or use \"Page X of Y\"?", "a": "Not currently — every document is numbered sequentially starting at 1, with a plain number and no \"of Y\" suffix."},
-  {"q": "Can I choose where on the page the number appears?", "a": "Not currently — numbers are placed in the bottom-right corner of every page."},
+  {"q": "Can I start numbering from something other than 1, or use \"Page X of Y\"?", "a": "Not currently. Every document is numbered sequentially starting at 1, with a plain number and no \"of Y\" suffix."},
+  {"q": "Can I choose where on the page the number appears?", "a": "Not currently. Numbers are placed in the bottom-right corner of every page."},
   {"q": "Will this work correctly on non-standard page sizes?", "a": "It works on any page size, but the number's exact position is calculated relative to a standard page template, so on unusually small or large custom page sizes it may sit slightly differently than on standard Letter or A4 pages."}
 ]) }}
 {% endblock %}

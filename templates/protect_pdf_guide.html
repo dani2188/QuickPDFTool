@@ -40,7 +40,7 @@ Go to our <a href="/protect-pdf">Protect PDF tool</a>. You'll see a file upload 
 <h2>Step 2 – Upload Your PDF and Set a Password</h2>
 
 <p>
-Upload your PDF file and enter the password you want to set. Choose a strong password — use a mix of uppercase letters, lowercase letters, numbers, and special characters. Avoid simple words or dates that others could guess.
+Upload your PDF file and enter the password you want to set. Choose a strong password. Use a mix of uppercase letters, lowercase letters, numbers, and special characters. Avoid simple words or dates that others could guess.
 </p>
 
 <p>
@@ -61,10 +61,10 @@ Test the file immediately after downloading by opening it to confirm it requires
 
 <ul>
   <li><strong>Use a unique password:</strong> Don't reuse a password you use elsewhere. If that password is compromised, your document would be at risk too.</li>
-  <li><strong>Share the password separately:</strong> Never send the password in the same email as the protected PDF. Use a separate channel — a phone call, text message, or different email — to communicate the password.</li>
+  <li><strong>Share the password separately:</strong> Never send the password in the same email as the protected PDF. Use a separate channel (a phone call, text message, or different email) to communicate the password.</li>
   <li><strong>Compress before protecting:</strong> If your PDF is large, <a href="/compress-pdf">compress it</a> before adding a password. This makes the protected file smaller and easier to email.</li>
   <li><strong>Protect scanned documents:</strong> Scanned copies of IDs, contracts, and financial documents should always be password-protected before sharing by email.</li>
-  <li><strong>Consider what protection you actually need:</strong> Password protection prevents opening. If you need to allow reading but prevent editing, consider using additional restrictions — though this depends on the PDF software being used to open it.</li>
+  <li><strong>Consider what protection you actually need:</strong> Password protection prevents opening. If you need to allow reading but prevent editing, consider using additional restrictions, though this depends on the PDF software being used to open it.</li>
 </ul>
 
 <h2>When Should You Protect a PDF?</h2>
@@ -83,7 +83,7 @@ Test the file immediately after downloading by opening it to confirm it requires
 
 <h3>What happens if I forget the password?</h3>
 <p>
-There is no way to recover a forgotten password from the PDF file. This is by design — it means no one, including us, can read your document without the password. Always keep a secure copy of the password.
+There is no way to recover a forgotten password from the PDF file. This is by design. It means no one, including us, can read your document without the password. Always keep a secure copy of the password.
 </p>
 
 <h3>Is the protection strong enough for sensitive documents?</h3>
@@ -110,7 +110,7 @@ Yes. Use our <a href="/unlock-pdf">Unlock PDF tool</a> to remove the password wh
 {% endblock %}
 
 {% block jsonld %}{% from "components/jsonld.html" import howto, faqpage %}{{ howto(self.title(), self.description(), request.path, ["Open the Protect PDF Tool", "Upload Your PDF and Set a Password", "Download Your Protected PDF"]) }}{{ faqpage([
-  {"q": "What happens if I forget the password?", "a": "There is no way to recover a forgotten password from the PDF file. This is by design — it means no one, including us, can read your document without the password. Always keep a secure copy of the password."},
+  {"q": "What happens if I forget the password?", "a": "There is no way to recover a forgotten password from the PDF file. This is by design. It means no one, including us, can read your document without the password. Always keep a secure copy of the password."},
   {"q": "Is the protection strong enough for sensitive documents?", "a": "Our tool uses standard PDF encryption which is suitable for most personal and business use cases. For highly sensitive legal or financial documents, consider using dedicated professional tools or combining PDF protection with other security measures."},
   {"q": "Can I remove the password later?", "a": "Yes. Use our Unlock PDF tool to remove the password when you have it. You'll need the current password to unlock the file."}
 ]) }}{% endblock %}

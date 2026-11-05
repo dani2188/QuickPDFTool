@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% set breadcrumb_label = "Compress PDF for Email" %} {% block title %} Compress PDF for Email – Reduce PDF
 Size for Attachments {% endblock %} {% block description %} Compress a PDF so
-it survives your email provider's attachment limit — accounting for the
+it survives your email provider's attachment limit, accounting for the
 size increase email encoding adds. Free, no signup. {% endblock %} {% block content %}
 
 <h1>Compress PDF for Email</h1>
@@ -34,7 +34,7 @@ size increase email encoding adds. Free, no signup. {% endblock %} {% block cont
 
   <h2>The hidden reason attachments bounce below the stated limit</h2>
   <p>
-    Email attachments aren't sent as raw bytes — they're base64-encoded first,
+    Email attachments aren't sent as raw bytes. They're base64-encoded first,
     which inflates the file by roughly <strong>37%</strong> before it ever
     reaches your provider's limit check. A file that's 24MB on your disk can
     become over 32MB in transit, which is why an attachment can bounce even
@@ -58,10 +58,10 @@ size increase email encoding adds. Free, no signup. {% endblock %} {% block cont
   <h2>Email attachment size limits (and the safe target to aim for)</h2>
 
   <ul class="benefits">
-    <li><strong>Gmail:</strong> 25 MB limit — aim for under ~18 MB</li>
-    <li><strong>Outlook / Microsoft 365:</strong> 20 MB limit — aim for under ~14 MB</li>
-    <li><strong>Yahoo Mail:</strong> 25 MB limit — aim for under ~18 MB</li>
-    <li><strong>Company/corporate mail servers:</strong> often much stricter (5–10 MB) — check with your IT department if unsure</li>
+    <li><strong>Gmail:</strong> 25 MB limit; aim for under ~18 MB</li>
+    <li><strong>Outlook / Microsoft 365:</strong> 20 MB limit; aim for under ~14 MB</li>
+    <li><strong>Yahoo Mail:</strong> 25 MB limit; aim for under ~18 MB</li>
+    <li><strong>Company/corporate mail servers:</strong> often much stricter (5–10 MB). Check with your IT department if unsure</li>
   </ul>
 
   <p>
@@ -84,7 +84,7 @@ size increase email encoding adds. Free, no signup. {% endblock %} {% block cont
 
   <h3>Why did my attachment bounce even though it's under the size limit?</h3>
   <p>
-    Because of base64 encoding overhead (see above) — the file grows by
+    Because of base64 encoding overhead (see above), the file grows by
     roughly a third once it's actually transmitted as an attachment. Compress
     it further, or send it as a cloud storage link instead.
   </p>
@@ -93,7 +93,7 @@ size increase email encoding adds. Free, no signup. {% endblock %} {% block cont
   <p>
     It uses a similarly strong setting to the "High" level on the
     <a href="/compress-pdf">regular Compress PDF tool</a>, downsampling
-    images to 72 DPI — good for on-screen reading, not ideal if the recipient
+    images to 72 DPI, good for on-screen reading, not ideal if the recipient
     needs to print at full quality.
   </p>
 
@@ -106,7 +106,7 @@ size increase email encoding adds. Free, no signup. {% endblock %} {% block cont
 
   <h3>Is this different from just using the regular Compress PDF tool?</h3>
   <p>
-    Not technically — this page posts straight to the same compressor with
+    Not technically. This page posts straight to the same compressor with
     the "optimize for email" option pre-selected, so you don't have to find
     and check that setting yourself. It's a shortcut, not a separate engine.
   </p>
@@ -138,9 +138,9 @@ size increase email encoding adds. Free, no signup. {% endblock %} {% block cont
 {% from "components/jsonld.html" import webapp, faqpage %}
 {{ webapp(self.title(), self.description(), request.path) }}
 {{ faqpage([
-  {"q": "Why did my attachment bounce even though it's under the size limit?", "a": "Because of base64 encoding overhead (see above) — the file grows by roughly a third once it's actually transmitted as an attachment. Compress it further, or send it as a cloud storage link instead."},
-  {"q": "Will this reduce quality more than the regular Compress PDF tool?", "a": "It uses a similarly strong setting to the \"High\" level on the regular Compress PDF tool, downsampling images to 72 DPI — good for on-screen reading, not ideal if the recipient needs to print at full quality."},
+  {"q": "Why did my attachment bounce even though it's under the size limit?", "a": "Because of base64 encoding overhead (see above). The file grows by roughly a third once it's actually transmitted as an attachment. Compress it further, or send it as a cloud storage link instead."},
+  {"q": "Will this reduce quality more than the regular Compress PDF tool?", "a": "It uses a similarly strong setting to the \"High\" level on the regular Compress PDF tool, downsampling images to 72 DPI, good for on-screen reading, not ideal if the recipient needs to print at full quality."},
   {"q": "What if I need an exact file size instead?", "a": "Use Compress PDF to 1MB or the target size option on the main Compress PDF tool if you need to hit a specific number rather than \"small enough for email.\""},
-  {"q": "Is this different from just using the regular Compress PDF tool?", "a": "Not technically — this page posts straight to the same compressor with the \"optimize for email\" option pre-selected, so you don't have to find and check that setting yourself. It's a shortcut, not a separate engine."}
+  {"q": "Is this different from just using the regular Compress PDF tool?", "a": "Not technically. This page posts straight to the same compressor with the \"optimize for email\" option pre-selected, so you don't have to find and check that setting yourself. It's a shortcut, not a separate engine."}
 ]) }}
 {% endblock %}
